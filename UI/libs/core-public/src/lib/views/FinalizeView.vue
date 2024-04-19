@@ -52,6 +52,25 @@
           </v-col>
         </v-row>
 
+        <v-row
+          justify="center"
+          class="mt-3"
+        >
+          <v-alert
+            type="info"
+            color="primary"
+            outlined
+          >
+            <span
+              :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
+            >
+              You must choose an appointment in order to submit your
+              application. You may reschedule or cancel your appointment at a
+              later time.
+            </span>
+          </v-alert>
+        </v-row>
+
         <template v-if="appConfigStore.appConfig.payBeforeSubmit && isRenew">
           <v-row class="mt-3 mb-3">
             <v-col>
@@ -172,18 +191,9 @@
             </template>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col>
-            <div class="d-flex justify-center">
-              <v-btn
-                class="mr-10 mb-10"
-                color="primary"
-                to="/"
-              >
-                {{ $t('Save and Exit') }}
-              </v-btn>
-            </div>
-
             <v-btn
               v-if="isRenew"
               class="mb-10"
@@ -223,6 +233,7 @@ import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 import {
   ApplicationStatus,
   ApplicationType,
@@ -247,6 +258,7 @@ const brandStore = useBrandStore()
 const appConfigStore = useAppConfigStore()
 const paymentStore = usePaymentStore()
 const appointmentsStore = useAppointmentsStore()
+const themeStore = useThemeStore()
 const route = useRoute()
 const router = useRouter()
 const paymentStatus = computed(() => {

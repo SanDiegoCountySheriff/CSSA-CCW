@@ -65,8 +65,8 @@ import { computed, getCurrentInstance, onBeforeMount, provide, ref } from 'vue'
 const prompt = ref(false)
 const app = getCurrentInstance()
 const authStore = useAuthStore()
-const themeStore = useThemeStore()
 const configStore = useAppConfigStore()
+const themeStore = useThemeStore()
 const brandStore = useBrandStore()
 const msalInstance = ref<MsalBrowser>()
 
@@ -102,8 +102,11 @@ onBeforeMount(async () => {
 
   msalInstance.value = await getMsalInstance()
 
-  if (app) {
-    app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark
+  const darkMode = localStorage.getItem('dark-mode')
+
+  if (app && darkMode) {
+    app.proxy.$vuetify.theme.dark = darkMode === 'true'
+    themeStore.getThemeConfig.isDark = darkMode === 'true'
   }
 
   const appInsights = new ApplicationInsights({

@@ -1,66 +1,71 @@
 <template>
   <v-container fluid>
-    <v-row>
-      <v-col>
-        <v-select
-          v-model="options.statuses"
-          label="Application Status"
-          :items="applicationStatusItems"
-          item-text="text"
-          item-value="value"
-          color="primary"
-          multiple
-          outlined
-          clearable
-          hide-details
-          small-chips
-        />
-      </v-col>
+    <v-card
+      flat
+      class="mb-3"
+    >
+      <v-row>
+        <v-col>
+          <v-select
+            v-model="options.statuses"
+            label="Application Status"
+            :items="applicationStatusItems"
+            item-text="text"
+            item-value="value"
+            color="primary"
+            multiple
+            outlined
+            clearable
+            hide-details
+            small-chips
+          />
+        </v-col>
 
-      <v-col>
-        <v-select
-          v-model="options.appointmentStatuses"
-          :items="appointmentStatusItems"
-          label="Appointment Status"
-          item-value="value"
-          item-text="text"
-          color="primary"
-          hide-details
-          small-chips
-          clearable
-          outlined
-          multiple
-        />
-      </v-col>
+        <v-col>
+          <v-select
+            v-model="options.appointmentStatuses"
+            :items="appointmentStatusItems"
+            label="Appointment Status"
+            item-value="value"
+            item-text="text"
+            color="primary"
+            hide-details
+            small-chips
+            clearable
+            outlined
+            multiple
+          />
+        </v-col>
 
-      <v-col>
-        <v-select
-          v-model="options.applicationTypes"
-          :items="applicationTypeItems"
-          label="Application Type"
-          item-value="value"
-          item-text="text"
-          color="primary"
-          hide-details
-          small-chips
-          clearable
-          outlined
-          multiple
-        />
-      </v-col>
+        <v-col>
+          <v-select
+            v-model="options.applicationTypes"
+            :items="applicationTypeItems"
+            label="Application Type"
+            item-value="value"
+            item-text="text"
+            color="primary"
+            hide-details
+            small-chips
+            clearable
+            outlined
+            multiple
+          />
+        </v-col>
 
-      <v-col>
-        <v-text-field
-          v-model="options.search"
-          label="Search"
-          placeholder="Start typing to search"
-          outlined
-          hide-details
-          clearable
-        >
-        </v-text-field>
-      </v-col>
-    </v-row>
+        <v-col>
+          <v-text-field
+            v-model="options.search"
+            label="Search"
+            placeholder="Start typing to search"
+            outlined
+            hide-details
+            clearable
+          >
+          </v-text-field>
+        </v-col>
+      </v-row>
+    </v-card>
 
     <v-data-table
       v-model="state.selected"
