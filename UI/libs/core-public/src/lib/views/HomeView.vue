@@ -147,6 +147,7 @@
                 >
                   <v-card
                     hover
+                    rounded
                     outlined
                     @click="redirectToAcknowledgements"
                   >
