@@ -269,6 +269,18 @@ export type PersonalInfoType = {
   maritalStatus: string
 }
 
+export type LookUpRequestType = {
+  lastName: string
+  firstName: string
+  license: LicenseType
+  //CCW Permit Number --> Optional
+  ccwPermitNumber?: string
+  //Photo of Driver's License --> Optional
+  driversLicensePhoto?: UploadedDocType
+  //CCW Appointment Date --> Optional
+  appointmentDate?: string
+}
+
 export type RevocationInfoType = {
   reason: string
   otherReason: string
