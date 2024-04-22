@@ -240,7 +240,7 @@ import {
   CompleteApplication,
   WeaponInfoType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, onMounted, reactive, ref, watch, provide } from 'vue'
+import { computed, onMounted, provide, reactive, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const applicationStore = useCompleteApplicationStore()

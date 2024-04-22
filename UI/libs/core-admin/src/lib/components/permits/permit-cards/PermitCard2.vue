@@ -1012,6 +1012,7 @@ function handleFinishModification() {
 
   app.modifyDeleteWeapons = []
   app.modifiedWeaponComplete = null
+  app.currentStep = 1
 
   updatePermitDetails()
 }
