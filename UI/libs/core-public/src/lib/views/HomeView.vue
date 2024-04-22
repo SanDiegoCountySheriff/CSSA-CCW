@@ -128,17 +128,84 @@
           max-width="600px"
         >
           <v-card>
-            <v-card-title class="text-h5 text-center">
-              Before You Start
+            <v-card-title class="text-h4 justify-center">
+              Before You Begin
             </v-card-title>
-            <v-card-text>
-              If this is your first time applying for a CCW License, please
-              select "Start Application"
-            </v-card-text>
-            <v-card-text>
-              If you have already applied or received your CCW License with
-              {{ brandStore.getBrand.agencyName }}, select "Link Application"
-            </v-card-text>
+            <v-card-title class="text-h5 justify-center">
+              Let us know how we can assist you
+            </v-card-title>
+            <v-container
+              class="px-10"
+              fluid
+            >
+              <v-contianer class="px-5">
+                <v-sheet
+                  outlined
+                  color="primary"
+                  rounded
+                  elevation="3"
+                >
+                  <v-card
+                    hover
+                    outlined
+                    @click="redirectToAcknowledgements"
+                  >
+                    <v-card-title
+                      :color="$vuetify.theme.dark ? 'white' : 'primary'"
+                    >
+                      <v-icon
+                        x-large
+                        class="mr-3"
+                        :color="$vuetify.theme.dark ? 'white' : 'primary'"
+                      >
+                        mdi-account-plus
+                      </v-icon>
+                      New User
+                    </v-card-title>
+
+                    <v-card-text>
+                      I am applying for a CCW license with
+                      <b>{{ brandStore.getBrand.agencyName }}</b> for the first
+                      time.
+                    </v-card-text>
+                  </v-card>
+                </v-sheet>
+              </v-contianer>
+
+              <v-sheet
+                outlined
+                color="primary"
+                rounded
+                elevation="3"
+              >
+                <v-card
+                  hover
+                  rounded
+                  outlined
+                  @click="handleExistingApplication"
+                >
+                  <v-card-title
+                    :color="$vuetify.theme.dark ? 'white' : 'primary'"
+                  >
+                    <v-icon
+                      x-large
+                      class="mr-3"
+                      :color="$vuetify.theme.dark ? 'white' : 'primary'"
+                    >
+                      mdi-account-search
+                    </v-icon>
+                    Link Existing Application
+                  </v-card-title>
+
+                  <v-card-text>
+                    I have previously applied for a CCW license with
+                    <b>{{ brandStore.getBrand.agencyName }}</b> and would like
+                    to link my exisitng application.
+                  </v-card-text>
+                </v-card>
+              </v-sheet>
+            </v-container>
+
             <v-card-actions class="d-flex flex-column align-center">
               <v-container
                 class="px-0"
@@ -152,36 +219,6 @@
                   >
                     <v-btn
                       color="primary"
-                      @click="redirectToAcknowledgements"
-                      block
-                    >
-                      Start Application
-                    </v-btn>
-                  </v-col>
-                </v-row>
-                <v-row justify="center">
-                  <v-col
-                    cols="12"
-                    sm="8"
-                    md="6"
-                  >
-                    <v-btn
-                      color="primary"
-                      @click="handleExistingApplication"
-                      block
-                    >
-                      Link Application
-                    </v-btn>
-                  </v-col>
-                </v-row>
-                <v-row justify="center">
-                  <v-col
-                    cols="12"
-                    sm="8"
-                    md="6"
-                  >
-                    <v-btn
-                      color="error"
                       @click="showDialog = false"
                       block
                     >
