@@ -3,8 +3,6 @@ import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 const documentStore = useDocumentsStore()
 
 export async function openPdf(item) {
-  window.console.log(item)
-
   documentStore
     .getUserDocument(item.name)
     .then(response => {

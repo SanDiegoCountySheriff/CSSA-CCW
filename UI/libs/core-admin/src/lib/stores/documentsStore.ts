@@ -107,8 +107,6 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   }
 
   async function getUserDocument(name) {
-    window.console.log(name)
-
     const res = await axios
       .get(
         `${Endpoints.GET_DOCUMENT_AGENCY_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${name}`,
