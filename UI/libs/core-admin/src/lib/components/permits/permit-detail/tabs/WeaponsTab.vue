@@ -15,7 +15,10 @@
         <WeaponsTable
           :weapons="items"
           :delete-enabled="true"
-          :modifying="true"
+          :modifying="
+            permitStore.getPermitDetail.application.modifiedWeaponComplete !==
+            null
+          "
           @delete-weapon="deleteWeapon"
           @handle-edit-weapon="handleEditWeapon"
           @save-weapon="handleSaveWeapon"

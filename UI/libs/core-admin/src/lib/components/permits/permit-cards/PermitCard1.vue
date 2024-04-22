@@ -188,6 +188,10 @@ const appStatus = [
     id: 17,
     value: 'Ready To Issue',
   },
+  {
+    id: 19,
+    value: 'Modification Approved',
+  },
 ]
 
 const appType = [

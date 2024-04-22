@@ -389,12 +389,7 @@ const applicationStatusItems = [
   { text: 'Contingently Denied', value: 16 },
   { text: 'Ready To Issue', value: 17 },
   { text: 'Waiting For Customer', value: 18 },
-
-  'Available',
-  'Not Scheduled',
-  'Scheduled',
-  'Checked In',
-  'No Show',
+  { text: 'Modification Approved', value: 19 },
 ]
 
 const appointmentStatusItems = [

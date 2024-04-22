@@ -452,7 +452,7 @@
         >
           <v-card-title class="justify-center">
             <v-icon
-              v-if="!isModificationApproved"
+              v-if="!isModificationComplete"
               color="primary"
               class="mr-2"
             >
@@ -472,6 +472,29 @@
           <v-spacer></v-spacer>
 
           <v-card-text class="text-center">
+            <v-row>
+              <v-col>
+                <v-btn
+                  v-if="modificationReadyForApproval"
+                  @click="handleApproveModification"
+                  color="primary"
+                  block
+                  small
+                >
+                  <v-icon left>mdi-check-bold</v-icon>
+                  Approve Modification
+                </v-btn>
+
+                <FinishModificationDialog
+                  v-if="
+                    permitStore.getPermitDetail.application.status ===
+                    ApplicationStatus['Modification Approved']
+                  "
+                  @handle-finish-modification="handleFinishModification"
+                />
+              </v-col>
+            </v-row>
+
             <v-row>
               <v-col>
                 <v-btn
@@ -574,11 +597,23 @@
               <v-col>
                 <v-btn
                   @click="emit('on-check-documents')"
-                  color="primary"
+                  :color="
+                    permitStore.getPermitDetail.application.status ===
+                    ApplicationStatus['Modification Approved']
+                      ? 'success'
+                      : 'primary'
+                  "
                   small
                   block
                 >
-                  <v-icon left>mdi-file-document-check</v-icon>
+                  <v-icon left>
+                    {{
+                      permitStore.getPermitDetail.application.status ===
+                      ApplicationStatus['Modification Approved']
+                        ? 'mdi-check-bold'
+                        : 'mdi-file-document-check'
+                    }}
+                  </v-icon>
                   Check Documents
                 </v-btn>
               </v-col>
@@ -771,6 +806,7 @@ import { ApplicationType } from '@shared-utils/types/defaultTypes'
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue'
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
 import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
+import FinishModificationDialog from '@core-admin/components/dialogs/FinishModificationDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
@@ -876,6 +912,110 @@ const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
     appointmentStore.putNoShowAppointment(appointmentId),
 })
 
+function handleApproveModification() {
+  permitStore.getPermitDetail.application.status =
+    ApplicationStatus['Modification Approved']
+  updatePermitDetails()
+}
+
+function handleFinishModification() {
+  // TODO: Save historical
+
+  const app = permitStore.getPermitDetail.application
+
+  app.status = ApplicationStatus['Permit Delivered']
+
+  switch (app.applicationType) {
+    case ApplicationType['Modify Standard']: {
+      app.applicationType = ApplicationType.Standard
+      break
+    }
+    case ApplicationType['Modify Judicial']: {
+      app.applicationType = ApplicationType.Judicial
+      break
+    }
+    case ApplicationType['Modify Reserve']: {
+      app.applicationType = ApplicationType.Reserve
+      break
+    }
+    case ApplicationType['Modify Employment']: {
+      app.applicationType = ApplicationType.Employment
+      break
+    }
+  }
+
+  if (app.personalInfo.modifiedFirstName) {
+    app.personalInfo.firstName = app.personalInfo.modifiedFirstName
+    app.personalInfo.modifiedFirstName = ''
+  }
+
+  if (app.personalInfo.modifiedMiddleName) {
+    app.personalInfo.middleName = app.personalInfo.modifiedMiddleName
+    app.personalInfo.modifiedMiddleName = ''
+  }
+
+  if (app.personalInfo.modifiedLastName) {
+    app.personalInfo.lastName = app.personalInfo.modifiedLastName
+    app.personalInfo.modifiedLastName = ''
+  }
+
+  app.modifiedNameComplete = null
+
+  if (app.modifiedAddress.streetAddress) {
+    app.currentAddress.streetAddress = app.modifiedAddress.streetAddress
+    app.modifiedAddress.streetAddress = ''
+  }
+
+  if (app.modifiedAddress.city) {
+    app.currentAddress.city = app.modifiedAddress.city
+    app.modifiedAddress.city = ''
+  }
+
+  if (app.modifiedAddress.state) {
+    app.currentAddress.state = app.modifiedAddress.state
+    app.modifiedAddress.state = ''
+  }
+
+  if (app.modifiedAddress.zip) {
+    app.currentAddress.zip = app.modifiedAddress.zip
+    app.modifiedAddress.zip = ''
+  }
+
+  if (app.modifiedAddress.county) {
+    app.currentAddress.county = app.modifiedAddress.county
+    app.modifiedAddress.county = ''
+  }
+
+  if (app.modifiedAddress.country) {
+    app.currentAddress.country = app.modifiedAddress.country
+    app.modifiedAddress.country = ''
+  }
+
+  app.modifiedAddressComplete = null
+
+  for (const weapon of app.modifyAddWeapons) {
+    weapon.added = undefined
+    weapon.deleted = undefined
+    app.weapons.push(weapon)
+  }
+
+  app.modifyAddWeapons = []
+
+  for (const weapon of app.modifyDeleteWeapons) {
+    weapon.added = undefined
+    weapon.deleted = undefined
+
+    app.weapons.filter(w => {
+      return w.serialNumber === weapon.serialNumber
+    })
+  }
+
+  app.modifyDeleteWeapons = []
+  app.modifiedWeaponComplete = null
+
+  updatePermitDetails()
+}
+
 const isApplicationModification = computed(() => {
   return (
     permitStore.getPermitDetail.application.applicationType ===
@@ -889,7 +1029,17 @@ const isApplicationModification = computed(() => {
   )
 })
 
-const isModificationApproved = computed(() => {
+const modificationReadyForApproval = computed(() => {
+  return (
+    permitStore.getPermitDetail.application.modifiedNameComplete !== false &&
+    permitStore.getPermitDetail.application.modifiedAddressComplete !== false &&
+    permitStore.getPermitDetail.application.modifiedWeaponComplete !== false &&
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Modification Approved']
+  )
+})
+
+const isModificationComplete = computed(() => {
   return (
     permitStore.getPermitDetail.application.modifiedNameComplete !== false &&
     permitStore.getPermitDetail.application.modifiedAddressComplete !== false &&

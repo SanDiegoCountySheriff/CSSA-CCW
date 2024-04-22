@@ -493,6 +493,7 @@ export enum ApplicationStatus {
   'Contingently Denied',
   'Ready To Issue',
   'Waiting For Customer',
+  'Modification Approved',
 }
 
 export enum PaymentType {
