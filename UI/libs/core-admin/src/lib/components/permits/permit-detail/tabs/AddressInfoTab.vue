@@ -44,6 +44,7 @@
 
           <v-col>
             <v-btn
+              @click="handleOpenPdf"
               color="primary"
               class="mr-3"
             >
@@ -750,6 +751,7 @@ import { AddressInfoType } from '@shared-utils/types/defaultTypes'
 import AddressTable from '@shared-ui/components/tables/AddressTable.vue'
 import PreviousAddressDialog from '@shared-ui/components/dialogs/PreviousAddressDialog.vue'
 import SaveButton from './SaveButton.vue'
+import { openPdf } from '@core-admin/components/composables/openDocuments'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { computed, ref } from 'vue'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
@@ -759,6 +761,21 @@ const addressFormValid = ref(false)
 const mailingAddressFormValid = ref(false)
 const spouseAddressFormValid = ref(false)
 const emit = defineEmits(['on-save'])
+
+async function handleOpenPdf() {
+  const modifyNameDocument =
+    permitStore.getPermitDetail.application.uploadedDocuments.find(d => {
+      if (d.name.indexOf('ModifyAddress') >= 0) {
+        return d
+      }
+
+      return null
+    })
+
+  if (modifyNameDocument) {
+    await openPdf(modifyNameDocument)
+  }
+}
 
 function getPreviousAddressFromDialog(address: AddressInfoType) {
   permitStore.getPermitDetail.application.previousAddresses.push(address)

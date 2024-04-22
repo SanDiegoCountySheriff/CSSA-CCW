@@ -62,7 +62,7 @@
 
             <v-col>
               <v-btn
-                @click="onCheckNameChangeDocument"
+                @click="handleOpenPdf"
                 color="primary"
                 block
               >
@@ -372,11 +372,11 @@
 </template>
 
 <script setup lang="ts">
-import { ApplicationType } from '@shared-utils/types/defaultTypes'
 import SaveButton from './SaveButton.vue'
+import { openPdf } from '@core-admin/components/composables/openDocuments'
+import { reactive } from 'vue'
 import { useMutation } from '@tanstack/vue-query'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { computed, reactive } from 'vue'
 
 const permitStore = usePermitsStore()
 const emit = defineEmits(['on-save'])
@@ -411,16 +411,6 @@ function handleSave() {
   emit('on-save', 'Application Info')
 }
 
-const isModifyingName = computed(() => {
-  return (
-    permitStore.getPermitDetail.application.applicationType ===
-      ApplicationType['Modify Standard'] &&
-    (permitStore.getPermitDetail.application.personalInfo.modifiedFirstName ||
-      permitStore.getPermitDetail.application.personalInfo.modifiedLastName ||
-      permitStore.getPermitDetail.application.personalInfo.modifiedMiddleName)
-  )
-})
-
 function onApproveNameChange() {
   permitStore.getPermitDetail.application.modifiedNameComplete = true
   emit('on-save', 'Approved name change')
@@ -431,5 +421,18 @@ function onUndoApproveNameChange() {
   emit('on-save', 'Undo approved name change')
 }
 
-function onCheckNameChangeDocument() {}
+async function handleOpenPdf() {
+  const modifyNameDocument =
+    permitStore.getPermitDetail.application.uploadedDocuments.find(d => {
+      if (d.name.indexOf('ModifyName') >= 0) {
+        return d
+      }
+
+      return null
+    })
+
+  if (modifyNameDocument) {
+    await openPdf(modifyNameDocument)
+  }
+}
 </script>

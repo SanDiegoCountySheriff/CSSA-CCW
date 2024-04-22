@@ -28,6 +28,7 @@
           "
         >
           <v-btn
+            @click="handleOpenPdf"
             color="primary"
             class="mr-3"
           >
@@ -64,6 +65,7 @@
 import SaveButton from './SaveButton.vue'
 import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
 import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue'
+import { openPdf } from '@core-admin/components/composables/openDocuments'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { computed, set } from 'vue'
 
@@ -128,5 +130,20 @@ function onApproveWeaponChange() {
 function onUndoApproveWeaponChange() {
   permitStore.getPermitDetail.application.modifiedWeaponComplete = false
   emit('on-save', 'Undo approved weapon change')
+}
+
+async function handleOpenPdf() {
+  const modifyNameDocument =
+    permitStore.getPermitDetail.application.uploadedDocuments.find(d => {
+      if (d.name.indexOf('ModifyWeapons') >= 0) {
+        return d
+      }
+
+      return null
+    })
+
+  if (modifyNameDocument) {
+    await openPdf(modifyNameDocument)
+  }
 }
 </script>
