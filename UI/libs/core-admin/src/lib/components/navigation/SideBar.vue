@@ -60,7 +60,26 @@
             <v-list-item-title class="text-left">
               {{ $t('Applications') }}
               <v-chip
-                class="ml-8 font-weight-bold"
+                class="ml-14 font-weight-bold"
+                :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
+                x-small
+              >
+                {{ permitStore.summaryCount?.submittedStatus }}
+              </v-chip>
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item
+            :to="Routes.LOOK_UP_REQUESTS_ROUTE_PATH"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-magnify</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="text-left">
+              {{ $t('Look-Up Requests') }}
+              <v-chip
+                class="ml-6 font-weight-bold"
                 :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
                 x-small
               >

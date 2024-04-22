@@ -16,6 +16,10 @@ export default class Routes {
     return `/appointments`
   }
 
+  static get LOOK_UP_REQUESTS_ROUTE_PATH() {
+    return `/look-up-requests`
+  }
+
   static get APPOINTMENT_MANAGEMENT_ROUTE_PATH() {
     return `/appointment-management`
   }

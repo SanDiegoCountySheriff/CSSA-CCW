@@ -27,6 +27,11 @@ const routes: Array<RouteConfig> = [
     component: () => import('@core-admin/views/AppointmentView.vue'),
   },
   {
+    path: Routes.LOOK_UP_REQUESTS_ROUTE_PATH,
+    name: 'LookUpRequests',
+    component: () => import('@core-admin/views/LookUpRequestView.vue'),
+  },
+  {
     path: Routes.APPOINTMENT_MANAGEMENT_ROUTE_PATH,
     name: 'AppointmentManagement',
     component: () => import('@core-admin/views/AppointmentManagementView.vue'),
