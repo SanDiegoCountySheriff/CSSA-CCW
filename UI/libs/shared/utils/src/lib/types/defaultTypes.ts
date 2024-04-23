@@ -301,6 +301,7 @@ export type PaymentHistoryType = {
   vendorInfo: string
   successful: boolean
   paymentStatus: PaymentStatus
+  modificationNumber: number | null
 }
 
 export type WeaponInfoType = {
@@ -652,6 +653,7 @@ export type CompleteApplication = {
       falseInfoAgreed: boolean
       falseInfoAgreedDate: string | null
     }
+    modificationNumber: number
   }
   history: Array<HistoryType>
   paymentHistory: Array<PaymentHistoryType>

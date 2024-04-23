@@ -146,6 +146,11 @@ public class PaymentController : ControllerBase
                 paymentHistory.PaymentStatus = PaymentStatus.OnlineSubmitted;
             }
 
+            if (paymentType is Common.Enums.PaymentType.ModificationStandard or Common.Enums.PaymentType.ModificationJudicial or Common.Enums.PaymentType.ModificationReserve or Common.Enums.PaymentType.ModificationEmployment)
+            {
+                paymentHistory.ModificationNumber = application.Application.ModificationNumber;
+            }
+
             application.PaymentHistory.Add(paymentHistory);
             application.Application.PaymentStatus = PaymentStatus.OnlineSubmitted;
             await _cosmosDbService.UpdateApplication(application);

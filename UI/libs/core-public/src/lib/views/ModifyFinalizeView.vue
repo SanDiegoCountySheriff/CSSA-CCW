@@ -171,7 +171,15 @@ const isSignaturePadEmpty = computed(() => {
 
 const isPaymentComplete = computed(() => {
   return applicationStore.completeApplication.paymentHistory.some(ph => {
-    return ph.paymentType === 4 && ph.successful === true
+    return (
+      (ph.paymentType === 4 ||
+        ph.paymentType === 5 ||
+        ph.paymentType === 6 ||
+        ph.paymentType === 7) &&
+      ph.successful === true &&
+      ph.modificationNumber ===
+        applicationStore.completeApplication.application.modificationNumber
+    )
   })
 })
 

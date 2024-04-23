@@ -54,4 +54,5 @@ public class UserApplication
     public bool FlaggedForCustomerReview { get; set; }
     public bool FlaggedForLicensingReview { get; set; }
     public Agreements Agreements { get; set; }
+    public int ModificationNumber { get; set; }
 }
