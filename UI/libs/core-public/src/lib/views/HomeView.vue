@@ -201,7 +201,7 @@
                   <v-card-text>
                     I have previously applied for a CCW license with
                     <b>{{ brandStore.getBrand.agencyName }}</b> and would like
-                    to link my exisitng application.
+                    to link my existing application.
                   </v-card-text>
                 </v-card>
               </v-sheet>
