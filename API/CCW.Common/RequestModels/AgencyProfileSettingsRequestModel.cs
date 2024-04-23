@@ -79,4 +79,6 @@ public class AgencyProfileSettingsRequestModel
     public bool EmploymentLicense { get; set; }
     [JsonProperty("daysBeforeActiveRenewal")]
     public int DaysBeforeActiveRenewal { get; set; }
+    [JsonProperty("numberOfModificationsBetweenRenewals")]
+    public int NumberOfModificationsBetweenRenewals { get; set; }
 }

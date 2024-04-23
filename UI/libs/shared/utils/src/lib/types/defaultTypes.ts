@@ -721,6 +721,7 @@ export type BrandType = {
   agencyHairColors: HairColor[]
   agencyEyeColors: EyeColor[]
   daysBeforeActiveRenewal: number
+  numberOfModificationsBetweenRenewals: number
 }
 
 export type AgencyDocumentsType = {
