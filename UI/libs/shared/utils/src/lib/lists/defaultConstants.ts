@@ -488,7 +488,7 @@ export const defaultPermitState: CompleteApplication = {
     modifiedAddressComplete: null,
     modifiedNameComplete: null,
     modifiedWeaponComplete: null,
-    modificationNumber: 0,
+    modificationNumber: 1,
   },
 
   history: [],

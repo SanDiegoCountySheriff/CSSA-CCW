@@ -1002,10 +1002,7 @@ function handleFinishModification() {
   app.modifyAddWeapons = []
 
   for (const weapon of app.modifyDeleteWeapons) {
-    weapon.added = undefined
-    weapon.deleted = undefined
-
-    app.weapons.filter(w => {
+    app.weapons = app.weapons.filter(w => {
       return w.serialNumber === weapon.serialNumber
     })
   }
