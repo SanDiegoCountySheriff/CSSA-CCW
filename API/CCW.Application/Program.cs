@@ -182,6 +182,7 @@ static async Task<ApplicationCosmosDbService> InitializeCosmosClientInstanceAsyn
 {
     var databaseName = configurationSection["DatabaseName"];
     var containerName = configurationSection["ContainerName"];
+    var historicalContainerName = configurationSection["HistoricalContainerName"];
     CosmosClientOptions clientOptions = new CosmosClientOptions();
 #if DEBUG
     var key = configurationSection["CosmosDbEmulatorConnectionString"];
@@ -195,6 +196,7 @@ static async Task<ApplicationCosmosDbService> InitializeCosmosClientInstanceAsyn
     var client = new CosmosClient(key, clientOptions);
     var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
     await database.Database.CreateContainerIfNotExistsAsync(containerName, "/userId");
+    await database.Database.CreateContainerIfNotExistsAsync(historicalContainerName, "/userId");
     var cosmosDbService = new ApplicationCosmosDbService(client, databaseName, containerName);
     return cosmosDbService;
 }
