@@ -229,11 +229,17 @@
 
       <template #[`item.actions`]="props">
         <v-row>
-          <v-tooltip bottom>
+          <AppointmentActionConfirmationDialog
+            :undo-active="props.item.appointmentStatus === 3"
+            check-in
+            title="Check In"
+          />
+
+          <!-- <v-tooltip bottom>
             <template #activator="{ on, attrs }">
               <v-btn
                 v-if="props.item.appointmentStatus !== 3"
-                @click="handleCheckIn(props.item)"
+                catch="AppointmentActionConfirmationDialog"
                 v-bind="attrs"
                 v-on="on"
                 color="success"
@@ -256,9 +262,9 @@
             </template>
             <span v-if="props.item.appointmentStatus !== 3">Check In</span>
             <span v-else>Undo Check In</span>
-          </v-tooltip>
+          </v-tooltip> -->
 
-          <v-tooltip bottom>
+          <!-- <v-tooltip bottom>
             <template #activator="{ on, attrs }">
               <v-btn
                 v-if="props.item.appointmentStatus !== 4"
@@ -285,7 +291,7 @@
             </template>
             <span v-if="props.item.appointmentStatus !== 4">No Show</span>
             <span v-else>Undo No Show</span>
-          </v-tooltip>
+          </v-tooltip> -->
         </v-row>
       </template>
     </v-data-table>
@@ -333,6 +339,7 @@ import { PermitsType } from '@core-admin/types'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import AppointmentActionConfirmationDialog from '@core-admin/components/dialogs/AppointmentActionConfirmationDialog.vue'
 import {
   ApplicationStatus,
   ApplicationTableOptionsType,
