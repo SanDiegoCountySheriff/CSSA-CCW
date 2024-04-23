@@ -30,6 +30,7 @@
                   sm="6"
                 >
                   <v-text-field
+                    v-model="firstName"
                     label="First Name"
                     outlined
                     dense
@@ -40,6 +41,7 @@
                   sm="6"
                 >
                   <v-text-field
+                    v-model="lastName"
                     label="Last Name"
                     outlined
                     dense
@@ -53,6 +55,7 @@
                   sm="6"
                 >
                   <v-text-field
+                    v-model="middleName"
                     label="Middle Name"
                     outlined
                     dense
@@ -63,6 +66,7 @@
                   sm="6"
                 >
                   <v-text-field
+                    v-model="dateOfBirth"
                     :label="$t('Date of birth')"
                     type="date"
                     append-icon="mdi-calendar"
@@ -79,6 +83,7 @@
                   sm="6"
                 >
                   <v-text-field
+                    v-model="driverLicense"
                     label="Drivers License Number"
                     outlined
                     dense
@@ -90,6 +95,7 @@
                   sm="6"
                 >
                   <v-text-field
+                    v-model="ccwPermit"
                     label="Optional CCW Permit Number"
                     outlined
                     dense
@@ -144,6 +150,7 @@
                   sm="6"
                 >
                   <v-text-field
+                    v-model="appointmentDate"
                     :label="$t('Appointment Date')"
                     type="date"
                     append-icon="mdi-calendar"
@@ -177,7 +184,7 @@
                       >
                         <v-btn
                           color="error"
-                          @click="showDialog = false"
+                          @click="cancelForm"
                           block
                         >
                           Cancel
@@ -190,7 +197,7 @@
                       >
                         <v-btn
                           color="primary"
-                          @click="showDialog = false"
+                          @click="submitForm"
                           block
                         >
                           Submit for Review
@@ -232,11 +239,16 @@ import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()
 const completeApplication = applicationStore.completeApplication.application
+const appointmentDate = ref('')
+const driverLicense = ref('')
+const firstName = ref('')
+const lastName = ref('')
+const ccwPermit = ref('')
+const dateOfBirth = ref('')
 
 interface ISecondFormStepTwoProps {
   value: CompleteApplication
 }
-
 const props = defineProps<ISecondFormStepTwoProps>()
 const brandStore = useBrandStore()
 const emit = defineEmits([
@@ -250,8 +262,6 @@ const model = computed({
   get: () => props.value,
   set: (value: CompleteApplication) => emit('input', value),
 })
-
-const applicationType = computed(() => model.value.application.applicationType)
 
 const state = reactive({
   files: [] as Array<{ formData; target }>,
@@ -297,34 +307,7 @@ const { mutate: updateMutation } = useMutation({
         case 'driverlicense':
           state.driverLicense = item.name
           break
-        case 'proofresidency':
-          state.proofResidence = item.name
-          break
-        case 'proofresidency2':
-          state.proofResidence2 = item.name
-          break
-        case 'militarydoc':
-          state.military = item.name
-          break
-        case 'citizenship':
-          state.citizenship = item.name
-          break
-        case 'supporting':
-          state.supporting.push(item.name)
-          break
-        case 'namechange':
-          state.nameChange = item.name
-          break
-        case 'judicial':
-          state.judicial = item.name
-          break
-        case 'reserve':
-          state.reserve = item.name
-          break
-        case 'employment':
-          state.employment = item.name
-          break
-        case 'signature':
+        case 'ccwPermit':
           break
         default:
           break
@@ -421,18 +404,6 @@ async function handleFileUpload() {
   updateMutation()
 }
 
-function handleContinue() {
-  fileMutation()
-  emit('update-step-six-valid', valid.value)
-  emit('handle-continue')
-}
-
-function handleSave() {
-  fileMutation()
-  emit('update-step-six-valid', valid.value)
-  emit('handle-save')
-}
-
 async function deleteFile(name) {
   const documentToDelete = completeApplication.uploadedDocuments.find(
     doc => doc.name === name
@@ -471,45 +442,15 @@ async function deleteFile(name) {
 
 onMounted(() => {
   state.driverLicense = ''
-  state.proofResidence = ''
-  state.proofResidence2 = ''
-  state.military = ''
-  state.citizenship = ''
-  state.supporting = []
-  state.nameChange = ''
-  state.judicial = ''
-  state.reserve = ''
+  state.CCWPermit = ''
 
   for (let item of completeApplication.uploadedDocuments) {
     switch (item.documentType.toLowerCase()) {
       case 'driverlicense':
         state.driverLicense = item.name
         break
-      case 'proofresidency':
-        state.proofResidence = item.name
-        break
-      case 'proofresidency2':
-        state.proofResidence2 = item.name
-        break
-      case 'militarydoc':
-        state.military = item.name
-        break
-      case 'citizenship':
-        state.citizenship = item.name
-        break
-      case 'supporting':
-        state.supporting.push(item.name)
-        break
-      case 'namechange':
-        state.nameChange = item.name
-        break
-      case 'judicial':
-        state.judicial = item.name
-        break
-      case 'reserve':
-        state.reserve = item.name
-        break
-      case 'signature':
+      case 'CCWPermit':
+        state.CCWPermit = item.name
         break
       default:
         break

@@ -8,12 +8,12 @@ public class User
     public string Id { get; set; }
     [JsonProperty("email")]
     public string Email { get; set; }
-    [JsonProperty("address")]
-    public Address Address { get; set; }
     [JsonProperty("firstName")]
     public string FirstName { get; set; }
     [JsonProperty("lastName")]
     public string LastName { get; set; }
+    [JsonProperty("middleName")]
+    public string MiddleName { get; set; }
     [JsonProperty("dateOfBirth")]
     public DateTimeOffset? DateOfBirth { get; set; }
     [JsonProperty("driversLicenseNumber")]
