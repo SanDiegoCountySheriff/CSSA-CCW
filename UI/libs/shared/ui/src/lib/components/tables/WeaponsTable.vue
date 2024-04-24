@@ -28,10 +28,12 @@
         v-if="editEnable"
         #[`item.actions`]="{ item, index }"
       >
-        <v-tooltip top>
+        <v-tooltip
+          v-if="!item.deleted && !item.added"
+          top
+        >
           <template #activator="{ on, attrs }">
             <v-icon
-              v-if="!item.deleted && !item.added"
               v-bind="attrs"
               v-on="on"
               @click="handleDelete(index)"
@@ -60,10 +62,12 @@
           mdi-undo
         </v-icon>
 
-        <v-tooltip top>
+        <v-tooltip
+          v-if="!props.modifying"
+          top
+        >
           <template #activator="{ on, attrs }">
             <v-icon
-              v-if="!props.modifying"
               v-bind="attrs"
               v-on="on"
               @click="editWeapon(item)"
@@ -102,7 +106,7 @@
 <script setup lang="ts">
 import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
 import WeaponsDialog from '@shared-ui/components/dialogs/WeaponsDialog.vue'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 interface IWeaponTableProps {
   editEnable?: boolean
@@ -226,6 +230,16 @@ function undoAddWeapon(item: WeaponInfoType) {
 function undoDeleteWeapon(item: WeaponInfoType) {
   emit('undo-delete-weapon', item)
 }
+
+watch(
+  props.weapons,
+  () => {
+    window.console.log('changing')
+  },
+  {
+    deep: true,
+  }
+)
 </script>
 
 <style lang="scss" scoped>

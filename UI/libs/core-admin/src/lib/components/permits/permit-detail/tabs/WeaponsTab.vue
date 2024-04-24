@@ -138,7 +138,11 @@ function onUndoApproveWeaponChange() {
 async function handleOpenPdf() {
   const modifyNameDocument =
     permitStore.getPermitDetail.application.uploadedDocuments.find(d => {
-      if (d.name.indexOf('ModifyWeapons') >= 0) {
+      if (
+        d.name.indexOf(
+          `ModifyWeapons-${permitStore.getPermitDetail.application.modificationNumber}`
+        ) >= 0
+      ) {
         return d
       }
 

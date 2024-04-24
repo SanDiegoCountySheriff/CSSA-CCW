@@ -531,6 +531,7 @@
               <v-col>
                 <v-btn
                   @click="emit('on-check-address')"
+                  :disabled="!isModifyingAddress"
                   :color="
                     permitStore.getPermitDetail.application
                       .modifiedAddressComplete
@@ -565,6 +566,7 @@
               <v-col>
                 <v-btn
                   @click="emit('on-check-weapons')"
+                  :disabled="!isModifyingWeapon"
                   :color="
                     permitStore.getPermitDetail.application
                       .modifiedWeaponComplete
@@ -1049,14 +1051,13 @@ function handleFinishModification() {
 
   for (const weapon of app.modifyDeleteWeapons) {
     app.weapons = app.weapons.filter(w => {
-      return w.serialNumber === weapon.serialNumber
+      return w.serialNumber !== weapon.serialNumber
     })
   }
 
   app.modifyDeleteWeapons = []
   app.modifiedWeaponComplete = null
   app.currentStep = 1
-  app.modificationNumber += 1
 
   updatePermitDetails()
 }
@@ -1115,11 +1116,17 @@ const showStart90DayCountdownButton = computed(() => {
 })
 
 const isModifyingName = computed(() => {
+  return permitStore.getPermitDetail.application.modifiedNameComplete !== null
+})
+
+const isModifyingAddress = computed(() => {
   return (
-    permitStore.getPermitDetail.application.personalInfo.modifiedFirstName ||
-    permitStore.getPermitDetail.application.personalInfo.modifiedLastName ||
-    permitStore.getPermitDetail.application.personalInfo.modifiedMiddleName
+    permitStore.getPermitDetail.application.modifiedAddressComplete !== null
   )
+})
+
+const isModifyingWeapon = computed(() => {
+  return permitStore.getPermitDetail.application.modifiedWeaponComplete !== null
 })
 
 function handleStart90DayCountdown() {

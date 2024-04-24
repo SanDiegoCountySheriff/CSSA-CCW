@@ -26,10 +26,16 @@
               :document-label="'Name Change Documents'"
               :is-loading="loadingStates.ModifyName"
               :rules="nameValidationRules"
-              :filter-document-type="'ModifyName'"
+              :filter-document-type="`ModifyName-${application.application.modificationNumber}`"
               @file-opening="loadingStates.ModifyName = true"
               @file-opened="loadingStates.ModifyName = false"
-              @upload-files="files => handleMultiInput(files, 'ModifyName')"
+              @upload-files="
+                files =>
+                  handleMultiInput(
+                    files,
+                    `ModifyName-${application.application.modificationNumber}`
+                  )
+              "
               @delete-file="name => deleteFile(name)"
             />
           </v-col>
@@ -44,10 +50,16 @@
               :document-label="'Address Change Documents'"
               :is-loading="loadingStates.ModifyAddress"
               :rules="addressValidationRules"
-              :filter-document-type="'ModifyAddress'"
+              :filter-document-type="`ModifyAddress-${application.application.modificationNumber}`"
               @file-opening="loadingStates.ModifyAddress = true"
               @file-opened="loadingStates.ModifyAddress = false"
-              @upload-files="files => handleMultiInput(files, 'ModifyAddress')"
+              @upload-files="
+                files =>
+                  handleMultiInput(
+                    files,
+                    `ModifyAddress-${application.application.modificationNumber}`
+                  )
+              "
               @delete-file="address => deleteFile(address)"
             />
           </v-col>
@@ -62,10 +74,16 @@
               :document-label="'Weapon Safety Course Documents'"
               :is-loading="loadingStates.ModifyWeapons"
               :rules="weaponValidationRules"
-              :filter-document-type="'ModifyWeapons'"
+              :filter-document-type="`ModifyWeapons-${application.application.modificationNumber}`"
               @file-opening="loadingStates.ModifyWeapons = true"
               @file-opened="loadingStates.ModifyWeapons = false"
-              @upload-files="files => handleMultiInput(files, 'ModifyWeapons')"
+              @upload-files="
+                files =>
+                  handleMultiInput(
+                    files,
+                    `ModifyWeapons-${application.application.modificationNumber}`
+                  )
+              "
               @delete-file="weapon => deleteFile(weapon)"
             />
           </v-col>
@@ -147,7 +165,10 @@ onMounted(() => {
 const nameValidationRules = computed(() => {
   const modifyName = props.application.application.uploadedDocuments.some(
     obj => {
-      return obj.documentType === 'ModifyName'
+      return (
+        obj.documentType ===
+        `ModifyName-${props.application.application.modificationNumber}`
+      )
     }
   )
 
@@ -157,7 +178,10 @@ const nameValidationRules = computed(() => {
 const addressValidationRules = computed(() => {
   const modifyName = props.application.application.uploadedDocuments.some(
     obj => {
-      return obj.documentType === 'ModifyAddress'
+      return (
+        obj.documentType ===
+        `ModifyAddress-${props.application.application.modificationNumber}`
+      )
     }
   )
 
@@ -167,7 +191,10 @@ const addressValidationRules = computed(() => {
 const weaponValidationRules = computed(() => {
   const modifyName = props.application.application.uploadedDocuments.some(
     obj => {
-      return obj.documentType === 'ModifyWeapons'
+      return (
+        obj.documentType ===
+        `ModifyWeapons-${props.application.application.modificationNumber}`
+      )
     }
   )
 
@@ -191,13 +218,13 @@ const { mutate: updateMutation } = useMutation({
   onSuccess: () => {
     for (let item of props.application.application.uploadedDocuments) {
       switch (item.documentType.toLowerCase()) {
-        case 'modifyname':
+        case `modifyname-${props.application.application.modificationNumber}`:
           state.name = item.name
           break
-        case 'modifyaddress':
+        case `modifyaddress-${props.application.application.modificationNumber}`:
           state.address = item.name
           break
-        case 'modifyweapon':
+        case `modifyweapon-${props.application.application.modificationNumber}`:
           state.weapons = item.name
           break
         default:
@@ -265,7 +292,7 @@ async function deleteFile(name) {
     return
   }
 
-  const documentType = documentToDelete.documentType
+  const documentType = documentToDelete.documentType.split('-')[0]
 
   if (documentType && loadingStates[documentType] !== undefined) {
     loadingStates[documentType] = true
@@ -317,7 +344,7 @@ async function handleFileUpload() {
     state.files.map(file => file.target.split('_').shift())
   )
 
-  documentTypes.forEach(type => (loadingStates[type] = true))
+  documentTypes.forEach(type => (loadingStates[type.split('-')[0]] = true))
 
   for (let file of state.files) {
     const newFileName = `${props.application.application.personalInfo.lastName}_${props.application.application.personalInfo.firstName}_${file.target}`
@@ -343,7 +370,7 @@ async function handleFileUpload() {
     }
   }
 
-  documentTypes.forEach(type => (loadingStates[type] = false))
+  documentTypes.forEach(type => (loadingStates[type.split('-')[0]] = false))
 
   updateMutation()
 }

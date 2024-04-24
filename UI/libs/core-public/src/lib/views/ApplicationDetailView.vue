@@ -310,6 +310,7 @@
         <v-card
           v-if="
             !isRenew &&
+            !isModification &&
             applicationStore.completeApplication.application.status !==
               ApplicationStatus['Permit Delivered']
           "
@@ -385,10 +386,10 @@
         </v-card>
         <v-card
           v-else-if="
-            (applicationStore.completeApplication.application.status ===
+            applicationStore.completeApplication.application.status ===
               ApplicationStatus['Permit Delivered'] ||
-              isRenew) &&
-            !isLicenseExpired
+            isRenew ||
+            isModification
           "
           class="fill-height"
           outlined
@@ -1248,6 +1249,18 @@ const isRenew = computed(() => {
     applicationType === ApplicationType['Renew Reserve'] ||
     applicationType === ApplicationType['Renew Judicial'] ||
     applicationType === ApplicationType['Renew Employment']
+  )
+})
+
+const isModification = computed(() => {
+  const applicationType =
+    applicationStore.completeApplication.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Modify Standard'] ||
+    applicationType === ApplicationType['Modify Reserve'] ||
+    applicationType === ApplicationType['Modify Judicial'] ||
+    applicationType === ApplicationType['Modify Employment']
   )
 })
 

@@ -452,17 +452,25 @@ function handleUndoAddWeapon(weapon: WeaponInfoType) {
 }
 
 function handleUndoDeleteWeapon(weapon: WeaponInfoType) {
-  const index =
-    applicationStore.completeApplication.application.modifyDeleteWeapons.findIndex(
-      w => w.serialNumber === weapon.serialNumber
-    )
+  window.console.log(weapon)
 
-  if (index !== -1) {
-    applicationStore.completeApplication.application.modifyDeleteWeapons.splice(
-      index,
-      1
+  applicationStore.completeApplication.application.modifyDeleteWeapons =
+    applicationStore.completeApplication.application.modifyDeleteWeapons.filter(
+      w => {
+        return w.serialNumber !== weapon.serialNumber
+      }
     )
-  }
+  // const index =
+  //   applicationStore.completeApplication.application.modifyDeleteWeapons.findIndex(
+  //     w => w.serialNumber === weapon.serialNumber
+  //   )
+
+  // if (index !== -1) {
+  //   applicationStore.completeApplication.application.modifyDeleteWeapons.splice(
+  //     index,
+  //     1
+  //   )
+  // }
 
   updateMutation()
 }

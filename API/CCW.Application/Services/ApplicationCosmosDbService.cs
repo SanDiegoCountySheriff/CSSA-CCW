@@ -365,6 +365,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     {
         application.Application.Comments = existingApplication.Application.Comments;
         application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck;
+        var modificationNumber = 0;
 
         if (existingApplication.Application.ApplicationType != application.Application.ApplicationType &&
             application.Application.ApplicationType is
@@ -393,33 +394,38 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             // TODO: Historical application save
             if (application.Application.UploadedDocuments.Any(doc =>
             {
-                return doc.DocumentType == "ModifyName";
+                return doc.DocumentType == $"ModifyName-{application.Application.ModificationNumber}";
             })
             )
             {
                 application.Application.ModifiedNameComplete = false;
                 application.Application.BackgroundCheck.ProofOfID = new BackgroundCheckItem();
+                modificationNumber = application.Application.ModificationNumber + 1;
             }
 
             if (application.Application.UploadedDocuments.Any(doc =>
             {
-                return doc.DocumentType == "ModifyAddress";
+                return doc.DocumentType == $"ModifyAddress-{application.Application.ModificationNumber}";
             })
             )
             {
                 application.Application.ModifiedAddressComplete = false;
                 application.Application.BackgroundCheck.ProofOfResidency = new BackgroundCheckItem();
+                modificationNumber = application.Application.ModificationNumber + 1;
             }
 
             if (application.Application.UploadedDocuments.Any(doc =>
             {
-                return doc.DocumentType == "ModifyWeapons";
+                return doc.DocumentType == $"ModifyWeapons-{application.Application.ModificationNumber}";
             })
             )
             {
                 application.Application.ModifiedWeaponComplete = false;
                 application.Application.BackgroundCheck.Firearms = new BackgroundCheckItem();
+                modificationNumber = application.Application.ModificationNumber + 1;
             }
+
+            application.Application.ModificationNumber = modificationNumber;
         }
 
         await _container.PatchItemAsync<PermitApplication>(
@@ -461,6 +467,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
                     TransactionId = modelPayment.TransactionId,
                     Successful = modelPayment.Successful,
                     PaymentStatus = modelPayment.PaymentStatus,
+                    ModificationNumber = modelPayment.ModificationNumber,
                 };
 
                 paymentHistories[i] = paymentHistory;

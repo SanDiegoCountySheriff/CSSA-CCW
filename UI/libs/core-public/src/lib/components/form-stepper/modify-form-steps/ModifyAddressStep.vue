@@ -75,6 +75,7 @@
               color="primary"
               outlined
               readonly
+              type="number"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -87,7 +88,7 @@
             <v-text-field
               v-model="updatedAddress.streetAddress"
               :dense="isMobile"
-              :rules="addressRules"
+              :rules="[v => !!v || 'Street address is required']"
               label="Updated Street Address"
               outlined
             ></v-text-field>
@@ -100,6 +101,7 @@
             <v-text-field
               v-model="updatedAddress.city"
               :dense="isMobile"
+              :rules="[v => !!v || 'City is required']"
               label="Updated City"
               outlined
             ></v-text-field>
@@ -112,7 +114,7 @@
             <v-text-field
               v-model="updatedAddress.county"
               :dense="isMobile"
-              :rules="addressRules"
+              :rules="[v => !!v || 'County is required']"
               label="Updated County"
               outlined
             ></v-text-field>
@@ -125,9 +127,10 @@
             <v-text-field
               v-model="updatedAddress.zip"
               :dense="isMobile"
-              :rules="addressRules"
+              :rules="[v => !!v || 'Zip Code is required']"
               label="Updated Zip Code"
               outlined
+              type="number"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -184,10 +187,6 @@ const modify = computed({
 
 onMounted(() => {
   updateModificationStatus()
-})
-
-const addressRules = computed(() => {
-  return [(v: string) => Boolean(v) || 'Address is required.']
 })
 
 const isMobile = computed(
