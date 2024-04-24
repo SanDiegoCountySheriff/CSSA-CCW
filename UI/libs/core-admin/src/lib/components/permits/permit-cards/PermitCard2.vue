@@ -485,6 +485,22 @@
                   Approve Modification
                 </v-btn>
 
+                <v-alert
+                  v-if="modificationMissingChecklistItems"
+                  color="primary"
+                  type="info"
+                  dense
+                  outlined
+                >
+                  <span
+                    :class="
+                      themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                    "
+                  >
+                    Approve Checklist Items Next
+                  </span>
+                </v-alert>
+
                 <FinishModificationDialog
                   v-if="
                     permitStore.getPermitDetail.application.status ===
@@ -857,6 +873,7 @@ import FinishModificationDialog from '@core-admin/components/dialogs/FinishModif
 import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -903,6 +920,7 @@ const permitStore = usePermitsStore()
 const documentsStore = useDocumentsStore()
 const appointmentStore = useAppointmentsStore()
 const adminUserStore = useAdminUserStore()
+const themeStore = useThemeStore()
 const changed = ref('')
 
 const allowedExtension = [
@@ -1090,12 +1108,58 @@ const isApplicationModification = computed(() => {
 })
 
 const modificationReadyForApproval = computed(() => {
+  const checkListAddressComplete =
+    permitStore.getPermitDetail.application.modifiedAddressComplete !== false &&
+    permitStore.getPermitDetail.application.backgroundCheck.proofOfResidency
+      ?.value === true
+
+  const checkListNameComplete =
+    permitStore.getPermitDetail.application.modifiedNameComplete !== false &&
+    permitStore.getPermitDetail.application.backgroundCheck.proofOfID?.value ===
+      true
+
+  const checkListWeaponComplete =
+    permitStore.getPermitDetail.application.modifiedWeaponComplete !== false &&
+    permitStore.getPermitDetail.application.backgroundCheck.firearms?.value ===
+      true
+
   return (
     permitStore.getPermitDetail.application.modifiedNameComplete !== false &&
     permitStore.getPermitDetail.application.modifiedAddressComplete !== false &&
     permitStore.getPermitDetail.application.modifiedWeaponComplete !== false &&
     permitStore.getPermitDetail.application.status !==
-      ApplicationStatus['Modification Approved']
+      ApplicationStatus['Modification Approved'] &&
+    checkListAddressComplete &&
+    checkListNameComplete &&
+    checkListWeaponComplete
+  )
+})
+
+const modificationMissingChecklistItems = computed(() => {
+  const checkListAddressComplete =
+    permitStore.getPermitDetail.application.modifiedAddressComplete !== false &&
+    permitStore.getPermitDetail.application.backgroundCheck.proofOfResidency
+      ?.value === true
+
+  const checkListNameComplete =
+    permitStore.getPermitDetail.application.modifiedNameComplete !== false &&
+    permitStore.getPermitDetail.application.backgroundCheck.proofOfID?.value ===
+      true
+
+  const checkListWeaponComplete =
+    permitStore.getPermitDetail.application.modifiedWeaponComplete !== false &&
+    permitStore.getPermitDetail.application.backgroundCheck.firearms?.value ===
+      true
+
+  return (
+    permitStore.getPermitDetail.application.modifiedNameComplete !== false &&
+    permitStore.getPermitDetail.application.modifiedAddressComplete !== false &&
+    permitStore.getPermitDetail.application.modifiedWeaponComplete !== false &&
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Modification Approved'] &&
+    (!checkListAddressComplete ||
+      !checkListNameComplete ||
+      !checkListWeaponComplete)
   )
 })
 

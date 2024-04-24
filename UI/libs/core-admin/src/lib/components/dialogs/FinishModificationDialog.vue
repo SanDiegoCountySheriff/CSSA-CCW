@@ -24,7 +24,25 @@
         customer.
       </v-card-text>
 
-      <v-card-text> Are these steps complete? </v-card-text>
+      <v-card-text>
+        <v-row>
+          <v-col>
+            <v-checkbox
+              v-model="stateFormComplete"
+              label="I have mailed the state form BOF-4502."
+            ></v-checkbox>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col>
+            <v-checkbox
+              v-model="customerFormComplete"
+              label="I have mailed the customer's updated license."
+            ></v-checkbox>
+          </v-col>
+        </v-row>
+      </v-card-text>
 
       <v-card-actions>
         <v-btn
@@ -32,17 +50,18 @@
           color="error"
           text
         >
-          No
+          Cancel
         </v-btn>
 
         <v-spacer />
 
         <v-btn
           @click="emit('handle-finish-modification')"
+          :disabled="!stateFormComplete || !customerFormComplete"
           color="primary"
           text
         >
-          Yes
+          Finish Modification
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -55,4 +74,6 @@ import { ref } from 'vue'
 const emit = defineEmits(['handle-finish-modification'])
 
 const dialog = ref(false)
+const stateFormComplete = ref(false)
+const customerFormComplete = ref(false)
 </script>

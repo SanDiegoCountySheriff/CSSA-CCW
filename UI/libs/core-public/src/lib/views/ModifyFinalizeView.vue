@@ -17,7 +17,11 @@
               type="info"
               outlined
             >
-              Modification Payment is complete.
+              <span
+                :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
+              >
+                Modification Payment is complete.
+              </span>
             </v-alert>
           </v-row>
         </v-container>
@@ -32,15 +36,50 @@
             </v-row>
 
             <v-row
-              v-if="brandStore.brand.cost.convenienceFee > 0"
+              v-if="
+                brandStore.brand.cost.creditFee > 0 &&
+                !isUpdatePaymentHistoryLoading
+              "
               justify="center"
               class="text-center"
             >
               <v-card-text>
                 In order to pay online with a credit card a convenience fee of
-                {{ brandStore.brand.cost.convenienceFee }}% will be added to the
+                {{ brandStore.brand.cost.creditFee }}% will be added to the
                 transaction.
               </v-card-text>
+            </v-row>
+
+            <v-row v-if="isUpdatePaymentHistoryLoading">
+              <v-alert
+                :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
+                color="primary"
+                type="info"
+                outlined
+              >
+                <span
+                  :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
+                >
+                  Processing your modification payment. Please do not close this
+                  window or click the back button.
+                </span>
+              </v-alert>
+            </v-row>
+
+            <v-row v-if="isMakePaymentLoading">
+              <v-alert
+                :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
+                color="primary"
+                type="info"
+                outlined
+              >
+                <span
+                  :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
+                >
+                  Redirecting to the payment page. Please do not close this
+                  window or click the back button.
+                </span>
+              </v-alert>
             </v-row>
 
             <v-row justify="center">
@@ -143,6 +182,7 @@ import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 import {
   ApplicationStatus,
   ApplicationType,
@@ -159,6 +199,7 @@ const submitted = ref(false)
 const file = ref({})
 const router = useRouter()
 const applicationStore = useCompleteApplicationStore()
+const themeStore = useThemeStore()
 const paymentStore = usePaymentStore()
 const brandStore = useBrandStore()
 const form = ref()

@@ -332,10 +332,12 @@ const checklistItems = [
   {
     label: 'Proof of ID',
     value: 'proofOfID',
+    highlight: false,
   },
   {
     label: 'Residency',
     value: 'proofOfResidency',
+    highlight: false,
   },
   {
     label: 'NCIC Warrants',
@@ -392,6 +394,7 @@ const checklistItems = [
   {
     label: 'Firearms',
     value: 'firearms',
+    highlight: false,
   },
   {
     label: "SID LTR's Received",
