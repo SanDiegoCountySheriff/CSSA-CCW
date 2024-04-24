@@ -6,8 +6,6 @@ namespace CCW.Common.RequestModels;
 public class UserProfileRequestModel
 {
 
-    [JsonProperty("email")]
-    public string Email { get; set; }
     [JsonProperty("firstName")]
     public string FirstName { get; set; }
     [JsonProperty("lastName")]
@@ -24,4 +22,6 @@ public class UserProfileRequestModel
     public DateTimeOffset? AppointmentDate { get; set; }
     [JsonProperty("uploadedDocuments")]
     public UploadedDocument[] UploadedDocuments { get; set; }
+    [JsonProperty("isPendingReview")]
+    public Boolean IsPendingReview { get; set; } = false;
 }

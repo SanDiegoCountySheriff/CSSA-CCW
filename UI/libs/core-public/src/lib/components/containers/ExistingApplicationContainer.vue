@@ -30,7 +30,7 @@
                   sm="6"
                 >
                   <v-text-field
-                    v-model="firstName"
+                    v-model="user.firstName"
                     label="First Name"
                     outlined
                     dense
@@ -41,7 +41,7 @@
                   sm="6"
                 >
                   <v-text-field
-                    v-model="lastName"
+                    v-model="user.lastName"
                     label="Last Name"
                     outlined
                     dense
@@ -55,7 +55,7 @@
                   sm="6"
                 >
                   <v-text-field
-                    v-model="middleName"
+                    v-model="user.middleName"
                     label="Middle Name"
                     outlined
                     dense
@@ -66,7 +66,7 @@
                   sm="6"
                 >
                   <v-text-field
-                    v-model="dateOfBirth"
+                    v-model="user.dateOfBirth"
                     :label="$t('Date of birth')"
                     type="date"
                     append-icon="mdi-calendar"
@@ -83,7 +83,7 @@
                   sm="6"
                 >
                   <v-text-field
-                    v-model="driverLicense"
+                    v-model="user.driversLicenseNumber"
                     label="Drivers License Number"
                     outlined
                     dense
@@ -95,14 +95,14 @@
                   sm="6"
                 >
                   <v-text-field
-                    v-model="ccwPermit"
+                    v-model="user.permitNumber"
                     label="Optional CCW Permit Number"
                     outlined
                     dense
                   ></v-text-field>
                 </v-col>
               </v-row>
-              <v-row>
+              <!-- <v-row>
                 <v-col
                   cols="12"
                   sm="6"
@@ -150,7 +150,7 @@
                   sm="6"
                 >
                   <v-text-field
-                    v-model="appointmentDate"
+                    v-model="user.appointmentDate"
                     :label="$t('Appointment Date')"
                     type="date"
                     append-icon="mdi-calendar"
@@ -159,7 +159,7 @@
                     dense
                   ></v-text-field>
                 </v-col>
-              </v-row>
+              </v-row> -->
 
               <v-container class="mb-10">
                 <v-text>
@@ -197,7 +197,7 @@
                       >
                         <v-btn
                           color="primary"
-                          @click="submitForm"
+                          @click="handleLinkRequest"
                           block
                         >
                           Submit for Review
@@ -231,20 +231,19 @@ import axios from 'axios'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
+import { useUserStore } from '@shared-ui/stores/userStore'
 import {
   ApplicationType,
   CompleteApplication,
 } from '@shared-utils/types/defaultTypes'
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
+import { useAuthStore } from '@shared-ui/stores/auth'
 
+const authStore = useAuthStore()
+const userStore = useUserStore()
+const user = computed(() => userStore.userProfile)
 const applicationStore = useCompleteApplicationStore()
 const completeApplication = applicationStore.completeApplication.application
-const appointmentDate = ref('')
-const driverLicense = ref('')
-const firstName = ref('')
-const lastName = ref('')
-const ccwPermit = ref('')
-const dateOfBirth = ref('')
 
 interface ISecondFormStepTwoProps {
   value: CompleteApplication
@@ -257,6 +256,20 @@ const emit = defineEmits([
   'handle-save',
   'update-step-six-valid',
 ])
+
+const { mutate: createUser } = useMutation(
+  ['createUserProfile'],
+  async () => await userStore.putCreateUserApi(user.value),
+  {
+    onSuccess: async () => {
+      await userStore.getUserApi()
+    },
+  }
+)
+
+function handleLinkRequest() {
+  createUser()
+}
 
 const model = computed({
   get: () => props.value,

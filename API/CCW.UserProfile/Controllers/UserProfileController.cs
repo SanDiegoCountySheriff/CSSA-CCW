@@ -36,6 +36,8 @@ public class UserProfileController : ControllerBase
             GetUserId(out var userId);
             User newUser = _mapper.Map<User>(request);
             newUser.Id = userId;
+            var userEmail = User.Claims.FirstOrDefault(c => c.Type == "emails")?.Value;
+            newUser.Email = userEmail;
             var createdUser = await _cosmosDbService.AddUserAsync(newUser, cancellationToken: default);
 
             return Ok(_mapper.Map<UserProfileResponseModel>(createdUser));
@@ -78,4 +80,5 @@ public class UserProfileController : ControllerBase
             throw new ArgumentNullException("userId", "Invalid token.");
         }
     }
+   
 }

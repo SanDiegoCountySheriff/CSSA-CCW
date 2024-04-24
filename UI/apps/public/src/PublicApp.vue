@@ -54,8 +54,10 @@ import Vue from 'vue'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
-import { useQuery } from '@tanstack/vue-query'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
+import { useUserStore } from '@shared-ui/stores/userStore'
+
 import {
   MsalBrowser,
   getMsalInstance,
@@ -69,6 +71,8 @@ const configStore = useAppConfigStore()
 const themeStore = useThemeStore()
 const brandStore = useBrandStore()
 const msalInstance = ref<MsalBrowser>()
+const userStore = useUserStore()
+const user = computed(() => userStore.userProfile)
 
 provide(
   'msalInstance',
@@ -95,12 +99,38 @@ const { isLoading: isAgencyLogoLoading } = useQuery(
   }
 )
 
+const { mutate: createUser } = useMutation(
+  ['createUserProfile'],
+  async () => await userStore.putCreateUserApi(user.value),
+  {
+    onSuccess: async () => {
+      await userStore.getUserApi()
+    },
+  }
+)
+const { mutate: getUser } = useMutation(
+  ['getUserProfile'],
+  async () => await userStore.getUserApi(),
+  {
+    onSuccess: async () => {
+      await userStore.getUserApi()
+    },
+    onError: async () => {
+      createUser()
+    },
+  }
+)
+
 onBeforeMount(async () => {
   Vue.prototype.$workbox.addEventListener('waiting', () => {
     prompt.value = true
   })
 
   msalInstance.value = await getMsalInstance()
+
+  if (msalInstance.value.isAuthenticated()) {
+    getUser()
+  }
 
   const darkMode = localStorage.getItem('dark-mode')
 

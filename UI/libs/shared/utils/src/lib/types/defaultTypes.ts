@@ -92,9 +92,16 @@ export type AdminUserType = {
 
 export type UserType = {
   id?: string
-  email: string
-  name: string
+  userEmail: string
+  firstName: string
+  lastName: string
+  middleName: string
+  dateOfBirth: string
+  driversLicenseNumber: string
+  permitNumber: string
+  appointmentDate: string
   uploadedDocuments: Array<UploadedDocType>
+  isPendingReview: boolean
 }
 
 export type AuthType = {

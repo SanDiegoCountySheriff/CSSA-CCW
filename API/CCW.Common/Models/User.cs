@@ -24,5 +24,7 @@ public class User
     public DateTimeOffset? AppointmentDate { get; set; }
     [JsonProperty("uploadedDocuments")]
     public UploadedDocument[] UploadedDocuments { get; set; }
+    [JsonProperty("isPendingReview")]
+    public Boolean IsPendingReview { get; set; } = false;
 
 }

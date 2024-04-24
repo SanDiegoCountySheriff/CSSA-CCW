@@ -5,20 +5,16 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useUserStore = defineStore('UserStore', () => {
-  const User = ref<UserType>({} as UserType)
+  const userProfile = ref<UserType>({} as UserType)
   const allUsers = ref<Array<UserType>>()
   const validUser = ref(true)
 
   const setUser = (user: UserType) => {
-    User.value = user
+    userProfile.value = user
   }
 
   const setValidUser = (value: boolean) => {
     validUser.value = value
-  }
-
-  const setAllUsers = (value: Array<UserType>) => {
-    allUsers.value = value
   }
 
   async function getUserApi() {
@@ -27,16 +23,6 @@ export const useUserStore = defineStore('UserStore', () => {
     if (res?.data) setUser(res.data)
 
     return res?.data || {}
-  }
-
-  async function getAllUsers() {
-    const res = await axios.get(Endpoints.GET_ALL_USERS_ENDPOINT)
-
-    if (res?.data) {
-      setAllUsers(res.data)
-    }
-
-    return res?.data
   }
 
   async function putCreateUserApi(user) {
@@ -48,12 +34,11 @@ export const useUserStore = defineStore('UserStore', () => {
   }
 
   return {
-    User,
+    userProfile,
     validUser,
     allUsers,
     getUserApi,
     putCreateUserApi,
     setValidUser,
-    getAllUsers,
   }
 })
