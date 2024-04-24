@@ -102,7 +102,7 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
-              <!-- <v-row>
+              <v-row>
                 <v-col
                   cols="12"
                   sm="6"
@@ -159,7 +159,7 @@
                     dense
                   ></v-text-field>
                 </v-col>
-              </v-row> -->
+              </v-row>
 
               <v-container class="mb-10">
                 <v-text>
