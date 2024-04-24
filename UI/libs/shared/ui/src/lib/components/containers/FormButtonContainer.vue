@@ -30,12 +30,7 @@
             !applicationStore.completeApplication.application
               .isUpdatingApplication
           "
-          :disabled="
-            !props.valid ||
-            props.loading ||
-            !props.allStepsComplete ||
-            !isUpdatingAllStepsComplete
-          "
+          :disabled="!props.valid || props.loading || !props.allStepsComplete"
           :loading="props.loading"
           @click="handleContinue"
           color="primary"

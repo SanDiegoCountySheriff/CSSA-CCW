@@ -74,7 +74,7 @@
     </v-form>
 
     <FormButtonContainer
-      :valid="valid"
+      :valid="valid && !isNothingModified && isUpdatingAllStepsComplete"
       :is-final-step="true"
       :is-modification="true"
       @continue="handleContinue"
@@ -93,7 +93,15 @@ import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
-import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
+import {
+  computed,
+  inject,
+  nextTick,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from 'vue'
 
 interface ModifyNameProps {
   application: CompleteApplication
@@ -108,6 +116,9 @@ const emit = defineEmits([
   'handle-save',
   'update-step-four-valid',
 ])
+
+const isUpdatingAllStepsComplete: boolean | undefined =
+  inject('allStepsComplete')
 
 const applicationStore = useCompleteApplicationStore()
 const form = ref()

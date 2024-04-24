@@ -135,6 +135,7 @@
 
       <FormButtonContainer
         :valid="valid"
+        :is-first-step="true"
         @continue="handleContinue"
         @save="handleSave"
         v-on="$listeners"
@@ -160,7 +161,7 @@ const emit = defineEmits([
   'handle-continue',
   'handle-save',
   'input',
-  'update-step-two-valid',
+  'update-step-one-valid',
 ])
 
 const vuetify = useVuetify()
@@ -219,7 +220,7 @@ function updateModificationStatus() {
 
 watch(valid, (newValue, oldValue) => {
   if (newValue !== oldValue) {
-    emit('update-step-two-valid', newValue)
+    emit('update-step-one-valid', newValue)
   }
 })
 

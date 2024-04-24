@@ -636,6 +636,51 @@
         </v-card>
 
         <v-card
+          v-else-if="
+            permitStore.getPermitDetail.application.status ===
+            ApplicationStatus['Permit Delivered']
+          "
+          class="d-flex flex-column fill-height"
+          outlined
+        >
+          <v-card-title class="justify-center">
+            <v-icon
+              color="primary"
+              class="mr-2"
+            >
+              mdi-clock-alert-outline
+            </v-icon>
+            Expiration Date
+          </v-card-title>
+
+          <v-card-title class="justify-center">
+            {{
+              permitStore.getPermitDetail.application.license.expirationDate
+                ? new Date(
+                    permitStore.getPermitDetail.application.license.expirationDate
+                  ).toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })
+                : 'Invalid Expiration Date, Please Update.'
+            }}
+          </v-card-title>
+
+          <v-spacer />
+
+          <v-card-text>
+            <v-row>
+              <v-col>
+                <ExpirationDateDialog
+                  @handle-save-expiration-date="handleSaveExpirationDate"
+                />
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+
+        <v-card
           v-else
           :loading="isAppointmentLoading"
           class="d-flex flex-column fill-height"
@@ -804,9 +849,10 @@
 <script setup lang="ts">
 import { ApplicationType } from '@shared-utils/types/defaultTypes'
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue'
+import ExpirationDateDialog from '@core-admin/components/dialogs/ExpirationDateDialog.vue'
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
-import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import FinishModificationDialog from '@core-admin/components/dialogs/FinishModificationDialog.vue'
+import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
@@ -1011,6 +1057,19 @@ function handleFinishModification() {
   app.modifiedWeaponComplete = null
   app.currentStep = 1
   app.modificationNumber += 1
+
+  updatePermitDetails()
+}
+
+function handleSaveExpirationDate(expirationDate: string) {
+  changed.value = 'Expiration Date'
+
+  const [year, month, day] = expirationDate.split('-').map(Number)
+
+  const date = new Date(year, month - 1, day)
+
+  permitStore.getPermitDetail.application.license.expirationDate =
+    date.toISOString()
 
   updatePermitDetails()
 }
