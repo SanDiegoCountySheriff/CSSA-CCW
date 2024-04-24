@@ -14,7 +14,7 @@ public class UserProfileResponseModel
     [JsonProperty("lastName")]
     public string LastName { get; set; }
     [JsonProperty("middleName")]
-    public Address MiddleName { get; set; }
+    public string MiddleName { get; set; }
     [JsonProperty("dateOfBirth")]
     public DateTimeOffset? DateOfBirth { get; set; }
     [JsonProperty("driversLicenseNumber")]
