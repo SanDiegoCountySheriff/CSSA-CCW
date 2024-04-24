@@ -321,6 +321,12 @@ export default class Endpoints {
     }/userprofile/v1/user/createUserProfile`
   }
 
+  static get GET_USER_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.userProfileApiBaseUrl
+    }/userprofile/v1/user/getUserProfile`
+  }
+
   static get GET_ADMIN_USER_ENDPOINT() {
     return `${
       useAppConfigStore().appConfig.userProfileApiBaseUrl
