@@ -74,7 +74,9 @@
 
           <v-btn
             v-else-if="
-              authStore.getAuthState.isAuthenticated && data?.length === 0
+              authStore.getAuthState.isAuthenticated &&
+              data?.length === 0 &&
+              !userStore.getUserState.isPendingReview
             "
             @click="showDialog = true"
             :color="$vuetify.theme.dark ? 'white' : 'primary'"
@@ -93,6 +95,29 @@
               <v-row>
                 <v-col>
                   {{ $t('Start Here') }}
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-btn>
+          <v-btn
+            v-else-if="userStore.getUserState.isPendingReview"
+            @click="showStatus = true"
+            :color="$vuetify.theme.dark ? 'white' : 'primary'"
+            text
+            :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
+            :x-large="$vuetify.breakpoint.lgAndUp"
+            :small="$vuetify.breakpoint.smAndDown"
+          >
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-icon x-large> mdi-card-account-details-outline </v-icon>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col>
+                  {{ $t('Pending Review') }}
                 </v-col>
               </v-row>
             </v-container>
@@ -123,6 +148,46 @@
           </v-btn>
         </v-col>
 
+        <v-dialog
+          v-model="showStatus"
+          max-width="600px"
+        >
+          <v-card>
+            <v-card-title class="text-h4 justify-center">
+              We have recieved your request!
+            </v-card-title>
+            <v-card-title class="text-h5 justify-center">
+              Application linking request is currently under review
+              <v-card-subtitle class="text-5 justify-center">
+                This process can take some time, please check back in a few
+                days!
+              </v-card-subtitle>
+            </v-card-title>
+
+            <v-card-actions class="d-flex flex-column align-center">
+              <v-container
+                class="px-0"
+                fluid
+              >
+                <v-row justify="center">
+                  <v-col
+                    cols="12"
+                    sm="8"
+                    md="6"
+                  >
+                    <v-btn
+                      color="primary"
+                      @click="showStatus = false"
+                      block
+                    >
+                      Dismiss
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
         <v-dialog
           v-model="showDialog"
           max-width="600px"
@@ -312,9 +377,12 @@ import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplicati
 import { useQuery } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
 import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useUserStore } from '@shared-ui/stores/userStore'
 
 const brandStore = useBrandStore()
 const authStore = useAuthStore()
+const userStore = useUserStore()
+const user = computed(() => userStore.userProfile)
 const router = useRouter()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 const completeApplicationStore = useCompleteApplicationStore()
@@ -323,6 +391,7 @@ const canGetAllUserApplications = computed(() => {
 })
 const innerHeight = ref(0)
 const showDialog = ref(false)
+const showStatus = ref(false)
 
 onMounted(() => {
   calculateInnerHeight()
