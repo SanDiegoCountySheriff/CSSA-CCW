@@ -20,7 +20,7 @@
             >
               <v-row>
                 <v-col>
-                  <div class="display-1 text-center mb-4">Existing License</div>
+                  <div class="display-1 text-center mb-4">Link Application</div>
                 </v-col>
               </v-row>
 
@@ -31,6 +31,7 @@
                 >
                   <v-text-field
                     v-model="user.firstName"
+                    :rules="[v => !!v || $t('First Name cannot be blank')]"
                     label="First Name"
                     outlined
                     dense
@@ -42,6 +43,7 @@
                 >
                   <v-text-field
                     v-model="user.lastName"
+                    :rules="[v => !!v || $t('Last Name cannot be blank')]"
                     label="Last Name"
                     outlined
                     dense
@@ -67,10 +69,10 @@
                 >
                   <v-text-field
                     v-model="user.dateOfBirth"
+                    :rules="[v => !!v || $t('Date of birth is required')]"
                     :label="$t('Date of birth')"
                     type="date"
                     append-icon="mdi-calendar"
-                    persistent-hint
                     outlined
                     dense
                   ></v-text-field>
@@ -84,6 +86,9 @@
                 >
                   <v-text-field
                     v-model="user.driversLicenseNumber"
+                    :rules="[
+                      v => !!v || $t('Drivers License Number cannot be blank'),
+                    ]"
                     label="Drivers License Number"
                     outlined
                     dense
@@ -96,7 +101,7 @@
                 >
                   <v-text-field
                     v-model="user.permitNumber"
-                    label="Optional CCW Permit Number"
+                    label="Optional Agency License Number"
                     outlined
                     dense
                   ></v-text-field>
@@ -115,7 +120,7 @@
                     @file-opening="loadingStates.DriverLicense = true"
                     @file-opened="loadingStates.DriverLicense = false"
                     :rules="driverLicenseRules"
-                    :uploaded-documents="completeApplication.uploadedDocuments"
+                    :uploaded-documents="user.uploadedDocuments"
                     :filter-document-type="'DriverLicense'"
                     @upload-files="
                       files => handleMultiInput(files, 'DriverLicense')
@@ -131,14 +136,13 @@
                   <FileUploadContainer
                     :accepted-formats="'image/png, image/jpeg, application/pdf'"
                     :document-label="'Photo of CCW Permit'"
-                    :is-loading="loadingStates.DriverLicense"
-                    @file-opening="loadingStates.DriverLicense = true"
-                    @file-opened="loadingStates.DriverLicense = false"
-                    :rules="ccwPermitRules"
-                    :uploaded-documents="completeApplication.uploadedDocuments"
+                    :is-loading="loadingStates.CCWPermit"
+                    @file-opening="loadingStates.CCWPermit = true"
+                    @file-opened="loadingStates.CCWPermit = false"
+                    :uploaded-documents="user.uploadedDocuments"
                     :filter-document-type="'CCWPermit'"
                     @upload-files="
-                      files => handleMultiInput(files, 'DriverLicense')
+                      files => handleMultiInput(files, 'CCWPermit')
                     "
                     @delete-file="name => deleteFile(name)"
                   />
@@ -162,12 +166,9 @@
               </v-row>
 
               <v-container class="mb-10">
-                <v-text>
-                  Application look-up may take some time, please check back
-                  soon! We highly recommend giving us information about your
-                  appointment date if you have one so we can expedite the
-                  process for you.
-                </v-text>
+                Application look-up may take some time, please check back soon!
+                We highly recommend giving us information about your appointment
+                date if you have one so we can expedite the process for you.
               </v-container>
 
               <v-row class="justify-center">
@@ -184,7 +185,7 @@
                       >
                         <v-btn
                           color="error"
-                          @click="cancelForm"
+                          @click="$router.push(Routes.HOME_ROUTE_PATH)"
                           block
                         >
                           Cancel
@@ -196,6 +197,7 @@
                         md="6"
                       >
                         <v-btn
+                          :disabled="!valid"
                           color="primary"
                           @click="handleLinkRequest"
                           block
@@ -207,12 +209,6 @@
                   </v-container>
                 </v-card-actions>
               </v-row>
-              <!-- 
-              <FormButtonContainer
-                :valid="valid"
-                @continue="handleContinue"
-                @save="handleSave"
-              /> -->
             </v-form>
           </v-card>
         </v-col>
@@ -222,69 +218,39 @@
 </template>
 
 <script setup lang="ts">
-import DocumentInfoSection from '@shared-ui/components/info-sections/DocumentInfoSection.vue'
 import Endpoints from '@shared-ui/api/endpoints'
 import FileUploadContainer from '@core-public/components/containers/FileUploadContainer.vue'
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import Routes from '@core-public/router/routes'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
-import { useBrandStore } from '@shared-ui/stores/brandStore'
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
-import Routes from '@core-public/router/routes'
 import { useRouter } from 'vue-router/composables'
 import { useUserStore } from '@shared-ui/stores/userStore'
-import {
-  ApplicationType,
-  CompleteApplication,
-} from '@shared-utils/types/defaultTypes'
-import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
-import { useAuthStore } from '@shared-ui/stores/auth'
+import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 
-const authStore = useAuthStore()
 const userStore = useUserStore()
 const router = useRouter()
 const user = computed(() => userStore.userProfile)
-const applicationStore = useCompleteApplicationStore()
-const completeApplication = applicationStore.completeApplication.application
+const form = ref()
+const valid = ref(false)
 
-interface ISecondFormStepTwoProps {
-  value: CompleteApplication
-}
-const props = defineProps<ISecondFormStepTwoProps>()
-const brandStore = useBrandStore()
-const emit = defineEmits([
-  'input',
-  'handle-continue',
-  'handle-save',
-  'update-step-six-valid',
-])
-
-function redirectToHome() {
-  router.push({
-    path: Routes.HOME_ROUTE_PATH,
-  })
-}
-
-const { mutate: createUser } = useMutation(
+const { mutate: updateUser } = useMutation(
   ['createUserProfile'],
   async () => await userStore.putCreateUserApi(user.value),
   {
     onSuccess: async () => {
-      redirectToHome()
       await userStore.getUserApi()
     },
   }
 )
 
 function handleLinkRequest() {
-  createUser()
+  user.value.isPendingReview = true
+  updateUser()
+  router.push({
+    path: Routes.HOME_ROUTE_PATH,
+  })
 }
-
-const model = computed({
-  get: () => props.value,
-  set: (value: CompleteApplication) => emit('input', value),
-})
 
 const state = reactive({
   files: [] as Array<{ formData; target }>,
@@ -292,23 +258,12 @@ const state = reactive({
   CCWPermit: '',
 })
 
-const form = ref()
-const valid = ref(false)
-
 const driverLicenseRules = computed(() => {
-  const documentDriverLicense = completeApplication.uploadedDocuments.some(
+  const documentDriverLicense = user.value.uploadedDocuments.some(
     obj => obj.documentType === 'DriverLicense'
   )
 
   return [() => documentDriverLicense || "Driver's License is Required"]
-})
-
-const ccwPermitRules = computed(() => {
-  const documentCCWPermit = completeApplication.uploadedDocuments.some(obj => {
-    return obj.documentType === 'CCWPermit'
-  })
-
-  return [() => documentCCWPermit]
 })
 
 const loadingStates = reactive({
@@ -318,28 +273,6 @@ const loadingStates = reactive({
 
 const { mutate: fileMutation } = useMutation({
   mutationFn: handleFileUpload,
-})
-
-const { mutate: updateMutation } = useMutation({
-  mutationFn: () => {
-    return applicationStore.updateApplication()
-  },
-  onSuccess: () => {
-    for (let item of completeApplication.uploadedDocuments) {
-      switch (item.documentType.toLowerCase()) {
-        case 'driverlicense':
-          state.driverLicense = item.name
-          break
-        case 'ccwPermit':
-          break
-        default:
-          break
-      }
-    }
-
-    state.files = []
-    validateForm()
-  },
 })
 
 function validateForm() {
@@ -376,9 +309,9 @@ function handleMultiInput(event, target: string) {
 }
 
 function getNextFileIndex(target: string): number {
-  const targetPrefix = `${completeApplication.personalInfo.lastName}_${completeApplication.personalInfo.firstName}_${target}_`
+  const targetPrefix = `${target}_`
 
-  const indexes = completeApplication.uploadedDocuments
+  const indexes = user.value.uploadedDocuments
     .filter(doc => doc.name.startsWith(targetPrefix))
     .map(doc => {
       const parts = doc.name.split('_')
@@ -401,7 +334,7 @@ async function handleFileUpload() {
   documentTypes.forEach(type => (loadingStates[type] = true))
 
   for (let file of state.files) {
-    const newFileName = `${completeApplication.personalInfo.lastName}_${completeApplication.personalInfo.firstName}_${file.target}`
+    const newFileName = `${file.target}`
 
     try {
       await axios.post(
@@ -412,11 +345,11 @@ async function handleFileUpload() {
       const uploadDoc: UploadedDocType = {
         documentType: file.target.split('_').shift(),
         name: `${newFileName}`,
-        uploadedBy: completeApplication.userEmail,
+        uploadedBy: user.value.email,
         uploadedDateTimeUtc: new Date().toISOString(),
       }
 
-      completeApplication.uploadedDocuments.push(uploadDoc)
+      user.value.uploadedDocuments.push(uploadDoc)
     } catch (e) {
       window.console.warn(e)
     }
@@ -424,11 +357,11 @@ async function handleFileUpload() {
 
   documentTypes.forEach(type => (loadingStates[type] = false))
 
-  updateMutation()
+  validateForm()
 }
 
 async function deleteFile(name) {
-  const documentToDelete = completeApplication.uploadedDocuments.find(
+  const documentToDelete = user.value.uploadedDocuments.find(
     doc => doc.name === name
   )
 
@@ -447,13 +380,11 @@ async function deleteFile(name) {
       `${Endpoints.DELETE_DOCUMENT_FILE_PUBLIC_ENDPOINT}?applicantFileName=${name}`
     )
 
-    const updatedDocuments = completeApplication.uploadedDocuments.filter(
+    const updatedDocuments = user.value.uploadedDocuments.filter(
       doc => doc.name !== name
     )
 
-    completeApplication.uploadedDocuments = updatedDocuments
-
-    updateMutation()
+    user.value.uploadedDocuments = updatedDocuments
 
     validateForm()
   } finally {
@@ -467,7 +398,7 @@ onMounted(() => {
   state.driverLicense = ''
   state.CCWPermit = ''
 
-  for (let item of completeApplication.uploadedDocuments) {
+  for (let item of user.value.uploadedDocuments) {
     switch (item.documentType.toLowerCase()) {
       case 'driverlicense':
         state.driverLicense = item.name
@@ -482,14 +413,6 @@ onMounted(() => {
 
   if (form.value) {
     form.value.validate()
-  }
-
-  emit('update-step-six-valid', valid.value)
-})
-
-watch(valid, (newValue, oldValue) => {
-  if (newValue !== oldValue) {
-    emit('update-step-six-valid', newValue)
   }
 })
 </script>

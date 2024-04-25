@@ -92,7 +92,7 @@ export type AdminUserType = {
 
 export type UserType = {
   id?: string
-  userEmail: string
+  email: string
   firstName: string
   lastName: string
   middleName: string

@@ -513,7 +513,7 @@ export const defaultAdminUser = {
 
 export const defaultUser = {
   id: '',
-  userEmail: '',
+  email: '',
   firstName: '',
   lastName: '',
   middleName: '',
