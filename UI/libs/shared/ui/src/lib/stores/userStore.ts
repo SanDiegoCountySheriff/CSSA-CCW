@@ -2,14 +2,12 @@ import { UserType } from '@shared-utils/types/defaultTypes'
 import Endpoints from '@shared-ui/api/endpoints'
 import axios from 'axios'
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 
 export const useUserStore = defineStore('UserStore', () => {
   const userProfile = ref<UserType>({} as UserType)
   const allUsers = ref<Array<UserType>>()
   const validUser = ref(true)
-
-  const getUserState = computed(() => userProfile.value)
 
   const setUser = (user: UserType) => {
     userProfile.value = user
@@ -39,7 +37,6 @@ export const useUserStore = defineStore('UserStore', () => {
     userProfile,
     validUser,
     allUsers,
-    getUserState,
     getUserApi,
     putCreateUserApi,
     setValidUser,

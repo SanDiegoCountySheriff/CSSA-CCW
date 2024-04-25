@@ -96,7 +96,7 @@
                 >
                   <v-text-field
                     v-model="user.permitNumber"
-                    label="Optional Agency License Number"
+                    label="Optional CCW Permit Number"
                     outlined
                     dense
                   ></v-text-field>
@@ -277,12 +277,7 @@ const { mutate: createUser } = useMutation(
   }
 )
 
-function isLinked() {
-  user.value.isPendingReview = true
-}
-
 function handleLinkRequest() {
-  isLinked()
   createUser()
 }
 

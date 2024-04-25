@@ -91,10 +91,7 @@
               </v-row>
 
               <v-row>
-                <v-col v-if="userStore.getUserState.isPendingReview">
-                  {{ $t('Under Review') }}
-                </v-col>
-                <v-col v-else-if="!userStore.getUserState.isPendingReview">
+                <v-col>
                   {{ $t('Start Here') }}
                 </v-col>
               </v-row>
@@ -311,7 +308,6 @@ import { MsalBrowser } from '@shared-ui/api/auth/authentication'
 import PriceInfoDialog from '@core-public/components/dialogs/PriceInfoDialog.vue'
 import Routes from '@core-public/router/routes'
 import { useAuthStore } from '@shared-ui/stores/auth'
-import { useUserStore } from '@shared-ui/stores/userStore'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useQuery } from '@tanstack/vue-query'
@@ -320,8 +316,6 @@ import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const brandStore = useBrandStore()
 const authStore = useAuthStore()
-const userStore = useUserStore()
-const user = computed(() => userStore.userProfile)
 const router = useRouter()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 const completeApplicationStore = useCompleteApplicationStore()
@@ -340,14 +334,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('resize', calculateInnerHeight)
 })
-
-function islinked() {
-  if (user.value.isPendingReview) {
-    window.console.log('user is under review')
-  } else {
-    window.console.log('user does not have active apps ')
-  }
-}
 
 const items = computed(() => [
   {
