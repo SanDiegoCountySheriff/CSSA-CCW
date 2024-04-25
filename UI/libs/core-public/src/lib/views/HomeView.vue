@@ -138,40 +138,39 @@
               class="px-10"
               fluid
             >
-              <v-container class="px-5">
-                <v-sheet
-                  outlined
-                  color="primary"
+              <v-sheet
+                outlined
+                color="primary"
+                rounded
+                elevation="3"
+                class="mb-5"
+              >
+                <v-card
+                  hover
                   rounded
-                  elevation="3"
+                  outlined
+                  @click="redirectToAcknowledgements"
                 >
-                  <v-card
-                    hover
-                    rounded
-                    outlined
-                    @click="redirectToAcknowledgements"
+                  <v-card-title
+                    :color="$vuetify.theme.dark ? 'white' : 'primary'"
                   >
-                    <v-card-title
+                    <v-icon
+                      x-large
+                      class="mr-3"
                       :color="$vuetify.theme.dark ? 'white' : 'primary'"
                     >
-                      <v-icon
-                        x-large
-                        class="mr-3"
-                        :color="$vuetify.theme.dark ? 'white' : 'primary'"
-                      >
-                        mdi-account-plus
-                      </v-icon>
-                      New User
-                    </v-card-title>
+                      mdi-account-plus
+                    </v-icon>
+                    New User
+                  </v-card-title>
 
-                    <v-card-text>
-                      I am applying for a CCW license with
-                      <b>{{ brandStore.getBrand.agencyName }}</b> for the first
-                      time.
-                    </v-card-text>
-                  </v-card>
-                </v-sheet>
-              </v-container>
+                  <v-card-text>
+                    I am applying for a CCW license with
+                    <b>{{ brandStore.getBrand.agencyName }}</b> for the first
+                    time.
+                  </v-card-text>
+                </v-card>
+              </v-sheet>
 
               <v-sheet
                 outlined
