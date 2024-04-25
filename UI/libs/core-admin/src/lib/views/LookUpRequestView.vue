@@ -14,22 +14,6 @@
         </v-tab-item>
       </v-tabs-items>
     </v-tabs>
-
-    <v-snackbar
-      v-model="snackbar"
-      color="primary"
-    >
-      {{ message }}
-      <template #action="{ attrs }">
-        <v-btn
-          text
-          v-bind="attrs"
-          @click="snackbar = false"
-        >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
   </v-container>
 </template>
 

@@ -1,101 +1,68 @@
 <template>
-  <v-container fluid>
-    <v-card
-      :loading="isLoading || isGetLookUpRequestTemplateLoading"
-      flat
-    >
-      <v-card-title>
-        <div class="mr-5">
-          There are
-          {{ numberOfAppointmentsThatWillBeCreated }} look-up requests in the
-          database at the moment.
-        </div>
-        <v-spacer></v-spacer>
-      </v-card-title>
-
-      <v-card-text>
-        <v-form ref="form">
-          <v-row>
-            <v-col cols="3">
-              <v-text-field
-                v-model="personalInfo.firstName"
-                @change="handleChangeAppointmentParameters"
-                :error-messages="startTimeError"
-                label="First Name"
-                type="string"
-                outlined
-              />
-            </v-col>
-            <v-col cols="3">
-              <v-text-field
-                v-model="personalInfo.lastName"
-                @change="handleChangeAppointmentParameters"
-                :error-messages="startTimeError"
-                label="Last Name"
-                type="string"
-                outlined
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="3">
-              <v-text-field
-                v-model="appointmentManagement.startDate"
-                @change="handleChangeAppointmentParameters"
-                label="Date of Birth"
-                append-icon="mdi-calendar"
-                type="date"
-                outlined
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="3">
-              <v-text-field
-                v-model="appointmentManagement.appointmentLength"
-                @change="handleChangeAppointmentParameters"
-                label="Driver's License or State-Issued ID Number"
-                type="string"
-                outlined
-              />
-            </v-col>
-            <v-col cols="3">
-              <v-text-field
-                v-model="appointmentManagement.numberOfWeeksToCreate"
-                label="CCW Permit Number"
-                type="string"
-                outlined
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="3">
-              <v-text-field
-                v-model="appointmentManagement.startDate"
-                @change="handleChangeAppointmentParameters"
-                label="CCW Appointment Date"
-                append-icon="mdi-calendar"
-                type="date"
-                outlined
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <DocumentFileUpload></DocumentFileUpload>
-        </v-form>
-      </v-card-text>
-      <v-btn
-        @click="handleSaveAppointments"
-        :disabled="
-          invalidTime || isLoading || isGetLookUpRequestTemplateLoading
-        "
-        color="primary"
-        class="mr-4"
+  <v-container>
+    <v-row>
+      <v-col
+        cols="8"
+        lg="4"
       >
-        <v-icon left>mdi-content-save</v-icon>
-        {{ $t('Save') }}
-      </v-btn>
-    </v-card>
+        <v-expansion-panels inset>
+          <v-expansion-panel
+            v-for="(item, i) in 5"
+            :key="i"
+          >
+            <v-expansion-panel-header>
+              First Name Last Name</v-expansion-panel-header
+            >
+
+            <v-expansion-panel-content>
+              <v-row> Search Potential Matches</v-row>
+              <v-row>
+                <v-col
+                  cols="2"
+                  lg="5"
+                >
+                  <v-text-field
+                    label="First Name"
+                    outlined
+                  ></v-text-field>
+                </v-col>
+                <v-col
+                  cols="2"
+                  lg="5"
+                >
+                  <v-text-field
+                    label="Last Name"
+                    outlined
+                  ></v-text-field>
+                </v-col>
+                <v-icon>mdi-account-search</v-icon>
+              </v-row>
+
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat.
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </v-col>
+      <v-col
+        cols="1"
+        lg="8"
+      >
+        <v-card
+          outlined
+          color="grey"
+        >
+          <v-card-title :color="$vuetify.theme.dark ? 'white' : 'primary'">
+            Look Up Results
+          </v-card-title>
+          <v-card-header :color="$vuetify.theme.dark ? 'white' : 'primary'">
+            Please select a request to perform look up
+          </v-card-header>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

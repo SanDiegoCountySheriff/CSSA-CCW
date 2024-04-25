@@ -171,7 +171,7 @@
                   class="mr-2"
                   icon
                 >
-                  <v-icon> mdi-check-bold </v-icon>
+                  <v-icon> -check-bold </v-icon>
                 </v-btn>
                 <v-btn
                   v-else

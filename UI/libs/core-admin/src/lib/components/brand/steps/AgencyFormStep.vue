@@ -13,7 +13,12 @@
           @click="save"
           color="primary"
         >
-          <v-icon left>mdi-content-save</v-icon>
+          <v-icon
+            :color="$vuetify.theme.dark ? 'white' : 'primary'"
+            left
+          >
+            mdi-content-save
+          </v-icon>
           Save
         </v-btn>
       </v-card-title>
