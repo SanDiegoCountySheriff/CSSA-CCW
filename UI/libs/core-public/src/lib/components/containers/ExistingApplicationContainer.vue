@@ -231,6 +231,8 @@ import axios from 'axios'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
+import Routes from '@core-public/router/routes'
+import { useRouter } from 'vue-router/composables'
 import { useUserStore } from '@shared-ui/stores/userStore'
 import {
   ApplicationType,
@@ -241,6 +243,7 @@ import { useAuthStore } from '@shared-ui/stores/auth'
 
 const authStore = useAuthStore()
 const userStore = useUserStore()
+const router = useRouter()
 const user = computed(() => userStore.userProfile)
 const applicationStore = useCompleteApplicationStore()
 const completeApplication = applicationStore.completeApplication.application
@@ -257,11 +260,18 @@ const emit = defineEmits([
   'update-step-six-valid',
 ])
 
+function redirectToHome() {
+  router.push({
+    path: Routes.HOME_ROUTE_PATH,
+  })
+}
+
 const { mutate: createUser } = useMutation(
   ['createUserProfile'],
   async () => await userStore.putCreateUserApi(user.value),
   {
     onSuccess: async () => {
+      redirectToHome()
       await userStore.getUserApi()
     },
   }
