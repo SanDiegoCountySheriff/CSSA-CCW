@@ -138,7 +138,7 @@
               class="px-10"
               fluid
             >
-              <v-contianer class="px-5">
+              <v-container class="px-5">
                 <v-sheet
                   outlined
                   color="primary"
@@ -171,7 +171,7 @@
                     </v-card-text>
                   </v-card>
                 </v-sheet>
-              </v-contianer>
+              </v-container>
 
               <v-sheet
                 outlined
