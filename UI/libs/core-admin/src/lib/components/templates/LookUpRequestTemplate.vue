@@ -5,52 +5,39 @@
         cols="8"
         lg="4"
       >
-        <v-expansion-panel
-          v-for="(profile, index) in userProfiles"
-          :key="index"
+        <v-expansion-panels
+          class="my-4"
+          variant="inset"
         >
-          <v-expansion-panel-header>
-            {{ profile.firstName }} {{ profile.lastName }}
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-row> Search Potential Matches</v-row>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-col>
-      <v-col
-        cols="1"
-        lg="8"
-      >
-        <v-card
-          outlined
-          color="grey"
-        >
-          <v-card-title :color="$vuetify.theme.dark ? 'white' : 'primary'">
-            Look Up Results
-          </v-card-title>
-          <v-btn
-            color="primary"
-            @click="getAllUsers"
-            >API</v-btn
+          <v-expansion-panel
+            v-for="(request, index) in userStore.allUsers"
+            :key="index"
+            text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+            title="Item"
           >
-          <v-card-header :color="$vuetify.theme.dark ? 'white' : 'primary'">
-            Please select a request to perform look up
-          </v-card-header>
-        </v-card>
+            <v-expansion-panel-header>
+              <b> {{ request.firstName }} {{ request.lastName }}</b> Appointment
+              Date: {{ request.appointmentDate }}
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-row>
+                <v-col>
+                  <b>Driver License: {{ request.driversLicenseNumber }}</b>
+                </v-col>
+                <v-col>
+                  <b>Agency License: {{ request.permitNumber }}</b>
+                </v-col>
+              </v-row>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import {
-  LicenseType,
-  AppointmentManagement,
-  LookUpRequestType,
-  PersonalInfoType,
-  UserType,
-} from '@shared-utils/types/defaultTypes'
-
+import { UserType } from '@shared-utils/types/defaultTypes'
 import { useUserStore } from '@shared-ui/stores/userStore'
 import { computed, onMounted, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
@@ -62,23 +49,6 @@ const { isFetching: isAllUsersLoading } = useQuery(
   ['getAllUsersApi'],
   () => userStore.getAllUsersApi(),
   {}
-)
-
-const { mutate: getAllUsers } = useMutation(
-  ['getAllUserApi'],
-  async () => {
-    // Fetch user profiles from the API
-    const data = await userStore.getAllUsersApi()
-
-    // Update the userProfiles variable with the fetched data
-    userProfiles.value = data
-  },
-  {
-    onSuccess: async () => {
-      // Optionally, you can perform additional actions after successful mutation
-      window.console.log('All user profiles fetched successfully!')
-    },
-  }
 )
 </script>
 
