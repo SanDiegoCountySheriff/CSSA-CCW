@@ -69,6 +69,26 @@ public class UserProfileController : ControllerBase
             return NotFound("An error occur while trying to retrieve user.");
         }
     }
+
+    [Authorize(Policy = "RequireAdminOrSystemAdminOnly")]
+    [Route("getAllUserProfiles")]
+    [HttpGet]
+    public async Task<IActionResult> GetAllUserProfiles()
+    {
+        try
+        {
+            var result = await _cosmosDbService.GetAllUserProfiles(cancellationToken: default);
+
+            return (result != null) ? Ok(_mapper.Map<List<UserProfileResponseModel>>(result)) : NotFound();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to retrieve user profiles.");
+        }
+    }
+
     private void GetUserId(out string userId)
     {
         userId = this.HttpContext.User.Claims

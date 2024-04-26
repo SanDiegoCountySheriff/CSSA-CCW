@@ -108,7 +108,7 @@ public class CosmosDbService : ICosmosDbService
         }
     }
 
-    public async Task<IEnumerable<User>> GetAllUsers(CancellationToken cancellationToken)
+    public async Task<IEnumerable<User>> GetAllUserProfiles(CancellationToken cancellationToken)
     {
         List<User> users = new List<User>();
 
