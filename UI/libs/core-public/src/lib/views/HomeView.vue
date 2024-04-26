@@ -373,7 +373,7 @@ import Routes from '@core-public/router/routes'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useQuery } from '@tanstack/vue-query'
+import { useQuery, useMutation } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
 import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useUserStore } from '@shared-ui/stores/userStore'
@@ -392,7 +392,30 @@ const innerHeight = ref(0)
 const showDialog = ref(false)
 const showStatus = ref(false)
 
+const { mutate: createUser } = useMutation(
+  ['createUserProfile'],
+  async () => await userStore.putCreateUserApi(user.value),
+  {
+    onSuccess: async () => {
+      await userStore.getUserApi()
+    },
+  }
+)
+const { mutate: getUser } = useMutation(
+  ['getUserProfile'],
+  async () => await userStore.getUserApi(),
+  {
+    onError: async () => {
+      createUser()
+    },
+  }
+)
+
 onMounted(() => {
+  if (msalInstance.value.isAuthenticated()) {
+    getUser()
+  }
+
   calculateInnerHeight()
 
   window.addEventListener('resize', calculateInnerHeight)

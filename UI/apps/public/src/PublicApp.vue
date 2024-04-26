@@ -99,38 +99,12 @@ const { isLoading: isAgencyLogoLoading } = useQuery(
   }
 )
 
-const { mutate: createUser } = useMutation(
-  ['createUserProfile'],
-  async () => await userStore.putCreateUserApi(user.value),
-  {
-    onSuccess: async () => {
-      await userStore.getUserApi()
-    },
-  }
-)
-const { mutate: getUser } = useMutation(
-  ['getUserProfile'],
-  async () => await userStore.getUserApi(),
-  {
-    onSuccess: async () => {
-      await userStore.getUserApi()
-    },
-    onError: async () => {
-      createUser()
-    },
-  }
-)
-
 onBeforeMount(async () => {
   Vue.prototype.$workbox.addEventListener('waiting', () => {
     prompt.value = true
   })
 
   msalInstance.value = await getMsalInstance()
-
-  if (msalInstance.value.isAuthenticated()) {
-    getUser()
-  }
 
   const darkMode = localStorage.getItem('dark-mode')
 
