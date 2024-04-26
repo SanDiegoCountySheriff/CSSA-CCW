@@ -1,38 +1,42 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col
-        cols="8"
-        lg="4"
-      >
-        <v-expansion-panels
-          class="my-4"
-          variant="inset"
-        >
-          <v-expansion-panel
-            v-for="(request, index) in userStore.allUsers"
-            :key="index"
-            text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-            title="Item"
+  <v-container fluid>
+    <v-col>
+      <v-row>
+        <v-col>
+          <v-expansion-panels
+            class="my-4"
+            inset
           >
-            <v-expansion-panel-header>
-              <b> {{ request.firstName }} {{ request.lastName }}</b> Appointment
-              Date: {{ request.appointmentDate }}
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <v-row>
-                <v-col>
-                  <b>Driver License: {{ request.driversLicenseNumber }}</b>
-                </v-col>
-                <v-col>
-                  <b>Agency License: {{ request.permitNumber }}</b>
-                </v-col>
-              </v-row>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
-      </v-col>
-    </v-row>
+            <v-expansion-panel
+              v-for="(request, index) in userStore.allUsers"
+              :key="index"
+              title="Item"
+            >
+              <v-expansion-panel-header>
+                <b> {{ request.firstName }} {{ request.lastName }}</b>
+                Appointment Date: {{ request.appointmentDate }}
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-row>
+                  <v-col>
+                    <b>Driver License: {{ request.driversLicenseNumber }}</b>
+                  </v-col>
+                  <v-col>
+                    <b>Agency License: {{ request.permitNumber }}</b>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <b>Documents: {{ request.driversLicenseNumber }}</b>
+                  </v-col>
+                  <v-col> <b>Email:</b> {{ request.email }} </v-col>
+                </v-row>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-col>
+      </v-row>
+    </v-col>
   </v-container>
 </template>
 
