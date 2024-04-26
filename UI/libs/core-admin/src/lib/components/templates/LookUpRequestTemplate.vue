@@ -19,15 +19,15 @@
               <v-expansion-panel-content>
                 <v-row>
                   <v-col>
-                    <b>Driver License: {{ request.driversLicenseNumber }}</b>
+                    <b>Driver License: </b> {{ request.driversLicenseNumber }}
                   </v-col>
                   <v-col>
-                    <b>Agency License: {{ request.permitNumber }}</b>
+                    <b>Agency License: </b> {{ request.permitNumber }}
                   </v-col>
                 </v-row>
                 <v-row>
                   <v-col>
-                    <b>Documents: {{ request.driversLicenseNumber }}</b>
+                    <b>Documents: </b> {{ request.driversLicenseNumber }}
                   </v-col>
                   <v-col> <b>Email:</b> {{ request.email }} </v-col>
                 </v-row>
