@@ -111,7 +111,7 @@
             <v-container>
               <v-row>
                 <v-col>
-                  <v-icon x-large> mdi-card-account-details-outline </v-icon>
+                  <v-icon x-large> mdi-account-clock </v-icon>
                 </v-col>
               </v-row>
 
@@ -159,8 +159,7 @@
             <v-card-title class="text-h5 justify-center">
               Application linking request is currently under review
               <v-card-subtitle class="text-5 justify-center">
-                This process can take some time, please check back in a few
-                days!
+                This process can take some time, please check back soon!
               </v-card-subtitle>
             </v-card-title>
 
