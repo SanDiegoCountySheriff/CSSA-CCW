@@ -74,9 +74,11 @@
 
           <v-btn
             v-else-if="
-              authStore.getAuthState.isAuthenticated && data?.length === 0
+              authStore.getAuthState.isAuthenticated &&
+              data?.length === 0 &&
+              !userStore.getUserState.isPendingReview
             "
-            @click="redirectToAcknowledgements"
+            @click="showDialog = true"
             :color="$vuetify.theme.dark ? 'white' : 'primary'"
             text
             :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
@@ -92,7 +94,30 @@
 
               <v-row>
                 <v-col>
-                  {{ $t('Create Application') }}
+                  {{ $t('Start Here') }}
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-btn>
+          <v-btn
+            v-else-if="userStore.getUserState.isPendingReview"
+            @click="showStatus = true"
+            :color="$vuetify.theme.dark ? 'white' : 'primary'"
+            text
+            :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
+            :x-large="$vuetify.breakpoint.lgAndUp"
+            :small="$vuetify.breakpoint.smAndDown"
+          >
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-icon x-large> mdi-account-clock </v-icon>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col>
+                  {{ $t('Pending Review') }}
                 </v-col>
               </v-row>
             </v-container>
@@ -122,6 +147,153 @@
             </v-container>
           </v-btn>
         </v-col>
+
+        <v-dialog
+          v-model="showStatus"
+          max-width="600px"
+        >
+          <v-card>
+            <v-card-title class="text-h4 justify-center">
+              We have recieved your request!
+            </v-card-title>
+            <v-card-title class="text-h5 justify-center">
+              Application linking request is currently under review
+              <v-card-subtitle class="text-5 justify-center">
+                This process can take some time, please check back soon!
+              </v-card-subtitle>
+            </v-card-title>
+
+            <v-card-actions class="d-flex flex-column align-center">
+              <v-container
+                class="px-0"
+                fluid
+              >
+                <v-row justify="center">
+                  <v-col
+                    cols="12"
+                    sm="8"
+                    md="6"
+                  >
+                    <v-btn
+                      color="primary"
+                      @click="showStatus = false"
+                      block
+                    >
+                      Dismiss
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog
+          v-model="showDialog"
+          max-width="600px"
+        >
+          <v-card>
+            <v-card-title class="text-h4 justify-center">
+              Before You Begin
+            </v-card-title>
+            <v-card-title class="text-h5 justify-center">
+              Let us know how we can assist you
+            </v-card-title>
+            <v-container
+              class="px-10"
+              fluid
+            >
+              <v-sheet
+                outlined
+                color="primary"
+                rounded
+                elevation="3"
+                class="mb-5"
+              >
+                <v-card
+                  hover
+                  rounded
+                  outlined
+                  @click="redirectToAcknowledgements"
+                >
+                  <v-card-title
+                    :color="$vuetify.theme.dark ? 'white' : 'primary'"
+                  >
+                    <v-icon
+                      x-large
+                      class="mr-3"
+                      :color="$vuetify.theme.dark ? 'white' : 'primary'"
+                    >
+                      mdi-account-plus
+                    </v-icon>
+                    New User
+                  </v-card-title>
+
+                  <v-card-text>
+                    I am applying for a CCW license with
+                    <b>{{ brandStore.getBrand.agencyName }}</b> for the first
+                    time.
+                  </v-card-text>
+                </v-card>
+              </v-sheet>
+
+              <v-sheet
+                outlined
+                color="primary"
+                rounded
+                elevation="3"
+              >
+                <v-card
+                  hover
+                  rounded
+                  outlined
+                  @click="handleExistingApplication"
+                >
+                  <v-card-title
+                    :color="$vuetify.theme.dark ? 'white' : 'primary'"
+                  >
+                    <v-icon
+                      x-large
+                      class="mr-3"
+                      :color="$vuetify.theme.dark ? 'white' : 'primary'"
+                    >
+                      mdi-account-search
+                    </v-icon>
+                    Link Existing Application
+                  </v-card-title>
+
+                  <v-card-text>
+                    I have previously applied for a CCW license with
+                    <b>{{ brandStore.getBrand.agencyName }}</b> and would like
+                    to link my existing application.
+                  </v-card-text>
+                </v-card>
+              </v-sheet>
+            </v-container>
+
+            <v-card-actions class="d-flex flex-column align-center">
+              <v-container
+                class="px-0"
+                fluid
+              >
+                <v-row justify="center">
+                  <v-col
+                    cols="12"
+                    sm="8"
+                    md="6"
+                  >
+                    <v-btn
+                      color="primary"
+                      @click="showDialog = false"
+                      block
+                    >
+                      Cancel
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
         <v-col
           cols="6"
@@ -204,9 +376,12 @@ import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplicati
 import { useQuery } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
 import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useUserStore } from '@shared-ui/stores/userStore'
 
 const brandStore = useBrandStore()
 const authStore = useAuthStore()
+const userStore = useUserStore()
+const user = computed(() => userStore.userProfile)
 const router = useRouter()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 const completeApplicationStore = useCompleteApplicationStore()
@@ -214,6 +389,8 @@ const canGetAllUserApplications = computed(() => {
   return authStore.getAuthState.isAuthenticated
 })
 const innerHeight = ref(0)
+const showDialog = ref(false)
+const showStatus = ref(false)
 
 onMounted(() => {
   calculateInnerHeight()
@@ -287,5 +464,11 @@ const maxHeight = computed(() => {
 
 function calculateInnerHeight() {
   innerHeight.value = window.innerHeight
+}
+
+function handleExistingApplication() {
+  router.push({
+    path: Routes.EXISTING_APPLICATION_PATH,
+  })
 }
 </script>

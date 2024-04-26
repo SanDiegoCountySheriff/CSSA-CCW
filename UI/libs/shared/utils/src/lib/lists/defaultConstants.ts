@@ -511,6 +511,20 @@ export const defaultAdminUser = {
   uploadedDocuments: [],
 }
 
+export const defaultUser = {
+  id: '',
+  email: '',
+  firstName: '',
+  lastName: '',
+  middleName: '',
+  dateOfBirth: '',
+  driversLicenseNumber: '',
+  permitNumber: '',
+  appointmentDate: '',
+  uploadedDocuments: [],
+  isPendingReview: false,
+}
+
 export const states = [
   'Alabama',
   'Alaska',

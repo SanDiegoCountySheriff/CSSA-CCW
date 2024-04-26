@@ -13,6 +13,7 @@ import RenewFormView from '@core-public/views/RenewFormView.vue'
 import Routes from '@core-public/router/routes'
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
+import ExistingApplicationView from '@core-public/views/ExistingApplicationView.vue'
 
 Vue.use(VueRouter)
 
@@ -77,6 +78,11 @@ const routes: Array<RouteConfig> = [
     path: Routes.MODIFY_FINALIZE_PATH,
     name: 'ModifyFinalize',
     component: ModifyFinalizeView,
+  },
+  {
+    path: Routes.EXISTING_APPLICATION_PATH,
+    name: 'ExistingApplication',
+    component: ExistingApplicationView,
   },
   {
     // keep this at the very end

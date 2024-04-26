@@ -11,5 +11,7 @@ public class UserAutoMapperProfiles : Profile
     {
         CreateMap<AdminUserProfileRequestModel, AdminUser>();
         CreateMap<AdminUser, AdminUserProfileResponseModel>();
+        CreateMap<UserProfileRequestModel, User>();
+        CreateMap<User, UserProfileResponseModel>();
     }
 }

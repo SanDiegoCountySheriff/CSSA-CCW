@@ -1,11 +1,13 @@
-using CCW.Common.Models;
 using Newtonsoft.Json;
 
-namespace CCW.Common.RequestModels;
+namespace CCW.Common.Models;
 
-public class UserProfileRequestModel
+public class User
 {
-
+    [JsonProperty("id")]
+    public string Id { get; set; }
+    [JsonProperty("email")]
+    public string Email { get; set; }
     [JsonProperty("firstName")]
     public string FirstName { get; set; }
     [JsonProperty("lastName")]
@@ -24,4 +26,5 @@ public class UserProfileRequestModel
     public UploadedDocument[] UploadedDocuments { get; set; }
     [JsonProperty("isPendingReview")]
     public Boolean IsPendingReview { get; set; }
+
 }
