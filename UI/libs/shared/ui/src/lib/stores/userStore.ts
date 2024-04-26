@@ -19,6 +19,10 @@ export const useUserStore = defineStore('UserStore', () => {
     validUser.value = value
   }
 
+  const setAllUsers = (value: Array<UserType>) => {
+    allUsers.value = value
+  }
+
   async function getUserApi() {
     const res = await axios.get(Endpoints.GET_USER_ENDPOINT)
 
@@ -35,6 +39,14 @@ export const useUserStore = defineStore('UserStore', () => {
     return res?.data || {}
   }
 
+  async function getAllUsersApi() {
+    const res = await axios.get(Endpoints.GET_ALL_USERS_ENDPOINT)
+
+    if (res?.data) setAllUsers(res.data)
+
+    return res?.data || {}
+  }
+
   return {
     userProfile,
     validUser,
@@ -42,6 +54,7 @@ export const useUserStore = defineStore('UserStore', () => {
     getUserState,
     getUserApi,
     putCreateUserApi,
+    getAllUsersApi,
     setValidUser,
   }
 })
