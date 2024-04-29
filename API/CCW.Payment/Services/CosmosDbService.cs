@@ -62,13 +62,13 @@ public class CosmosDbService : ICosmosDbService
 
         var query = new QueryDefinition(query: queryString);
 
-        using FeedIterator<List<RefundRequest>> filteredFeed = _refundRequestContainer.GetItemQueryIterator<List<RefundRequest>>(query);
+        using FeedIterator<RefundRequest> filteredFeed = _refundRequestContainer.GetItemQueryIterator<RefundRequest>(query);
 
         if (filteredFeed.HasMoreResults)
         {
-            FeedResponse<List<RefundRequest>> response = await filteredFeed.ReadNextAsync();
+            FeedResponse<RefundRequest> response = await filteredFeed.ReadNextAsync();
 
-            return response.Resource.FirstOrDefault();
+            return response.Resource;
         }
 
         return null!;

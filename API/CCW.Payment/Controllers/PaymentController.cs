@@ -91,6 +91,24 @@ public class PaymentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [Route("getRefundRequests")]
+    [HttpGet]
+    public async Task<IActionResult> GetRefundRequests()
+    {
+        try
+        {
+            var result = await _cosmosDbService.GetAllRefundRequests();
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"There was a problem getting refund requests: {ex.Message}");
+            return NotFound("There was a problem getting refund requests");
+        }
+    }
+
     [Authorize(Policy = "B2CUsers")]
     [Route("updatePaymentHistory")]
     [HttpPost]
@@ -310,7 +328,7 @@ public class PaymentController : ControllerBase
 
     static string GetResponseEndpoint(string paymentType)
     {
-        if (paymentType is 
+        if (paymentType is
             "InitialEmployment" or
             "InitialJudicial" or
             "InitialReserve" or

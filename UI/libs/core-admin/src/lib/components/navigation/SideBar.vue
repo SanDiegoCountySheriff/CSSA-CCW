@@ -13,12 +13,7 @@
           class="px-0"
         >
           <v-list-item-avatar class="mr-1">
-            <v-skeleton-loader
-              v-if="isLoading"
-              type="card-avatar"
-            />
             <v-img
-              v-else
               :src="brandStore.getDocuments.agencyLogo"
               alt="Image"
               contain
@@ -83,6 +78,19 @@
           </v-list-item>
 
           <v-list-item
+            v-if="authStore.auth.roles.includes('CCW-ADMIN-ROLE')"
+            :to="Routes.REFUND_REQUESTS_PATH"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-credit-card-refund</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="text-left">
+              {{ $t('Refund Requests') }}
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item
             :to="Routes.SETTINGS_ROUTE_PATH"
             link
           >
@@ -132,7 +140,6 @@ import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import useEnvName from '@shared-ui/composables/useEnvName'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { useQuery } from '@tanstack/vue-query'
 import { computed, getCurrentInstance, ref, watch } from 'vue'
 
 interface ISideBarProps {
@@ -152,8 +159,6 @@ const authStore = useAuthStore()
 const permitStore = usePermitsStore()
 const brandStore = useBrandStore()
 const app = getCurrentInstance()
-
-const { isLoading } = useQuery(['logo'])
 
 const getAppTitle = useEnvName()
 const getVersion = computed(() => VERSION)

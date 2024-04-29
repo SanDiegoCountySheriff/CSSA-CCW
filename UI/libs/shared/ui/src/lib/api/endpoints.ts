@@ -492,4 +492,10 @@ export default class Endpoints {
       useAppConfigStore().appConfig.paymentApiBaseUrl
     }/payment/v1/payment/requestRefund`
   }
+
+  static get GET_ALL_REFUND_REQUESTS_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.paymentApiBaseUrl
+    }/payment/v1/payment/getRefundRequests`
+  }
 }
