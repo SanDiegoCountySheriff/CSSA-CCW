@@ -254,6 +254,7 @@ export type PaymentInfoType = {
 
 export type RefundRequest = {
   id: string | null | undefined
+  orderId: string | null | undefined
   transactionId: string
   applicationId: string
   refundAmount: number

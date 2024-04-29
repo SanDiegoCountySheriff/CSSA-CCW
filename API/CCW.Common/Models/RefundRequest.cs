@@ -6,6 +6,8 @@ public class RefundRequest
 {
     [JsonProperty("id")]
     public string Id { get; set; }
+    [JsonProperty("orderId")]
+    public string OrderId { get; set; }
     [JsonProperty("transactionId")]
     public string TransactionId { get; set; }
     [JsonProperty("applicationId")]

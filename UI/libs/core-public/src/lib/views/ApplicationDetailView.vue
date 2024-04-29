@@ -1421,6 +1421,7 @@ async function handleConfirmWithdrawModification() {
       applicationId: applicationStore.completeApplication.id,
       refundAmount: Number(transaction.amount),
       reason: 'Withdraw Modification',
+      orderId: applicationStore.completeApplication.application.orderId,
     }
 
     await requestRefund(refundRequest)

@@ -55,8 +55,8 @@
             <v-list-item-title class="text-left">
               {{ $t('Applications') }}
               <v-chip
-                class="ml-8 font-weight-bold"
-                :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
+                class="float-right"
+                color="primary"
                 x-small
               >
                 {{ permitStore.summaryCount?.submittedStatus }}
@@ -87,6 +87,13 @@
             </v-list-item-icon>
             <v-list-item-title class="text-left">
               {{ $t('Refund Requests') }}
+              <v-chip
+                class="float-right"
+                color="primary"
+                x-small
+              >
+                {{ paymentStore.refundRequestCount }}
+              </v-chip>
             </v-list-item-title>
           </v-list-item>
 
@@ -139,6 +146,7 @@ import VERSION from '@shared-utils/version'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import useEnvName from '@shared-ui/composables/useEnvName'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { computed, getCurrentInstance, ref, watch } from 'vue'
 
@@ -157,6 +165,7 @@ const wrapText = ref(true)
 const drawer = ref(true)
 const authStore = useAuthStore()
 const permitStore = usePermitsStore()
+const paymentStore = usePaymentStore()
 const brandStore = useBrandStore()
 const app = getCurrentInstance()
 

@@ -9,6 +9,7 @@ export const usePaymentStore = defineStore('paymentStore', () => {
   const state = reactive({
     paymentType: '',
   })
+  const refundRequestCount = ref(0)
   const appConfigStore = useAppConfigStore()
 
   const getPaymentType = computed(() => state.paymentType)
@@ -56,6 +57,10 @@ export const usePaymentStore = defineStore('paymentStore', () => {
   async function getAllRefundRequests(): Promise<Array<RefundRequest>> {
     const response = await axios.get(Endpoints.GET_ALL_REFUND_REQUESTS_ENDPOINT)
 
+    if (response?.data) {
+      refundRequestCount.value = response?.data.length
+    }
+
     return response?.data
   }
 
@@ -82,6 +87,7 @@ export const usePaymentStore = defineStore('paymentStore', () => {
   return {
     state,
     getPaymentType,
+    refundRequestCount,
     isOnlinePaymentAvailable,
     setPaymentType,
     getPayment,
