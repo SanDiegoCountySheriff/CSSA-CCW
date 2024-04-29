@@ -108,7 +108,6 @@
           <v-stepper-items>
             <v-stepper-content :step="3">
               <ModifyWeaponStep
-                :application="applicationStore.completeApplication"
                 @update-step-three-valid="handleUpdateStepThreeValid"
                 @handle-save="handleSaveWeapon"
                 @handle-continue="handleContinueWeapon"
@@ -199,7 +198,6 @@
 
           <v-expansion-panel-content eager>
             <ModifyWeaponStep
-              :application="applicationStore.completeApplication"
               @handle-save="handleSaveWeapon"
               @handle-continue="handleContinueWeapon"
               @handle-add-weapon="handleAddWeapon"

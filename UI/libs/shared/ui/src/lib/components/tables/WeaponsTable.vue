@@ -230,16 +230,6 @@ function undoAddWeapon(item: WeaponInfoType) {
 function undoDeleteWeapon(item: WeaponInfoType) {
   emit('undo-delete-weapon', item)
 }
-
-watch(
-  props.weapons,
-  () => {
-    window.console.log('changing')
-  },
-  {
-    deep: true,
-  }
-)
 </script>
 
 <style lang="scss" scoped>

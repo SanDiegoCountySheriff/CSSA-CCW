@@ -949,7 +949,7 @@ const { mutate: deleteSlotByApplicationId } = useMutation({
 })
 
 const {
-  mutate: addHistoricalApplication,
+  mutateAsync: addHistoricalApplication,
   isLoading: isAddHistoricalApplicationLoading,
 } = useMutation({
   mutationFn: (application: CompleteApplication) =>
@@ -993,12 +993,12 @@ function handleApproveModification() {
   updatePermitDetails()
 }
 
-function handleFinishModification() {
-  const historicalApplication = { ...permitStore.permitDetail }
+async function handleFinishModification() {
+  const historicalApplication: CompleteApplication = {
+    ...permitStore.getPermitDetail,
+  }
 
-  historicalApplication.id = 'test'
-
-  addHistoricalApplication(historicalApplication)
+  await addHistoricalApplication(historicalApplication)
 
   const app = permitStore.getPermitDetail.application
 
