@@ -59,16 +59,9 @@ export const useUserStore = defineStore('UserStore', () => {
 
   async function getAllPendingReviewUsersApi() {
     const res = await axios.get(Endpoints.GET_ALL_USERS_ENDPOINT)
-    //const tempUserArray = Array<UserType>()
 
     if (res?.data) {
       const users = res?.data
-
-      // Object.keys(res?.data).forEach(user => {
-      //   if (res?.data[user].isPendingReview === true) {
-      //     tempUserArray.push(user)
-      //   }
-      // })
 
       const pending = users.filter(
         pendingUser => pendingUser.isPendingReview === true
@@ -78,7 +71,10 @@ export const useUserStore = defineStore('UserStore', () => {
       setPendingReviewCount(pending.length || 0)
     }
 
-    return pendingUsers || {}
+    return (
+      res?.data.filter(pendingUser => pendingUser.isPendingReview === true) ||
+      {}
+    )
   }
 
   async function getPendingReviewCountApi() {
@@ -89,6 +85,7 @@ export const useUserStore = defineStore('UserStore', () => {
     userProfile,
     validUser,
     allUsers,
+    pendingUsers,
     getUserState,
     pendingReviewCount,
     getUserApi,

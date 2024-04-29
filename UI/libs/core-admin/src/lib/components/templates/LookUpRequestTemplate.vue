@@ -8,7 +8,7 @@
             inset
           >
             <v-expansion-panel
-              v-for="(request, index) in userStore.allUsers"
+              v-for="(request, index) in userStore.pendingUsers"
               :key="index"
               title="Item"
             >
