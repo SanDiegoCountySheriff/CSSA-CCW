@@ -374,4 +374,4 @@ API/.idea/.idea.CCW/.idea/vcs.xml
 API/.idea/.idea.CCW/.idea/projectSettingsUpdater.xml
 API/.idea/.idea.CCW/.idea/workspace.xml
 
-**/appsettings.Developement.json
+appsettings.Development.json
