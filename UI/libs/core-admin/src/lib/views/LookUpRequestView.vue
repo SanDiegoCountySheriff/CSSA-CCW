@@ -67,23 +67,16 @@
               </template>
             </v-toolbar>
           </div>
-          <!-- <v-card-title>
-            <v-tabs
-              v-model="tab"
-              :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
-              @change="handleTabChange"
-              slider-color="primary"
-            >
-              <v-tab> Potential Matches </v-tab>
-              <v-tab> Undo Matches </v-tab>
-            </v-tabs>
-          </v-card-title> -->
-
           <v-tabs-items v-model="tab">
             <v-tab-item>
-              <LookUpRequestTemplate
-                @on-upload-appointments="handleShowSnackbar"
-              />
+              <v-col>
+                <LookUpRequestTemplate
+                  @on-upload-appointments="handleShowSnackbar"
+                />
+              </v-col>
+              <v-col>
+                <v-btn @click="match">Match</v-btn>
+              </v-col>
             </v-tab-item>
           </v-tabs-items>
         </v-card>
