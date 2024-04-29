@@ -47,6 +47,16 @@ export const useUserStore = defineStore('UserStore', () => {
     return res?.data || {}
   }
 
+  async function getAllPendingReviewUsersApi() {
+    const res = await axios.get(Endpoints.GET_ALL_USERS_ENDPOINT)
+
+    if (res?.data && res?.data.isPendingReview === true) {
+      setUser(res.data)
+    }
+
+    return res?.data || {}
+  }
+
   return {
     userProfile,
     validUser,
@@ -56,5 +66,6 @@ export const useUserStore = defineStore('UserStore', () => {
     putCreateUserApi,
     getAllUsersApi,
     setValidUser,
+    getAllPendingReviewUsersApi,
   }
 })
