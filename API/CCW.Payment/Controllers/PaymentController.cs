@@ -33,19 +33,18 @@ public class PaymentController : ControllerBase
     {
         _logger = logger;
         _cosmosDbService = cosmosDbService;
-        var client = new SecretClient(new Uri(configuration.GetSection("KeyVault:VaultUri").Value), credential: new DefaultAzureCredential());
-        _merchantName = client.GetSecret("heartland-merchant-name").Value.Value;
-        _hmacKey = client.GetSecret("hmac-key").Value.Value;
+        _merchantName = configuration.GetSection("Heartland:MerchantName").Value;
+        _hmacKey = configuration.GetSection("Heartland:HmacKey").Value;
         _heartlandEndpoint = configuration.GetSection("Heartland").GetSection("HeartlandEndpoint").Value;
         _processTransactionEndpoint = configuration.GetSection("Heartland").GetSection("ProcessTransactionEndpoint").Value;
         _redirectEndpoint = configuration.GetSection("Heartland").GetSection("RedirectEndpoint").Value;
 
         ServicesContainer.ConfigureService(new BillPayConfig()
         {
-            Username = client.GetSecret("heartland-username").Value.Value,
-            Password = client.GetSecret("heartland-password").Value.Value,
+            Username = configuration.GetSection("Heartland:Username").Value,
+            Password = configuration.GetSection("Heartland:Password").Value,
             MerchantName = _merchantName,
-            ServiceUrl = client.GetSecret("heartland-service-url").Value.Value,
+            ServiceUrl = configuration.GetSection("Heartland:ServiceUrl").Value,
         });
 
         _billPayService = new BillPayService();
