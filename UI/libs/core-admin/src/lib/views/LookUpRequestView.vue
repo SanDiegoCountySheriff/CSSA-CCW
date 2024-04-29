@@ -36,22 +36,56 @@
         lg="8"
       >
         <v-card height="900">
-          <v-card-title>
+          <!-- <v-toolbar>
+            <v-text-field
+              prepend-icon="mdi-magnify"
+              class="mx-3"
+              flat
+              label="Search"
+            ></v-text-field>
+          </v-toolbar> -->
+          <div>
+            <v-toolbar tab>
+              <v-text-field
+                class="mx-3"
+                flat
+                label="Search"
+                prepend-icon="mdi-magnify"
+              ></v-text-field>
+
+              <template v-slot:extension>
+                <v-tabs
+                  v-model="tab"
+                  centered
+                  :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
+                  slider-color="primary"
+                  @change="getPendingUsers"
+                >
+                  <v-tab> Potential Matches </v-tab>
+                  <v-tab> Undo Matches </v-tab>
+                </v-tabs>
+              </template>
+            </v-toolbar>
+          </div>
+          <!-- <v-card-title>
             <v-tabs
               v-model="tab"
               :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
               @change="handleTabChange"
+              slider-color="primary"
             >
-              <v-tabs-slider color="primary"></v-tabs-slider>
-
               <v-tab> Potential Matches </v-tab>
-              <v-tab-item> Potential Matches </v-tab-item>
               <v-tab> Undo Matches </v-tab>
-              <v-tab-item>Undo Matches </v-tab-item>
-
-              <v-tabs-items v-model="tab"> </v-tabs-items>
             </v-tabs>
-          </v-card-title>
+          </v-card-title> -->
+
+          <v-tabs-items v-model="tab">
+            <v-tab-item>
+              <LookUpRequestTemplate
+                @on-upload-appointments="handleShowSnackbar"
+              />
+            </v-tab-item>
+          </v-tabs-items>
         </v-card>
       </v-col>
     </v-row>
@@ -71,6 +105,14 @@ const snackbar = ref(false)
 const message = ref('')
 
 function handleTabChange() {
+  if (tab.value === 1) {
+    queryClient.resetQueries({
+      queryKey: ['getAllPendingReviewUsersApi'],
+    })
+  }
+}
+
+function getPendingUsers() {
   if (tab.value === 1) {
     queryClient.resetQueries({
       queryKey: ['getAllPendingReviewUsersApi'],
