@@ -3,7 +3,11 @@
     <v-row>
       <v-col>
         <v-card
-          :loading="isGetApplicationsLoading"
+          :loading="
+            isGetApplicationsLoading ||
+            isUpdateApplicationLoading ||
+            isRefundRequestLoading
+          "
           outlined
         >
           <v-card-title>
@@ -233,6 +237,11 @@
               >
                 <WithdrawModifyDialog
                   v-if="showModifyWithdrawButton"
+                  :disabled="
+                    isRefundRequestLoading ||
+                    isUpdateApplicationLoading ||
+                    fileUploadLoading
+                  "
                   @confirm="handleConfirmWithdrawModification"
                 />
 
@@ -877,7 +886,10 @@
 import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue'
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
-import { AppointmentType } from '@shared-utils/types/defaultTypes'
+import {
+  AppointmentType,
+  RefundRequest,
+} from '@shared-utils/types/defaultTypes'
 import CharacterReferenceInfoSection from '@shared-ui/components/info-sections/CharacterReferenceInfoSection.vue'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
@@ -903,6 +915,7 @@ import { i18n } from '@shared-ui/plugins'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { useRouter } from 'vue-router/composables'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
 import {
@@ -921,6 +934,7 @@ interface IFileSubmission {
 
 const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
+const paymentStore = usePaymentStore()
 const brandStore = useBrandStore()
 const themeStore = useThemeStore()
 const router = useRouter()
@@ -1363,6 +1377,19 @@ const updateMutation = useMutation({
   onError: () => null,
 })
 
+const {
+  isLoading: isUpdateApplicationLoading,
+  mutateAsync: updateApplication,
+} = useMutation({
+  mutationFn: applicationStore.updateApplication,
+})
+
+const { isLoading: isRefundRequestLoading, mutateAsync: requestRefund } =
+  useMutation({
+    mutationFn: (refundRequest: RefundRequest) =>
+      paymentStore.requestRefund(refundRequest),
+  })
+
 const renewMutation = useMutation({
   mutationFn: applicationStore.updateApplication,
   onSuccess: () => {
@@ -1377,7 +1404,28 @@ const renewMutation = useMutation({
   onError: () => null,
 })
 
-function handleConfirmWithdrawModification() {
+async function handleConfirmWithdrawModification() {
+  const transaction = applicationStore.completeApplication.paymentHistory.find(
+    ph => {
+      return (
+        ph.modificationNumber ===
+        applicationStore.completeApplication.application.modificationNumber
+      )
+    }
+  )
+
+  if (transaction) {
+    const refundRequest: RefundRequest = {
+      id: null,
+      transactionId: transaction.transactionId,
+      applicationId: applicationStore.completeApplication.id,
+      refundAmount: Number(transaction.amount),
+      reason: 'Withdraw Modification',
+    }
+
+    await requestRefund(refundRequest)
+  }
+
   applicationStore.completeApplication.application.modifiedAddress = {
     streetAddress: '',
     city: '',
@@ -1406,9 +1454,9 @@ function handleConfirmWithdrawModification() {
       applicationStore.completeApplication.application.applicationType
     )
 
-  // TODO: request refund
+  applicationStore.completeApplication.application.currentStep = 1
 
-  // update application
+  await updateApplication()
 }
 
 function handleContinueApplication() {

@@ -49,6 +49,10 @@ export const usePaymentStore = defineStore('paymentStore', () => {
       })
   }
 
+  async function requestRefund(refundRequest: RefundRequest) {
+    await axios.post(Endpoints.REQUEST_REFUND_ENDPOINT, refundRequest)
+  }
+
   async function updatePaymentHistory(
     transactionId: string,
     successful: boolean,
@@ -77,5 +81,6 @@ export const usePaymentStore = defineStore('paymentStore', () => {
     getPayment,
     refundPayment,
     updatePaymentHistory,
+    requestRefund,
   }
 })

@@ -253,9 +253,11 @@ export type PaymentInfoType = {
 }
 
 export type RefundRequest = {
+  id: string | null | undefined
   transactionId: string
   applicationId: string
   refundAmount: number
+  reason: string | null | undefined
 }
 
 export type PersonalInfoType = {

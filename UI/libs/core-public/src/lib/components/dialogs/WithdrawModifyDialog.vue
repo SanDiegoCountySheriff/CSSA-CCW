@@ -7,6 +7,7 @@
       <v-btn
         v-on="on"
         v-bind="attrs"
+        :disabled="props.disabled"
         color="primary"
         block
       >
@@ -17,11 +18,14 @@
     <v-card>
       <v-card-title>Withdraw Modify</v-card-title>
 
-      <v-card-text>Are you sure?</v-card-text>
+      <v-card-text>
+        Are you sure you want to withdraw your modification? This will create a
+        refund request that may take some time to process.
+      </v-card-text>
 
       <v-card-actions>
         <v-btn
-          @click="dialog = !dialog"
+          @click="dialog = false"
           text
           color="primary"
         >
@@ -31,7 +35,7 @@
         <v-spacer />
 
         <v-btn
-          @click="$emit('confirm')"
+          @click="handleConfirm"
           text
           color="primary"
         >
@@ -45,7 +49,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-defineEmits(['confirm'])
+interface dialogProps {
+  disabled: boolean
+}
+
+const props = defineProps<dialogProps>()
+
+const emit = defineEmits(['confirm'])
 
 const dialog = ref(false)
+
+function handleConfirm() {
+  emit('confirm')
+  dialog.value = false
+}
 </script>

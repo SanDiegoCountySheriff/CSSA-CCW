@@ -74,6 +74,24 @@ public class PaymentController : ControllerBase
     }
 
     [Authorize(Policy = "B2CUsers")]
+    [Route("requestRefund")]
+    [HttpPost]
+    public async Task<IActionResult> RequestRefund(RefundRequest refundRequest)
+    {
+        try
+        {
+            await _cosmosDbService.AddRefundRequest(refundRequest);
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("There was a problem requesting a refund", ex.Message);
+            return NotFound("There was a problem requesting a refund.");
+        }
+    }
+
+    [Authorize(Policy = "B2CUsers")]
     [Route("updatePaymentHistory")]
     [HttpPost]
     public async Task<IActionResult> UpdatePaymentHistory(
@@ -268,13 +286,6 @@ public class PaymentController : ControllerBase
         public string TransactionID { get; set; }
         public string TransactionDateTime { get; set; }
         public decimal BaseAmount { get; set; }
-    }
-
-    public class RefundRequest
-    {
-        public string TransactionId { get; set; }
-        public string ApplicationId { get; set; }
-        public decimal RefundAmount { get; set; }
     }
 
     private void GetUserId(out string userId)
