@@ -31,7 +31,7 @@
                 >
                   <v-text-field
                     v-model="user.firstName"
-                    :rules="[v => !!v || $t('First Name cannot be blank')]"
+                    :rules="[v => !!v || $t('First name cannot be blank')]"
                     label="First Name"
                     outlined
                     dense
@@ -43,7 +43,7 @@
                 >
                   <v-text-field
                     v-model="user.lastName"
-                    :rules="[v => !!v || $t('Last Name cannot be blank')]"
+                    :rules="[v => !!v || $t('Last name cannot be blank')]"
                     label="Last Name"
                     outlined
                     dense
@@ -87,9 +87,10 @@
                   <v-text-field
                     v-model="user.driversLicenseNumber"
                     :rules="[
-                      v => !!v || $t('Drivers License Number cannot be blank'),
+                      v =>
+                        !!v || $t('Driver\'s License Number cannot be blank'),
                     ]"
-                    label="Drivers License Number"
+                    label="Driver's License Number"
                     outlined
                     dense
                   ></v-text-field>
@@ -115,7 +116,7 @@
                 >
                   <FileUploadContainer
                     :accepted-formats="'image/png, image/jpeg, application/pdf'"
-                    :document-label="'Photo of Drivers License'"
+                    :document-label="'Photo of Driver\'s License'"
                     :is-loading="loadingStates.DriverLicense"
                     @file-opening="loadingStates.DriverLicense = true"
                     @file-opened="loadingStates.DriverLicense = false"
@@ -166,9 +167,9 @@
               </v-row>
 
               <v-container class="mb-10">
-                Application look-up may take some time, please check back soon!
+                Application look-up may take some time. Please check back soon.
                 We highly recommend giving us information about your appointment
-                date if you have one so we can expedite the process for you.
+                date, if you have one, so we can expedite the process for you.
               </v-container>
 
               <v-row class="justify-center">

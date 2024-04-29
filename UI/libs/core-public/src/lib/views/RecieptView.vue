@@ -25,7 +25,7 @@
               successful! {{ brandStore.getBrand.agencyName }} Licensing Staff
               will contact you once the application has been reviewed. Due to
               the volume of applications submitted, it may be several months
-              before staff contacts you.
+              before staff contact you.
             </p>
             <span
               style="color: red"
@@ -37,7 +37,7 @@
           <v-card-text class="text-center">
             <p>
               You can view the status of your application by logging in and
-              pressing the "View Application" button.
+              clicking the "View Application" button.
             </p>
             <v-btn
               color="primary"
