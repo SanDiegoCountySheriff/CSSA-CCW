@@ -472,6 +472,52 @@ public class DocumentController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
+    [HttpGet("downloadUserApplicantFile", Name = "downloadUserApplicantFile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DownloadUserApplicantFile(
+    string applicantFileName,
+    CancellationToken cancellationToken)
+    {
+        try
+        {
+            MemoryStream ms = new MemoryStream();
+
+            var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
+            if (await file.ExistsAsync(cancellationToken))
+            {
+                await file.DownloadToAsync(ms);
+                BlobProperties properties = await file.GetPropertiesAsync();
+
+                if (properties.ContentType == "application/pdf")
+                {
+                    Stream blobStream = file.OpenReadAsync().Result;
+
+                    Response.Headers.Add("Content-Disposition", "inline");
+                    Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+                    return new FileStreamResult(blobStream, properties.ContentType);
+                }
+
+                byte[] bytes = ms.ToArray();
+
+                var b64String = Convert.ToBase64String(bytes);
+
+                return Content("data:image/png;base64," + b64String);
+
+            }
+
+            return Content("File/image does not exist");
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to download user applicant file.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("downloadAgencyFile", Name = "downloadAgencyFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
