@@ -83,7 +83,7 @@
                 :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
                 x-small
               >
-                {{ permitStore.summaryCount?.submittedStatus }}
+                {{ userStore.pendingReviewCount }}
               </v-chip>
             </v-list-item-title>
           </v-list-item>
@@ -151,6 +151,7 @@ import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import useEnvName from '@shared-ui/composables/useEnvName'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { useUserStore } from '@shared-ui/stores/userStore'
 import { useQuery } from '@tanstack/vue-query'
 import { computed, getCurrentInstance, ref, watch } from 'vue'
 
@@ -170,6 +171,7 @@ const drawer = ref(true)
 const authStore = useAuthStore()
 const permitStore = usePermitsStore()
 const brandStore = useBrandStore()
+const userStore = useUserStore()
 const app = getCurrentInstance()
 
 const { isLoading } = useQuery(['logo'])
