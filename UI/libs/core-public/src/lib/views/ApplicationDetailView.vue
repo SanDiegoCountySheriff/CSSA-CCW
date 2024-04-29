@@ -209,7 +209,10 @@
 
           <v-card-text>
             <v-row>
-              <v-col>
+              <v-col
+                cols="12"
+                xl="6"
+              >
                 <v-btn
                   color="primary"
                   block
@@ -224,16 +227,17 @@
                 </v-btn>
               </v-col>
 
-              <v-col>
+              <v-col
+                cols="12"
+                xl="6"
+              >
+                <WithdrawModifyDialog
+                  v-if="showModifyWithdrawButton"
+                  @confirm="handleConfirmWithdrawModification"
+                />
+
                 <v-btn
-                  v-if="
-                    applicationStore.completeApplication.application.status !==
-                      ApplicationStatus.Withdrawn &&
-                    applicationStore.completeApplication.application.status !==
-                      ApplicationStatus.Incomplete &&
-                    applicationStore.completeApplication.application.status !==
-                      ApplicationStatus['Permit Delivered']
-                  "
+                  v-if="showInitialWithdrawButton"
                   @click="handleShowWithdrawDialog"
                   :disabled="
                     isGetApplicationsLoading || !canWithdrawApplication
@@ -258,8 +262,12 @@
                 </v-btn>
               </v-col>
             </v-row>
+
             <v-row>
-              <v-col>
+              <v-col
+                cols="12"
+                xl="6"
+              >
                 <v-btn
                   color="primary"
                   block
@@ -269,7 +277,11 @@
                   Renew
                 </v-btn>
               </v-col>
-              <v-col>
+
+              <v-col
+                cols="12"
+                xl="6"
+              >
                 <v-btn
                   v-if="canApplicationBeUpdated"
                   color="primary"
@@ -884,7 +896,9 @@ import SpouseAddressInfoSection from '@shared-ui/components/info-sections/Spouse
 import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
+import WithdrawModifyDialog from '@core-public/components/dialogs/WithdrawModifyDialog.vue'
 import axios from 'axios'
+import { getOriginalApplicationTypeModification } from '@shared-ui/composables/getOriginalApplicationType'
 import { i18n } from '@shared-ui/plugins'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
@@ -1051,6 +1065,38 @@ const canApplicationBeModified = computed(() => {
   return (
     applicationStore.completeApplication.application.status ===
     ApplicationStatus['Permit Delivered']
+  )
+})
+
+const showInitialWithdrawButton = computed(() => {
+  return (
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Withdrawn &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Incomplete &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Permit Delivered'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Employment'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Judicial'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Reserve'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Standard']
+  )
+})
+
+const showModifyWithdrawButton = computed(() => {
+  return (
+    applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Modify Employment'] ||
+    applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Modify Judicial'] ||
+    applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Modify Reserve'] ||
+    applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Modify Standard']
   )
 })
 
@@ -1330,6 +1376,40 @@ const renewMutation = useMutation({
   },
   onError: () => null,
 })
+
+function handleConfirmWithdrawModification() {
+  applicationStore.completeApplication.application.modifiedAddress = {
+    streetAddress: '',
+    city: '',
+    state: '',
+    county: '',
+    zip: '',
+    country: '',
+  }
+  applicationStore.completeApplication.application.modifiedAddressComplete =
+    null
+  applicationStore.completeApplication.application.modifyAddWeapons = []
+  applicationStore.completeApplication.application.modifyDeleteWeapons = []
+  applicationStore.completeApplication.application.modifiedWeaponComplete = null
+  applicationStore.completeApplication.application.personalInfo.modifiedFirstName =
+    ''
+  applicationStore.completeApplication.application.personalInfo.modifiedLastName =
+    ''
+  applicationStore.completeApplication.application.personalInfo.modifiedMiddleName =
+    ''
+  applicationStore.completeApplication.application.modifiedNameComplete = null
+  applicationStore.completeApplication.application.status =
+    ApplicationStatus['Permit Delivered']
+
+  applicationStore.completeApplication.application.applicationType =
+    getOriginalApplicationTypeModification(
+      applicationStore.completeApplication.application.applicationType
+    )
+
+  // TODO: request refund
+
+  // update application
+}
 
 function handleContinueApplication() {
   if (

@@ -872,9 +872,11 @@ import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vu
 import FinishModificationDialog from '@core-admin/components/dialogs/FinishModificationDialog.vue'
 import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
+import { getOriginalApplicationTypeModification } from '@shared-ui/composables/getOriginalApplicationType'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
+import { useMutation } from '@tanstack/vue-query'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
 import {
@@ -887,7 +889,6 @@ import {
   CompleteApplication,
 } from '@shared-utils/types/defaultTypes'
 import { computed, reactive, ref } from 'vue'
-import { useMutation, useQuery } from '@tanstack/vue-query'
 
 interface IPermitCard2Props {
   isLoading: boolean
@@ -1004,24 +1005,9 @@ async function handleFinishModification() {
 
   app.status = ApplicationStatus['Permit Delivered']
 
-  switch (app.applicationType) {
-    case ApplicationType['Modify Standard']: {
-      app.applicationType = ApplicationType.Standard
-      break
-    }
-    case ApplicationType['Modify Judicial']: {
-      app.applicationType = ApplicationType.Judicial
-      break
-    }
-    case ApplicationType['Modify Reserve']: {
-      app.applicationType = ApplicationType.Reserve
-      break
-    }
-    case ApplicationType['Modify Employment']: {
-      app.applicationType = ApplicationType.Employment
-      break
-    }
-  }
+  app.applicationType = getOriginalApplicationTypeModification(
+    app.applicationType
+  )
 
   if (app.personalInfo.modifiedFirstName) {
     app.personalInfo.firstName = app.personalInfo.modifiedFirstName
