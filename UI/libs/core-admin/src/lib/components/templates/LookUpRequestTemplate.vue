@@ -50,8 +50,8 @@ const user = computed(() => userStore.userProfile)
 const userProfiles = ref<UserType[]>([])
 
 const { isFetching: isAllUsersLoading } = useQuery(
-  ['getPendingReviewUsersApi'],
-  () => userStore.getPendingReviewUsersApi(),
+  ['getAllPendingReviewUsersApi'],
+  () => userStore.getAllPendingReviewUsersApi(),
   {}
 )
 </script>

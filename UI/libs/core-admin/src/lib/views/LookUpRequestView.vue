@@ -73,7 +73,7 @@ const message = ref('')
 function handleTabChange() {
   if (tab.value === 1) {
     queryClient.resetQueries({
-      queryKey: ['getPendingReviewUsersApi'],
+      queryKey: ['getAllPendingReviewUsersApi'],
     })
   }
 }

@@ -59,38 +59,24 @@ export const useUserStore = defineStore('UserStore', () => {
 
   async function getAllPendingReviewUsersApi() {
     const res = await axios.get(Endpoints.GET_ALL_USERS_ENDPOINT)
+    //const tempUserArray = Array<UserType>()
 
     if (res?.data) {
-      setUser(res.data)
-    }
+      const users = res?.data
 
-    return res?.data || {}
-  }
-
-  async function getPendingReviewUsersApi() {
-    const res = await axios.get(Endpoints.GET_ALL_USERS_ENDPOINT)
-    const tempUserArray = Array<UserType>()
-    let arrayCount = 0
-
-    if (res?.data) {
-      Object.keys(res?.data).forEach(user => {
-        if (res?.data[user].isPendingReview === true) {
-          tempUserArray.push(user)
-          arrayCount++
-        }
-      })
-
-      // res?.data.foreach(user => {
-      //   if (user.isPendingReview === true) {
+      // Object.keys(res?.data).forEach(user => {
+      //   if (res?.data[user].isPendingReview === true) {
       //     tempUserArray.push(user)
-      //     arrayCount++
       //   }
       // })
 
-      setPendingUsers(tempUserArray)
-    }
+      const pending = users.filter(
+        pendingUser => pendingUser.isPendingReview === true
+      )
 
-    setPendingReviewCount(arrayCount)
+      setPendingUsers(pending)
+      setPendingReviewCount(pending.length || 0)
+    }
 
     return pendingUsers || {}
   }
@@ -110,8 +96,6 @@ export const useUserStore = defineStore('UserStore', () => {
     getAllUsersApi,
     setValidUser,
     getAllPendingReviewUsersApi,
-    //getAllPendingReviewUsersCountApi,
-    getPendingReviewUsersApi,
     getPendingReviewCountApi,
   }
 })
