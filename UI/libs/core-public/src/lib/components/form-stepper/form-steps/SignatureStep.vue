@@ -314,18 +314,16 @@ function handleSave() {
 }
 
 async function handleFileUpload() {
-  const newFileName = `${applicationStore.completeApplication.application.personalInfo.lastName}_${applicationStore.completeApplication.application.personalInfo.firstName}_Signature`
-
   const uploadDoc: UploadedDocType = {
     documentType: 'Signature',
-    name: newFileName,
+    name: 'Signature',
     uploadedBy: applicationStore.completeApplication.application.userEmail,
     uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
   }
 
   await axios
     .post(
-      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${newFileName}`,
+      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=Signature`,
       state.file
     )
     .then(() => {

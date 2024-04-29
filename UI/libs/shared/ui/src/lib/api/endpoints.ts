@@ -149,6 +149,12 @@ export default class Endpoints {
     }/application/v1/permitapplication/getAssignedApplicationsSummary`
   }
 
+  static get PUT_ADD_HISTORICAL_APPLICATION_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/putAddHistoricalApplication`
+  }
+
   /********APPOINTMENTS******************/
 
   static get GET_APPOINTMENTS_ENDPOINT() {
@@ -413,11 +419,6 @@ export default class Endpoints {
     }/document/v1/document/downloadUserApplicantFile`
   }
 
-  static get POST_DOCUMENT_FILE_ENDPOINT() {
-    return `${
-      useAppConfigStore().appConfig.documentApiBaseUrl
-    }/document/v1/document/uploadApplicantFile`
-  }
   static get POST_AGENCY_DOCUMENT_FILE_ENDPOINT() {
     return `${
       useAppConfigStore().appConfig.documentApiBaseUrl
@@ -428,12 +429,6 @@ export default class Endpoints {
     return `${
       useAppConfigStore().appConfig.documentApiBaseUrl
     }/document/v1/document/uploadAdminUserFile`
-  }
-
-  static get POST_UPLOAD_ADMIN_APPLICATION_FILE_ENDPOINT() {
-    return `${
-      useAppConfigStore().appConfig.documentApiBaseUrl
-    }/document/v1/document/uploadAdminApplicationFile`
   }
 
   static get DELETE_ADMIN_APPLICATION_FILE_ENDPOINT() {

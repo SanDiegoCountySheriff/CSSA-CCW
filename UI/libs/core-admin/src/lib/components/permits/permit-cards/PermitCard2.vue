@@ -14,6 +14,7 @@
         </v-card>
 
         <v-card
+          :loading="isAddHistoricalApplicationLoading || isLoading"
           v-else
           class="d-flex flex-column fill-height"
           outlined
@@ -865,7 +866,6 @@
 </template>
 
 <script setup lang="ts">
-import { ApplicationType } from '@shared-utils/types/defaultTypes'
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue'
 import ExpirationDateDialog from '@core-admin/components/dialogs/ExpirationDateDialog.vue'
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
@@ -873,14 +873,18 @@ import FinishModificationDialog from '@core-admin/components/dialogs/FinishModif
 import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
-import { useThemeStore } from '@shared-ui/stores/themeStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 import {
   ApplicationStatus,
   AppointmentStatus,
   AppointmentWindowCreateRequestModel,
+} from '@shared-utils/types/defaultTypes'
+import {
+  ApplicationType,
+  CompleteApplication,
 } from '@shared-utils/types/defaultTypes'
 import { computed, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
@@ -934,17 +938,22 @@ const allowedExtension = [
   '.pdf',
 ]
 
-const { refetch: updatePermitDetails } = useQuery(
-  ['setPermitsDetails'],
-  () => permitStore.updatePermitDetailApi(`Updated ${changed.value}`),
-  {
-    enabled: false,
-  }
-)
+const { mutate: updatePermitDetails, isLoading } = useMutation({
+  mutationFn: () =>
+    permitStore.updatePermitDetailApi(`Updated ${changed.value}`),
+})
 
 const { mutate: deleteSlotByApplicationId } = useMutation({
   mutationFn: (applicationId: string) =>
     appointmentStore.deleteSlotByApplicationId(applicationId),
+})
+
+const {
+  mutate: addHistoricalApplication,
+  isLoading: isAddHistoricalApplicationLoading,
+} = useMutation({
+  mutationFn: (application: CompleteApplication) =>
+    permitStore.addHistoricalApplication(application),
 })
 
 const { mutate: reopenSlotByApplicationId } = useMutation({
@@ -985,7 +994,11 @@ function handleApproveModification() {
 }
 
 function handleFinishModification() {
-  // TODO: Save historical
+  const historicalApplication = { ...permitStore.permitDetail }
+
+  historicalApplication.id = 'test'
+
+  addHistoricalApplication(historicalApplication)
 
   const app = permitStore.getPermitDetail.application
 

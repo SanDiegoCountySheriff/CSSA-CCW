@@ -347,17 +347,15 @@ async function handleFileUpload() {
   documentTypes.forEach(type => (loadingStates[type.split('-')[0]] = true))
 
   for (let file of state.files) {
-    const newFileName = `${props.application.application.personalInfo.lastName}_${props.application.application.personalInfo.firstName}_${file.target}`
-
     try {
       await axios.post(
-        `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${newFileName}`,
+        `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${file.target}`,
         file.formData
       )
 
       const uploadDoc: UploadedDocType = {
         documentType: file.target.split('_').shift(),
-        name: `${newFileName}`,
+        name: file.target,
         uploadedBy: props.application.application.userEmail,
         uploadedDateTimeUtc: new Date().toISOString(),
       }

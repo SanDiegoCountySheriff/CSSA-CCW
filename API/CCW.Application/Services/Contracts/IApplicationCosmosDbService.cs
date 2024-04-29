@@ -7,6 +7,7 @@ namespace CCW.Application.Services.Contracts;
 public interface IApplicationCosmosDbService
 {
     Task<PermitApplication> AddAsync(PermitApplication application, CancellationToken cancellationToken);
+    Task<PermitApplication> AddHistoricalApplicationAsync(PermitApplication application, CancellationToken cancellationToken);
     Task<IEnumerable<PermitApplication>> GetAllOpenApplicationsForUserAsync(string userId,
         CancellationToken cancellationToken);
     Task<string> GetSSNAsync(string userId, CancellationToken cancellationToken);

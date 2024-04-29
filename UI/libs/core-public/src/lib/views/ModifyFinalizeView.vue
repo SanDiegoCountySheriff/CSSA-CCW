@@ -50,7 +50,10 @@
               </v-card-text>
             </v-row>
 
-            <v-row v-if="isUpdatePaymentHistoryLoading">
+            <v-row
+              v-if="isUpdatePaymentHistoryLoading"
+              class="justify-center"
+            >
               <v-alert
                 :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
                 color="primary"
@@ -66,7 +69,10 @@
               </v-alert>
             </v-row>
 
-            <v-row v-if="isMakePaymentLoading">
+            <v-row
+              v-if="isMakePaymentLoading"
+              class="justify-center"
+            >
               <v-alert
                 :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
                 color="primary"
@@ -336,7 +342,7 @@ const { isLoading: isUpdateApplicationLoading, mutate: updateMutation } =
 
 const fileMutation = useMutation({
   mutationFn: async () => {
-    const newFileName = `${applicationStore.completeApplication.application.personalInfo.lastName}_${applicationStore.completeApplication.application.personalInfo.firstName}_Signature`
+    const newFileName = `Signature`
 
     const uploadDoc: UploadedDocType = {
       documentType: 'Signature',

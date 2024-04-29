@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using System;
 
 namespace CCW.Common.Models;
 
@@ -12,4 +11,5 @@ public class PermitApplication
     public string UserId { get; set; }
     public List<PaymentHistory> PaymentHistory { get; set; }
     public History[] History { get; set; }
+    public DateTimeOffset? HistoricalDate { get; set; }
 }

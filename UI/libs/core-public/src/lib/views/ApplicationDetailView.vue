@@ -1680,14 +1680,13 @@ function cancelChanges() {
 
 function handleFileSubmit(fileSubmission: IFileSubmission) {
   fileUploadLoading.value = true
-  const newFileName = `${applicationStore.completeApplication.application.personalInfo.lastName}_${applicationStore.completeApplication.application.personalInfo.firstName}_${fileSubmission.fileType}`
   const form = new FormData()
 
   form.append('fileToUpload', fileSubmission.file)
 
   axios
     .post(
-      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${newFileName}`,
+      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${fileSubmission.fileType}`,
       form
     )
     .catch(e => {
@@ -1697,7 +1696,7 @@ function handleFileSubmit(fileSubmission: IFileSubmission) {
 
   const uploadDoc: UploadedDocType = {
     documentType: fileSubmission.fileType,
-    name: `${newFileName}`,
+    name: fileSubmission.fileType,
     uploadedBy: applicationStore.completeApplication.application.userEmail,
     uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
   }
