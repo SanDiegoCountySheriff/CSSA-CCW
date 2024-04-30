@@ -13,7 +13,7 @@
           <v-spacer></v-spacer>
           <v-btn
             v-if="editEnable"
-            @click="weaponDialog = true"
+            @click="openAddWeaponDialog"
             color="primary"
             small
           >
@@ -23,7 +23,7 @@
       </template>
       <template
         v-if="editEnable"
-        #[`item.actions`]="{ item }"
+        #[`item.actions`]="{ item, index }"
       >
         <v-tooltip
           top
@@ -32,7 +32,7 @@
           <template #activator="{ on, attrs }">
             <v-icon
               v-bind="attrs"
-              @click="handleDelete(item)"
+              @click="handleDelete(index)"
               color="error"
               v-on="on"
               default
@@ -54,7 +54,7 @@
     </v-data-table>
     <WeaponsDialog
       v-model="weaponDialog"
-      :item="editedWeapon"
+      :item="currentWeapon"
       :editing="isEditing"
       @update-weapon="handleUpdateWeapon"
       @edit-weapon="handleEditWeapon"
@@ -107,18 +107,33 @@ const headers = computed(() => {
   return props.editEnable ? headersWithActions : headersWithoutActions
 })
 
-function handleDelete(index) {
+const currentWeapon = ref<WeaponInfoType>({
+  make: '',
+  model: '',
+  caliber: '',
+  serialNumber: '',
+})
+
+function openAddWeaponDialog() {
+  currentWeapon.value = {
+    make: '',
+    model: '',
+    caliber: '',
+    serialNumber: '',
+  }
+  isEditing.value = false
+  editedWeaponIndex.value = -1
+  weaponDialog.value = true
+}
+
+function handleDelete(index: number) {
   emit('delete-weapon', index)
 }
 
-function editWeapon(item) {
+function editWeapon(item: WeaponInfoType) {
   editedWeaponIndex.value = props.weapons.indexOf(item)
-  editedWeapon.value.model = item.model
-  editedWeapon.value.caliber = item.caliber
-  editedWeapon.value.serialNumber = item.serialNumber
-  editedWeapon.value.make = item.make
+  currentWeapon.value = { ...item }
   isEditing.value = true
-
   weaponDialog.value = true
 }
 
@@ -130,7 +145,7 @@ function handleEditWeapon(item: WeaponInfoType) {
   isEditing.value = false
   emit('handle-edit-weapon', { index: editedWeaponIndex.value, value: item })
   weaponDialog.value = false
-  editedWeapon.value = {
+  currentWeapon.value = {
     make: '',
     model: '',
     caliber: '',

@@ -46,6 +46,7 @@
 </template>
 
 <script setup lang="ts">
+import { ApplicationInsights } from '@microsoft/applicationinsights-web'
 import Footer from '@shared-ui/components/footer/Footer.vue'
 import Loader from '@core-public/views/Loader.vue'
 import NavBar from '@core-public/components/navbar/NavBar.vue'
@@ -64,8 +65,8 @@ import { computed, getCurrentInstance, onBeforeMount, provide, ref } from 'vue'
 const prompt = ref(false)
 const app = getCurrentInstance()
 const authStore = useAuthStore()
-const themeStore = useThemeStore()
 const configStore = useAppConfigStore()
+const themeStore = useThemeStore()
 const brandStore = useBrandStore()
 const msalInstance = ref<MsalBrowser>()
 
@@ -101,9 +102,24 @@ onBeforeMount(async () => {
 
   msalInstance.value = await getMsalInstance()
 
-  if (app) {
-    app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark
+  const darkMode = localStorage.getItem('dark-mode')
+
+  if (app && darkMode) {
+    app.proxy.$vuetify.theme.dark = darkMode === 'true'
+    themeStore.getThemeConfig.isDark = darkMode === 'true'
   }
+
+  const appInsights = new ApplicationInsights({
+    config: {
+      connectionString:
+        configStore.appConfig.applicationInsightsConnectionString,
+    },
+  })
+
+  const referrer = document.referrer
+
+  appInsights.loadAppInsights()
+  appInsights.trackPageView({ properties: { referrer } })
 })
 
 async function update() {

@@ -1,5 +1,14 @@
 <template>
   <div>
+    <FormButtonContainer
+      v-if="$vuetify.breakpoint.lgAndUp"
+      :is-first-step="true"
+      :valid="valid"
+      @continue="handleContinue"
+      @save="handleSave"
+      v-on="$listeners"
+    />
+
     <v-form
       ref="form"
       v-model="valid"
@@ -41,7 +50,7 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.personalInfo.firstName"
+              v-model.trim="model.application.personalInfo.firstName"
               :label="$t('First name')"
               :rules="requireNameRuleSet"
               :dense="isMobile"
@@ -56,7 +65,7 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.personalInfo.middleName"
+              v-model.trim="model.application.personalInfo.middleName"
               :label="$t('Middle name')"
               :rules="notRequiredNameRuleSet"
               :dense="isMobile"
@@ -70,7 +79,7 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.personalInfo.lastName"
+              v-model.trim="model.application.personalInfo.lastName"
               :label="$t('Last name')"
               :rules="requireNameRuleSet"
               :dense="isMobile"
@@ -88,7 +97,7 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.personalInfo.suffix"
+              v-model.trim="model.application.personalInfo.suffix"
               :label="$t('Suffix')"
               :dense="isMobile"
               maxlength="10"
@@ -101,7 +110,7 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.personalInfo.maidenName"
+              v-model.trim="model.application.personalInfo.maidenName"
               :label="$t('Maiden name')"
               :rules="notRequiredNameRuleSet"
               :dense="isMobile"
@@ -747,9 +756,11 @@
       </v-card-text>
 
       <FormButtonContainer
+        :is-first-step="true"
         :valid="valid"
         @continue="handleContinue"
         @save="handleSave"
+        v-on="$listeners"
       />
     </v-form>
   </div>
@@ -758,13 +769,16 @@
 <script setup lang="ts">
 import AliasDialog from '@shared-ui/components/dialogs/AliasDialog.vue'
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue'
-import { ApplicationType, CharacterReferenceType } from '@shared-utils/types/defaultTypes'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { TranslateResult } from 'vue-i18n'
 import { i18n } from '@core-public/plugins'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
+import {
+  ApplicationType,
+  CharacterReferenceType,
+} from '@shared-utils/types/defaultTypes'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
 import {
@@ -945,8 +959,8 @@ const isRenew = computed(() => {
 
   return (
     applicationType === ApplicationType['Renew Standard'] ||
-    applicationType === ApplicationType['Renew Reserve']  ||
-    applicationType === ApplicationType['Renew Judicial']  ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
     applicationType === ApplicationType['Renew Employment']
   )
 })

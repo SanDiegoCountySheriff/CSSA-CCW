@@ -35,4 +35,5 @@ export type PublicAppConfigType = {
   environmentName: string
   loginType: string
   refreshTime: number
+  applicationInsightsConnectionString: string
 }

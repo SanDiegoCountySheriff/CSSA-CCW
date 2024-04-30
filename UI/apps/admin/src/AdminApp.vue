@@ -45,6 +45,7 @@
 </template>
 
 <script setup lang="ts">
+import { ApplicationInsights } from '@microsoft/applicationinsights-web'
 import Loader from './Loader.vue'
 import PageTemplate from '@core-admin/components/templates/PageTemplate.vue'
 import Vue from 'vue'
@@ -72,10 +73,10 @@ const prompt = ref(false)
 const app = getCurrentInstance()
 const authStore = useAuthStore()
 const brandStore = useBrandStore()
-const themeStore = useThemeStore()
 const configStore = useAppConfigStore()
 const permitsStore = usePermitsStore()
 const adminUserStore = useAdminUserStore()
+const themeStore = useThemeStore()
 const msalInstance = ref<MsalBrowser>()
 
 provide(
@@ -104,7 +105,7 @@ useQuery(['logo'], brandStore.getAgencyLogoDocumentsApi, {
   enabled: validApiUrl,
 })
 
-const { isLoading: isAllAdminUsersLoading } = useQuery(
+const { isFetching: isAllAdminUsersLoading } = useQuery(
   ['getAllAdminUsers'],
   () => adminUserStore.getAllAdminUsers(),
   {
@@ -143,9 +144,24 @@ onBeforeMount(async () => {
 
   msalInstance.value = await getMsalInstance()
 
-  if (app) {
-    app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark
+  const darkMode = localStorage.getItem('dark-mode')
+
+  if (app && darkMode) {
+    app.proxy.$vuetify.theme.dark = darkMode === 'true'
+    themeStore.getThemeConfig.isDark = darkMode === 'true'
   }
+
+  const appInsights = new ApplicationInsights({
+    config: {
+      connectionString:
+        configStore.appConfig.applicationInsightsConnectionString,
+    },
+  })
+
+  const referrer = document.referrer
+
+  appInsights.loadAppInsights()
+  appInsights.trackPageView({ properties: { referrer } })
 })
 
 watch(

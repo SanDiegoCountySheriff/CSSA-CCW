@@ -16,22 +16,20 @@
     </v-container>
     <template v-if="!state.isLoading && !state.isError">
       <v-card>
-        <v-tooltip bottom>
-          <template #activator="{ on, attrs }">
-            <v-card-title
-              v-bind="attrs"
-              v-on="on"
-              @click="state.open = !state.open"
-            >
-              {{ $t(' Application Review ') }}
-              <v-spacer />
-              <v-icon class="ml-3">
-                {{ state.open ? 'mdi-menu-down' : 'mdi-menu-up' }}
-              </v-icon>
-            </v-card-title>
-          </template>
-          {{ $t(' Click to review your application') }}
-        </v-tooltip>
+        <v-card-title
+          class="d-flex justify-center align-center"
+          @click="state.open = !state.open"
+        >
+          <div class="flex-grow-1 text-center">
+            {{ $t('Application Review') }}
+          </div>
+          <v-icon>
+            {{ state.open ? 'mdi-menu-down' : 'mdi-menu-up' }}
+          </v-icon>
+        </v-card-title>
+        <v-card-subtitle class="text-center mr-3">
+          {{ $t('Click to review your application') }}
+        </v-card-subtitle>
         <v-card-text v-if="state.open">
           <div class="info-section">
             <PersonalInfoSection

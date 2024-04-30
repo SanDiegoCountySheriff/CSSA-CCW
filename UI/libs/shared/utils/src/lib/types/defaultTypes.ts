@@ -63,6 +63,7 @@ export type AppConfigType = {
   refreshTime: number
   questions: QuestionsConfig
   payBeforeSubmit: boolean
+  applicationInsightsConnectionString: string
 }
 
 export type AppearanceInfoType = {
@@ -216,6 +217,7 @@ export type QualifyingQuestionTwelve = {
   selected: boolean | null
   trafficViolations: TrafficViolation[]
   temporaryTrafficViolations: TrafficViolation[]
+  trafficViolationsExplanation: string
   updateInformation: boolean | null
 }
 

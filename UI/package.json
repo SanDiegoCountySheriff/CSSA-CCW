@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@azure/msal-browser": "^2.22.0",
+    "@microsoft/applicationinsights-web": "^3.1.2",
     "@tanstack/vue-query": "^4.9.0",
     "axios": "^1.6.8",
     "core-js": "^3.6.5",

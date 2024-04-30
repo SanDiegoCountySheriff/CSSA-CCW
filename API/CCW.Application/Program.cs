@@ -143,9 +143,11 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+var origins = builder.Configuration.GetSection("JwtBearerAAD:Origins").Value.Split(",");
+
 builder.Services.AddCors(policyBuilder =>
     policyBuilder.AddDefaultPolicy(policy =>
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
+        policy.WithOrigins(origins).AllowAnyMethod().AllowAnyHeader())
 );
 
 builder.Services.AddHealthChecks();
@@ -180,6 +182,7 @@ static async Task<ApplicationCosmosDbService> InitializeCosmosClientInstanceAsyn
 {
     var databaseName = configurationSection["DatabaseName"];
     var containerName = configurationSection["ContainerName"];
+    var legacyContainerName = configurationSection["LegacyContainerName"];
     CosmosClientOptions clientOptions = new CosmosClientOptions();
 #if DEBUG
     var key = configurationSection["CosmosDbEmulatorConnectionString"];
@@ -193,7 +196,8 @@ static async Task<ApplicationCosmosDbService> InitializeCosmosClientInstanceAsyn
     var client = new CosmosClient(key, clientOptions);
     var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
     await database.Database.CreateContainerIfNotExistsAsync(containerName, "/userId");
-    var cosmosDbService = new ApplicationCosmosDbService(client, databaseName, containerName);
+    await database.Database.CreateContainerIfNotExistsAsync(legacyContainerName, "/id");
+    var cosmosDbService = new ApplicationCosmosDbService(client, databaseName, containerName, legacyContainerName);
     return cosmosDbService;
 }
 

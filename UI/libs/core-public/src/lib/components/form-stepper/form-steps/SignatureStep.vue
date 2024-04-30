@@ -142,30 +142,28 @@
         </v-col>
       </v-row>
 
-      <v-row justify="center">
-        <FormButtonContainer
-          :valid="!isSignaturePadEmpty"
-          :loading="state.uploading"
-          :all-steps-complete="props.allStepsComplete"
-          :is-final-step="true"
-          @continue="handleContinue"
-          @save="handleSave"
-        />
-      </v-row>
+      <FormButtonContainer
+        :valid="!isSignaturePadEmpty"
+        :loading="state.uploading"
+        :all-steps-complete="props.allStepsComplete"
+        :is-final-step="true"
+        @continue="handleContinue"
+        @save="handleSave"
+        v-on="$listeners"
+      />
     </v-container>
 
-    <v-container v-else>
+    <v-container>
       <v-row justify="center">
         <v-alert
-          v-if="!model.application.isUpdatingApplication"
+          color="primary"
+          type="info"
           outlined
-          type="success"
         >
-          {{
-            $t(
-              'Signature has already been submitted. Press continue to move forward.'
-            )
-          }}
+          <span :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''">
+            You must finalize your application and select an appointment date
+            and time in order to submit to Licensing.
+          </span>
         </v-alert>
       </v-row>
 
@@ -178,6 +176,7 @@
           :is-final-step="true"
           @continue="handleContinueWithoutUpload"
           @save="handleSave"
+          v-on="$listeners"
         />
       </v-row>
     </v-container>
@@ -195,6 +194,7 @@ import axios from 'axios'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 
@@ -213,6 +213,7 @@ const emit = defineEmits([
 
 const router = useRouter()
 const applicationStore = useCompleteApplicationStore()
+const themeStore = useThemeStore()
 const signaturePad = ref<SignaturePad>()
 const vuetify = useVuetify()
 const state = reactive({
@@ -377,11 +378,7 @@ function handleContinueWithoutUpload() {
 }
 
 watch(
-  [
-    isSignaturePadEmpty,
-    isFalseInfoAgreed,
-    isConditionsForIssuanceAgreed,
-  ],
+  [isSignaturePadEmpty, isFalseInfoAgreed, isConditionsForIssuanceAgreed],
   newValues => {
     const [isSigPadEmpty, ...otherValues] = newValues
     const allTrueExceptSigPad = otherValues.every(val => val)

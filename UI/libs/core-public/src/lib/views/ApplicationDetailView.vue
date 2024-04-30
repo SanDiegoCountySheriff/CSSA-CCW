@@ -275,7 +275,7 @@
                   color="primary"
                   block
                   :disabled="
-                    !canApplicationBeModified ||
+                    !canApplicationBeUpdated ||
                     isGetApplicationsLoading ||
                     (applicationStore.completeApplication.application
                       .appointmentDateTime &&
@@ -483,6 +483,7 @@
           <v-tabs
             :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
             v-model="tab"
+            :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
             grow
           >
             <v-tabs-slider color="primary"></v-tabs-slider>
@@ -926,6 +927,7 @@ const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
 const themeStore = useThemeStore()
 const brandStore = useBrandStore()
+const themeStore = useThemeStore()
 const router = useRouter()
 const tab = ref(null)
 const reviewDialog = ref(false)
@@ -1030,14 +1032,14 @@ const {
           let start = new Date(event.start)
           let end = new Date(event.end)
 
-          let formatedStart = `${start.getFullYear()}-${
+          let formattedStart = `${start.getFullYear()}-${
             start.getMonth() + 1
           }-${start.getDate()} ${start.getHours()}:${start
             .getMinutes()
             .toString()
             .padStart(2, '0')}`
 
-          let formatedEnd = `${end.getFullYear()}-${
+          let formattedEnd = `${end.getFullYear()}-${
             end.getMonth() + 1
           }-${end.getDate()} ${end.getHours()}:${end
             .getMinutes()
@@ -1045,8 +1047,8 @@ const {
             .padStart(2, '0')}`
 
           event.name = 'open'
-          event.start = formatedStart
-          event.end = formatedEnd
+          event.start = formattedStart
+          event.end = formattedEnd
         })
         state.appointments = data
         state.appointmentsLoaded = true

@@ -17,6 +17,7 @@
     "UserProfileServicesBaseUrl": "#{UserProfileServicesBaseUrl}#",
     "DefaultCounty": "#{DefaultCounty}#",
     "DisplayDebugger": "#{DisplayDebugger}#",
-    "IsPaymentServiceAvailable": "#{IsPaymentServiceAvailable}#"
+    "IsPaymentServiceAvailable": "#{IsPaymentServiceAvailable}#",
+    "ApplicationInsightsConnectionString": "#{ApplicationInsightsConnectionString}#"
   }
 }
