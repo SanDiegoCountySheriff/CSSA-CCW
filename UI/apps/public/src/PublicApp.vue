@@ -6,6 +6,7 @@
         v-if="
           isAgencyLogoLoading ||
           isBrandSettingLoading ||
+          isUserLoading ||
           authStore.auth.handlingRedirectPromise
         "
       >
@@ -54,15 +55,14 @@ import Vue from 'vue'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
-import { useMutation, useQuery } from '@tanstack/vue-query'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
 import { useUserStore } from '@shared-ui/stores/userStore'
-
 import {
   MsalBrowser,
   getMsalInstance,
 } from '@shared-ui/api/auth/authentication'
 import { computed, getCurrentInstance, onBeforeMount, provide, ref } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const prompt = ref(false)
 const app = getCurrentInstance()
@@ -73,6 +73,9 @@ const brandStore = useBrandStore()
 const msalInstance = ref<MsalBrowser>()
 const userStore = useUserStore()
 const user = computed(() => userStore.userProfile)
+const canGetUserProfile = computed(() => {
+  return authStore.getAuthState.isAuthenticated
+})
 
 provide(
   'msalInstance',
@@ -88,14 +91,13 @@ const { mutate: createUser } = useMutation(
     },
   }
 )
-const { mutate: getUser } = useMutation(
+
+const { isFetching: isUserLoading } = useQuery(
   ['getUserProfile'],
-  async () => await userStore.getUserApi(),
+  userStore.getUserApi,
   {
-    onSuccess: async () => {
-      await userStore.getUserApi()
-    },
-    onError: async () => {
+    enabled: canGetUserProfile,
+    onError: () => {
       createUser()
     },
   }
@@ -127,10 +129,6 @@ onBeforeMount(async () => {
   })
 
   msalInstance.value = await getMsalInstance()
-
-  if (msalInstance.value.isAuthenticated()) {
-    getUser()
-  }
 
   const darkMode = localStorage.getItem('dark-mode')
 
