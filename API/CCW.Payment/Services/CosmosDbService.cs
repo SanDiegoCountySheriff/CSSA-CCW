@@ -73,4 +73,14 @@ public class CosmosDbService : ICosmosDbService
 
         return null!;
     }
+
+    public async Task<RefundRequest> GetRefundRequest(string id)
+    {
+        return await _refundRequestContainer.ReadItemAsync<RefundRequest>(id, new PartitionKey(id));
+    }
+
+    public async Task DeleteRefundRequest(RefundRequest refundRequest)
+    {
+        await _refundRequestContainer.DeleteItemAsync<RefundRequest>(refundRequest.Id, new PartitionKey(refundRequest.Id));
+    }
 }

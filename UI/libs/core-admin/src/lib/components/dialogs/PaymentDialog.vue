@@ -84,6 +84,7 @@
 import PaymentHistory from '@core-admin/components/receipt/PaymentHistory.vue'
 import ReceiptForm from '@core-admin/components/receipt/ReceiptForm.vue'
 import { reactive } from 'vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
@@ -98,6 +99,7 @@ const state = reactive({
 
 const paymentStore = usePaymentStore()
 const permitStore = usePermitsStore()
+const brandStore = useBrandStore()
 
 const { isLoading, refetch } = useQuery(
   ['permitDetail'],
@@ -121,9 +123,11 @@ const { mutate: updateApplication, isLoading: isUpdateApplicationLoading } =
 const { mutate: refundPayment, isLoading: isRefundPaymentLoading } =
   useMutation({
     mutationFn: (refundRequest: RefundRequest) =>
-      paymentStore.refundPayment(refundRequest).then(() => {
-        refetch()
-      }),
+      paymentStore
+        .refundPayment(refundRequest, brandStore.brand.convenienceFee / 100)
+        .then(() => {
+          refetch()
+        }),
   })
 
 async function handleRefund(refundRequest: RefundRequest) {

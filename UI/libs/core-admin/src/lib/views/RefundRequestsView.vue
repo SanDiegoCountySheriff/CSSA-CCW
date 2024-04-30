@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-card
-      :loading="isLoading"
+      :loading="isLoading || isRefundLoading || isFetching"
       flat
     >
       <v-card-title>Refund Requests</v-card-title>
@@ -28,13 +28,10 @@
           </template>
 
           <template #[`item.actions`]="{ item }">
-            <v-btn
-              @click="console.log(item)"
-              color="success"
-              icon
-            >
-              <v-icon>mdi-check-bold</v-icon>
-            </v-btn>
+            <RefundRequestConfirmationDialog
+              :refund-request="item"
+              @confirm="handleConfirmRefundRequest(item)"
+            />
           </template>
         </v-data-table>
       </v-card-text>
@@ -43,15 +40,24 @@
 </template>
 
 <script setup lang="ts">
+import { RefundRequest } from '@shared-utils/types/defaultTypes'
+import RefundRequestConfirmationDialog from '@core-admin/components/dialogs/RefundRequestConfirmationDialog.vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
-import { useQuery } from '@tanstack/vue-query'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const paymentStore = usePaymentStore()
+const brandStore = useBrandStore()
 
-const { isLoading, data } = useQuery(
+const { isLoading, data, refetch, isFetching } = useQuery(
   ['getAllRefundRequests'],
   paymentStore.getAllRefundRequests
 )
+
+const { isLoading: isRefundLoading, mutateAsync: refundPayment } = useMutation({
+  mutationFn: (item: RefundRequest) =>
+    paymentStore.refundPayment(item, brandStore.brand.convenienceFee / 100),
+})
 
 const headers = [
   {
@@ -75,4 +81,9 @@ const headers = [
     value: 'actions',
   },
 ]
+
+async function handleConfirmRefundRequest(item: RefundRequest) {
+  await refundPayment(item)
+  refetch()
+}
 </script>

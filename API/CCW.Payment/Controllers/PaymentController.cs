@@ -7,6 +7,7 @@ using GlobalPayments.Api;
 using GlobalPayments.Api.Entities;
 using GlobalPayments.Api.Entities.Billing;
 using GlobalPayments.Api.Entities.Enums;
+using GlobalPayments.Api.PaymentMethods;
 using GlobalPayments.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -221,7 +222,7 @@ public class PaymentController : ControllerBase
                 Identifier4 = DateTime.Now.ToString(),
             };
 
-            var response = _billPayService.LoadHostedPayment(new HostedPaymentData()
+            HostedPaymentData hostedPaymentData = new()
             {
                 Bills = new List<Bill>() { bill },
                 CaptureAddress = false,
@@ -232,7 +233,9 @@ public class PaymentController : ControllerBase
                 HostedPaymentType = HostedPaymentType.MakePayment,
                 MerchantResponseUrl = $"{_processTransactionEndpoint}?applicationId={applicationId}&paymentType={paymentType}",
                 CustomerIsEditable = true,
-            });
+            };
+
+            var response = _billPayService.LoadHostedPayment(hostedPaymentData);
 
             return Ok($"{_heartlandEndpoint}/webpayments/{_merchantName}/GUID/{response.PaymentIdentifier}");
         }
@@ -246,13 +249,20 @@ public class PaymentController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("refundPayment")]
     [HttpPost]
-    public async Task<IActionResult> RefundPayment([FromBody] RefundRequest refundRequest)
+    public async Task<IActionResult> RefundPayment([FromBody] RefundRequest refundRequest, decimal convenienceFee)
     {
         PermitApplication application;
         PaymentHistory paymentHistory;
 
         try
         {
+            var refundRequestResult = await _cosmosDbService.GetRefundRequest(refundRequest.Id);
+
+            if (refundRequestResult != null)
+            {
+                await _cosmosDbService.DeleteRefundRequest(refundRequest);
+            }
+
             application = await _cosmosDbService.GetAdminApplication(refundRequest.ApplicationId);
             paymentHistory = application.PaymentHistory.Where(ph => ph.TransactionId == refundRequest.TransactionId).FirstOrDefault();
             paymentHistory.RefundAmount += refundRequest.RefundAmount;
@@ -273,7 +283,9 @@ public class PaymentController : ControllerBase
                 return Ok();
             }
 
-            Transaction.FromId(refundRequest.TransactionId).Refund(refundRequest.RefundAmount).WithCurrency("USD").Execute();
+            decimal fee = refundRequest.RefundAmount * convenienceFee;
+
+            Transaction.FromId(refundRequest.TransactionId).Refund(refundRequest.RefundAmount).WithCurrency("USD").WithConvenienceAmount(fee).Execute();
 
             return Ok();
         }

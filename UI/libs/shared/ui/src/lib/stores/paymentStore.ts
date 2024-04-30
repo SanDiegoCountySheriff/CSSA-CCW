@@ -39,9 +39,12 @@ export const usePaymentStore = defineStore('paymentStore', () => {
       })
   }
 
-  async function refundPayment(payment: RefundRequest) {
+  async function refundPayment(payment: RefundRequest, convenienceFee: number) {
     await axios
-      .post(Endpoints.REFUND_PAYMENT_ENDPOINT, payment)
+      .post(
+        `${Endpoints.REFUND_PAYMENT_ENDPOINT}?convenienceFee=${convenienceFee}`,
+        payment
+      )
       .then(response => {
         window.console.log(response.data)
       })
