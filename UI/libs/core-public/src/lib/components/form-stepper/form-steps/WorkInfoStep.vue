@@ -233,6 +233,7 @@
 
     <v-card-text>
       <WeaponsTable
+        :modifying="false"
         :weapons="model.application.weapons"
         @delete-weapon="handleDeleteWeapon"
         @handle-edit-weapon="handleEditWeapon"

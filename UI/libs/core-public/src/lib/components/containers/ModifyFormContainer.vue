@@ -175,7 +175,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
 
-        <v-expansion-panel>
+        <v-expansion-panel v-if="!hasExhaustedModifications">
           <v-expansion-panel-header @click.native="stepIndex.step = 2">
             {{ $t('Name Change') }}
           </v-expansion-panel-header>
@@ -191,7 +191,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
 
-        <v-expansion-panel>
+        <v-expansion-panel v-if="!hasExhaustedModifications">
           <v-expansion-panel-header @click.native="stepIndex.step = 3">
             {{ $t('Weapon Change') }}
           </v-expansion-panel-header>
@@ -210,7 +210,9 @@
         </v-expansion-panel>
 
         <v-expansion-panel>
-          <v-expansion-panel-header @click.native="stepIndex.step = 4">
+          <v-expansion-panel-header
+            @click.native="stepIndex.step = hasExhaustedModifications ? 2 : 4"
+          >
             {{ $t('Supporting Documents') }}
           </v-expansion-panel-header>
 
