@@ -13,15 +13,18 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     private static Random random = new Random();
     private readonly Container _container;
     private readonly Container _historicalContainer;
+    private readonly Container _legacyContainer;
 
     public ApplicationCosmosDbService(
         CosmosClient cosmosDbClient,
         string databaseName,
         string containerName,
+        string legacyContainerName,
         string historicalContainerName)
     {
         _container = cosmosDbClient.GetContainer(databaseName, containerName);
         _historicalContainer = cosmosDbClient.GetContainer(databaseName, historicalContainerName);
+        _legacyContainer = cosmosDbClient.GetContainer(databaseName, legacyContainerName);
     }
 
     public async Task<PermitApplication> AddAsync(PermitApplication application, CancellationToken cancellationToken)
