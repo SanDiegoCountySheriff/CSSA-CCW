@@ -7,10 +7,10 @@
       <v-btn
         v-on="on"
         v-bind="attrs"
-        color="success"
-        icon
+        color="primary"
       >
-        <v-icon>mdi-check-bold</v-icon>
+        <v-icon left>mdi-credit-card-refund</v-icon>
+        Refund
       </v-btn>
     </template>
 
@@ -18,9 +18,30 @@
       <v-card-title> Refund Request </v-card-title>
 
       <v-card-text>
-        Are you sure you wish to refund ${{ refundRequest.refundAmount }} from
-        application {{ refundRequest.orderId }} due to
+        Are you sure you wish to refund ${{ refundAmount }} from the total ${{
+          refundRequest.refundAmount
+        }}
+        from application {{ refundRequest.orderId }} due to
         {{ refundRequest.reason }}?
+      </v-card-text>
+
+      <v-card-text>
+        This will leave a total charge of ${{
+          refundRequest.refundAmount - refundAmount
+        }}. This will be the only refund available on this refund request.
+
+        {{ typeof refundAmount }}
+      </v-card-text>
+
+      <v-card-text>
+        <v-text-field
+          v-model="refundAmount"
+          :rules="refundAmountRules"
+          prepend-icon="mdi-currency-usd"
+          label="Amount"
+          type="number"
+          outlined
+        />
       </v-card-text>
 
       <v-card-actions>
@@ -46,17 +67,35 @@
 
 <script setup lang="ts">
 import { RefundRequest } from '@shared-utils/types/defaultTypes'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 interface RefundRequestProps {
   refundRequest: RefundRequest
+  value: number
 }
 
-defineProps<RefundRequestProps>()
+const props = defineProps<RefundRequestProps>()
 
-const emit = defineEmits(['confirm'])
+const emit = defineEmits(['confirm', 'input'])
 
 const dialog = ref(false)
+const refundAmount = computed({
+  get: () => props.value,
+  set: newVal => emit('input', Number(newVal)),
+})
+
+const refundAmountRules = computed(() => {
+  return [
+    v => Boolean(v) || 'A refund amount is required',
+    () =>
+      Number(props.refundRequest.refundAmount) - Number(refundAmount.value) >=
+        0 || 'Refund amount must be less than or equal to the total payment',
+    v => v > 0 || 'Refund amount must be greater than 0',
+    v =>
+      /^\d*(?:\.\d{1,2})?$/.test(v) ||
+      'Please only enter 2 digits after the decimal',
+  ]
+})
 
 function handleConfirm() {
   emit('confirm')

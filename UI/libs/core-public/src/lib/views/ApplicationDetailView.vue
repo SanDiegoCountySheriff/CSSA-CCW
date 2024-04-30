@@ -1456,6 +1456,7 @@ async function handleConfirmWithdrawModification() {
     )
 
   applicationStore.completeApplication.application.currentStep = 1
+  applicationStore.completeApplication.application.modificationNumber += 1
 
   await updateApplication()
 }

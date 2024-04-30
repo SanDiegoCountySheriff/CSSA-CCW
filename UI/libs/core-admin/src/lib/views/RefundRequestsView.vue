@@ -29,6 +29,7 @@
 
           <template #[`item.actions`]="{ item }">
             <RefundRequestConfirmationDialog
+              v-model="refundAmount"
               :refund-request="item"
               @confirm="handleConfirmRefundRequest(item)"
             />
@@ -42,6 +43,7 @@
 <script setup lang="ts">
 import { RefundRequest } from '@shared-utils/types/defaultTypes'
 import RefundRequestConfirmationDialog from '@core-admin/components/dialogs/RefundRequestConfirmationDialog.vue'
+import { ref } from 'vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { useMutation, useQuery } from '@tanstack/vue-query'
@@ -54,9 +56,17 @@ const { isLoading, data, refetch, isFetching } = useQuery(
   paymentStore.getAllRefundRequests
 )
 
+const refundAmount = ref(0)
+
 const { isLoading: isRefundLoading, mutateAsync: refundPayment } = useMutation({
-  mutationFn: (item: RefundRequest) =>
-    paymentStore.refundPayment(item, brandStore.brand.convenienceFee / 100),
+  mutationFn: (item: RefundRequest) => {
+    item.refundAmount = refundAmount.value
+
+    return paymentStore.refundPayment(
+      item,
+      brandStore.brand.cost.creditFee / 100
+    )
+  },
 })
 
 const headers = [

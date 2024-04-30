@@ -124,7 +124,7 @@ const { mutate: refundPayment, isLoading: isRefundPaymentLoading } =
   useMutation({
     mutationFn: (refundRequest: RefundRequest) =>
       paymentStore
-        .refundPayment(refundRequest, brandStore.brand.convenienceFee / 100)
+        .refundPayment(refundRequest, brandStore.brand.cost.creditFee / 100)
         .then(() => {
           refetch()
         }),

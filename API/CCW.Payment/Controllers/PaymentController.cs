@@ -256,11 +256,14 @@ public class PaymentController : ControllerBase
 
         try
         {
-            var refundRequestResult = await _cosmosDbService.GetRefundRequest(refundRequest.Id);
-
-            if (refundRequestResult != null)
+            if (refundRequest.Id != null)
             {
-                await _cosmosDbService.DeleteRefundRequest(refundRequest);
+                var refundRequestResult = await _cosmosDbService.GetRefundRequest(refundRequest.Id);
+
+                if (refundRequestResult != null)
+                {
+                    await _cosmosDbService.DeleteRefundRequest(refundRequest);
+                }
             }
 
             application = await _cosmosDbService.GetAdminApplication(refundRequest.ApplicationId);
