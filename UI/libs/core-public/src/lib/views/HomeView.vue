@@ -154,7 +154,7 @@
         >
           <v-card>
             <v-card-title class="text-h4 justify-center">
-              We have recieved your request!
+              We have received your request!
             </v-card-title>
             <v-card-title class="text-h5 justify-center">
               Application linking request is currently under review
