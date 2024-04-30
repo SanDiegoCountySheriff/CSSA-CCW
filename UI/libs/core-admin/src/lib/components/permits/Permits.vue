@@ -234,63 +234,20 @@
 
       <template #[`item.actions`]="props">
         <v-row>
-          <v-tooltip bottom>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                v-if="props.item.appointmentStatus !== 3"
-                @click="handleCheckIn(props.item)"
-                v-bind="attrs"
-                v-on="on"
-                color="success"
-                class="mr-2"
-                icon
-              >
-                <v-icon> mdi-check-bold </v-icon>
-              </v-btn>
-              <v-btn
-                v-else
-                @click="handleSetScheduled(props.item)"
-                v-bind="attrs"
-                v-on="on"
-                color="success"
-                class="mr-2"
-                icon
-              >
-                <v-icon> mdi-undo </v-icon>
-              </v-btn>
-            </template>
-            <span v-if="props.item.appointmentStatus !== 3">Check In</span>
-            <span v-else>Undo Check In</span>
-          </v-tooltip>
-
-          <v-tooltip bottom>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                v-if="props.item.appointmentStatus !== 4"
-                @click="handleNoShow(props.item)"
-                v-bind="attrs"
-                v-on="on"
-                color="error"
-                class="mr-2"
-                icon
-              >
-                <v-icon> mdi-close-thick </v-icon>
-              </v-btn>
-              <v-btn
-                v-else
-                @click="handleSetScheduled(props.item)"
-                v-bind="attrs"
-                v-on="on"
-                color="error"
-                class="mr-2"
-                icon
-              >
-                <v-icon>mdi-undo</v-icon>
-              </v-btn>
-            </template>
-            <span v-if="props.item.appointmentStatus !== 4">No Show</span>
-            <span v-else>Undo No Show</span>
-          </v-tooltip>
+          <AppointmentActionConfirmationDialog
+            :undo-active="props.item.appointmentStatus === 3"
+            check-in
+            title="Check In"
+            @confirm="handleCheckIn(props.item)"
+            @undo="handleSetScheduled(props.item)"
+          />
+          <AppointmentActionConfirmationDialog
+            :undo-active="props.item.appointmentStatus === 4"
+            :check-in="false"
+            title="No Show"
+            @confirm="handleNoShow(props.item)"
+            @undo="handleSetScheduled(props.item)"
+          />
         </v-row>
       </template>
     </v-data-table>
@@ -334,6 +291,7 @@
 </template>
 
 <script setup lang="ts">
+import AppointmentActionConfirmationDialog from '@core-admin/components/dialogs/AppointmentActionConfirmationDialog.vue'
 import { PermitsType } from '@core-admin/types'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
