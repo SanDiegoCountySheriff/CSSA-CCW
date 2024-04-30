@@ -35,7 +35,7 @@
           @click="handleContinue"
           color="primary"
         >
-          {{ props.isFinalStep ? $t('Finalize Application') : $t('Next Step') }}
+          {{ getButtonText }}
           <v-icon
             v-if="!props.isFinalStep"
             right
@@ -81,9 +81,9 @@
 </template>
 
 <script setup lang="ts">
-import { inject } from 'vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
+import { computed, inject } from 'vue'
 
 const isUpdatingAllStepsComplete = inject('allStepsComplete')
 const applicationStore = useCompleteApplicationStore()
@@ -95,6 +95,7 @@ interface FormButtonContainerProps {
   allStepsComplete?: boolean
   isFinalStep?: boolean
   isFirstStep?: boolean
+  isModification?: boolean
 }
 
 const props = withDefaults(defineProps<FormButtonContainerProps>(), {
@@ -103,9 +104,18 @@ const props = withDefaults(defineProps<FormButtonContainerProps>(), {
   allStepsComplete: true,
   isFinalStep: false,
   isFirstStep: false,
+  isModification: false,
 })
 
 const emit = defineEmits(['continue', 'save', 'previous-step'])
+
+const getButtonText = computed(() => {
+  if (props.isModification && props.isFinalStep) {
+    return 'Finalize Modification'
+  }
+
+  return props.isFinalStep ? 'Finalize Application' : 'Next Step'
+})
 
 function handleContinue() {
   emit('continue')

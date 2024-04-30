@@ -24,7 +24,7 @@ builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
-    .AddAuthentication("aad")
+    .AddAuthentication()
     .AddJwtBearer("aad", o =>
     {
         o.Authority = builder.Configuration.GetSection("JwtBearerAAD:Authority").Value;
@@ -172,6 +172,7 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
 {
     var databaseName = configurationSection["DatabaseName"];
     var containerName = configurationSection["ContainerName"];
+    var refundRequestContainerName = configurationSection["RefundRequestContainerName"];
     CosmosClientOptions clientOptions = new CosmosClientOptions();
 #if DEBUG
     var key = configurationSection["CosmosDbEmulatorConnectionString"];
@@ -185,7 +186,8 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     var client = new CosmosClient(key, clientOptions);
     var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
     await database.Database.CreateContainerIfNotExistsAsync(containerName, "/userId");
-    var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
+    await database.Database.CreateContainerIfNotExistsAsync(refundRequestContainerName, "/id");
+    var cosmosDbService = new CosmosDbService(client, databaseName, containerName, refundRequestContainerName);
     return cosmosDbService;
 }
 

@@ -23,6 +23,8 @@ public class PaymentHistory
     public bool Successful { get; set; }
     [JsonProperty("paymentStatus")]
     public PaymentStatus PaymentStatus { get; set; }
+    [JsonProperty("modificationNumber")]
+    public int? ModificationNumber { get; set; }
 }
 
 public class PaymentHistoryResponse

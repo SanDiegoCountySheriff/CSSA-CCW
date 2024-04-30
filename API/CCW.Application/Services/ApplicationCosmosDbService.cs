@@ -12,15 +12,18 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 {
     private static Random random = new Random();
     private readonly Container _container;
+    private readonly Container _historicalContainer;
     private readonly Container _legacyContainer;
 
     public ApplicationCosmosDbService(
         CosmosClient cosmosDbClient,
         string databaseName,
         string containerName,
-        string legacyContainerName)
+        string legacyContainerName,
+        string historicalContainerName)
     {
         _container = cosmosDbClient.GetContainer(databaseName, containerName);
+        _historicalContainer = cosmosDbClient.GetContainer(databaseName, historicalContainerName);
         _legacyContainer = cosmosDbClient.GetContainer(databaseName, legacyContainerName);
     }
 
@@ -28,6 +31,14 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     {
         application.Application.OrderId = GetPrefixLetter() + GetGeneratedTime() + RandomString();
         PermitApplication createdItem = await _container.CreateItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
+        return createdItem;
+    }
+
+    public async Task<PermitApplication> AddHistoricalApplicationAsync(PermitApplication application, CancellationToken cancellationToken)
+    {
+        application.Id = Guid.NewGuid();
+        application.HistoricalDate = DateTimeOffset.UtcNow;
+        PermitApplication createdItem = await _historicalContainer.CreateItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
         return createdItem;
     }
 
@@ -393,30 +404,34 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             ApplicationType.ModifyStandard
         )
         {
+            // TODO: Historical application save
             if (application.Application.UploadedDocuments.Any(doc =>
             {
-                return doc.DocumentType == "ModifyName";
+                return doc.DocumentType == $"ModifyName-{application.Application.ModificationNumber}";
             })
             )
             {
+                application.Application.ModifiedNameComplete = false;
                 application.Application.BackgroundCheck.ProofOfID = new BackgroundCheckItem();
             }
 
             if (application.Application.UploadedDocuments.Any(doc =>
             {
-                return doc.DocumentType == "ModifyAddress";
+                return doc.DocumentType == $"ModifyAddress-{application.Application.ModificationNumber}";
             })
-)
+            )
             {
+                application.Application.ModifiedAddressComplete = false;
                 application.Application.BackgroundCheck.ProofOfResidency = new BackgroundCheckItem();
             }
 
             if (application.Application.UploadedDocuments.Any(doc =>
             {
-                return doc.DocumentType == "ModifyWeapons";
+                return doc.DocumentType == $"ModifyWeapons-{application.Application.ModificationNumber}";
             })
             )
             {
+                application.Application.ModifiedWeaponComplete = false;
                 application.Application.BackgroundCheck.Firearms = new BackgroundCheckItem();
             }
         }
@@ -460,6 +475,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
                     TransactionId = modelPayment.TransactionId,
                     Successful = modelPayment.Successful,
                     PaymentStatus = modelPayment.PaymentStatus,
+                    ModificationNumber = modelPayment.ModificationNumber,
                 };
 
                 paymentHistories[i] = paymentHistory;

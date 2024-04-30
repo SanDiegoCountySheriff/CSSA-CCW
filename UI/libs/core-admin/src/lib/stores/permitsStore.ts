@@ -197,6 +197,19 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return res?.data || {}
   }
 
+  async function addHistoricalApplication(application: CompleteApplication) {
+    await axios
+      .put(Endpoints.PUT_ADD_HISTORICAL_APPLICATION_ENDPOINT, application)
+      .then(res => {
+        return res.data
+      })
+      .catch(err => {
+        window.console.log(err)
+
+        return Promise.reject()
+      })
+  }
+
   async function printRevocationLetterApi() {
     const applicationId = permitDetail.value.id
     const formattedDateTime = formatDateTimeNow()
@@ -456,5 +469,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getAllPermitsSummary,
     getApplicationSummaryCount,
     getAssignedApplicationsSummary,
+    addHistoricalApplication,
   }
 })
