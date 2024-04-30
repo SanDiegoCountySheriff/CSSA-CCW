@@ -234,14 +234,14 @@
             check-in
             title="Check In"
             @confirm="handleCheckIn(props.item)"
-            @undo="handleUndoCheckInNoShow(props.item)"
+            @undo="handleSetScheduled(props.item)"
           />
           <AppointmentActionConfirmationDialog
             :undo-active="props.item.appointmentStatus === 4"
             :check-in="false"
             title="No Show"
             @confirm="handleNoShow(props.item)"
-            @undo="handleUndoCheckInNoShow(props.item)"
+            @undo="handleSetScheduled(props.item)"
           />
         </v-row>
       </template>
@@ -510,10 +510,6 @@ function handleCheckIn(application) {
 function handleNoShow(application) {
   application.appointmentStatus = AppointmentStatus['No Show']
   noShowAppointment(application.appointmentId)
-}
-
-function handleUndoCheckInNoShow(application) {
-  application.appointmentStatus = AppointmentStatus.Scheduled
 }
 
 watch(
