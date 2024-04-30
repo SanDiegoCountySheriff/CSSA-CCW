@@ -79,5 +79,5 @@ public class AgencyProfileSettings
     [JsonProperty("daysBeforeActiveRenewal")]
     public int DaysBeforeActiveRenewal { get; set; }
     [JsonProperty("numberOfModificationsBetweenRenewals")]
-    public int NumberOfModificationsBetweenRenewals { get; set; }
+    public int? NumberOfModificationsBetweenRenewals { get; set; }
 }

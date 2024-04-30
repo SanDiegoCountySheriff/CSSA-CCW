@@ -460,17 +460,6 @@ function handleUndoDeleteWeapon(weapon: WeaponInfoType) {
         return w.serialNumber !== weapon.serialNumber
       }
     )
-  // const index =
-  //   applicationStore.completeApplication.application.modifyDeleteWeapons.findIndex(
-  //     w => w.serialNumber === weapon.serialNumber
-  //   )
-
-  // if (index !== -1) {
-  //   applicationStore.completeApplication.application.modifyDeleteWeapons.splice(
-  //     index,
-  //     1
-  //   )
-  // }
 
   updateMutation()
 }
