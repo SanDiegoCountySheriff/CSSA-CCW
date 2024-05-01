@@ -1,11 +1,14 @@
 using CCW.Common.Models;
 using Newtonsoft.Json;
 
-namespace CCW.Common.RequestModels;
+namespace CCW.Common.ResponseModels;
 
-public class UserProfileRequestModel
+public class UserProfileResponseModel
 {
-
+    [JsonProperty("id")]
+    public string Id { get; set; }
+    [JsonProperty("email")]
+    public string Email { get; set; }
     [JsonProperty("firstName")]
     public string FirstName { get; set; }
     [JsonProperty("lastName")]
