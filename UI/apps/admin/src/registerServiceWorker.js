@@ -1,19 +1,19 @@
 // eslint-disable-next-line node/no-extraneous-import
-import { Workbox } from 'workbox-window';
+import { Workbox } from 'workbox-window'
 
-let wb;
+let wb
 
 if ('serviceWorker' in navigator) {
-  wb = new Workbox(`${process.env.BASE_URL}service-worker.js`);
+  wb = new Workbox(`${process.env.BASE_URL}service-worker.js`)
   wb.addEventListener('controlling', () => {
-    window.location.reload();
-  });
+    window.location.reload()
+  })
   wb.addEventListener('fetch', () => {
     // it can be empty if you just want to get rid of that error
-  });
-  wb.register();
+  })
+  wb.register()
 } else {
-  wb = null;
+  wb = null
 }
 
-export default wb;
+export default wb

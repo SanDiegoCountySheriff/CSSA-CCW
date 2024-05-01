@@ -480,6 +480,7 @@ export const defaultPermitState: CompleteApplication = {
       falseInfoAgreed: false,
       falseInfoAgreedDate: null,
     },
+    readyForInitialPayment: false,
     originalStatus: null,
     ninetyDayCountdownPaused: false,
     ninetyDayCountdownPausedDate: null,

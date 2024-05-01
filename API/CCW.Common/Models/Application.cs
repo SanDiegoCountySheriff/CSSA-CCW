@@ -62,5 +62,6 @@ public class Application
     public bool FlaggedForLicensingReview { get; set; }
     public Agreements Agreements { get; set; }
     public string ReferenceNotes { get; set; }
+    public bool ReadyForInitialPayment { get; set; } = false;
     public int ModificationNumber { get; set; } = 1;
 }

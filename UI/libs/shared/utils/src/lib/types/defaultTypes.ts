@@ -656,6 +656,7 @@ export type CompleteApplication = {
       falseInfoAgreed: boolean
       falseInfoAgreedDate: string | null
     }
+    readyForInitialPayment: boolean
     modificationNumber: number
   }
   history: Array<HistoryType>

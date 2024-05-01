@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/singleline-html-element-content-newline -->
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row>
       <v-col cols="12">
         <PermitCard1 :is-loading="isLoading" />
