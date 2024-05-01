@@ -3,7 +3,11 @@
     <v-row>
       <v-col>
         <v-card
-          :loading="isGetApplicationsLoading"
+          :loading="
+            isGetApplicationsLoading ||
+            isUpdateApplicationLoading ||
+            isRefundRequestLoading
+          "
           outlined
         >
           <v-card-title>
@@ -209,7 +213,10 @@
 
           <v-card-text>
             <v-row>
-              <v-col>
+              <v-col
+                cols="12"
+                xl="6"
+              >
                 <v-btn
                   color="primary"
                   block
@@ -224,16 +231,22 @@
                 </v-btn>
               </v-col>
 
-              <v-col>
-                <v-btn
-                  v-if="
-                    applicationStore.completeApplication.application.status !==
-                      ApplicationStatus.Withdrawn &&
-                    applicationStore.completeApplication.application.status !==
-                      ApplicationStatus.Incomplete &&
-                    applicationStore.completeApplication.application.status !==
-                      ApplicationStatus['Permit Delivered']
+              <v-col
+                cols="12"
+                xl="6"
+              >
+                <WithdrawModifyDialog
+                  v-if="showModifyWithdrawButton"
+                  :disabled="
+                    isRefundRequestLoading ||
+                    isUpdateApplicationLoading ||
+                    fileUploadLoading
                   "
+                  @confirm="handleConfirmWithdrawModification"
+                />
+
+                <v-btn
+                  v-if="showInitialWithdrawButton"
                   @click="handleShowWithdrawDialog"
                   :disabled="
                     isGetApplicationsLoading || !canWithdrawApplication
@@ -258,8 +271,12 @@
                 </v-btn>
               </v-col>
             </v-row>
+
             <v-row>
-              <v-col>
+              <v-col
+                cols="12"
+                xl="6"
+              >
                 <v-btn
                   color="primary"
                   block
@@ -269,7 +286,11 @@
                   Renew
                 </v-btn>
               </v-col>
-              <v-col>
+
+              <v-col
+                cols="12"
+                xl="6"
+              >
                 <v-btn
                   v-if="canApplicationBeUpdated"
                   color="primary"
@@ -310,6 +331,7 @@
         <v-card
           v-if="
             !isRenew &&
+            !isModification &&
             applicationStore.completeApplication.application.status !==
               ApplicationStatus['Permit Delivered']
           "
@@ -403,10 +425,10 @@
         </v-card>
         <v-card
           v-else-if="
-            (applicationStore.completeApplication.application.status ===
+            applicationStore.completeApplication.application.status ===
               ApplicationStatus['Permit Delivered'] ||
-              isRenew) &&
-            !isLicenseExpired
+            isRenew ||
+            isModification
           "
           class="fill-height"
           outlined
@@ -883,7 +905,10 @@
 import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue'
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
-import { AppointmentType } from '@shared-utils/types/defaultTypes'
+import {
+  AppointmentType,
+  RefundRequest,
+} from '@shared-utils/types/defaultTypes'
 import CharacterReferenceInfoSection from '@shared-ui/components/info-sections/CharacterReferenceInfoSection.vue'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
@@ -902,11 +927,14 @@ import SpouseAddressInfoSection from '@shared-ui/components/info-sections/Spouse
 import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
+import WithdrawModifyDialog from '@core-public/components/dialogs/WithdrawModifyDialog.vue'
 import axios from 'axios'
+import { getOriginalApplicationTypeModification } from '@shared-ui/composables/getOriginalApplicationType'
 import { i18n } from '@shared-ui/plugins'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { useRouter } from 'vue-router/composables'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
 import {
@@ -925,7 +953,7 @@ interface IFileSubmission {
 
 const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
-const themeStore = useThemeStore()
+const paymentStore = usePaymentStore()
 const brandStore = useBrandStore()
 const themeStore = useThemeStore()
 const router = useRouter()
@@ -1070,6 +1098,38 @@ const canApplicationBeModified = computed(() => {
   return (
     applicationStore.completeApplication.application.status ===
     ApplicationStatus['Permit Delivered']
+  )
+})
+
+const showInitialWithdrawButton = computed(() => {
+  return (
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Withdrawn &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Incomplete &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Permit Delivered'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Employment'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Judicial'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Reserve'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Standard']
+  )
+})
+
+const showModifyWithdrawButton = computed(() => {
+  return (
+    applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Modify Employment'] ||
+    applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Modify Judicial'] ||
+    applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Modify Reserve'] ||
+    applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Modify Standard']
   )
 })
 
@@ -1271,6 +1331,18 @@ const isRenew = computed(() => {
   )
 })
 
+const isModification = computed(() => {
+  const applicationType =
+    applicationStore.completeApplication.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Modify Standard'] ||
+    applicationType === ApplicationType['Modify Reserve'] ||
+    applicationType === ApplicationType['Modify Judicial'] ||
+    applicationType === ApplicationType['Modify Employment']
+  )
+})
+
 const isLicenseExpired = computed(() => {
   const gracePeriod = brandStore.brand.expiredApplicationRenewalPeriod
   let expirationDate: Date
@@ -1324,6 +1396,19 @@ const updateMutation = useMutation({
   onError: () => null,
 })
 
+const {
+  isLoading: isUpdateApplicationLoading,
+  mutateAsync: updateApplication,
+} = useMutation({
+  mutationFn: applicationStore.updateApplication,
+})
+
+const { isLoading: isRefundRequestLoading, mutateAsync: requestRefund } =
+  useMutation({
+    mutationFn: (refundRequest: RefundRequest) =>
+      paymentStore.requestRefund(refundRequest),
+  })
+
 const renewMutation = useMutation({
   mutationFn: applicationStore.updateApplication,
   onSuccess: () => {
@@ -1337,6 +1422,63 @@ const renewMutation = useMutation({
   },
   onError: () => null,
 })
+
+async function handleConfirmWithdrawModification() {
+  const transaction = applicationStore.completeApplication.paymentHistory.find(
+    ph => {
+      return (
+        ph.modificationNumber ===
+        applicationStore.completeApplication.application.modificationNumber
+      )
+    }
+  )
+
+  if (transaction) {
+    const refundRequest: RefundRequest = {
+      id: null,
+      transactionId: transaction.transactionId,
+      applicationId: applicationStore.completeApplication.id,
+      refundAmount: Number(transaction.amount),
+      reason: 'Withdraw Modification',
+      orderId: applicationStore.completeApplication.application.orderId,
+    }
+
+    await requestRefund(refundRequest)
+  }
+
+  applicationStore.completeApplication.application.modifiedAddress = {
+    streetAddress: '',
+    city: '',
+    state: '',
+    county: '',
+    zip: '',
+    country: '',
+  }
+  applicationStore.completeApplication.application.modifiedAddressComplete =
+    null
+  applicationStore.completeApplication.application.modifyAddWeapons = []
+  applicationStore.completeApplication.application.modifyDeleteWeapons = []
+  applicationStore.completeApplication.application.modifiedWeaponComplete = null
+  applicationStore.completeApplication.application.personalInfo.modifiedFirstName =
+    ''
+  applicationStore.completeApplication.application.personalInfo.modifiedLastName =
+    ''
+  applicationStore.completeApplication.application.personalInfo.modifiedMiddleName =
+    ''
+  applicationStore.completeApplication.application.modifiedNameComplete = null
+  applicationStore.completeApplication.application.status =
+    ApplicationStatus['Permit Delivered']
+
+  applicationStore.completeApplication.application.applicationType =
+    getOriginalApplicationTypeModification(
+      applicationStore.completeApplication.application.applicationType
+    )
+
+  applicationStore.completeApplication.application.currentStep = 1
+  applicationStore.completeApplication.application.modificationNumber += 1
+
+  await updateApplication()
+}
 
 function handleContinueApplication() {
   if (
@@ -1687,14 +1829,13 @@ function cancelChanges() {
 
 function handleFileSubmit(fileSubmission: IFileSubmission) {
   fileUploadLoading.value = true
-  const newFileName = `${applicationStore.completeApplication.application.personalInfo.lastName}_${applicationStore.completeApplication.application.personalInfo.firstName}_${fileSubmission.fileType}`
   const form = new FormData()
 
   form.append('fileToUpload', fileSubmission.file)
 
   axios
     .post(
-      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${newFileName}`,
+      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${fileSubmission.fileType}`,
       form
     )
     .catch(e => {
@@ -1704,7 +1845,7 @@ function handleFileSubmit(fileSubmission: IFileSubmission) {
 
   const uploadDoc: UploadedDocType = {
     documentType: fileSubmission.fileType,
-    name: `${newFileName}`,
+    name: fileSubmission.fileType,
     uploadedBy: applicationStore.completeApplication.application.userEmail,
     uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
   }

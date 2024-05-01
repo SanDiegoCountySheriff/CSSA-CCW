@@ -21,18 +21,6 @@
             :color="stepOneValid ? 'success' : 'primary'"
             :step="1"
           >
-            <div class="text-center">{{ $t('Name Change') }}</div>
-          </v-stepper-step>
-
-          <v-divider></v-divider>
-
-          <v-stepper-step
-            editable
-            :complete="stepTwoValid"
-            :edit-icon="stepTwoValid ? 'mdi-check' : '$edit'"
-            :color="stepTwoValid ? 'success' : 'primary'"
-            :step="2"
-          >
             <div class="text-center">
               {{ $t('Address Change') }}
             </div>
@@ -40,26 +28,40 @@
 
           <v-divider></v-divider>
 
-          <v-stepper-step
-            editable
-            :complete="stepThreeValid"
-            :edit-icon="stepThreeValid ? 'mdi-check' : '$edit'"
-            :color="stepThreeValid ? 'success' : 'primary'"
-            :step="3"
-          >
-            <div class="text-center">
-              {{ $t('Weapon Change') }}
-            </div>
-          </v-stepper-step>
+          <template v-if="!hasExhaustedModifications">
+            <v-stepper-step
+              editable
+              :complete="stepTwoValid"
+              :edit-icon="stepTwoValid ? 'mdi-check' : '$edit'"
+              :color="stepTwoValid ? 'success' : 'primary'"
+              :step="2"
+            >
+              <div class="text-center">{{ $t('Name Change') }}</div>
+            </v-stepper-step>
 
-          <v-divider></v-divider>
+            <v-divider></v-divider>
+
+            <v-stepper-step
+              editable
+              :complete="stepThreeValid"
+              :edit-icon="stepThreeValid ? 'mdi-check' : '$edit'"
+              :color="stepThreeValid ? 'success' : 'primary'"
+              :step="3"
+            >
+              <div class="text-center">
+                {{ $t('Weapon Change') }}
+              </div>
+            </v-stepper-step>
+
+            <v-divider></v-divider>
+          </template>
 
           <v-stepper-step
             editable
             :complete="stepFourValid"
             :edit-icon="stepFourValid ? 'mdi-check' : '$edit'"
             :color="stepFourValid ? 'success' : 'primary'"
-            :step="4"
+            :step="hasExhaustedModifications ? 2 : 4"
           >
             <div class="text-center">
               {{ $t('Supporting Documents') }}
@@ -79,45 +81,48 @@
 
         <v-stepper-items>
           <v-stepper-content :step="1">
-            <ModifyNameStep
-              v-model="modifyingName"
-              :application="applicationStore.completeApplication"
-              @update-step-one-valid="handleUpdateStepOneValid"
-              @handle-save="handleSaveName"
-              @handle-continue="handleContinueName"
-            />
-          </v-stepper-content>
-        </v-stepper-items>
-
-        <v-stepper-items>
-          <v-stepper-content :step="2">
             <ModifyAddressStep
               v-model="modifyingAddress"
               :application="applicationStore.completeApplication"
-              @update-step-two-valid="handleUpdateStepTwoValid"
+              @update-step-one-valid="handleUpdateStepOneValid"
               @handle-save="handleSaveAddress"
               @handle-continue="handleContinueAddress"
             />
           </v-stepper-content>
         </v-stepper-items>
 
-        <v-stepper-items>
-          <v-stepper-content :step="3">
-            <ModifyWeaponStep
-              :application="applicationStore.completeApplication"
-              @update-step-three-valid="handleUpdateStepThreeValid"
-              @handle-save="handleSaveWeapon"
-              @handle-continue="handleContinueWeapon"
-              @handle-add-weapon="handleAddWeapon"
-              @handle-delete-weapon="handleDeleteWeapon"
-              @undo-add-weapon="handleUndoAddWeapon"
-              @undo-delete-weapon="handleUndoDeleteWeapon"
-            />
-          </v-stepper-content>
-        </v-stepper-items>
+        <template v-if="!hasExhaustedModifications">
+          <v-stepper-items>
+            <v-stepper-content :step="2">
+              <ModifyNameStep
+                v-model="modifyingName"
+                :application="applicationStore.completeApplication"
+                @update-step-two-valid="handleUpdateStepTwoValid"
+                @handle-save="handleSaveName"
+                @previous-step="handlePreviousStep"
+                @handle-continue="handleContinueName"
+              />
+            </v-stepper-content>
+          </v-stepper-items>
+
+          <v-stepper-items>
+            <v-stepper-content :step="3">
+              <ModifyWeaponStep
+                @update-step-three-valid="handleUpdateStepThreeValid"
+                @handle-save="handleSaveWeapon"
+                @handle-continue="handleContinueWeapon"
+                @handle-add-weapon="handleAddWeapon"
+                @handle-delete-weapon="handleDeleteWeapon"
+                @undo-add-weapon="handleUndoAddWeapon"
+                @undo-delete-weapon="handleUndoDeleteWeapon"
+                @previous-step="handlePreviousStep"
+              />
+            </v-stepper-content>
+          </v-stepper-items>
+        </template>
 
         <v-stepper-items>
-          <v-stepper-content :step="4">
+          <v-stepper-content :step="hasExhaustedModifications ? 2 : 4">
             <ModifySupportingDocumentsStep
               :application="applicationStore.completeApplication"
               :modifying-name="modifyingName"
@@ -126,6 +131,7 @@
               @update-step-four-valid="handleUpdateStepFourValid"
               @handle-continue="handleContinueFile"
               @handle-save="handleSaveFile"
+              @previous-step="handlePreviousStep"
             />
           </v-stepper-content>
         </v-stepper-items>
@@ -155,22 +161,6 @@
       >
         <v-expansion-panel>
           <v-expansion-panel-header @click.native="stepIndex.step = 1">
-            {{ $t('Name Change') }}
-          </v-expansion-panel-header>
-
-          <v-expansion-panel-content eager>
-            <ModifyNameStep
-              v-model="modifyingName"
-              :application="applicationStore.completeApplication"
-              @handle-save="handleSaveName"
-              @handle-continue="handleContinueName"
-              @update-step-one-valid="handleUpdateStepOneValid"
-            />
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-
-        <v-expansion-panel>
-          <v-expansion-panel-header @click.native="stepIndex.step = 2">
             {{ $t('Address Change') }}
           </v-expansion-panel-header>
 
@@ -180,30 +170,49 @@
               :application="applicationStore.completeApplication"
               @handle-save="handleSaveAddress"
               @handle-continue="handleContinueAddress"
+              @previous-step="handlePreviousStep"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
 
-        <v-expansion-panel>
+        <v-expansion-panel v-if="!hasExhaustedModifications">
+          <v-expansion-panel-header @click.native="stepIndex.step = 2">
+            {{ $t('Name Change') }}
+          </v-expansion-panel-header>
+
+          <v-expansion-panel-content eager>
+            <ModifyNameStep
+              v-model="modifyingName"
+              :application="applicationStore.completeApplication"
+              @handle-save="handleSaveName"
+              @handle-continue="handleContinueName"
+              @update-step-two-valid="handleUpdateStepTwoValid"
+            />
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+
+        <v-expansion-panel v-if="!hasExhaustedModifications">
           <v-expansion-panel-header @click.native="stepIndex.step = 3">
             {{ $t('Weapon Change') }}
           </v-expansion-panel-header>
 
           <v-expansion-panel-content eager>
             <ModifyWeaponStep
-              :application="applicationStore.completeApplication"
               @handle-save="handleSaveWeapon"
               @handle-continue="handleContinueWeapon"
               @handle-add-weapon="handleAddWeapon"
               @handle-delete-weapon="handleDeleteWeapon"
               @undo-add-weapon="handleUndoAddWeapon"
               @undo-delete-weapon="handleUndoDeleteWeapon"
+              @previous-step="handlePreviousStep"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
 
         <v-expansion-panel>
-          <v-expansion-panel-header @click.native="stepIndex.step = 4">
+          <v-expansion-panel-header
+            @click.native="stepIndex.step = hasExhaustedModifications ? 2 : 4"
+          >
             {{ $t('Supporting Documents') }}
           </v-expansion-panel-header>
 
@@ -215,6 +224,7 @@
               :modifying-weapons="modifyingWeapons"
               @handle-continue="handleContinueFile"
               @handle-save="handleSaveFile"
+              @previous-step="handlePreviousStep"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -228,22 +238,23 @@ import ModifyAddressStep from '@core-public/components/form-stepper/modify-form-
 import ModifyNameStep from '@core-public/components/form-stepper/modify-form-steps/ModifyNameStep.vue'
 import ModifySupportingDocumentsStep from '@core-public/components/form-stepper/modify-form-steps/ModifySupportingDocumentsStep.vue'
 import ModifyWeaponStep from '@core-public/components/form-stepper/modify-form-steps/ModifyWeaponStep.vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
 import {
   CompleteApplication,
   WeaponInfoType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onMounted, provide, reactive, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const applicationStore = useCompleteApplicationStore()
+const brandStore = useBrandStore()
 const isApplicationValid = ref(false)
 const stepIndex = reactive({
   step: 1,
   previousStep: 1,
 })
-const stepOneValid = ref(false)
 const modifyingName = ref(false)
 const modifyingAddress = ref(false)
 const modifyingWeapons = computed(() => {
@@ -254,10 +265,35 @@ const modifyingWeapons = computed(() => {
       0
   )
 })
+const stepOneValid = ref(false)
 const stepTwoValid = ref(false)
 const stepThreeValid = ref(false)
 const stepFourValid = ref(false)
 const router = useRouter()
+
+const hasExhaustedModifications = computed(() => {
+  return (
+    applicationStore.completeApplication.application.modificationNumber >
+    brandStore.getBrand.numberOfModificationsBetweenRenewals
+  )
+})
+
+provide('hasExhaustedModifications', hasExhaustedModifications)
+
+const allStepsComplete = computed(() => {
+  if (!hasExhaustedModifications) {
+    return (
+      stepOneValid.value &&
+      stepTwoValid.value &&
+      stepThreeValid.value &&
+      stepFourValid.value
+    )
+  }
+
+  return stepOneValid.value && stepFourValid.value
+})
+
+provide('allStepsComplete', allStepsComplete)
 
 const expansionStep = computed({
   get() {
@@ -345,7 +381,7 @@ function handleContinueName(name) {
     name.middleName
   applicationStore.completeApplication.application.personalInfo.modifiedLastName =
     name.lastName
-  applicationStore.completeApplication.application.currentStep = 2
+  applicationStore.completeApplication.application.currentStep = 3
 
   updateMutation()
 
@@ -355,7 +391,7 @@ function handleContinueName(name) {
 
 function handleContinueAddress(address) {
   applicationStore.completeApplication.application.modifiedAddress = address
-  applicationStore.completeApplication.application.currentStep = 3
+  applicationStore.completeApplication.application.currentStep = 2
 
   updateMutation()
 
@@ -378,6 +414,11 @@ function handleContinueFile() {
   updateMutation()
 
   router.push('/ModifyFinalize')
+}
+
+function handlePreviousStep() {
+  stepIndex.previousStep = stepIndex.step
+  stepIndex.step -= 1
 }
 
 function handleAddWeapon(weapon: WeaponInfoType) {
@@ -411,17 +452,14 @@ function handleUndoAddWeapon(weapon: WeaponInfoType) {
 }
 
 function handleUndoDeleteWeapon(weapon: WeaponInfoType) {
-  const index =
-    applicationStore.completeApplication.application.modifyDeleteWeapons.findIndex(
-      w => w.serialNumber === weapon.serialNumber
-    )
+  window.console.log(weapon)
 
-  if (index !== -1) {
-    applicationStore.completeApplication.application.modifyDeleteWeapons.splice(
-      index,
-      1
+  applicationStore.completeApplication.application.modifyDeleteWeapons =
+    applicationStore.completeApplication.application.modifyDeleteWeapons.filter(
+      w => {
+        return w.serialNumber !== weapon.serialNumber
+      }
     )
-  }
 
   updateMutation()
 }

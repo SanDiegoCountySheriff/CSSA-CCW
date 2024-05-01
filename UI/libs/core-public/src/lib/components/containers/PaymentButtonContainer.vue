@@ -66,10 +66,10 @@
 </template>
 
 <script setup lang="ts">
-import { ApplicationType, PaymentType } from '@shared-utils/types/defaultTypes'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
+import { ApplicationType, PaymentType } from '@shared-utils/types/defaultTypes'
 import { inject, ref } from 'vue'
 
 interface IPaymentButtonContainerProps {

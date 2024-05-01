@@ -9,6 +9,7 @@ export const usePaymentStore = defineStore('paymentStore', () => {
   const state = reactive({
     paymentType: '',
   })
+  const refundRequestCount = ref(0)
   const appConfigStore = useAppConfigStore()
 
   const getPaymentType = computed(() => state.paymentType)
@@ -38,15 +39,32 @@ export const usePaymentStore = defineStore('paymentStore', () => {
       })
   }
 
-  async function refundPayment(payment: RefundRequest) {
+  async function refundPayment(payment: RefundRequest, convenienceFee: number) {
     await axios
-      .post(Endpoints.REFUND_PAYMENT_ENDPOINT, payment)
+      .post(
+        `${Endpoints.REFUND_PAYMENT_ENDPOINT}?convenienceFee=${convenienceFee}`,
+        payment
+      )
       .then(response => {
         window.console.log(response.data)
       })
       .catch(err => {
         throw err
       })
+  }
+
+  async function requestRefund(refundRequest: RefundRequest) {
+    await axios.post(Endpoints.REQUEST_REFUND_ENDPOINT, refundRequest)
+  }
+
+  async function getAllRefundRequests(): Promise<Array<RefundRequest>> {
+    const response = await axios.get(Endpoints.GET_ALL_REFUND_REQUESTS_ENDPOINT)
+
+    if (response?.data) {
+      refundRequestCount.value = response?.data.length
+    }
+
+    return response?.data
   }
 
   async function updatePaymentHistory(
@@ -72,10 +90,13 @@ export const usePaymentStore = defineStore('paymentStore', () => {
   return {
     state,
     getPaymentType,
+    refundRequestCount,
     isOnlinePaymentAvailable,
     setPaymentType,
     getPayment,
     refundPayment,
     updatePaymentHistory,
+    requestRefund,
+    getAllRefundRequests,
   }
 })

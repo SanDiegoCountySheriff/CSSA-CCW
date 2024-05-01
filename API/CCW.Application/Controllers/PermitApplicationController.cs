@@ -62,6 +62,24 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [Route("putAddHistoricalApplication")]
+    [HttpPut]
+    public async Task<IActionResult> PutAddHistoricalApplication([FromBody] PermitApplicationRequestModel permitApplication)
+    {
+        try
+        {
+            var result = await _applicationCosmosDbService.AddHistoricalApplicationAsync(_mapper.Map<PermitApplication>(permitApplication), cancellationToken: default);
+
+            return Ok(_mapper.Map<UserPermitApplicationResponseModel>(result));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return NotFound("An error occur while trying to create historical permit application.");
+        }
+    }
+
     [Authorize(Policy = "B2CUsers")]
     [HttpGet("getApplication")]
     public async Task<IActionResult> GetApplication(string applicationId)

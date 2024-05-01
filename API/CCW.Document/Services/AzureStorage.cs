@@ -119,24 +119,6 @@ public class AzureStorage : IAzureStorage
         }
     }
 
-    public async Task UploadAdminApplicationFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
-    {
-#if DEBUG
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminApplicationContainerName, _blobClientOptions);
-#else
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminApplicationContainerName);
-#endif
-        await container.CreateIfNotExistsAsync();
-        var encodedName = System.Web.HttpUtility.UrlEncode(saveAsFileName);
-
-        BlobClient blob = container.GetBlobClient(encodedName);
-
-        using (Stream file = fileToUpload.OpenReadStream())
-        {
-            blob.Upload(file, new BlobHttpHeaders { ContentType = fileToUpload.ContentType });
-        }
-    }
-
     public async Task UpdateAdminApplicationFileNameAsync(string oldName, string newName, CancellationToken cancellationToken)
     {
 #if DEBUG

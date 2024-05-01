@@ -4,72 +4,36 @@
       <v-card-title>Modify Weapons</v-card-title>
 
       <v-card-text>
-        <v-data-table
-          :items="items"
-          :headers="headers"
-        >
-          <template #top>
-            <v-toolbar flat>
-              <WeaponsDialog @save-weapon="handleSaveWeapon" />
-            </v-toolbar>
-          </template>
-
-          <template #[`item.actions`]="{ item }">
-            <v-icon
-              v-if="!item.deleted && !item.added"
-              @click="deleteWeapon(item)"
-            >
-              mdi-delete
-            </v-icon>
-
-            <v-icon
-              v-if="item.added"
-              @click="undoAddWeapon(item)"
-            >
-              mdi-undo
-            </v-icon>
-
-            <v-icon
-              v-if="item.deleted"
-              @click="undoDeleteWeapon(item)"
-            >
-              mdi-undo
-            </v-icon>
-          </template>
-
-          <template #[`item.status`]="{ item }">
-            <div v-if="item.deleted">Deleted</div>
-            <div v-else-if="item.added">Added</div>
-            <div v-else>Existing</div>
-          </template>
-        </v-data-table>
+        <WeaponsTable
+          :weapons="items"
+          :modifying="true"
+          @modify-delete-weapon="deleteWeapon"
+          @save-weapon="handleSaveWeapon"
+          @undo-add-weapon="undoAddWeapon"
+          @undo-delete-weapon="undoDeleteWeapon"
+        />
       </v-card-text>
     </v-form>
 
     <FormButtonContainer
-      valid
       @continue="handleContinue"
       @save="handleSave"
+      valid
+      v-on="$listeners"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
-import WeaponsDialog from '@shared-ui/components/dialogs/WeaponsDialog.vue'
-import {
-  CompleteApplication,
-  WeaponInfoType,
-} from '@shared-utils/types/defaultTypes'
+import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
+import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { computed, ref, watch } from 'vue'
 
-interface ModifyWeaponProps {
-  application: CompleteApplication
-}
-
 const valid = ref(false)
+const applicationStore = useCompleteApplicationStore()
 
-const props = defineProps<ModifyWeaponProps>()
 const emit = defineEmits([
   'handle-continue',
   'handle-save',
@@ -82,19 +46,22 @@ const emit = defineEmits([
 
 const items = computed(() => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let itemArray: Array<any> = []
+  let itemArray: Array<WeaponInfoType> = []
 
-  for (const weapon of props.application.application.weapons) {
+  for (const weapon of applicationStore.completeApplication.application
+    .weapons) {
     itemArray.push({ ...weapon })
   }
 
-  for (const weapon of props.application.application.modifyAddWeapons) {
+  for (const weapon of applicationStore.completeApplication.application
+    .modifyAddWeapons) {
     const item = { ...weapon, added: true }
 
     itemArray.push(item)
   }
 
-  for (const weapon of props.application.application.modifyDeleteWeapons) {
+  for (const weapon of applicationStore.completeApplication.application
+    .modifyDeleteWeapons) {
     const index = itemArray.findIndex(
       item => item.serialNumber === weapon.serialNumber
     )
@@ -109,24 +76,6 @@ const items = computed(() => {
 
   return itemArray
 })
-
-const headers = [
-  {
-    text: 'Make',
-    value: 'make',
-  },
-  {
-    text: 'Model',
-    value: 'model',
-  },
-  { text: 'Caliber', value: 'caliber' },
-  {
-    text: 'Serial Number',
-    value: 'serialNumber',
-  },
-  { text: 'Actions', value: 'actions' },
-  { text: 'Status', value: 'status' },
-]
 
 function deleteWeapon(weapon: WeaponInfoType) {
   emit('handle-delete-weapon', weapon)

@@ -263,6 +263,7 @@ export const defaultPermitState: CompleteApplication = {
         trafficViolations: [],
         temporaryTrafficViolations: [],
         updateInformation: null,
+        trafficViolationsExplanation: '',
       },
       questionThirteen: {
         selected: null,
@@ -483,8 +484,12 @@ export const defaultPermitState: CompleteApplication = {
     originalStatus: null,
     ninetyDayCountdownPaused: false,
     ninetyDayCountdownPausedDate: null,
-    flaggedForCustomerReview: null,
-    flaggedForLicensingReview: null,
+    flaggedForCustomerReview: false,
+    flaggedForLicensingReview: false,
+    modifiedAddressComplete: null,
+    modifiedNameComplete: null,
+    modifiedWeaponComplete: null,
+    modificationNumber: 1,
   },
 
   history: [],

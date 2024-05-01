@@ -147,7 +147,7 @@ const documentsStore = useDocumentsStore()
 const route = useRoute()
 
 const state = reactive({
-  tab: 1,
+  tab: 0,
   items: [
     'Applicant Details',
     'Aliases',
