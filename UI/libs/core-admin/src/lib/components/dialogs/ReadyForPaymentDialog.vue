@@ -56,5 +56,6 @@ const dialog = ref(false)
 
 function onReadyForInitialPayment() {
   emit('on-ready-for-initial-payment')
+  dialog.value = false
 }
 </script>
