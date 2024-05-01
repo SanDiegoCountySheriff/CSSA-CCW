@@ -6,7 +6,8 @@
           :loading="
             isGetApplicationsLoading ||
             isUpdateApplicationLoading ||
-            isRefundRequestLoading
+            isRefundRequestLoading ||
+            isAddHistoricalApplicationLoading
           "
           outlined
         >
@@ -1378,6 +1379,15 @@ const updateMutation = useMutation({
 })
 
 const {
+  mutateAsync: addHistoricalApplicationPublic,
+  isLoading: isAddHistoricalApplicationLoading,
+} = useMutation({
+  mutationFn: (application: CompleteApplication) =>
+    applicationStore.addHistoricalApplicationPublic(application),
+})
+
+
+const {
   isLoading: isUpdateApplicationLoading,
   mutateAsync: updateApplication,
 } = useMutation({
@@ -1534,7 +1544,14 @@ function handleModifyApplication() {
   })
 }
 
-function handleRenewApplication() {
+async function handleRenewApplication() {
+
+  const historicalApplication: CompleteApplication = {
+    ...applicationStore.getCompleteApplication,
+  }
+
+  await addHistoricalApplicationPublic(historicalApplication)
+
   isRenewLoading.value = true
   const application = applicationStore.completeApplication.application
 

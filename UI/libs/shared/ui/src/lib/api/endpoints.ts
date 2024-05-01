@@ -155,6 +155,12 @@ export default class Endpoints {
     }/application/v1/permitapplication/putAddHistoricalApplication`
   }
 
+  static get PUT_ADD_HISTORICAL_APPLICATION_PUBLIC_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/putAddHistoricalApplicationPublic`
+  }
+
   /********APPOINTMENTS******************/
 
   static get GET_APPOINTMENTS_ENDPOINT() {
