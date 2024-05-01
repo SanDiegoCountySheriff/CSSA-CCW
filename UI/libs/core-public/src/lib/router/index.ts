@@ -1,5 +1,6 @@
 import ApplicationDetailView from '@core-public/views/ApplicationDetailView.vue'
 import ApplicationView from '@core-public/views/ApplicationView.vue'
+import ExistingApplicationView from '@core-public/views/ExistingApplicationView.vue'
 import FinalizeView from '@core-public/views/FinalizeView.vue'
 import FormView from '@core-public/views/FormView.vue'
 import HomeView from '@core-public/views/HomeView.vue'
@@ -13,7 +14,6 @@ import RenewFormView from '@core-public/views/RenewFormView.vue'
 import Routes from '@core-public/router/routes'
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
-import ExistingApplicationView from '@core-public/views/ExistingApplicationView.vue'
 
 Vue.use(VueRouter)
 

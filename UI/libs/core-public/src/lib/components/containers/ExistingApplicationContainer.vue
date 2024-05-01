@@ -1,220 +1,246 @@
 <template>
-  <div>
-    <v-container fluid>
-      <v-row
-        align="center"
-        justify="center"
+  <v-container>
+    <v-card>
+      <v-form
+        ref="form"
+        v-model="valid"
       >
-        <v-col
-          cols="12"
-          md="10"
-          lg="8"
-        >
-          <v-card
-            class="pa-5"
-            elevation="2"
-          >
-            <v-form
-              ref="form"
-              v-model="valid"
+        <v-card-title class="justify-center">
+          Please fill in this information to help us find your
+          application/permit.
+        </v-card-title>
+
+        <v-card-text>
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
             >
-              <v-row>
-                <v-col>
-                  <div class="display-1 text-center mb-4">Link Application</div>
-                </v-col>
-              </v-row>
+              <v-text-field
+                v-model="user.firstName"
+                :rules="[v => !!v || $t('First Name cannot be blank')]"
+                label="First Name"
+                color="primary"
+                outlined
+                dense
+              />
+            </v-col>
 
-              <v-row>
-                <v-col
-                  cols="12"
-                  sm="6"
-                >
-                  <v-text-field
-                    v-model="user.firstName"
-                    :rules="[v => !!v || $t('First Name cannot be blank')]"
-                    label="First Name"
-                    outlined
-                    dense
-                  ></v-text-field>
-                </v-col>
-                <v-col
-                  cols="12"
-                  sm="6"
-                >
-                  <v-text-field
-                    v-model="user.lastName"
-                    :rules="[v => !!v || $t('Last Name cannot be blank')]"
-                    label="Last Name"
-                    outlined
-                    dense
-                  ></v-text-field>
-                </v-col>
-              </v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="user.lastName"
+                :rules="[v => !!v || $t('Last Name cannot be blank')]"
+                label="Last Name"
+                color="primary"
+                outlined
+                dense
+              />
+            </v-col>
+          </v-row>
 
-              <v-row>
-                <v-col
-                  cols="12"
-                  sm="6"
-                >
-                  <v-text-field
-                    v-model="user.middleName"
-                    label="Middle Name"
-                    outlined
-                    dense
-                  ></v-text-field>
-                </v-col>
-                <v-col
-                  cols="12"
-                  sm="6"
-                >
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="user.middleName"
+                label="Middle Name"
+                color="primary"
+                outlined
+                dense
+              />
+            </v-col>
+
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-menu
+                v-model="menu"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
+                <template #activator="{ on, attrs }">
                   <v-text-field
                     v-model="user.dateOfBirth"
+                    :label="$t('Date of Birth')"
                     :rules="[v => !!v || $t('Date of birth is required')]"
-                    :label="$t('Date of birth')"
-                    type="date"
-                    append-icon="mdi-calendar"
+                    prepend-inner-icon="mdi-calendar"
+                    color="primary"
+                    v-bind="attrs"
+                    v-on="on"
                     outlined
                     dense
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-
-              <v-row>
-                <v-col
-                  cols="12"
-                  sm="6"
-                >
-                  <v-text-field
-                    v-model="user.driversLicenseNumber"
-                    :rules="[
-                      v => !!v || $t('Drivers License Number cannot be blank'),
-                    ]"
-                    label="Drivers License Number"
-                    outlined
-                    dense
-                  ></v-text-field>
-                </v-col>
-
-                <v-col
-                  cols="12"
-                  sm="6"
-                >
-                  <v-text-field
-                    v-model="user.permitNumber"
-                    label="Optional Agency License Number"
-                    outlined
-                    dense
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col
-                  cols="12"
-                  sm="6"
-                  class="mb-4"
-                >
-                  <FileUploadContainer
-                    :accepted-formats="'image/png, image/jpeg, application/pdf'"
-                    :document-label="'Photo of Drivers License'"
-                    :is-loading="loadingStates.DriverLicense"
-                    @file-opening="loadingStates.DriverLicense = true"
-                    @file-opened="loadingStates.DriverLicense = false"
-                    :rules="driverLicenseRules"
-                    :uploaded-documents="user.uploadedDocuments"
-                    :filter-document-type="'DriverLicense'"
-                    @upload-files="
-                      files => handleMultiInput(files, 'DriverLicense')
-                    "
-                    @delete-file="name => deleteFile(name)"
                   />
-                </v-col>
-                <v-col
-                  cols="12"
-                  sm="6"
-                  class="mb-4"
-                >
-                  <FileUploadContainer
-                    :accepted-formats="'image/png, image/jpeg, application/pdf'"
-                    :document-label="'Photo of CCW Permit'"
-                    :is-loading="loadingStates.CCWPermit"
-                    @file-opening="loadingStates.CCWPermit = true"
-                    @file-opened="loadingStates.CCWPermit = false"
-                    :uploaded-documents="user.uploadedDocuments"
-                    :filter-document-type="'CCWPermit'"
-                    @upload-files="
-                      files => handleMultiInput(files, 'CCWPermit')
-                    "
-                    @delete-file="name => deleteFile(name)"
-                  />
-                </v-col>
-              </v-row>
-              <v-row class="justify-center">
-                <v-col
-                  cols="12"
-                  sm="6"
-                >
+                </template>
+
+                <v-date-picker
+                  v-model="user.dateOfBirth"
+                  color="primary"
+                  no-title
+                  scrollable
+                />
+              </v-menu>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="user.driversLicenseNumber"
+                :rules="[
+                  v => !!v || $t('Drivers License Number cannot be blank'),
+                ]"
+                label="Drivers License Number"
+                color="primary"
+                outlined
+                dense
+              />
+            </v-col>
+
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="user.permitNumber"
+                label="Optional Agency License Number"
+                color="primary"
+                outlined
+                dense
+              />
+            </v-col>
+          </v-row>
+
+          <v-row class="mb-6">
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <FileUploadContainer
+                :accepted-formats="'image/png, image/jpeg, application/pdf'"
+                :document-label="'Photo of Drivers License'"
+                :is-loading="loadingStates.DriverLicense"
+                @file-opening="loadingStates.DriverLicense = true"
+                @file-opened="loadingStates.DriverLicense = false"
+                :rules="driverLicenseRules"
+                :uploaded-documents="user.uploadedDocuments"
+                :filter-document-type="'DriverLicense'"
+                @upload-files="
+                  files => handleMultiInput(files, 'DriverLicense')
+                "
+                @delete-file="name => deleteFile(name)"
+              />
+            </v-col>
+
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <FileUploadContainer
+                :accepted-formats="'image/png, image/jpeg, application/pdf'"
+                :document-label="'Photo of CCW Permit'"
+                :is-loading="loadingStates.CCWPermit"
+                @file-opening="loadingStates.CCWPermit = true"
+                @file-opened="loadingStates.CCWPermit = false"
+                :uploaded-documents="user.uploadedDocuments"
+                :filter-document-type="'CCWPermit'"
+                @upload-files="files => handleMultiInput(files, 'CCWPermit')"
+                @delete-file="name => deleteFile(name)"
+              />
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-menu
+                v-model="appointmentMenu"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
+                <template #activator="{ on, attrs }">
                   <v-text-field
                     v-model="user.appointmentDate"
                     :label="$t('Appointment Date')"
-                    type="date"
-                    append-icon="mdi-calendar"
-                    persistent-hint
+                    prepend-inner-icon="mdi-calendar"
+                    color="primary"
+                    v-bind="attrs"
+                    v-on="on"
                     outlined
                     dense
-                  ></v-text-field>
-                </v-col>
-              </v-row>
+                  />
+                </template>
 
-              <v-container class="mb-10">
-                Application look-up may take some time, please check back soon!
-                We highly recommend giving us information about your appointment
-                date if you have one so we can expedite the process for you.
-              </v-container>
+                <v-date-picker
+                  v-model="user.appointmentDate"
+                  color="primary"
+                  no-title
+                  scrollable
+                />
+              </v-menu>
+            </v-col>
 
-              <v-row class="justify-center">
-                <v-card-actions class="d-flex flex-column align-center">
-                  <v-container
-                    class="px-0"
-                    fluid
-                  >
-                    <v-row>
-                      <v-col
-                        cols="12"
-                        sm="8"
-                        md="6"
-                      >
-                        <v-btn
-                          color="error"
-                          @click="$router.push(Routes.HOME_ROUTE_PATH)"
-                          block
-                        >
-                          Cancel
-                        </v-btn>
-                      </v-col>
-                      <v-col
-                        cols="12"
-                        sm="8"
-                        md="6"
-                      >
-                        <v-btn
-                          :disabled="!valid"
-                          color="primary"
-                          @click="handleLinkRequest"
-                          block
-                        >
-                          Submit for Review
-                        </v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-actions>
-              </v-row>
-            </v-form>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="user.appointmentTime"
+                append-icon="mdi-clock-time-four-outline"
+                label="Appointment Time"
+                type="time"
+                color="primary"
+                clearable
+                outlined
+                dense
+              />
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-text>
+          Application lookup may take some time, please check back soon! We
+          highly recommend giving us information about your appointment date if
+          you have one so we can expedite the process for you.
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer />
+
+          <v-btn
+            @click="$router.push(Routes.HOME_ROUTE_PATH)"
+            color="error"
+          >
+            Cancel
+          </v-btn>
+
+          <v-btn
+            @click="handleLinkRequest"
+            :disabled="!valid"
+            color="primary"
+          >
+            Submit for Review
+          </v-btn>
+
+          <v-spacer />
+        </v-card-actions>
+      </v-form>
+    </v-card>
+  </v-container>
 </template>
 
 <script setup lang="ts">
@@ -233,6 +259,8 @@ const router = useRouter()
 const user = computed(() => userStore.userProfile)
 const form = ref()
 const valid = ref(false)
+const menu = ref(false)
+const appointmentMenu = ref(false)
 
 const { mutate: updateUser } = useMutation(
   ['createUserProfile'],

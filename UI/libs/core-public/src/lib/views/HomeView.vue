@@ -154,8 +154,9 @@
         >
           <v-card>
             <v-card-title class="text-h4 justify-center">
-              We have received your request!
+              We have received your request
             </v-card-title>
+
             <v-card-title class="text-h5 justify-center">
               Application linking request is currently under review
               <v-card-subtitle class="text-5 justify-center">
@@ -163,30 +164,21 @@
               </v-card-subtitle>
             </v-card-title>
 
-            <v-card-actions class="d-flex flex-column align-center">
-              <v-container
-                class="px-0"
-                fluid
+            <v-card-actions>
+              <v-spacer />
+
+              <v-btn
+                @click="showStatus = false"
+                color="primary"
               >
-                <v-row justify="center">
-                  <v-col
-                    cols="12"
-                    sm="8"
-                    md="6"
-                  >
-                    <v-btn
-                      color="primary"
-                      @click="showStatus = false"
-                      block
-                    >
-                      Dismiss
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-container>
+                Dismiss
+              </v-btn>
+
+              <v-spacer />
             </v-card-actions>
           </v-card>
         </v-dialog>
+
         <v-dialog
           v-model="showDialog"
           max-width="600px"

@@ -23,6 +23,8 @@ public class UserProfileResponseModel
     public string PermitNumber { get; set; }
     [JsonProperty("appointmentDate")]
     public DateTimeOffset? AppointmentDate { get; set; }
+    [JsonProperty("appointmentTime")]
+    public string AppointmentTime { get; set; }
     [JsonProperty("uploadedDocuments")]
     public UploadedDocument[] UploadedDocuments { get; set; }
     [JsonProperty("isPendingReview")]

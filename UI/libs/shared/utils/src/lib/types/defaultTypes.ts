@@ -100,6 +100,7 @@ export type UserType = {
   driversLicenseNumber: string
   permitNumber: string
   appointmentDate: string
+  appointmentTime: string
   uploadedDocuments: Array<UploadedDocType>
   isPendingReview: boolean
 }
