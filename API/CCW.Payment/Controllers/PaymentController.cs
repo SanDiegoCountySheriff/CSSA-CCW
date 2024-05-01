@@ -246,23 +246,6 @@ public class PaymentController : ControllerBase
         }
     }
 
-    [Route("getPaymentHistory")]
-    [HttpGet]
-    public async Task<IActionResult> GetPaymentHistory()
-    {
-        try
-        {
-            var transaction = ReportingService.Activity().Execute();
-            // var transaction = _reportBuilder.WithTransactionId("").Execute();
-
-            return Ok(transaction);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
-
     [Authorize(Policy = "AADUsers")]
     [Route("refundPayment")]
     [HttpPost]

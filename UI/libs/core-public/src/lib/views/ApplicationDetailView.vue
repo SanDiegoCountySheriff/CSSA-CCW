@@ -505,7 +505,6 @@
           <v-tabs
             :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
             v-model="tab"
-            :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
             grow
           >
             <v-tabs-slider color="primary"></v-tabs-slider>
@@ -905,10 +904,6 @@
 import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue'
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
-import {
-  AppointmentType,
-  RefundRequest,
-} from '@shared-utils/types/defaultTypes'
 import CharacterReferenceInfoSection from '@shared-ui/components/info-sections/CharacterReferenceInfoSection.vue'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
@@ -942,6 +937,10 @@ import {
   ApplicationType,
   AppointmentStatus,
   QualifyingQuestionStandard,
+} from '@shared-utils/types/defaultTypes'
+import {
+  AppointmentType,
+  RefundRequest,
 } from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
