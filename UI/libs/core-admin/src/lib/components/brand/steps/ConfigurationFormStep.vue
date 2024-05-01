@@ -38,9 +38,7 @@
               outlined
             />
           </v-col>
-        </v-row>
 
-        <v-row>
           <v-col
             sm="6"
             cols="12"
@@ -83,6 +81,25 @@
               color="primary"
               outlined
             />
+          </v-col>
+
+          <v-col>
+            <v-text-field
+              v-model.number="
+                brandStore.brand.numberOfModificationsBetweenRenewals
+              "
+              :rules="[
+                v =>
+                  (v !== undefined && v !== null) ||
+                  v >= 0 ||
+                  'Number of modifications between renewals is required',
+              ]"
+              label="Number of modifications between renewals"
+              hint="This does not include address changes, only names and weapons"
+              type="number"
+              color="primary"
+              outlined
+            ></v-text-field>
           </v-col>
         </v-row>
 

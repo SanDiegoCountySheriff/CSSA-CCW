@@ -25,6 +25,7 @@
               </v-combobox>
             </v-col>
           </v-row>
+
           <v-row>
             <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
               <v-text-field
@@ -38,6 +39,7 @@
               </v-text-field>
             </v-col>
           </v-row>
+
           <v-row>
             <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
               <v-combobox
@@ -52,6 +54,7 @@
               </v-combobox>
             </v-col>
           </v-row>
+
           <v-row>
             <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
               <v-text-field
@@ -75,7 +78,9 @@
         >
           {{ $t('Cancel') }}
         </v-btn>
+
         <v-spacer></v-spacer>
+
         <v-btn
           text
           color="primary"

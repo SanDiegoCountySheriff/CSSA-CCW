@@ -9,8 +9,6 @@ import ModifyFormView from '@core-public/views/ModifyFormView.vue'
 import MoreInformationView from '@core-public/views/MoreInformationView.vue'
 import PenalView from '@core-public/views/PenalView.vue'
 import RecieptView from '@core-public/views/RecieptView.vue'
-import RenewApplicationView from '@core-public/views/RenewApplicationView.vue'
-import RenewFormView from '@core-public/views/RenewFormView.vue'
 import Routes from '@core-public/router/routes'
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
@@ -55,19 +53,9 @@ const routes: Array<RouteConfig> = [
     component: PenalView,
   },
   {
-    path: Routes.RENEW_APPLICATION_ROUTE_PATH,
-    name: 'RenewApplication',
-    component: RenewApplicationView,
-  },
-  {
     path: Routes.RECEIPT_PATH,
     name: 'Reciept',
     component: RecieptView,
-  },
-  {
-    path: Routes.RENEW_FORM_ROUTE_PATH,
-    name: 'RenewForm',
-    component: RenewFormView,
   },
   {
     path: Routes.MODIFY_FORM_PATH,

@@ -268,9 +268,12 @@ export type PaymentInfoType = {
 }
 
 export type RefundRequest = {
+  id: string | null | undefined
+  orderId: string | null | undefined
   transactionId: string
   applicationId: string
   refundAmount: number
+  reason: string | null | undefined
 }
 
 export type PersonalInfoType = {
@@ -316,6 +319,7 @@ export type PaymentHistoryType = {
   vendorInfo: string
   successful: boolean
   paymentStatus: PaymentStatus
+  modificationNumber: number | null
 }
 
 export type WeaponInfoType = {
@@ -323,6 +327,8 @@ export type WeaponInfoType = {
   model: string
   caliber: string
   serialNumber: string
+  added?: boolean
+  deleted?: boolean
 }
 
 export type CharacterReferenceType = {
@@ -506,6 +512,7 @@ export enum ApplicationStatus {
   'Contingently Denied',
   'Ready To Issue',
   'Waiting For Customer',
+  'Modification Approved',
 }
 
 export enum PaymentType {
@@ -590,6 +597,7 @@ export type CompleteApplication = {
     contact: ContactInfoType
     currentAddress: AddressInfoType
     modifiedAddress: AddressInfoType
+    modifiedAddressComplete: boolean | null
     denialInfo: DenialInfoType
     differentMailing: boolean
     differentSpouseAddress: boolean
@@ -616,6 +624,7 @@ export type CompleteApplication = {
       ssn: string
       maritalStatus: string
     }
+    modifiedNameComplete: boolean | null
     physicalAppearance: AppearanceInfoType
     previousAddresses: Array<AddressInfoType>
     qualifyingQuestions: QualifyingQuestions
@@ -635,6 +644,7 @@ export type CompleteApplication = {
     weapons: Array<WeaponInfoType>
     modifyDeleteWeapons: Array<WeaponInfoType>
     modifyAddWeapons: Array<WeaponInfoType>
+    modifiedWeaponComplete: boolean | null
     workInformation: WorkInformationType
     currentStep: number
     status: ApplicationStatus
@@ -661,6 +671,8 @@ export type CompleteApplication = {
       falseInfoAgreed: boolean
       falseInfoAgreedDate: string | null
     }
+    readyForInitialPayment: boolean
+    modificationNumber: number
   }
   history: Array<HistoryType>
   paymentHistory: Array<PaymentHistoryType>
@@ -728,6 +740,7 @@ export type BrandType = {
   agencyHairColors: HairColor[]
   agencyEyeColors: EyeColor[]
   daysBeforeActiveRenewal: number
+  numberOfModificationsBetweenRenewals: number
 }
 
 export type AgencyDocumentsType = {

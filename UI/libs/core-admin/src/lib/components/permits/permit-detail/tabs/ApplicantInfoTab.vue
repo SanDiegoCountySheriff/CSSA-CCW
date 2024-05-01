@@ -14,8 +14,7 @@
 
       <template
         v-if="
-          permitStore.getPermitDetail.application.applicationType ===
-          ApplicationType['Modify Standard']
+          permitStore.getPermitDetail.application.modifiedNameComplete !== null
         "
       >
         <v-card-subtitle> Name Modification </v-card-subtitle>
@@ -63,7 +62,7 @@
 
             <v-col>
               <v-btn
-                @click="onCheckNameChangeDocument"
+                @click="handleOpenPdf"
                 color="primary"
                 block
               >
@@ -74,12 +73,27 @@
 
             <v-col>
               <v-btn
+                v-if="
+                  !permitStore.getPermitDetail.application.modifiedNameComplete
+                "
                 @click="onApproveNameChange"
                 color="primary"
                 block
               >
                 <v-icon left>mdi-check</v-icon>
                 Approve
+              </v-btn>
+
+              <v-btn
+                v-if="
+                  permitStore.getPermitDetail.application.modifiedNameComplete
+                "
+                @click="onUndoApproveNameChange"
+                color="primary"
+                block
+              >
+                <v-icon left>mdi-undo</v-icon>
+                Undo Approve
               </v-btn>
             </v-col>
           </v-row>
@@ -358,8 +372,8 @@
 </template>
 
 <script setup lang="ts">
-import { ApplicationType } from '@shared-utils/types/defaultTypes'
 import SaveButton from './SaveButton.vue'
+import { openPdf } from '@core-admin/components/composables/openDocuments'
 import { reactive } from 'vue'
 import { useMutation } from '@tanstack/vue-query'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -397,7 +411,32 @@ function handleSave() {
   emit('on-save', 'Application Info')
 }
 
-function onApproveNameChange() {}
+function onApproveNameChange() {
+  permitStore.getPermitDetail.application.modifiedNameComplete = true
+  emit('on-save', 'Approved name change')
+}
 
-function onCheckNameChangeDocument() {}
+function onUndoApproveNameChange() {
+  permitStore.getPermitDetail.application.modifiedNameComplete = false
+  emit('on-save', 'Undo approved name change')
+}
+
+async function handleOpenPdf() {
+  const modifyNameDocument =
+    permitStore.getPermitDetail.application.uploadedDocuments.find(d => {
+      if (
+        d.name.indexOf(
+          `ModifyName-${permitStore.getPermitDetail.application.modificationNumber}`
+        ) >= 0
+      ) {
+        return d
+      }
+
+      return null
+    })
+
+  if (modifyNameDocument) {
+    await openPdf(modifyNameDocument)
+  }
+}
 </script>

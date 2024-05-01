@@ -27,22 +27,9 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     return ''
   }
 
-  async function getApplicationDocumentApi(name: string) {
-    const userName = `${permitStore.permitDetail.application.personalInfo.lastName}_${permitStore.permitDetail.application.personalInfo.firstName}`
-    const res = await axios.get(
-      `${Endpoints.GET_DOCUMENT_AGENCY_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${userName}_${name}`
-    )
-
-    setDocuments(res?.data)
-
-    return res?.data || {}
-  }
-
   async function getUserPortrait() {
-    const userName = `${permitStore.permitDetail.application.personalInfo.lastName}_${permitStore.permitDetail.application.personalInfo.firstName}`
-
     const res = await axios.get(
-      `${Endpoints.GET_USER_PORTRAIT_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${userName}_Portrait`
+      `${Endpoints.GET_USER_PORTRAIT_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_Portrait`
     )
 
     return res.data
@@ -58,9 +45,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   async function setUserApplicationFile(data, target) {
     const formData = new FormData()
 
-    const userName = `${permitStore.permitDetail.application.personalInfo.lastName}_${permitStore.permitDetail.application.personalInfo.firstName}`
-
-    const newFileName = `${permitStore.permitDetail.userId}_${userName}_${target}`
+    const newFileName = `${permitStore.permitDetail.userId}_${target}`
 
     formData.append('fileToUpload', data)
     const res = await axios.post(
@@ -71,7 +56,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     if (res) {
       const uploadDoc: UploadedDocType = {
         documentType: target,
-        name: `${userName}_${target}`,
+        name: newFileName,
         uploadedBy: authStore.getAuthState.userEmail,
         uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
       }
@@ -162,8 +147,6 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   return {
     documents,
     getDocuments,
-    setDocuments,
-    getApplicationDocumentApi,
     formatName,
     setUserApplicationFile,
     getUserDocument,

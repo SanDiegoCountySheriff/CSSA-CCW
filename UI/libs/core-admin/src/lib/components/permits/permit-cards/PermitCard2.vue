@@ -1,5 +1,8 @@
 <template>
-  <v-container class="px-0 py-0">
+  <v-container
+    class="px-0 py-0"
+    fluid
+  >
     <v-row>
       <v-col
         cols="4"
@@ -14,6 +17,7 @@
         </v-card>
 
         <v-card
+          :loading="isAddHistoricalApplicationLoading || isLoading"
           v-else
           class="d-flex flex-column fill-height"
           outlined
@@ -111,12 +115,23 @@
                           <v-icon>mdi-printer</v-icon>
                         </v-btn>
                       </template>
+
                       <v-list>
                         <v-list-item @click="printPdf('printApplicationApi')">
                           <v-list-item-title>
                             Print Application
                           </v-list-item-title>
                         </v-list-item>
+
+                        <v-list-item
+                          v-if="isApplicationModification"
+                          @click="printPdf('printModificationApi')"
+                        >
+                          <v-list-item-title>
+                            Print Modification
+                          </v-list-item-title>
+                        </v-list-item>
+
                         <v-list-item
                           :style="{
                             color: isOfficialLicenseMissingInformation
@@ -351,7 +366,22 @@
                   </v-list>
                 </v-menu>
               </v-col>
+
               <v-col
+                v-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForInitialPayment && !isInitialPaymentComplete
+                "
+                cols="12"
+                xl="6"
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-initial-payment="handleReadyForInitialPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else
                 cols="12"
                 xl="6"
               >
@@ -441,10 +471,19 @@
         >
           <v-card-title class="justify-center">
             <v-icon
+              v-if="!isModificationComplete"
               color="primary"
               class="mr-2"
             >
               mdi-shield-alert
+            </v-icon>
+
+            <v-icon
+              v-else
+              color="success"
+              class="mr-2"
+            >
+              mdi-shield-check
             </v-icon>
             Modification
           </v-card-title>
@@ -455,12 +494,71 @@
             <v-row>
               <v-col>
                 <v-btn
-                  @click="emit('on-check-name')"
+                  v-if="modificationReadyForApproval"
+                  @click="handleApproveModification"
                   color="primary"
+                  block
+                  small
+                >
+                  <v-icon left>mdi-check-bold</v-icon>
+                  Approve Modification
+                </v-btn>
+
+                <v-alert
+                  v-if="modificationMissingChecklistItems"
+                  color="primary"
+                  type="info"
+                  dense
+                  outlined
+                >
+                  <span
+                    :class="
+                      themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                    "
+                  >
+                    Approve Checklist Items Next
+                  </span>
+                </v-alert>
+
+                <FinishModificationDialog
+                  v-if="
+                    permitStore.getPermitDetail.application.status ===
+                    ApplicationStatus['Modification Approved']
+                  "
+                  @handle-finish-modification="handleFinishModification"
+                />
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col>
+                <v-btn
+                  @click="emit('on-check-name')"
+                  :disabled="!isModifyingName"
+                  :color="
+                    permitStore.getPermitDetail.application.modifiedNameComplete
+                      ? 'success'
+                      : 'primary'
+                  "
                   small
                   block
                 >
-                  <v-icon left>mdi-rename</v-icon>
+                  <v-icon
+                    v-if="
+                      !permitStore.getPermitDetail.application
+                        .modifiedNameComplete
+                    "
+                    left
+                  >
+                    mdi-rename
+                  </v-icon>
+
+                  <v-icon
+                    v-else
+                    left
+                  >
+                    mdi-check
+                  </v-icon>
                   Check Name
                 </v-btn>
               </v-col>
@@ -468,11 +566,32 @@
               <v-col>
                 <v-btn
                   @click="emit('on-check-address')"
-                  color="primary"
+                  :disabled="!isModifyingAddress"
+                  :color="
+                    permitStore.getPermitDetail.application
+                      .modifiedAddressComplete
+                      ? 'success'
+                      : 'primary'
+                  "
                   small
                   block
                 >
-                  <v-icon left>mdi-map-marker</v-icon>
+                  <v-icon
+                    v-if="
+                      !permitStore.getPermitDetail.application
+                        .modifiedAddressComplete
+                    "
+                    left
+                  >
+                    mdi-map-marker
+                  </v-icon>
+
+                  <v-icon
+                    v-else
+                    left
+                  >
+                    mdi-check
+                  </v-icon>
                   Check Address
                 </v-btn>
               </v-col>
@@ -482,11 +601,32 @@
               <v-col>
                 <v-btn
                   @click="emit('on-check-weapons')"
-                  color="primary"
+                  :disabled="!isModifyingWeapon"
+                  :color="
+                    permitStore.getPermitDetail.application
+                      .modifiedWeaponComplete
+                      ? 'success'
+                      : 'primary'
+                  "
                   small
                   block
                 >
-                  <v-icon left>mdi-invoice-list</v-icon>
+                  <v-icon
+                    v-if="
+                      !permitStore.getPermitDetail.application
+                        .modifiedWeaponComplete
+                    "
+                    left
+                  >
+                    mdi-invoice-list
+                  </v-icon>
+
+                  <v-icon
+                    v-else
+                    left
+                  >
+                    mdi-check
+                  </v-icon>
                   Check Weapons
                 </v-btn>
               </v-col>
@@ -494,11 +634,23 @@
               <v-col>
                 <v-btn
                   @click="emit('on-check-documents')"
-                  color="primary"
+                  :color="
+                    permitStore.getPermitDetail.application.status ===
+                    ApplicationStatus['Modification Approved']
+                      ? 'success'
+                      : 'primary'
+                  "
                   small
                   block
                 >
-                  <v-icon left>mdi-file-document-check</v-icon>
+                  <v-icon left>
+                    {{
+                      permitStore.getPermitDetail.application.status ===
+                      ApplicationStatus['Modification Approved']
+                        ? 'mdi-check-bold'
+                        : 'mdi-file-document-check'
+                    }}
+                  </v-icon>
                   Check Documents
                 </v-btn>
               </v-col>
@@ -518,6 +670,51 @@
           outlined
         >
           <v-skeleton-loader type="list-item,divider,list-item" />
+        </v-card>
+
+        <v-card
+          v-else-if="
+            permitStore.getPermitDetail.application.status ===
+            ApplicationStatus['Permit Delivered']
+          "
+          class="d-flex flex-column fill-height"
+          outlined
+        >
+          <v-card-title class="justify-center">
+            <v-icon
+              color="primary"
+              class="mr-2"
+            >
+              mdi-clock-alert-outline
+            </v-icon>
+            Expiration Date
+          </v-card-title>
+
+          <v-card-title class="justify-center">
+            {{
+              permitStore.getPermitDetail.application.license.expirationDate
+                ? new Date(
+                    permitStore.getPermitDetail.application.license.expirationDate
+                  ).toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })
+                : 'Invalid Expiration Date, Please Update.'
+            }}
+          </v-card-title>
+
+          <v-spacer />
+
+          <v-card-text>
+            <v-row>
+              <v-col>
+                <ExpirationDateDialog
+                  @handle-save-expiration-date="handleSaveExpirationDate"
+                />
+              </v-col>
+            </v-row>
+          </v-card-text>
         </v-card>
 
         <v-card
@@ -687,23 +884,30 @@
 </template>
 
 <script setup lang="ts">
-import { ApplicationType } from '@shared-utils/types/defaultTypes'
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue'
+import ExpirationDateDialog from '@core-admin/components/dialogs/ExpirationDateDialog.vue'
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
+import FinishModificationDialog from '@core-admin/components/dialogs/FinishModificationDialog.vue'
 import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
+import ReadyForPaymentDialog from '@core-admin/components/dialogs/ReadyForPaymentDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
+import { getOriginalApplicationTypeModification } from '@shared-ui/composables/getOriginalApplicationType'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
-import { useAuthStore } from '@shared-ui/stores/auth'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
+import { useMutation } from '@tanstack/vue-query'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 import {
   ApplicationStatus,
   AppointmentStatus,
   AppointmentWindowCreateRequestModel,
 } from '@shared-utils/types/defaultTypes'
+import {
+  ApplicationType,
+  CompleteApplication,
+} from '@shared-utils/types/defaultTypes'
 import { computed, reactive, ref } from 'vue'
-import { useMutation, useQuery } from '@tanstack/vue-query'
 
 interface IPermitCard2Props {
   isLoading: boolean
@@ -740,6 +944,7 @@ const permitStore = usePermitsStore()
 const documentsStore = useDocumentsStore()
 const appointmentStore = useAppointmentsStore()
 const adminUserStore = useAdminUserStore()
+const themeStore = useThemeStore()
 const changed = ref('')
 
 const allowedExtension = [
@@ -753,17 +958,40 @@ const allowedExtension = [
   '.pdf',
 ]
 
-const { refetch: updatePermitDetails } = useQuery(
-  ['setPermitsDetails'],
-  () => permitStore.updatePermitDetailApi(`Updated ${changed.value}`),
-  {
-    enabled: false,
-  }
-)
+const isInitialPaymentComplete = computed(() => {
+  return (
+    permitStore.permitDetail.paymentHistory.some(ph => {
+      return (
+        (ph.paymentType === 0 ||
+          ph.paymentType === 1 ||
+          ph.paymentType === 2 ||
+          ph.paymentType === 3 ||
+          ph.paymentType === 8 ||
+          ph.paymentType === 9 ||
+          ph.paymentType === 10 ||
+          ph.paymentType === 11) &&
+        ph.successful === true
+      )
+    }) || permitStore.permitDetail.application.paymentStatus === 1
+  )
+})
+
+const { mutate: updatePermitDetails, isLoading } = useMutation({
+  mutationFn: () =>
+    permitStore.updatePermitDetailApi(`Updated ${changed.value}`),
+})
 
 const { mutate: deleteSlotByApplicationId } = useMutation({
   mutationFn: (applicationId: string) =>
     appointmentStore.deleteSlotByApplicationId(applicationId),
+})
+
+const {
+  mutateAsync: addHistoricalApplication,
+  isLoading: isAddHistoricalApplicationLoading,
+} = useMutation({
+  mutationFn: (application: CompleteApplication) =>
+    permitStore.addHistoricalApplication(application),
 })
 
 const { mutate: reopenSlotByApplicationId } = useMutation({
@@ -797,6 +1025,188 @@ const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
     appointmentStore.putNoShowAppointment(appointmentId),
 })
 
+function handleApproveModification() {
+  permitStore.getPermitDetail.application.status =
+    ApplicationStatus['Modification Approved']
+  updatePermitDetails()
+}
+
+async function handleFinishModification() {
+  const historicalApplication: CompleteApplication = {
+    ...permitStore.getPermitDetail,
+  }
+
+  await addHistoricalApplication(historicalApplication)
+
+  const app = permitStore.getPermitDetail.application
+
+  app.status = ApplicationStatus['Permit Delivered']
+
+  app.applicationType = getOriginalApplicationTypeModification(
+    app.applicationType
+  )
+
+  if (app.personalInfo.modifiedFirstName) {
+    app.personalInfo.firstName = app.personalInfo.modifiedFirstName
+    app.personalInfo.modifiedFirstName = ''
+  }
+
+  if (app.personalInfo.modifiedMiddleName) {
+    app.personalInfo.middleName = app.personalInfo.modifiedMiddleName
+    app.personalInfo.modifiedMiddleName = ''
+  }
+
+  if (app.personalInfo.modifiedLastName) {
+    app.personalInfo.lastName = app.personalInfo.modifiedLastName
+    app.personalInfo.modifiedLastName = ''
+  }
+
+  app.modifiedNameComplete = null
+
+  if (app.modifiedAddress.streetAddress) {
+    app.currentAddress.streetAddress = app.modifiedAddress.streetAddress
+    app.modifiedAddress.streetAddress = ''
+  }
+
+  if (app.modifiedAddress.city) {
+    app.currentAddress.city = app.modifiedAddress.city
+    app.modifiedAddress.city = ''
+  }
+
+  if (app.modifiedAddress.state) {
+    app.currentAddress.state = app.modifiedAddress.state
+    app.modifiedAddress.state = ''
+  }
+
+  if (app.modifiedAddress.zip) {
+    app.currentAddress.zip = app.modifiedAddress.zip
+    app.modifiedAddress.zip = ''
+  }
+
+  if (app.modifiedAddress.county) {
+    app.currentAddress.county = app.modifiedAddress.county
+    app.modifiedAddress.county = ''
+  }
+
+  if (app.modifiedAddress.country) {
+    app.currentAddress.country = app.modifiedAddress.country
+    app.modifiedAddress.country = ''
+  }
+
+  app.modifiedAddressComplete = null
+
+  for (const weapon of app.modifyAddWeapons) {
+    weapon.added = undefined
+    weapon.deleted = undefined
+    app.weapons.push(weapon)
+  }
+
+  app.modifyAddWeapons = []
+
+  for (const weapon of app.modifyDeleteWeapons) {
+    app.weapons = app.weapons.filter(w => {
+      return w.serialNumber !== weapon.serialNumber
+    })
+  }
+
+  app.modifyDeleteWeapons = []
+  app.modifiedWeaponComplete = null
+  app.currentStep = 1
+  app.modificationNumber += 1
+
+  updatePermitDetails()
+}
+
+function handleSaveExpirationDate(expirationDate: string) {
+  changed.value = 'Expiration Date'
+
+  const [year, month, day] = expirationDate.split('-').map(Number)
+
+  const date = new Date(year, month - 1, day)
+
+  permitStore.getPermitDetail.application.license.expirationDate =
+    date.toISOString()
+
+  updatePermitDetails()
+}
+
+const isApplicationModification = computed(() => {
+  return (
+    permitStore.getPermitDetail.application.applicationType ===
+      ApplicationType['Modify Standard'] ||
+    permitStore.getPermitDetail.application.applicationType ===
+      ApplicationType['Modify Reserve'] ||
+    permitStore.getPermitDetail.application.applicationType ===
+      ApplicationType['Modify Judicial'] ||
+    permitStore.getPermitDetail.application.applicationType ===
+      ApplicationType['Modify Employment']
+  )
+})
+
+const modificationReadyForApproval = computed(() => {
+  const checkListAddressComplete =
+    permitStore.getPermitDetail.application.modifiedAddressComplete !== false &&
+    permitStore.getPermitDetail.application.backgroundCheck.proofOfResidency
+      ?.value === true
+
+  const checkListNameComplete =
+    permitStore.getPermitDetail.application.modifiedNameComplete !== false &&
+    permitStore.getPermitDetail.application.backgroundCheck.proofOfID?.value ===
+      true
+
+  const checkListWeaponComplete =
+    permitStore.getPermitDetail.application.modifiedWeaponComplete !== false &&
+    permitStore.getPermitDetail.application.backgroundCheck.firearms?.value ===
+      true
+
+  return (
+    permitStore.getPermitDetail.application.modifiedNameComplete !== false &&
+    permitStore.getPermitDetail.application.modifiedAddressComplete !== false &&
+    permitStore.getPermitDetail.application.modifiedWeaponComplete !== false &&
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Modification Approved'] &&
+    checkListAddressComplete &&
+    checkListNameComplete &&
+    checkListWeaponComplete
+  )
+})
+
+const modificationMissingChecklistItems = computed(() => {
+  const checkListAddressComplete =
+    permitStore.getPermitDetail.application.modifiedAddressComplete !== false &&
+    permitStore.getPermitDetail.application.backgroundCheck.proofOfResidency
+      ?.value === true
+
+  const checkListNameComplete =
+    permitStore.getPermitDetail.application.modifiedNameComplete !== false &&
+    permitStore.getPermitDetail.application.backgroundCheck.proofOfID?.value ===
+      true
+
+  const checkListWeaponComplete =
+    permitStore.getPermitDetail.application.modifiedWeaponComplete !== false &&
+    permitStore.getPermitDetail.application.backgroundCheck.firearms?.value ===
+      true
+
+  return (
+    permitStore.getPermitDetail.application.modifiedNameComplete !== false &&
+    permitStore.getPermitDetail.application.modifiedAddressComplete !== false &&
+    permitStore.getPermitDetail.application.modifiedWeaponComplete !== false &&
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Modification Approved'] &&
+    (!checkListAddressComplete ||
+      !checkListNameComplete ||
+      !checkListWeaponComplete)
+  )
+})
+
+const isModificationComplete = computed(() => {
+  return (
+    permitStore.getPermitDetail.application.modifiedNameComplete !== false &&
+    permitStore.getPermitDetail.application.modifiedAddressComplete !== false &&
+    permitStore.getPermitDetail.application.modifiedWeaponComplete !== false
+  )
+})
+
 const showStart90DayCountdownButton = computed(() => {
   return (
     permitStore.getPermitDetail.application.startOfNinetyDayCountdown ===
@@ -804,6 +1214,20 @@ const showStart90DayCountdownButton = computed(() => {
     permitStore.getPermitDetail.application.startOfNinetyDayCountdown ===
       undefined
   )
+})
+
+const isModifyingName = computed(() => {
+  return permitStore.getPermitDetail.application.modifiedNameComplete !== null
+})
+
+const isModifyingAddress = computed(() => {
+  return (
+    permitStore.getPermitDetail.application.modifiedAddressComplete !== null
+  )
+})
+
+const isModifyingWeapon = computed(() => {
+  return permitStore.getPermitDetail.application.modifiedWeaponComplete !== null
 })
 
 function handleStart90DayCountdown() {
@@ -1096,5 +1520,11 @@ async function handleSaveReschedule(reschedule) {
   } else if (applicationHadPreviousAppointment) {
     reopenSlotByApplicationId(permitStore.getPermitDetail.id)
   }
+}
+
+function handleReadyForInitialPayment() {
+  changed.value = 'Marked ready for initial payment'
+  permitStore.getPermitDetail.application.readyForInitialPayment = true
+  updatePermitDetails()
 }
 </script>

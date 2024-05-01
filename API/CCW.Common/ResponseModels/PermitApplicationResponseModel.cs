@@ -12,4 +12,5 @@ public class PermitApplicationResponseModel
     public string UserId { get; set; }
     public History[] History { get; set; }
     public PaymentHistory[] PaymentHistory { get; set; }
+    public DateTimeOffset? HistoricalDate { get; set; } 
 }

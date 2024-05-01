@@ -10,6 +10,100 @@
       />
     </v-card-title>
 
+    <template
+      v-if="
+        permitStore.getPermitDetail.application.modifiedAddressComplete !== null
+      "
+    >
+      <v-card-subtitle> Address Modification </v-card-subtitle>
+
+      <v-card-text>
+        <v-row>
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application.modifiedAddress
+                  .streetAddress
+              "
+              outlined
+              dense
+              label="Modified Street Address"
+            ></v-text-field>
+          </v-col>
+
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application.modifiedAddress.city
+              "
+              outlined
+              dense
+              label="Modified City"
+            ></v-text-field>
+          </v-col>
+
+          <v-col>
+            <v-btn
+              @click="handleOpenPdf"
+              color="primary"
+              class="mr-3"
+            >
+              <v-icon left>mdi-file-document-check</v-icon>
+              Check Documents
+            </v-btn>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application.modifiedAddress.zip
+              "
+              outlined
+              dense
+              label="Modified Zip Code"
+            ></v-text-field>
+          </v-col>
+
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application.modifiedAddress.county
+              "
+              outlined
+              dense
+              label="Modified County"
+            ></v-text-field>
+          </v-col>
+
+          <v-col>
+            <v-btn
+              v-if="
+                !permitStore.getPermitDetail.application.modifiedAddressComplete
+              "
+              @click="onApproveAddressChange"
+              color="primary"
+            >
+              <v-icon left>mdi-check</v-icon>
+              Approve
+            </v-btn>
+
+            <v-btn
+              v-if="
+                permitStore.getPermitDetail.application.modifiedAddressComplete
+              "
+              @click="onUndoApproveAddressChange"
+              color="primary"
+            >
+              <v-icon left>mdi-undo</v-icon>
+              Undo Approve
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </template>
+
     <v-card-text>
       <v-form
         ref="addressForm"
@@ -657,6 +751,7 @@ import { AddressInfoType } from '@shared-utils/types/defaultTypes'
 import AddressTable from '@shared-ui/components/tables/AddressTable.vue'
 import PreviousAddressDialog from '@shared-ui/components/dialogs/PreviousAddressDialog.vue'
 import SaveButton from './SaveButton.vue'
+import { openPdf } from '@core-admin/components/composables/openDocuments'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { computed, ref } from 'vue'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
@@ -666,6 +761,25 @@ const addressFormValid = ref(false)
 const mailingAddressFormValid = ref(false)
 const spouseAddressFormValid = ref(false)
 const emit = defineEmits(['on-save'])
+
+async function handleOpenPdf() {
+  const modifyNameDocument =
+    permitStore.getPermitDetail.application.uploadedDocuments.find(d => {
+      if (
+        d.name.indexOf(
+          `ModifyAddress-${permitStore.getPermitDetail.application.modificationNumber}`
+        ) >= 0
+      ) {
+        return d
+      }
+
+      return null
+    })
+
+  if (modifyNameDocument) {
+    await openPdf(modifyNameDocument)
+  }
+}
 
 function getPreviousAddressFromDialog(address: AddressInfoType) {
   permitStore.getPermitDetail.application.previousAddresses.push(address)
@@ -677,6 +791,16 @@ function deleteAddress(index) {
 
 function handleSave() {
   emit('on-save', 'Address Information')
+}
+
+function onApproveAddressChange() {
+  permitStore.getPermitDetail.application.modifiedAddressComplete = true
+  emit('on-save', 'Approved address change')
+}
+
+function onUndoApproveAddressChange() {
+  permitStore.getPermitDetail.application.modifiedAddressComplete = false
+  emit('on-save', 'Undo approved address change')
 }
 
 const isValid = computed(() => {

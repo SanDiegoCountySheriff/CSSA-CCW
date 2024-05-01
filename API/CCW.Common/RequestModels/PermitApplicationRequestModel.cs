@@ -15,4 +15,5 @@ public class PermitApplicationRequestModel
     public PaymentHistory[] PaymentHistory { get; set; }
     [JsonProperty("history")]
     public History[] History { get; set; }
+    public DateTimeOffset? HistoricalDate { get; set; }
 }

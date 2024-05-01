@@ -1,9 +1,14 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row>
       <v-col>
         <v-card
-          :loading="isGetApplicationsLoading"
+          :loading="
+            isGetApplicationsLoading ||
+            isUpdateApplicationLoading ||
+            isRefundRequestLoading ||
+            isMakePaymentLoading
+          "
           outlined
         >
           <v-card-title>
@@ -209,14 +214,18 @@
 
           <v-card-text>
             <v-row>
-              <v-col>
+              <v-col
+                cols="12"
+                xl="6"
+              >
                 <v-btn
                   color="primary"
                   block
                   :disabled="
                     !canApplicationBeContinued ||
                     isGetApplicationsLoading ||
-                    isRenewLoading
+                    isRenewLoading ||
+                    isMakePaymentLoading
                   "
                   @click="handleContinueApplication"
                 >
@@ -224,19 +233,28 @@
                 </v-btn>
               </v-col>
 
-              <v-col>
-                <v-btn
-                  v-if="
-                    applicationStore.completeApplication.application.status !==
-                      ApplicationStatus.Withdrawn &&
-                    applicationStore.completeApplication.application.status !==
-                      ApplicationStatus.Incomplete &&
-                    applicationStore.completeApplication.application.status !==
-                      ApplicationStatus['Permit Delivered']
+              <v-col
+                cols="12"
+                xl="6"
+              >
+                <WithdrawModifyDialog
+                  v-if="showModifyWithdrawButton"
+                  :disabled="
+                    isRefundRequestLoading ||
+                    isUpdateApplicationLoading ||
+                    fileUploadLoading ||
+                    isMakePaymentLoading
                   "
+                  @confirm="handleConfirmWithdrawModification"
+                />
+
+                <v-btn
+                  v-if="showInitialWithdrawButton"
                   @click="handleShowWithdrawDialog"
                   :disabled="
-                    isGetApplicationsLoading || !canWithdrawApplication
+                    isGetApplicationsLoading ||
+                    !canWithdrawApplication ||
+                    isMakePaymentLoading
                   "
                   color="primary"
                   block
@@ -252,24 +270,32 @@
                   color="primary"
                   block
                   @click="handleSubmit"
-                  :disabled="isGetApplicationsLoading"
+                  :disabled="isGetApplicationsLoading || isMakePaymentLoading"
                 >
                   Submit
                 </v-btn>
               </v-col>
             </v-row>
+
             <v-row>
-              <v-col>
+              <v-col
+                cols="12"
+                xl="6"
+              >
                 <v-btn
                   color="primary"
                   block
-                  :disabled="isRenewalActive"
+                  :disabled="isRenewalActive || isMakePaymentLoading"
                   @click="handleShowRenewDialog"
                 >
                   Renew
                 </v-btn>
               </v-col>
-              <v-col>
+
+              <v-col
+                cols="12"
+                xl="6"
+              >
                 <v-btn
                   v-if="canApplicationBeUpdated"
                   color="primary"
@@ -277,6 +303,7 @@
                   :disabled="
                     !canApplicationBeUpdated ||
                     isGetApplicationsLoading ||
+                    isMakePaymentLoading ||
                     (applicationStore.completeApplication.application
                       .appointmentDateTime &&
                       new Date() >=
@@ -310,6 +337,7 @@
         <v-card
           v-if="
             !isRenew &&
+            !isModification &&
             applicationStore.completeApplication.application.status !==
               ApplicationStatus['Permit Delivered']
           "
@@ -353,7 +381,7 @@
                 <v-btn
                   v-if="canRescheduleAppointment"
                   @click="handleShowAppointmentDialog"
-                  :disabled="isGetApplicationsLoading"
+                  :disabled="isGetApplicationsLoading || isMakePaymentLoading"
                   block
                   color="primary"
                 >
@@ -363,7 +391,7 @@
                 <v-btn
                   v-else-if="canScheduleAppointment"
                   @click="handleShowAppointmentDialogSchedule"
-                  :disabled="isGetApplicationsLoading"
+                  :disabled="isGetApplicationsLoading || isMakePaymentLoading"
                   block
                   color="primary"
                 >
@@ -373,22 +401,39 @@
               <v-col>
                 <v-btn
                   v-if="canCancelAppointment && !isGetApplicationsLoading"
-                  block
-                  color="primary"
                   @click="handleCancelAppointment"
+                  :disabled="isMakePaymentLoading"
+                  color="primary"
+                  block
                 >
                   Cancel
                 </v-btn>
               </v-col>
             </v-row>
+
+            <v-row
+              v-if="
+                applicationStore.completeApplication.application
+                  .readyForInitialPayment
+              "
+            >
+              <v-col>
+                <InitialPaymentConfirmationDialog
+                  :disabled="isMakePaymentLoading"
+                  @confirm="handleInitialPayment"
+                />
+              </v-col>
+
+              <v-col></v-col>
+            </v-row>
           </v-card-text>
         </v-card>
         <v-card
           v-else-if="
-            (applicationStore.completeApplication.application.status ===
+            applicationStore.completeApplication.application.status ===
               ApplicationStatus['Permit Delivered'] ||
-              isRenew) &&
-            !isLicenseExpired
+            isRenew ||
+            isModification
           "
           class="fill-height"
           outlined
@@ -463,8 +508,8 @@
           outlined
         >
           <v-tabs
-            v-model="tab"
             :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
+            v-model="tab"
             grow
           >
             <v-tabs-slider color="primary"></v-tabs-slider>
@@ -840,6 +885,20 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog
+      v-model="isUpdatePaymentHistoryLoading"
+      max-width="600"
+      persistent
+    >
+      <v-card loading>
+        <v-card-title> Processing Initial Payment </v-card-title>
+
+        <v-card-text>
+          Please do not close the browser or click the back button.
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
     <v-snackbar
       v-model="state.snackbar"
       color="primary"
@@ -857,6 +916,21 @@
         </v-btn>
       </template>
     </v-snackbar>
+
+    <v-snackbar
+      v-model="paymentSnackbar"
+      :timeout="-1"
+      color="primary"
+      persistent
+    >
+      {{ $t('There was a problem processing the payment, please try again.') }}
+      <v-btn
+        @click="paymentSnackbar = !paymentSnackbar"
+        icon
+      >
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -864,16 +938,15 @@
 import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue'
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
-import { AppointmentType } from '@shared-utils/types/defaultTypes'
 import CharacterReferenceInfoSection from '@shared-ui/components/info-sections/CharacterReferenceInfoSection.vue'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
-import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue'
 import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue'
 import EmploymentInfoSection from '@shared-ui/components/info-sections/EmploymentInfoSection.vue'
 import Endpoints from '@shared-ui/api/endpoints'
 import FileUploadInfoSection from '@shared-ui/components/info-sections/FileUploadInfoSection.vue'
 import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue'
+import InitialPaymentConfirmationDialog from '@core-public/components/dialogs/InitialPaymentConfirmationDialog.vue'
 import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue'
 import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue'
 import QualifyingQuestionsInfoSection from '@shared-ui/components/info-sections/QualifyingQuestionsInfoSection.vue'
@@ -883,12 +956,14 @@ import SpouseAddressInfoSection from '@shared-ui/components/info-sections/Spouse
 import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
+import WithdrawModifyDialog from '@core-public/components/dialogs/WithdrawModifyDialog.vue'
 import axios from 'axios'
+import { getOriginalApplicationTypeModification } from '@shared-ui/composables/getOriginalApplicationType'
 import { i18n } from '@shared-ui/plugins'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
 import {
   ApplicationStatus,
@@ -896,8 +971,17 @@ import {
   AppointmentStatus,
   QualifyingQuestionStandard,
 } from '@shared-utils/types/defaultTypes'
+import {
+  AppointmentType,
+  RefundRequest,
+} from '@shared-utils/types/defaultTypes'
+import {
+  CompleteApplication,
+  PaymentType,
+} from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
+import { useRoute, useRouter } from 'vue-router/composables'
 
 interface IFileSubmission {
   file: File
@@ -906,9 +990,11 @@ interface IFileSubmission {
 
 const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
+const paymentStore = usePaymentStore()
 const brandStore = useBrandStore()
 const themeStore = useThemeStore()
 const router = useRouter()
+const route = useRoute()
 const tab = ref(null)
 const reviewDialog = ref(false)
 const flaggedQuestionText = ref('')
@@ -916,6 +1002,7 @@ const flaggedQuestionHeader = ref('')
 const fileUploadLoading = ref(false)
 const appointmentTime = ref('')
 const isRenewLoading = ref(false)
+const paymentSnackbar = ref(false)
 
 const state = reactive({
   snackbar: false,
@@ -964,8 +1051,83 @@ const state = reactive({
   ],
 })
 
+const {
+  mutate: updatePaymentHistory,
+  isLoading: isUpdatePaymentHistoryLoading,
+} = useMutation({
+  mutationFn: ({
+    transactionId,
+    successful,
+    amount,
+    paymentType,
+    transactionDateTime,
+    hmac,
+    applicationId,
+  }: {
+    transactionId: string
+    successful: boolean
+    amount: number
+    paymentType: string
+    transactionDateTime: string
+    hmac: string
+    applicationId: string
+  }) => {
+    return paymentStore.updatePaymentHistory(
+      transactionId,
+      successful,
+      amount,
+      paymentType,
+      transactionDateTime,
+      hmac,
+      applicationId
+    )
+  },
+  onSuccess: () =>
+    applicationStore
+      .getCompleteApplicationFromApi(
+        applicationStore.completeApplication.id,
+        Boolean(route.query.isComplete)
+      )
+      .then(res => {
+        applicationStore.setCompleteApplication(res)
+      }),
+})
+
 onMounted(() => {
   state.isApplicationValid = Boolean(applicationStore.completeApplication.id)
+
+  const transactionId = route.query.transactionId
+  const successful = route.query.successful
+  const amount = route.query.amount
+  const hmac = route.query.hmac
+  const paymentType = route.query.paymentType
+  const applicationId = route.query.applicationId
+  let transactionDateTime = route.query.transactionDateTime
+
+  if (typeof transactionDateTime === 'string') {
+    transactionDateTime = transactionDateTime.replace(':', '%3A')
+    transactionDateTime = transactionDateTime.replace(':', '%3A')
+  }
+
+  if (
+    typeof transactionId === 'string' &&
+    typeof successful === 'string' &&
+    typeof amount === 'string' &&
+    typeof paymentType === 'string' &&
+    typeof transactionDateTime === 'string' &&
+    typeof hmac === 'string' &&
+    typeof applicationId === 'string'
+  ) {
+    updatePaymentHistory({
+      transactionId,
+      successful: Boolean(successful),
+      amount: Number(amount),
+      paymentType,
+      transactionDateTime,
+      hmac,
+      applicationId,
+    })
+  }
 })
 
 const { isLoading: isGetApplicationsLoading } = useQuery(
@@ -1050,6 +1212,38 @@ const canApplicationBeModified = computed(() => {
   return (
     applicationStore.completeApplication.application.status ===
     ApplicationStatus['Permit Delivered']
+  )
+})
+
+const showInitialWithdrawButton = computed(() => {
+  return (
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Withdrawn &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Incomplete &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Permit Delivered'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Employment'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Judicial'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Reserve'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Standard']
+  )
+})
+
+const showModifyWithdrawButton = computed(() => {
+  return (
+    applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Modify Employment'] ||
+    applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Modify Judicial'] ||
+    applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Modify Reserve'] ||
+    applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Modify Standard']
   )
 })
 
@@ -1251,6 +1445,18 @@ const isRenew = computed(() => {
   )
 })
 
+const isModification = computed(() => {
+  const applicationType =
+    applicationStore.completeApplication.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Modify Standard'] ||
+    applicationType === ApplicationType['Modify Reserve'] ||
+    applicationType === ApplicationType['Modify Judicial'] ||
+    applicationType === ApplicationType['Modify Employment']
+  )
+})
+
 const isLicenseExpired = computed(() => {
   const gracePeriod = brandStore.brand.expiredApplicationRenewalPeriod
   let expirationDate: Date
@@ -1304,6 +1510,19 @@ const updateMutation = useMutation({
   onError: () => null,
 })
 
+const {
+  isLoading: isUpdateApplicationLoading,
+  mutateAsync: updateApplication,
+} = useMutation({
+  mutationFn: applicationStore.updateApplication,
+})
+
+const { isLoading: isRefundRequestLoading, mutateAsync: requestRefund } =
+  useMutation({
+    mutationFn: (refundRequest: RefundRequest) =>
+      paymentStore.requestRefund(refundRequest),
+  })
+
 const renewMutation = useMutation({
   mutationFn: applicationStore.updateApplication,
   onSuccess: () => {
@@ -1317,6 +1536,118 @@ const renewMutation = useMutation({
   },
   onError: () => null,
 })
+
+const { mutate: makeInitialPayment, isLoading: isMakePaymentLoading } =
+  useMutation({
+    mutationFn: () => {
+      let cost: number
+      let paymentType: string
+
+      switch (
+        applicationStore.completeApplication.application.applicationType
+      ) {
+        case ApplicationType.Standard:
+          paymentType =
+            PaymentType['CCW Application Initial Payment'].toString()
+          cost = brandStore.brand.cost.new.standard
+          break
+
+        case ApplicationType.Judicial:
+          paymentType =
+            PaymentType['CCW Application Initial Judicial Payment'].toString()
+          cost = brandStore.brand.cost.new.judicial
+          break
+
+        case ApplicationType.Reserve:
+          paymentType =
+            PaymentType['CCW Application Initial Reserve Payment'].toString()
+          cost = brandStore.brand.cost.new.reserve
+          break
+
+        case ApplicationType.Employment:
+          paymentType =
+            PaymentType['CCW Application Initial Employment Payment'].toString()
+          cost = brandStore.brand.cost.new.employment
+          break
+
+        default:
+          paymentType =
+            PaymentType['CCW Application Initial Payment'].toString()
+          cost = brandStore.brand.cost.new.standard
+      }
+
+      return paymentStore.getPayment(
+        applicationStore.completeApplication.id,
+        cost,
+        applicationStore.completeApplication.application.orderId,
+        paymentType
+      )
+    },
+    onError: () => {
+      paymentSnackbar.value = true
+    },
+  })
+
+function handleInitialPayment() {
+  makeInitialPayment()
+}
+
+async function handleConfirmWithdrawModification() {
+  const transaction = applicationStore.completeApplication.paymentHistory.find(
+    ph => {
+      return (
+        ph.modificationNumber ===
+        applicationStore.completeApplication.application.modificationNumber
+      )
+    }
+  )
+
+  if (transaction) {
+    const refundRequest: RefundRequest = {
+      id: null,
+      transactionId: transaction.transactionId,
+      applicationId: applicationStore.completeApplication.id,
+      refundAmount: Number(transaction.amount),
+      reason: 'Withdraw Modification',
+      orderId: applicationStore.completeApplication.application.orderId,
+    }
+
+    await requestRefund(refundRequest)
+  }
+
+  applicationStore.completeApplication.application.modifiedAddress = {
+    streetAddress: '',
+    city: '',
+    state: '',
+    county: '',
+    zip: '',
+    country: '',
+  }
+  applicationStore.completeApplication.application.modifiedAddressComplete =
+    null
+  applicationStore.completeApplication.application.modifyAddWeapons = []
+  applicationStore.completeApplication.application.modifyDeleteWeapons = []
+  applicationStore.completeApplication.application.modifiedWeaponComplete = null
+  applicationStore.completeApplication.application.personalInfo.modifiedFirstName =
+    ''
+  applicationStore.completeApplication.application.personalInfo.modifiedLastName =
+    ''
+  applicationStore.completeApplication.application.personalInfo.modifiedMiddleName =
+    ''
+  applicationStore.completeApplication.application.modifiedNameComplete = null
+  applicationStore.completeApplication.application.status =
+    ApplicationStatus['Permit Delivered']
+
+  applicationStore.completeApplication.application.applicationType =
+    getOriginalApplicationTypeModification(
+      applicationStore.completeApplication.application.applicationType
+    )
+
+  applicationStore.completeApplication.application.currentStep = 1
+  applicationStore.completeApplication.application.modificationNumber += 1
+
+  await updateApplication()
+}
 
 function handleContinueApplication() {
   if (
@@ -1667,14 +1998,13 @@ function cancelChanges() {
 
 function handleFileSubmit(fileSubmission: IFileSubmission) {
   fileUploadLoading.value = true
-  const newFileName = `${applicationStore.completeApplication.application.personalInfo.lastName}_${applicationStore.completeApplication.application.personalInfo.firstName}_${fileSubmission.fileType}`
   const form = new FormData()
 
   form.append('fileToUpload', fileSubmission.file)
 
   axios
     .post(
-      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${newFileName}`,
+      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${fileSubmission.fileType}`,
       form
     )
     .catch(e => {
@@ -1684,7 +2014,7 @@ function handleFileSubmit(fileSubmission: IFileSubmission) {
 
   const uploadDoc: UploadedDocType = {
     documentType: fileSubmission.fileType,
-    name: `${newFileName}`,
+    name: fileSubmission.fileType,
     uploadedBy: applicationStore.completeApplication.application.userEmail,
     uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
   }
@@ -1746,3 +2076,4 @@ function resetAgreements() {
     null
 }
 </script>
+, PaymentType, PaymentType

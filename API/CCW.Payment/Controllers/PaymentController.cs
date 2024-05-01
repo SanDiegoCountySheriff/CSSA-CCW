@@ -4,9 +4,11 @@ using CCW.Common.Enums;
 using CCW.Common.Models;
 using CCW.Payment.Services;
 using GlobalPayments.Api;
+using GlobalPayments.Api.Builders;
 using GlobalPayments.Api.Entities;
 using GlobalPayments.Api.Entities.Billing;
 using GlobalPayments.Api.Entities.Enums;
+using GlobalPayments.Api.PaymentMethods;
 using GlobalPayments.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,25 +35,23 @@ public class PaymentController : ControllerBase
     {
         _logger = logger;
         _cosmosDbService = cosmosDbService;
-        var client = new SecretClient(new Uri(configuration.GetSection("KeyVault:VaultUri").Value), credential: new DefaultAzureCredential());
-        _merchantName = client.GetSecret("heartland-merchant-name").Value.Value;
-        _hmacKey = client.GetSecret("hmac-key").Value.Value;
+        _merchantName = configuration.GetSection("Heartland:MerchantName").Value;
+        _hmacKey = configuration.GetSection("Heartland:HmacKey").Value;
         _heartlandEndpoint = configuration.GetSection("Heartland").GetSection("HeartlandEndpoint").Value;
         _processTransactionEndpoint = configuration.GetSection("Heartland").GetSection("ProcessTransactionEndpoint").Value;
         _redirectEndpoint = configuration.GetSection("Heartland").GetSection("RedirectEndpoint").Value;
 
         ServicesContainer.ConfigureService(new BillPayConfig()
         {
-            Username = client.GetSecret("heartland-username").Value.Value,
-            Password = client.GetSecret("heartland-password").Value.Value,
+            Username = configuration.GetSection("Heartland:Username").Value,
+            Password = configuration.GetSection("Heartland:Password").Value,
             MerchantName = _merchantName,
-            ServiceUrl = client.GetSecret("heartland-service-url").Value.Value,
+            ServiceUrl = configuration.GetSection("Heartland:ServiceUrl").Value,
         });
 
         _billPayService = new BillPayService();
     }
 
-    // TODO: figure out what to do with expired cards, etc.
     [Route("processTransaction")]
     [HttpPost]
     public IActionResult ProcessTransaction([FromForm] TransactionResponse transactionResponse, string applicationId, string paymentType)
@@ -67,10 +67,46 @@ public class PaymentController : ControllerBase
             { "paymentType", paymentType }
         };
 
-        var url = $"{_redirectEndpoint}{responseEndpoint}?applicationId={applicationId}&isComplete=false";
+        var url = $"{_redirectEndpoint}{responseEndpoint}?applicationId={applicationId}&isComplete=true";
         var parameterizedUrl = AddHmacParamsToUrl(url, _hmacKey, parameters);
 
         return new RedirectResult(parameterizedUrl);
+    }
+
+    [Authorize(Policy = "B2CUsers")]
+    [Route("requestRefund")]
+    [HttpPost]
+    public async Task<IActionResult> RequestRefund(RefundRequest refundRequest)
+    {
+        try
+        {
+            await _cosmosDbService.AddRefundRequest(refundRequest);
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("There was a problem requesting a refund", ex.Message);
+            return NotFound("There was a problem requesting a refund.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("getRefundRequests")]
+    [HttpGet]
+    public async Task<IActionResult> GetRefundRequests()
+    {
+        try
+        {
+            var result = await _cosmosDbService.GetAllRefundRequests();
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"There was a problem getting refund requests: {ex.Message}");
+            return NotFound("There was a problem getting refund requests");
+        }
     }
 
     [Authorize(Policy = "B2CUsers")]
@@ -113,7 +149,7 @@ public class PaymentController : ControllerBase
             var paymentHistory = new PaymentHistory();
 
             var failedPaymentHistory = application.PaymentHistory.Where(ph => ph.Successful == false && ph.PaymentType == paymentType).FirstOrDefault();
-            var duplicatePaymentHistory = application.PaymentHistory.Where(ph => ph.PaymentType == paymentType).FirstOrDefault();
+            var duplicatePaymentHistory = application.PaymentHistory.Where(ph => ph.PaymentType == paymentType && ph.ModificationNumber == application.Application.ModificationNumber).FirstOrDefault();
 
             if (duplicatePaymentHistory != null)
             {
@@ -134,6 +170,16 @@ public class PaymentController : ControllerBase
                 paymentHistory.PaymentType = paymentType;
                 paymentHistory.Successful = true;
                 paymentHistory.PaymentStatus = PaymentStatus.OnlineSubmitted;
+
+                if (paymentType is Common.Enums.PaymentType.InitialStandard or Common.Enums.PaymentType.InitialJudicial or Common.Enums.PaymentType.InitialReserve or Common.Enums.PaymentType.InitialEmployment)
+                {
+                    application.Application.ReadyForInitialPayment = false;
+                }
+
+                if (paymentType is Common.Enums.PaymentType.ModificationStandard or Common.Enums.PaymentType.ModificationJudicial or Common.Enums.PaymentType.ModificationReserve or Common.Enums.PaymentType.ModificationEmployment)
+                {
+                    paymentHistory.ModificationNumber = application.Application.ModificationNumber;
+                }
             }
             else
             {
@@ -181,7 +227,7 @@ public class PaymentController : ControllerBase
                 Identifier4 = DateTime.Now.ToString(),
             };
 
-            var response = _billPayService.LoadHostedPayment(new HostedPaymentData()
+            HostedPaymentData hostedPaymentData = new()
             {
                 Bills = new List<Bill>() { bill },
                 CaptureAddress = false,
@@ -192,7 +238,9 @@ public class PaymentController : ControllerBase
                 HostedPaymentType = HostedPaymentType.MakePayment,
                 MerchantResponseUrl = $"{_processTransactionEndpoint}?applicationId={applicationId}&paymentType={paymentType}",
                 CustomerIsEditable = true,
-            });
+            };
+
+            var response = _billPayService.LoadHostedPayment(hostedPaymentData);
 
             return Ok($"{_heartlandEndpoint}/webpayments/{_merchantName}/GUID/{response.PaymentIdentifier}");
         }
@@ -206,13 +254,23 @@ public class PaymentController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("refundPayment")]
     [HttpPost]
-    public async Task<IActionResult> RefundPayment([FromBody] RefundRequest refundRequest)
+    public async Task<IActionResult> RefundPayment([FromBody] RefundRequest refundRequest, decimal convenienceFee)
     {
         PermitApplication application;
         PaymentHistory paymentHistory;
 
         try
         {
+            if (refundRequest.Id != null)
+            {
+                var refundRequestResult = await _cosmosDbService.GetRefundRequest(refundRequest.Id);
+
+                if (refundRequestResult != null)
+                {
+                    await _cosmosDbService.DeleteRefundRequest(refundRequest);
+                }
+            }
+
             application = await _cosmosDbService.GetAdminApplication(refundRequest.ApplicationId);
             paymentHistory = application.PaymentHistory.Where(ph => ph.TransactionId == refundRequest.TransactionId).FirstOrDefault();
             paymentHistory.RefundAmount += refundRequest.RefundAmount;
@@ -233,7 +291,9 @@ public class PaymentController : ControllerBase
                 return Ok();
             }
 
-            Transaction.FromId(refundRequest.TransactionId).Refund(refundRequest.RefundAmount).WithCurrency("USD").Execute();
+            decimal fee = refundRequest.RefundAmount * convenienceFee;
+
+            Transaction.FromId(refundRequest.TransactionId).Refund(refundRequest.RefundAmount).WithCurrency("USD").WithConvenienceAmount(fee).Execute();
 
             return Ok();
         }
@@ -265,13 +325,6 @@ public class PaymentController : ControllerBase
         public decimal BaseAmount { get; set; }
     }
 
-    public class RefundRequest
-    {
-        public string TransactionId { get; set; }
-        public string ApplicationId { get; set; }
-        public decimal RefundAmount { get; set; }
-    }
-
     private void GetUserId(out string userId)
     {
         userId = HttpContext.User.Claims
@@ -294,14 +347,9 @@ public class PaymentController : ControllerBase
 
     static string GetResponseEndpoint(string paymentType)
     {
-        if (paymentType is 
-            "InitialEmployment" or
-            "InitialJudicial" or
-            "InitialReserve" or
-            "InitialStandard"
-        )
+        if (paymentType is "InitialEmployment" or "InitialJudicial" or "InitialReserve" or "InitialStandard")
         {
-            return "finalize";
+            return "application-details";
         }
         else
         {

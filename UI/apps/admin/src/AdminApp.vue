@@ -5,6 +5,7 @@
         (isPermitsLoading ||
           isAdminUserLoading ||
           isAllAdminUsersLoading ||
+          isRefundRequestLoading ||
           isAssignedApplicationsLoading) &&
         isAuthenticated
       "
@@ -53,6 +54,7 @@ import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
@@ -72,6 +74,7 @@ import {
 const prompt = ref(false)
 const app = getCurrentInstance()
 const authStore = useAuthStore()
+const paymentStore = usePaymentStore()
 const brandStore = useBrandStore()
 const configStore = useAppConfigStore()
 const permitsStore = usePermitsStore()
@@ -104,6 +107,14 @@ useQuery(['brandSetting'], brandStore.getBrandSettingApi, {
 useQuery(['logo'], brandStore.getAgencyLogoDocumentsApi, {
   enabled: validApiUrl,
 })
+
+const { isLoading: isRefundRequestLoading } = useQuery(
+  ['getAllRefundRequests'],
+  paymentStore.getAllRefundRequests,
+  {
+    enabled: validApiUrl,
+  }
+)
 
 const { isFetching: isAllAdminUsersLoading } = useQuery(
   ['getAllAdminUsers'],

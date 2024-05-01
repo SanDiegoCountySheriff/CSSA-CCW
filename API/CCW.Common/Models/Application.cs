@@ -11,6 +11,7 @@ public class Application
     public Contact Contact { get; set; }
     public Address CurrentAddress { get; set; }
     public Address ModifiedAddress { get; set; }
+    public bool? ModifiedAddressComplete { get; set; }
     public DenialInfo DenialInfo { get; set; }
     public bool DifferentMailing { get; set; }
     public bool DifferentSpouseAddress { get; set; }
@@ -25,6 +26,7 @@ public class Application
     public MailingAddress MailingAddress { get; set; }
     public PaymentStatus PaymentStatus { get; set; }
     public PersonalInfo PersonalInfo { get; set; }
+    public bool? ModifiedNameComplete { get; set; }
     public PhysicalAppearance PhysicalAppearance { get; set; }
     public Address[] PreviousAddresses { get; set; }
     public RevocationInfo RevocationInfo { get; set; }
@@ -34,6 +36,7 @@ public class Application
     public Weapon[] Weapons { get; set; }
     public Weapon[] ModifyDeleteWeapons { get; set; }
     public Weapon[] ModifyAddWeapons { get; set; }
+    public bool? ModifiedWeaponComplete { get; set; }
     public WorkInformation WorkInformation { get; set; }
     public QualifyingQuestions QualifyingQuestions { get; set; }
     public LegacyQualifyingQuestions LegacyQualifyingQuestions { get; set; }
@@ -59,5 +62,6 @@ public class Application
     public bool FlaggedForLicensingReview { get; set; }
     public Agreements Agreements { get; set; }
     public string ReferenceNotes { get; set; }
+    public bool ReadyForInitialPayment { get; set; } = false;
+    public int ModificationNumber { get; set; } = 1;
 }
-

@@ -202,22 +202,22 @@
 
 <script setup lang="ts">
 import SaveButton from './SaveButton.vue'
-import { ref, computed } from 'vue'
-import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { computed, ref } from 'vue'
 
 const permitStore = usePermitsStore()
 const emit = defineEmits(['on-save'])
 const valid = ref(false)
 
 const brandStore = useBrandStore()
-const hairColors = computed(()=>{
-  return brandStore.brand.agencyHairColors.map(h=>{
+const hairColors = computed(() => {
+  return brandStore.brand.agencyHairColors.map(h => {
     return h.name
   })
 })
-const eyeColors = computed(()=>{
-  return brandStore.brand.agencyEyeColors.map(e=>{
+const eyeColors = computed(() => {
+  return brandStore.brand.agencyEyeColors.map(e => {
     return e.name
   })
 })

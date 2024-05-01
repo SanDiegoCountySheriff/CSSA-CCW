@@ -33,6 +33,7 @@
           </v-alert>
         </v-col>
       </v-row>
+
       <v-card-title>
         {{ $t(' Employment Status') }}
       </v-card-title>
@@ -77,6 +78,7 @@
                 outlined
               />
             </v-col>
+
             <v-col
               cols="12"
               md="4"
@@ -91,6 +93,7 @@
                 outlined
               />
             </v-col>
+
             <v-col
               cols="12"
               md="4"
@@ -125,6 +128,7 @@
                 outlined
               />
             </v-col>
+
             <v-col
               cols="12"
               md="6"
@@ -167,6 +171,7 @@
                 outlined
               />
             </v-col>
+
             <v-col
               cols="12"
               md="4"
@@ -181,6 +186,7 @@
                 outlined
               />
             </v-col>
+
             <v-col
               cols="12"
               md="4"
@@ -198,9 +204,11 @@
           </v-row>
         </v-card-text>
       </template>
+
       <v-card-title>
         {{ $t('Weapons') }}
       </v-card-title>
+
       <v-card-text>
         <v-row>
           <v-col
@@ -225,6 +233,7 @@
 
     <v-card-text>
       <WeaponsTable
+        :modifying="false"
         :weapons="model.application.weapons"
         @delete-weapon="handleDeleteWeapon"
         @handle-edit-weapon="handleEditWeapon"

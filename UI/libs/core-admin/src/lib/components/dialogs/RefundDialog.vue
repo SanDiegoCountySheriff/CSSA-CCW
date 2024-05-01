@@ -103,9 +103,12 @@ const dialog = ref(false)
 
 function onRefund() {
   emit('refund', {
+    id: null,
     transactionId: props.payment.transactionId,
+    orderId: '',
     applicationId: props.applicationId,
     refundAmount: refundAmount.value,
+    reason: '',
   })
   dialog.value = false
 }
