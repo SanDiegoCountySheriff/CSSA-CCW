@@ -370,7 +370,7 @@
               <v-col
                 v-if="
                   !permitStore.getPermitDetail.application
-                    .readyForInitialPayment
+                    .readyForInitialPayment && !isInitialPaymentComplete
                 "
                 cols="12"
                 xl="6"
@@ -957,6 +957,24 @@ const allowedExtension = [
   '.bmp',
   '.pdf',
 ]
+
+const isInitialPaymentComplete = computed(() => {
+  return (
+    permitStore.permitDetail.paymentHistory.some(ph => {
+      return (
+        (ph.paymentType === 0 ||
+          ph.paymentType === 1 ||
+          ph.paymentType === 2 ||
+          ph.paymentType === 3 ||
+          ph.paymentType === 8 ||
+          ph.paymentType === 9 ||
+          ph.paymentType === 10 ||
+          ph.paymentType === 11) &&
+        ph.successful === true
+      )
+    }) || permitStore.permitDetail.application.paymentStatus === 1
+  )
+})
 
 const { mutate: updatePermitDetails, isLoading } = useMutation({
   mutationFn: () =>

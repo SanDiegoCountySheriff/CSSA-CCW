@@ -67,7 +67,7 @@ public class PaymentController : ControllerBase
             { "paymentType", paymentType }
         };
 
-        var url = $"{_redirectEndpoint}{responseEndpoint}?applicationId={applicationId}&isComplete=false";
+        var url = $"{_redirectEndpoint}{responseEndpoint}?applicationId={applicationId}&isComplete=true";
         var parameterizedUrl = AddHmacParamsToUrl(url, _hmacKey, parameters);
 
         return new RedirectResult(parameterizedUrl);
@@ -170,6 +170,16 @@ public class PaymentController : ControllerBase
                 paymentHistory.PaymentType = paymentType;
                 paymentHistory.Successful = true;
                 paymentHistory.PaymentStatus = PaymentStatus.OnlineSubmitted;
+
+                if (paymentType is Common.Enums.PaymentType.InitialStandard or Common.Enums.PaymentType.InitialJudicial or Common.Enums.PaymentType.InitialReserve or Common.Enums.PaymentType.InitialEmployment)
+                {
+                    application.Application.ReadyForInitialPayment = false;
+                }
+
+                if (paymentType is Common.Enums.PaymentType.ModificationStandard or Common.Enums.PaymentType.ModificationJudicial or Common.Enums.PaymentType.ModificationReserve or Common.Enums.PaymentType.ModificationEmployment)
+                {
+                    paymentHistory.ModificationNumber = application.Application.ModificationNumber;
+                }
             }
             else
             {
@@ -180,11 +190,6 @@ public class PaymentController : ControllerBase
                 paymentHistory.PaymentType = paymentType;
                 paymentHistory.Successful = false;
                 paymentHistory.PaymentStatus = PaymentStatus.OnlineSubmitted;
-            }
-
-            if (paymentType is Common.Enums.PaymentType.ModificationStandard or Common.Enums.PaymentType.ModificationJudicial or Common.Enums.PaymentType.ModificationReserve or Common.Enums.PaymentType.ModificationEmployment)
-            {
-                paymentHistory.ModificationNumber = application.Application.ModificationNumber;
             }
 
             application.PaymentHistory.Add(paymentHistory);
@@ -342,14 +347,9 @@ public class PaymentController : ControllerBase
 
     static string GetResponseEndpoint(string paymentType)
     {
-        if (paymentType is
-            "InitialEmployment" or
-            "InitialJudicial" or
-            "InitialReserve" or
-            "InitialStandard"
-        )
+        if (paymentType is "InitialEmployment" or "InitialJudicial" or "InitialReserve" or "InitialStandard")
         {
-            return "finalize";
+            return "application-details";
         }
         else
         {
