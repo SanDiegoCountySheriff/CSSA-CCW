@@ -84,17 +84,17 @@ provide(
 
 const { mutate: createUser } = useMutation(
   ['createUserProfile'],
-  async () => await userStore.putCreateUserApi(user.value),
+  async () => await userStore.putCreateUser(user.value),
   {
-    onSuccess: async () => {
-      await userStore.getUserApi()
+    onSuccess: res => {
+      userStore.setUser(res)
     },
   }
 )
 
 const { isFetching: isUserLoading } = useQuery(
   ['getUserProfile'],
-  userStore.getUserApi,
+  userStore.getUser,
   {
     enabled: canGetUserProfile,
     onError: () => {

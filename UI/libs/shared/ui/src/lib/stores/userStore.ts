@@ -1,13 +1,11 @@
-import { UserType } from '@shared-utils/types/defaultTypes'
 import Endpoints from '@shared-ui/api/endpoints'
+import { UserType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
 export const useUserStore = defineStore('UserStore', () => {
   const userProfile = ref<UserType>({} as UserType)
-  const allUsers = ref<Array<UserType>>()
-  const validUser = ref(true)
 
   const getUserState = computed(() => userProfile.value)
 
@@ -15,11 +13,7 @@ export const useUserStore = defineStore('UserStore', () => {
     userProfile.value = user
   }
 
-  const setValidUser = (value: boolean) => {
-    validUser.value = value
-  }
-
-  async function getUserApi() {
+  async function getUser() {
     const res = await axios.get(Endpoints.GET_USER_ENDPOINT)
 
     if (res?.data) setUser(res.data)
@@ -27,7 +21,7 @@ export const useUserStore = defineStore('UserStore', () => {
     return res?.data || {}
   }
 
-  async function putCreateUserApi(user) {
+  async function putCreateUser(user) {
     const res = await axios.put(Endpoints.PUT_CREATE_USER_ENDPOINT, user)
 
     if (res?.data) setUser(res.data)
@@ -37,11 +31,9 @@ export const useUserStore = defineStore('UserStore', () => {
 
   return {
     userProfile,
-    validUser,
-    allUsers,
+    setUser,
     getUserState,
-    getUserApi,
-    putCreateUserApi,
-    setValidUser,
+    getUser,
+    putCreateUser,
   }
 })

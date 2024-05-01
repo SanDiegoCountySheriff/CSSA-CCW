@@ -264,10 +264,10 @@ const appointmentMenu = ref(false)
 
 const { mutate: updateUser } = useMutation(
   ['createUserProfile'],
-  async () => await userStore.putCreateUserApi(user.value),
+  async () => await userStore.putCreateUser(user.value),
   {
     onSuccess: async () => {
-      await userStore.getUserApi()
+      await userStore.getUser()
     },
   }
 )

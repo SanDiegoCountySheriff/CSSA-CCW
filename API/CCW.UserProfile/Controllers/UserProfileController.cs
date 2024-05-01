@@ -69,6 +69,7 @@ public class UserProfileController : ControllerBase
             return NotFound("An error occur while trying to retrieve user.");
         }
     }
+
     private void GetUserId(out string userId)
     {
         userId = this.HttpContext.User.Claims
