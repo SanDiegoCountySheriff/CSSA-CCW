@@ -62,5 +62,5 @@ public class Application
     public bool FlaggedForLicensingReview { get; set; }
     public Agreements Agreements { get; set; }
     public string ReferenceNotes { get; set; }
-    public int ModificationNumber { get; set; }
+    public int ModificationNumber { get; set; } = 1;
 }
