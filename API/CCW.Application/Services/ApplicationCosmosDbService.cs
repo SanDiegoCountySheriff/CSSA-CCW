@@ -406,7 +406,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         {
             if (application.Application.UploadedDocuments.Any(doc =>
             {
-                return doc.DocumentType == $"ModifyName-{application.Application.ModificationNumber}";
+                return doc.DocumentType == "ModifyName";
             })
             )
             {
@@ -416,7 +416,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
             if (application.Application.UploadedDocuments.Any(doc =>
             {
-                return doc.DocumentType == $"ModifyAddress-{application.Application.ModificationNumber}";
+                return doc.DocumentType == "ModifyAddress";
             })
             )
             {
@@ -426,7 +426,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
             if (application.Application.UploadedDocuments.Any(doc =>
             {
-                return doc.DocumentType == $"ModifyWeapons-{application.Application.ModificationNumber}";
+                return doc.DocumentType == "ModifyWeapons";
             })
             )
             {
