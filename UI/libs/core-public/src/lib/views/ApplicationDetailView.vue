@@ -450,7 +450,7 @@
               color="primary"
               class="mr-2"
             >
-              mdi-calendar
+              mdi-clock-alert-outline
             </v-icon>
             {{
               applicationStore.completeApplication.application.license
