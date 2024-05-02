@@ -1386,7 +1386,6 @@ const {
     applicationStore.addHistoricalApplicationPublic(application),
 })
 
-
 const {
   isLoading: isUpdateApplicationLoading,
   mutateAsync: updateApplication,
@@ -1545,7 +1544,6 @@ function handleModifyApplication() {
 }
 
 async function handleRenewApplication() {
-
   const historicalApplication: CompleteApplication = {
     ...applicationStore.getCompleteApplication,
   }
@@ -1554,6 +1552,8 @@ async function handleRenewApplication() {
 
   isRenewLoading.value = true
   const application = applicationStore.completeApplication.application
+
+  application.renewalNumber += 1
 
   if (!isRenew.value) {
     switch (application.applicationType) {

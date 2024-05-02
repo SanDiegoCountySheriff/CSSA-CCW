@@ -63,4 +63,5 @@ public class Application
     public Agreements Agreements { get; set; }
     public string ReferenceNotes { get; set; }
     public int ModificationNumber { get; set; } = 1;
+    public int RenewalNumber { get; set; } = 0;
 }

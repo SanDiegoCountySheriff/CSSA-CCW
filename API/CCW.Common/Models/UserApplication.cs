@@ -55,4 +55,5 @@ public class UserApplication
     public bool FlaggedForLicensingReview { get; set; }
     public Agreements Agreements { get; set; }
     public int ModificationNumber { get; set; } = 1;
+    public int RenewalNumber { get; set; } = 0;
 }

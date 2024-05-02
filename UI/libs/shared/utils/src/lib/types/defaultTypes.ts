@@ -657,6 +657,7 @@ export type CompleteApplication = {
       falseInfoAgreedDate: string | null
     }
     modificationNumber: number
+    renewalNumber: number
   }
   history: Array<HistoryType>
   paymentHistory: Array<PaymentHistoryType>
