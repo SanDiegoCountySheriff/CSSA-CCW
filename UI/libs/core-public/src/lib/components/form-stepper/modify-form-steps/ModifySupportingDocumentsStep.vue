@@ -239,7 +239,7 @@ const { mutate: updateMutation } = useMutation({
 })
 
 function getNextFileIndex(target: string): number {
-  const targetPrefix = `${props.application.application.personalInfo.lastName}_${props.application.application.personalInfo.firstName}_${target}_`
+  const targetPrefix = `${target}_`
 
   const indexes = props.application.application.uploadedDocuments
     .filter(doc => doc.name.startsWith(targetPrefix))

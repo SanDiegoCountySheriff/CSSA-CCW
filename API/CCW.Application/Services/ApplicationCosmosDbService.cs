@@ -404,7 +404,6 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             ApplicationType.ModifyStandard
         )
         {
-            // TODO: Historical application save
             if (application.Application.UploadedDocuments.Any(doc =>
             {
                 return doc.DocumentType == $"ModifyName-{application.Application.ModificationNumber}";
