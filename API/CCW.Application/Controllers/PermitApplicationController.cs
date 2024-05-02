@@ -6,6 +6,8 @@ using CCW.Common.Models;
 using CCW.Common.ResponseModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CCW.Application.Controllers;
 
@@ -89,9 +91,13 @@ public class PermitApplicationController : ControllerBase
         GetUserId(out string userId);
         permitApplication.UserId = userId;
 
+        var existingApplication = await _applicationCosmosDbService.GetLastApplicationAsync(userId,
+              permitApplication.Id.ToString(),
+              cancellationToken: default);
+
         try
         {
-            var result = await _applicationCosmosDbService.AddHistoricalApplicationAsync(_mapper.Map<PermitApplication>(permitApplication), cancellationToken: default);
+            var result = await _applicationCosmosDbService.AddHistoricalApplicationPublicAsync(_mapper.Map<PermitApplication>(permitApplication), existingApplication, cancellationToken: default);
 
             return Ok(_mapper.Map<UserPermitApplicationResponseModel>(result));
         }

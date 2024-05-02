@@ -42,6 +42,19 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return createdItem;
     }
 
+    public async Task<PermitApplication> AddHistoricalApplicationPublicAsync(PermitApplication application, PermitApplication existingApplication, CancellationToken cancellationToken)
+    {
+        application.Id = Guid.NewGuid();
+        application.HistoricalDate = DateTimeOffset.UtcNow;
+
+        application.History = existingApplication.History;
+        application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck; 
+        application.Application.Comments = existingApplication.Application.Comments;
+
+        PermitApplication createdItem = await _historicalContainer.CreateItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
+        return createdItem;
+    }
+
     public async Task<IEnumerable<PermitApplication>> GetAllOpenApplicationsForUserAsync(string userId,
         CancellationToken cancellationToken)
     {
