@@ -6,6 +6,7 @@
         v-if="
           isAgencyLogoLoading ||
           isBrandSettingLoading ||
+          isUserLoading ||
           authStore.auth.handlingRedirectPromise
         "
       >
@@ -54,15 +55,14 @@ import Vue from 'vue'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
-import { useMutation, useQuery } from '@tanstack/vue-query'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
 import { useUserStore } from '@shared-ui/stores/userStore'
-
 import {
   MsalBrowser,
   getMsalInstance,
 } from '@shared-ui/api/auth/authentication'
 import { computed, getCurrentInstance, onBeforeMount, provide, ref } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const prompt = ref(false)
 const app = getCurrentInstance()
@@ -73,10 +73,34 @@ const brandStore = useBrandStore()
 const msalInstance = ref<MsalBrowser>()
 const userStore = useUserStore()
 const user = computed(() => userStore.userProfile)
+const canGetUserProfile = computed(() => {
+  return authStore.getAuthState.isAuthenticated
+})
 
 provide(
   'msalInstance',
   computed(() => msalInstance.value)
+)
+
+const { mutate: createUser } = useMutation(
+  ['createUserProfile'],
+  async () => await userStore.putCreateUserApi(user.value),
+  {
+    onSuccess: async () => {
+      await userStore.getUserApi()
+    },
+  }
+)
+
+const { isFetching: isUserLoading } = useQuery(
+  ['getUserProfile'],
+  userStore.getUserApi,
+  {
+    enabled: canGetUserProfile,
+    onError: () => {
+      createUser()
+    },
+  }
 )
 
 const validApiUrl = computed(
@@ -99,38 +123,12 @@ const { isLoading: isAgencyLogoLoading } = useQuery(
   }
 )
 
-const { mutate: createUser } = useMutation(
-  ['createUserProfile'],
-  async () => await userStore.putCreateUserApi(user.value),
-  {
-    onSuccess: async () => {
-      await userStore.getUserApi()
-    },
-  }
-)
-const { mutate: getUser } = useMutation(
-  ['getUserProfile'],
-  async () => await userStore.getUserApi(),
-  {
-    onSuccess: async () => {
-      await userStore.getUserApi()
-    },
-    onError: async () => {
-      createUser()
-    },
-  }
-)
-
 onBeforeMount(async () => {
   Vue.prototype.$workbox.addEventListener('waiting', () => {
     prompt.value = true
   })
 
   msalInstance.value = await getMsalInstance()
-
-  if (msalInstance.value.isAuthenticated()) {
-    getUser()
-  }
 
   const darkMode = localStorage.getItem('dark-mode')
 

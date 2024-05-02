@@ -154,7 +154,7 @@
         >
           <v-card>
             <v-card-title class="text-h4 justify-center">
-              We have recieved your request!
+              We have received your request!
             </v-card-title>
             <v-card-title class="text-h5 justify-center">
               Application linking request is currently under review
@@ -375,13 +375,12 @@ import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useQuery } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
-import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useUserStore } from '@shared-ui/stores/userStore'
+import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const brandStore = useBrandStore()
 const authStore = useAuthStore()
 const userStore = useUserStore()
-const user = computed(() => userStore.userProfile)
 const router = useRouter()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 const completeApplicationStore = useCompleteApplicationStore()
