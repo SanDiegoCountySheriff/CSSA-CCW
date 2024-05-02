@@ -480,6 +480,7 @@ export const defaultPermitState: CompleteApplication = {
       falseInfoAgreed: false,
       falseInfoAgreedDate: null,
     },
+    readyForInitialPayment: false,
     originalStatus: null,
     ninetyDayCountdownPaused: false,
     ninetyDayCountdownPausedDate: null,
@@ -515,6 +516,20 @@ export const defaultAdminUser = {
   name: '',
   jobTitle: '',
   uploadedDocuments: [],
+}
+
+export const defaultUser = {
+  id: '',
+  email: '',
+  firstName: '',
+  lastName: '',
+  middleName: '',
+  dateOfBirth: '',
+  driversLicenseNumber: '',
+  permitNumber: '',
+  appointmentDate: '',
+  uploadedDocuments: [],
+  isPendingReview: false,
 }
 
 export const states = [

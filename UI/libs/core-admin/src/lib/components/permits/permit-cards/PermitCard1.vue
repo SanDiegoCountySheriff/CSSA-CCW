@@ -1,6 +1,9 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-container class="px-0 py-0">
+  <v-container
+    class="px-0 py-0"
+    fluid
+  >
     <v-card
       class="pt-2 fill-height"
       outlined

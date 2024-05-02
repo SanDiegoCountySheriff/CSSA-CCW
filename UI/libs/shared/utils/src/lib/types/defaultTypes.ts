@@ -90,6 +90,21 @@ export type AdminUserType = {
   uploadedDocuments: Array<UploadedDocType>
 }
 
+export type UserType = {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  middleName: string
+  dateOfBirth: string
+  driversLicenseNumber: string
+  permitNumber: string
+  appointmentDate: string
+  appointmentTime: string
+  uploadedDocuments: Array<UploadedDocType>
+  isPendingReview: boolean
+}
+
 export type AuthType = {
   id?: string
   userName: string
@@ -656,6 +671,7 @@ export type CompleteApplication = {
       falseInfoAgreed: boolean
       falseInfoAgreedDate: string | null
     }
+    readyForInitialPayment: boolean
     modificationNumber: number
     renewalNumber: number
   }

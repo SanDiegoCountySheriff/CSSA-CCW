@@ -1,5 +1,8 @@
 <template>
-  <v-container class="px-0 py-0">
+  <v-container
+    class="px-0 py-0"
+    fluid
+  >
     <v-row>
       <v-col
         cols="4"
@@ -363,7 +366,22 @@
                   </v-list>
                 </v-menu>
               </v-col>
+
               <v-col
+                v-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForInitialPayment && !isInitialPaymentComplete
+                "
+                cols="12"
+                xl="6"
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-initial-payment="handleReadyForInitialPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else
                 cols="12"
                 xl="6"
               >
@@ -871,6 +889,7 @@ import ExpirationDateDialog from '@core-admin/components/dialogs/ExpirationDateD
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
 import FinishModificationDialog from '@core-admin/components/dialogs/FinishModificationDialog.vue'
 import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
+import ReadyForPaymentDialog from '@core-admin/components/dialogs/ReadyForPaymentDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
 import { getOriginalApplicationTypeModification } from '@shared-ui/composables/getOriginalApplicationType'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
@@ -938,6 +957,24 @@ const allowedExtension = [
   '.bmp',
   '.pdf',
 ]
+
+const isInitialPaymentComplete = computed(() => {
+  return (
+    permitStore.permitDetail.paymentHistory.some(ph => {
+      return (
+        (ph.paymentType === 0 ||
+          ph.paymentType === 1 ||
+          ph.paymentType === 2 ||
+          ph.paymentType === 3 ||
+          ph.paymentType === 8 ||
+          ph.paymentType === 9 ||
+          ph.paymentType === 10 ||
+          ph.paymentType === 11) &&
+        ph.successful === true
+      )
+    }) || permitStore.permitDetail.application.paymentStatus === 1
+  )
+})
 
 const { mutate: updatePermitDetails, isLoading } = useMutation({
   mutationFn: () =>
@@ -1483,5 +1520,11 @@ async function handleSaveReschedule(reschedule) {
   } else if (applicationHadPreviousAppointment) {
     reopenSlotByApplicationId(permitStore.getPermitDetail.id)
   }
+}
+
+function handleReadyForInitialPayment() {
+  changed.value = 'Marked ready for initial payment'
+  permitStore.getPermitDetail.application.readyForInitialPayment = true
+  updatePermitDetails()
 }
 </script>

@@ -106,7 +106,7 @@
 <script setup lang="ts">
 import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
 import WeaponsDialog from '@shared-ui/components/dialogs/WeaponsDialog.vue'
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 
 interface IWeaponTableProps {
   editEnable?: boolean
