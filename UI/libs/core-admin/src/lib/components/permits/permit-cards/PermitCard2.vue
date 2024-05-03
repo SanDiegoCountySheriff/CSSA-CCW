@@ -449,10 +449,7 @@
       </v-col>
 
       <v-col
-        v-if="
-          permitStore.getPermitDetail.application.applicationType ===
-          ApplicationType['Modify Standard']
-        "
+        v-if="isModify"
         cols="4"
         class="pt-0"
       >
@@ -660,10 +657,7 @@
       </v-col>
 
       <v-col
-        v-else-if="
-          permitStore.getPermitDetail.application.applicationType ===
-          ApplicationType['Renew Standard']
-        "
+        v-else-if="isRenew"
         cols="4"
         class="pt-0"
       >
@@ -1106,6 +1100,30 @@ const isInitialPaymentComplete = computed(() => {
         ph.successful === true
       )
     }) || permitStore.permitDetail.application.paymentStatus === 1
+  )
+})
+
+const isRenew = computed(() => {
+  const applicationType =
+    permitStore.getPermitDetail.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment']
+  )
+})
+
+const isModify = computed(() => {
+  const applicationType =
+    permitStore.getPermitDetail.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Modify Standard'] ||
+    applicationType === ApplicationType['Modify Reserve'] ||
+    applicationType === ApplicationType['Modify Judicial'] ||
+    applicationType === ApplicationType['Modify Employment']
   )
 })
 
