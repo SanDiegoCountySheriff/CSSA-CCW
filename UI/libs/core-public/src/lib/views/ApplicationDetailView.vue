@@ -1775,6 +1775,10 @@ async function handleRenewApplication() {
 
   applicationStore.completeApplication.application.paymentStatus = 0
 
+  applicationStore.completeApplication.application.appointmentStatus = 0
+
+  applicationStore.completeApplication.application.ciiNumber = ''
+
   resetDocuments()
   resetAgreements()
   renewMutation.mutate()

@@ -376,6 +376,35 @@ const applicationTypeItems = [
   { text: 'Modify Employment', value: 12 },
 ]
 
+const permitStore = usePermitsStore()
+const adminUserStore = useAdminUserStore()
+const appointmentsStore = useAppointmentsStore()
+const menu = ref(false)
+const date = ref('')
+
+const isAppointmenDisabled = computed(() => {
+  const applicationType =
+    permitStore.getPermitDetail.application.applicationType
+
+  const applicationStatus = permitStore.getPermitDetail.application.status
+
+  const appointmentStatus = permitStore.getPermitDetail.application.appointmentStatus
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment'] ||
+    applicationType === ApplicationType['Modify Standard'] ||
+    applicationType === ApplicationType['Modify Reserve'] ||
+    applicationType === ApplicationType['Modify Judicial'] ||
+    applicationType === ApplicationType['Modify Employment'] ||
+    applicationStatus === ApplicationStatus['Permit Delivered'] ||
+    appointmentStatus === 0 ||
+    appointmentStatus === 1
+  )
+})
+
 const state = reactive({
   selected: [] as PermitsType[],
   selectedAdminUser: '',
@@ -389,19 +418,20 @@ const state = reactive({
     },
     { text: 'Applicant Name', value: 'name' },
     { text: 'Application Type', value: 'applicationType' },
-    { text: 'Appointment Status', value: 'appointmentStatus' },
-    { text: 'Appointment Date/Time', value: 'appointmentDateTime' },
+    {
+      text: 'Appointment Status',
+      value: isAppointmenDisabled.value ? '' : 'appointmentStatus',
+    },
+    {
+      text: 'Appointment Date/Time',
+      value: isAppointmenDisabled.value ? '' : 'appointmentDateTime',
+    },
     { text: 'Payment Status', value: 'paymentStatus' },
     { text: 'Assigned User', value: 'assignedTo' },
     { text: 'Application Status', value: 'status' },
     { text: 'Actions', value: 'actions' },
   ],
 })
-const permitStore = usePermitsStore()
-const adminUserStore = useAdminUserStore()
-const appointmentsStore = useAppointmentsStore()
-const menu = ref(false)
-const date = ref('')
 
 const {
   mutate: setAppointmentScheduled,
