@@ -22,6 +22,7 @@
           md="6"
         >
           <v-alert
+            :class="{ 'mt-5': isMobile }"
             type="info"
             color="primary"
             dark

@@ -768,6 +768,7 @@
 
         <v-card-text>
           Are you sure you wish to begin the renewal process?<br />
+          <br />
           You will need to update some of your information, and go through the
           payment process again.<br />
           Your application will be changed to a renewal. This action cannot be
@@ -787,8 +788,18 @@
             @click="handleRenewApplication"
             color="primary"
             text
-            :loading="isRenewLoading"
-            :disabled="isRenewLoading"
+            :loading="
+              isRenewLoading ||
+              isGetApplicationsLoading ||
+              isUpdateApplicationLoading ||
+              isAddHistoricalApplicationLoading
+            "
+            :disabled="
+              isRenewLoading ||
+              isGetApplicationsLoading ||
+              isUpdateApplicationLoading ||
+              isAddHistoricalApplicationLoading
+            "
           >
             Begin Renewal
           </v-btn>
