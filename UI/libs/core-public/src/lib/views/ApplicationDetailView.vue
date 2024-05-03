@@ -2097,4 +2097,3 @@ function resetAgreements() {
     null
 }
 </script>
-, PaymentType, PaymentType
