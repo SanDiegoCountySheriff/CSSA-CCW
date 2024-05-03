@@ -1666,10 +1666,8 @@ public class PdfService : IPdfService
 
     private string BuildApplicantDocumentName(PermitApplication userApplication, string documentName)
     {
-        string fullFilename = userApplication.UserId + "_" +
-            userApplication.Application.PersonalInfo?.LastName + "_" +
-            userApplication.Application.PersonalInfo?.FirstName + "_" + documentName;
-
+        string fullFilename = userApplication.UserId + "_" + documentName;
+      
         return fullFilename;
     }
 
