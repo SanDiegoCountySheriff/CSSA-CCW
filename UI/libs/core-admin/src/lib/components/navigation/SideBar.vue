@@ -98,6 +98,26 @@
           </v-list-item>
 
           <v-list-item
+            v-if="authStore.auth.roles.includes('CCW-ADMIN-ROLE')"
+            :to="Routes.EXISTING_APPLICANTS_PATH"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-account-star</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="text-left">
+              {{ $t('Existing Applicants') }}
+              <!-- <v-chip
+                class="float-right"
+                color="primary"
+                x-small
+              >
+                {{ paymentStore.refundRequestCount }}
+              </v-chip> -->
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item
             :to="Routes.SETTINGS_ROUTE_PATH"
             link
           >
