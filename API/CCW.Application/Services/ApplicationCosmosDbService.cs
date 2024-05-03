@@ -50,6 +50,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         application.History = existingApplication.History;
         application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck; 
         application.Application.Comments = existingApplication.Application.Comments;
+        application.Application.ReferenceNotes = existingApplication.Application.ReferenceNotes;
 
         PermitApplication createdItem = await _historicalContainer.CreateItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
         return createdItem;

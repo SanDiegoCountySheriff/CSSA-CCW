@@ -1068,8 +1068,23 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantSignatureImageForApplication(PermitApplication userApplication, Document mainDocument)
     {
-        string fullFilename = $"{userApplication.UserId}_{userApplication.Application.PersonalInfo.LastName}_{userApplication.Application.PersonalInfo.FirstName}_Signature";
-        var imageBinaryData = await _documentService.GetApplicantImageAsync(fullFilename, cancellationToken: default);
+
+        string fullFileName;
+
+        if (userApplication.Application.ApplicationType is
+            ApplicationType.RenewStandard or
+            ApplicationType.RenewJudicial or
+            ApplicationType.RenewReserve or
+            ApplicationType.RenewEmployment)
+        {
+            fullFileName = $"{userApplication.UserId}_Signature_Renew_{userApplication.Application.RenewalNumber}";
+        }
+        else
+        {
+            fullFileName = $"{userApplication.UserId}_Signature";
+        }
+
+        var imageBinaryData = await _documentService.GetApplicantImageAsync(fullFileName, cancellationToken: default);
 
         var imageData = ImageDataFactory.Create(imageBinaryData);
 
