@@ -513,6 +513,7 @@ export enum ApplicationStatus {
   'Ready To Issue',
   'Waiting For Customer',
   'Modification Approved',
+  'Renewal Approved',
 }
 
 export enum PaymentType {

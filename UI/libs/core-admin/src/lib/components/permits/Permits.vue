@@ -348,6 +348,7 @@ const applicationStatusItems = [
   { text: 'Ready To Issue', value: 17 },
   { text: 'Waiting For Customer', value: 18 },
   { text: 'Modification Approved', value: 19 },
+  { text: 'Renewal Approved', value: 20 },
 ]
 
 const appointmentStatusItems = [
