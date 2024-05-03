@@ -27,4 +27,5 @@ public interface IApplicationCosmosDbService
     Task<int> GetApplicationCountAsync(PermitsOptions options, CancellationToken cancellationToken);
     Task<ApplicationSummaryCountResponseModel> GetApplicationSummaryCount(CancellationToken cancellationToken);
     Task<List<AssignedApplicationSummary>> GetAssignedApplicationsSummary(string userName, CancellationToken cancellationToken);
+    Task<(IEnumerable<SummarizedPermitApplication>, int)> GetAllLegacyApplicationsAsync(PermitsOptions options, CancellationToken cancellationToken);
 }

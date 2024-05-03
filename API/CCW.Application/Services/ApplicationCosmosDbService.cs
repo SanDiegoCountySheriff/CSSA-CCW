@@ -324,6 +324,39 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return (results, count);
     }
 
+    public async Task<(IEnumerable<SummarizedPermitApplication>, int)> GetAllLegacyApplicationsAsync(PermitsOptions options, CancellationToken cancellationToken)
+    {
+        var count = await GetLegacyApplicationCount(options, cancellationToken);
+
+        int totalPages = count / options.ItemsPerPage;
+        var isBeyondLastPage = options.Page > totalPages + 1;
+
+        while (isBeyondLastPage && options.Page > 1)
+        {
+            options.Page -= 1;
+            isBeyondLastPage = options.Page > totalPages;
+        }
+
+        QueryDefinition query = GetQueryDefinition(options);
+
+        var results = new List<SummarizedPermitApplication>();
+
+        using (var appsIterator = _legacyContainer.GetItemQueryIterator<SummarizedPermitApplication>(query))
+        {
+            while (appsIterator.HasMoreResults)
+            {
+                FeedResponse<SummarizedPermitApplication> apps = await appsIterator.ReadNextAsync(cancellationToken);
+
+                foreach (var item in apps)
+                {
+                    results.Add(item);
+                }
+            }
+        }
+
+        return (results, count);
+    }
+
     public async Task<IEnumerable<SummarizedPermitApplication>> SearchApplicationsAsync(string searchValue,
         CancellationToken cancellationToken)
     {
@@ -508,6 +541,24 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         QueryDefinition query = GetQueryDefinition(options, true);
 
         using FeedIterator<int> filteredFeed = _container.GetItemQueryIterator<int>(
+            queryDefinition: query
+        );
+
+        if (filteredFeed.HasMoreResults)
+        {
+            FeedResponse<int> response = await filteredFeed.ReadNextAsync(cancellationToken);
+
+            return response.Resource.FirstOrDefault();
+        }
+
+        return 0;
+    }
+
+    public async Task<int> GetLegacyApplicationCount(PermitsOptions options, CancellationToken cancellationToken)
+    {
+        QueryDefinition query = GetQueryDefinition(options, true);
+
+        using FeedIterator<int> filteredFeed = _legacyContainer.GetItemQueryIterator<int>(
             queryDefinition: query
         );
 

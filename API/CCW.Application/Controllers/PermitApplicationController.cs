@@ -291,6 +291,30 @@ public class PermitApplicationController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
+    [HttpGet("getAllLegacyApplications")]
+    public async Task<IActionResult> GetAllLegacyApplications([FromQuery] PermitsOptions options)
+    {
+        try
+        {
+            var (result, count) = await _applicationCosmosDbService.GetAllLegacyApplicationsAsync(options, cancellationToken: default);
+
+            var response = new SummaryResponse()
+            {
+                Items = result.ToList(),
+                Total = count,
+            };
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            var originalException = ex.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to retrieve all permit applications.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("search")]
     public async Task<IActionResult> Search(string searchValue)
     {

@@ -32,7 +32,6 @@ export const useUserStore = defineStore('UserStore', () => {
   }
 
   async function getUnmatchedUsers() {
-    window.console.log('getting users')
     const res = await axios.get(Endpoints.GET_UNMATCHED_USERS_ENDPOINT)
 
     if (res?.data) {

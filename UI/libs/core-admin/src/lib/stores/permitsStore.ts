@@ -169,6 +169,65 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return res.data
   }
 
+  async function getAllLegacyApplications(
+    options: ApplicationTableOptionsType,
+    signal: AbortSignal | undefined
+  ): Promise<{
+    items: Array<PermitsType>
+    total: number
+  }> {
+    const res = await axios.get(
+      Endpoints.GET_ALL_LEGACY_APPLICATIONS_ENDPOINT,
+      {
+        signal,
+        params: {
+          page: options.options.page,
+          itemsPerPage: options.options.itemsPerPage,
+          sortBy: options.options.sortBy,
+          sortDesc: options.options.sortDesc,
+          groupBy: options.options.groupBy,
+          groupDesc: options.options.groupDesc,
+          statuses: options.statuses,
+          appointmentStatuses: options.appointmentStatuses,
+          applicationTypes: options.applicationTypes,
+          search: options.search,
+          showingTodaysAppointments: options.showingTodaysAppointments,
+          selectedDate: options.selectedDate
+            ? new Date(options.selectedDate).toISOString()
+            : '',
+        },
+        paramsSerializer: {
+          indexes: null,
+        },
+      }
+    )
+
+    const permitsData: Array<PermitsType> = res?.data?.items.map(data => {
+      const permitsType: PermitsType = {
+        orderId: data.orderId,
+        status: ApplicationStatus[ApplicationStatus[data.status]],
+        applicationType: ApplicationType[ApplicationType[data.applicationType]],
+        appointmentStatus:
+          AppointmentStatus[AppointmentStatus[data.appointmentStatus]],
+        paid: data.paid,
+        initials: formatInitials(data.firstName, data.lastName),
+        name: formatName(data),
+        assignedTo: data.assignedTo,
+        appointmentDateTime: `${formatTime(
+          data.appointmentDateTime
+        )} on ${formatDate(data.appointmentDateTime)}`,
+        isComplete: data.isComplete,
+        appointmentId: data.appointmentId,
+      }
+
+      return permitsType
+    })
+
+    res.data.items = permitsData
+
+    return res.data
+  }
+
   async function getPermitDetailApi(orderId: string) {
     const isComplete = true
 
@@ -470,5 +529,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getApplicationSummaryCount,
     getAssignedApplicationsSummary,
     addHistoricalApplication,
+    getAllLegacyApplications,
   }
 })
