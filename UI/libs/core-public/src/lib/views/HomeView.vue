@@ -185,10 +185,10 @@
         >
           <v-card>
             <v-card-title class="text-h4 justify-center">
-              Before You Begin
+              Let's get started
             </v-card-title>
             <v-card-title class="text-h5 justify-center">
-              Let us know how we can assist you
+              Let us know which applies to you
             </v-card-title>
             <v-container
               class="px-10"
@@ -217,7 +217,7 @@
                     >
                       mdi-account-plus
                     </v-icon>
-                    New User
+                    I have never applied for a CCW license before
                   </v-card-title>
 
                   <v-card-text>
@@ -250,13 +250,14 @@
                     >
                       mdi-account-search
                     </v-icon>
-                    Link Existing Application
+                    I have applied for a CCW license before
                   </v-card-title>
 
                   <v-card-text>
-                    I have previously applied for a CCW license with
+                    I have previously applied for a CCW license, or hold a CCW
+                    license with
                     <b>{{ brandStore.getBrand.agencyName }}</b> and would like
-                    to link my existing application.
+                    to link my existing application or license.
                   </v-card-text>
                 </v-card>
               </v-sheet>
