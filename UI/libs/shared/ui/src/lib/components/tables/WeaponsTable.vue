@@ -2,7 +2,6 @@
 <template>
   <v-container fluid>
     <v-data-table
-      hide-default-footer
       :headers="headers"
       :items="weapons"
       mobile-breakpoint="800"

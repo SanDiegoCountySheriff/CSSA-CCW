@@ -230,10 +230,13 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </v-container>
+
+    <FinalizeModifyConfirmDialog v-model="dialog" />
   </div>
 </template>
 
 <script lang="ts" setup>
+import FinalizeModifyConfirmDialog from '../dialogs/FinalizeModifyConfirmDialog.vue'
 import ModifyAddressStep from '@core-public/components/form-stepper/modify-form-steps/ModifyAddressStep.vue'
 import ModifyNameStep from '@core-public/components/form-stepper/modify-form-steps/ModifyNameStep.vue'
 import ModifySupportingDocumentsStep from '@core-public/components/form-stepper/modify-form-steps/ModifySupportingDocumentsStep.vue'
@@ -251,6 +254,7 @@ import { useMutation, useQuery } from '@tanstack/vue-query'
 const applicationStore = useCompleteApplicationStore()
 const brandStore = useBrandStore()
 const isApplicationValid = ref(false)
+const dialog = ref(true)
 const stepIndex = reactive({
   step: 1,
   previousStep: 1,
@@ -416,6 +420,14 @@ function handleContinueFile() {
   router.push('/ModifyFinalize')
 }
 
+function handleContinueFileConfirm() {
+  applicationStore.completeApplication.application.currentStep = 5
+
+  updateMutation()
+
+  router.push('/ModifyFinalize')
+}
+
 function handlePreviousStep() {
   stepIndex.previousStep = stepIndex.step
   stepIndex.step -= 1
@@ -452,8 +464,6 @@ function handleUndoAddWeapon(weapon: WeaponInfoType) {
 }
 
 function handleUndoDeleteWeapon(weapon: WeaponInfoType) {
-  window.console.log(weapon)
-
   applicationStore.completeApplication.application.modifyDeleteWeapons =
     applicationStore.completeApplication.application.modifyDeleteWeapons.filter(
       w => {

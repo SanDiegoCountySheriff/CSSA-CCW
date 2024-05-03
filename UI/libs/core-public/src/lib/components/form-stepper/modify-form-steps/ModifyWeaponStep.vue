@@ -4,14 +4,41 @@
       <v-card-title>Modify Weapons</v-card-title>
 
       <v-card-text>
-        <WeaponsTable
-          :weapons="items"
-          :modifying="true"
-          @modify-delete-weapon="deleteWeapon"
-          @save-weapon="handleSaveWeapon"
-          @undo-add-weapon="undoAddWeapon"
-          @undo-delete-weapon="undoDeleteWeapon"
-        />
+        <v-row>
+          <v-col
+            cols="12"
+            md="6"
+          >
+            <WeaponsTable
+              :weapons="items"
+              :modifying="true"
+              @modify-delete-weapon="deleteWeapon"
+              @save-weapon="handleSaveWeapon"
+              @undo-add-weapon="undoAddWeapon"
+              @undo-delete-weapon="undoDeleteWeapon"
+            />
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="6"
+          >
+            <v-container fluid>
+              <v-data-table
+                :items="items.filter(i => !i.deleted)"
+                :headers="headers"
+              >
+                <template #top>
+                  <v-toolbar flat>
+                    <v-toolbar-title>
+                      These weapons will appear on your license:
+                    </v-toolbar-title>
+                  </v-toolbar>
+                </template>
+              </v-data-table>
+            </v-container>
+          </v-col>
+        </v-row>
       </v-card-text>
     </v-form>
 
@@ -43,6 +70,13 @@ const emit = defineEmits([
   'undo-delete-weapon',
   'update-step-three-valid',
 ])
+
+const headers = [
+  { text: 'Make', value: 'make' },
+  { text: 'Model', value: 'model' },
+  { text: 'Caliber', value: 'caliber' },
+  { text: 'Serial Number', value: 'serialNumber' },
+]
 
 const items = computed(() => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
