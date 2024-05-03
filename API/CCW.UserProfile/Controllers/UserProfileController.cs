@@ -70,6 +70,25 @@ public class UserProfileController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [Route("getUnmatchedUserProfiles")]
+    [HttpGet]
+    public async Task<IActionResult> GetUnmatchedUserProfiles()
+    {
+        try
+        {
+            List<User> result = await _cosmosDbService.GetUnmatchedUserProfiles(cancellationToken: default);
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to get all unmatched user profiles");
+        }
+    }
+
     private void GetUserId(out string userId)
     {
         userId = this.HttpContext.User.Claims

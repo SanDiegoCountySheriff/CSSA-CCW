@@ -1,6 +1,7 @@
 using CCW.Common.Models;
 using Microsoft.Azure.Cosmos;
 using System.Net;
+using System.Threading;
 using User = CCW.Common.Models.User;
 
 namespace CCW.UserProfile.Services;
@@ -116,6 +117,27 @@ public class CosmosDbService : ICosmosDbService
 
         using FeedIterator<User> feedIterator = _userContainer.GetItemQueryIterator<User>(
             queryDefinition: parameterizedQuery
+        );
+
+        while (feedIterator.HasMoreResults)
+        {
+            foreach (var item in await feedIterator.ReadNextAsync(cancellationToken))
+            {
+                users.Add(item);
+            }
+        }
+
+        return users;
+    }
+
+    public async Task<List<User>> GetUnmatchedUserProfiles(CancellationToken cancellationToken)
+    {
+        List<User> users = new List<User>();
+
+        var queryString = new QueryDefinition("SELECT * FROM c WHERE c.isPendingReview = true");
+
+        using FeedIterator<User> feedIterator = _userContainer.GetItemQueryIterator<User>(
+            queryDefinition: queryString
         );
 
         while (feedIterator.HasMoreResults)

@@ -351,6 +351,12 @@ export default class Endpoints {
     }/userprofile/v1/adminuser/getAllAdminUsers`
   }
 
+  static get GET_UNMATCHED_USERS_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.userProfileApiBaseUrl
+    }/userprofile/v1/userprofile/getUnmatchedUserProfiles`
+  }
+
   /********DOCUMENTS******************/
 
   static get GET_DOCUMENT_AGENCY_ENDPOINT() {

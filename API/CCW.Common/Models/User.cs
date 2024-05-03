@@ -27,6 +27,5 @@ public class User
     [JsonProperty("uploadedDocuments")]
     public UploadedDocument[] UploadedDocuments { get; set; }
     [JsonProperty("isPendingReview")]
-    public Boolean IsPendingReview { get; set; }
-
+    public bool IsPendingReview { get; set; }
 }
