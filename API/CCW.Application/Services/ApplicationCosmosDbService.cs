@@ -112,6 +112,34 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return null!;
     }
 
+    public async Task<PermitApplication> GetLegacyApplicationAsync(string userId, string applicationId,
+    CancellationToken cancellationToken)
+    {
+        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
+                          "WHERE a.userId = @userId or a.id = @applicationId " +
+                          "Order by a.Application.OrderId DESC";
+
+        var parameterizedQuery = new QueryDefinition(query: queryString)
+            .WithParameter("@userId", userId)
+            .WithParameter("@applicationId", applicationId);
+
+        using FeedIterator<PermitApplication> filteredFeed = _legacyContainer.GetItemQueryIterator<PermitApplication>(
+            queryDefinition: parameterizedQuery,
+            requestOptions: new QueryRequestOptions() { PartitionKey = new PartitionKey(userId) }
+        );
+
+        if (filteredFeed.HasMoreResults)
+        {
+            FeedResponse<PermitApplication> response = await filteredFeed.ReadNextAsync(cancellationToken);
+
+            var application = response.Resource.FirstOrDefault();
+
+            return application;
+        }
+
+        return null!;
+    }
+
     public async Task<PermitApplication> GetUserLastApplicationAsync(string userEmailOrOrderId, bool isOrderId,
         bool isComplete, CancellationToken cancellationToken)
     {
@@ -312,6 +340,8 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
         return (results, count);
     }
+
+
 
     public async Task<IEnumerable<SummarizedPermitApplication>> SearchApplicationsAsync(string searchValue,
         CancellationToken cancellationToken)

@@ -81,6 +81,25 @@ public class PermitApplicationController : ControllerBase
             return NotFound("An error occur while trying to retrieve user permit application.");
         }
     }
+    [Authorize(Policy = "B2CUsers")]
+    [HttpGet("getLegacyApplication")]
+    public async Task<IActionResult> GetLegacyApplication(string applicationId)
+    {
+        GetUserId(out string userId);
+
+        try
+        {
+            var result = await _applicationCosmosDbService.GetLegacyApplicationAsync(userId, applicationId, cancellationToken: default);
+
+            return (result != null) ? Ok(_mapper.Map<UserPermitApplicationResponseModel>(result)) : NotFound();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to retrieve user permit application.");
+        }
+    }
 
     [Authorize(Policy = "B2CUsers")]
     [HttpGet("getSSN")]
@@ -271,6 +290,8 @@ public class PermitApplicationController : ControllerBase
             return NotFound("An error occur while trying to retrieve all permit applications.");
         }
     }
+
+
 
     [Authorize(Policy = "AADUsers")]
     [HttpGet("search")]
