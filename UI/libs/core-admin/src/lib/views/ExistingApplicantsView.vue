@@ -1,25 +1,50 @@
 <template>
   <v-container fluid>
     <v-card
-      :loading="isLoading || isFetching"
       height="90vh"
       flat
     >
-      <v-card-title>Link Existing Applications</v-card-title>
+      <v-card-title>
+        Link Existing Applications
+
+        <v-btn
+          @click="handleMatch"
+          :disabled="!readyToMatch"
+          color="primary"
+          class="ml-4"
+        >
+          Match
+        </v-btn>
+      </v-card-title>
 
       <v-card-text>
         <v-row>
           <v-col>
             <v-data-table
+              v-model="selectedUser"
               :items="unmatchedUsers"
               :headers="headers"
+              :loading="isFetching || isLoading || pdfLoading"
+              :search="applicantSearch"
+              @item-expanded="handleItemExpanded"
               single-expand
               show-expand
-              @item-expanded="handleItemExpanded"
+              show-select
+              single-select
             >
               <template #top>
                 <v-toolbar flat>
                   <v-toolbar-title> Applicants </v-toolbar-title>
+
+                  <v-spacer />
+
+                  <v-text-field
+                    v-model="applicantSearch"
+                    label="Search"
+                    color="primary"
+                    hide-details
+                    outlined
+                  ></v-text-field>
                 </v-toolbar>
               </template>
 
@@ -27,22 +52,13 @@
                 {{ item.firstName }} {{ item.lastName }}
               </template>
 
-              <template #[`item.actions`]="{ item }">
-                <v-btn
-                  @click="handleMatch(item)"
-                  color="primary"
-                  icon
-                >
-                  <v-icon>mdi-check-bold</v-icon>
-                </v-btn>
-              </template>
-
               <template #expanded-item="{ item }">
                 <td :colspan="headers.length">
                   <v-container>
                     <v-simple-table>
                       <tr class="text-left">
-                        <th>Appointment</th>
+                        <th>Appointment Date</th>
+                        <th>Appointment Time</th>
                         <th>DOB</th>
                         <th>Permit Number</th>
                       </tr>
@@ -51,6 +67,8 @@
                           {{
                             new Date(item.appointmentDate).toLocaleDateString()
                           }}
+                        </td>
+                        <td>
                           {{ item.appointmentTime }}
                         </td>
                         <td>
@@ -60,13 +78,29 @@
                           {{ item.permitNumber }}
                         </td>
                       </tr>
+
                       <tr>
-                        <v-img
-                          max-height="300"
-                          max-width="300"
-                          contain
-                          :src="idImage"
-                        ></v-img>
+                        <td colspan="2">
+                          <v-img
+                            :src="idImage"
+                            @click="idDialog = true"
+                            class="hover-zoom-in"
+                            max-height="200"
+                            max-width="200"
+                            contain
+                          ></v-img>
+                        </td>
+
+                        <td colspan="2">
+                          <v-img
+                            :src="licenseImage"
+                            @click="licenseDialog = true"
+                            class="hover-zoom-in"
+                            max-height="200"
+                            max-width="200"
+                            contain
+                          ></v-img>
+                        </td>
                       </tr>
                     </v-simple-table>
                   </v-container>
@@ -77,32 +111,80 @@
 
           <v-col>
             <v-data-table
+              v-model="selectedLegacyApplication"
               :headers="applicationHeaders"
               :items="data.items"
               :server-items-length="data.total"
               :options.sync="options.options"
+              :loading="
+                isLegacyApplicationLoading || isLegacyApplicationFetching
+              "
               :loading-text="$t('Loading permit applications...')"
               :items-per-page="10"
               :footer-props="{
                 'items-per-page-options': [10, 25, 50, 100],
               }"
               item-key="orderId"
+              single-select
+              single-expand
+              show-select
+              show-expand
             >
               <template #top>
                 <v-toolbar flat>
                   <v-toolbar-title> Legacy Applications </v-toolbar-title>
+
+                  <v-spacer />
+
+                  <v-text-field
+                    v-model="options.applicationSearch"
+                    label="Search"
+                    color="primary"
+                    hide-details
+                    outlined
+                  ></v-text-field>
                 </v-toolbar>
+              </template>
+
+              <template #[`item.name`]="{ item }">
+                {{ item.name }}
               </template>
             </v-data-table>
           </v-col>
         </v-row>
       </v-card-text>
     </v-card>
+
+    <v-dialog
+      v-model="idDialog"
+      max-width="90vh"
+    >
+      <v-img
+        @click="idDialog = false"
+        :src="idImage"
+        class="hover-zoom-out"
+        max-width="90vh"
+        contain
+      ></v-img>
+    </v-dialog>
+
+    <v-dialog
+      v-model="licenseDialog"
+      max-width="90vh"
+    >
+      <v-img
+        @click="licenseDialog = false"
+        :src="licenseImage"
+        class="hover-zoom-out"
+        max-width="90vh"
+        contain
+      ></v-img>
+    </v-dialog>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import { PermitsType } from '@core-admin/types'
+import { LegacyPermitsType } from '@core-admin/types'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
@@ -111,12 +193,25 @@ import {
   ApplicationTableOptionsType,
   UserType,
 } from '@shared-utils/types/defaultTypes'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const userStore = useUserStore()
 const permitStore = usePermitsStore()
 const documentStore = useDocumentsStore()
 const idImage = ref('')
+const licenseImage = ref('')
+const pdfLoading = ref(false)
+const idDialog = ref(false)
+const licenseDialog = ref(false)
+const selectedLegacyApplication = ref<Array<LegacyPermitsType>>([])
+const selectedUser = ref<Array<UserType>>([])
+const applicantSearch = ref('')
+
+const readyToMatch = computed(() => {
+  return (
+    selectedUser.value.length > 0 && selectedLegacyApplication.value.length > 0
+  )
+})
 
 const options = ref<ApplicationTableOptionsType>({
   options: {
@@ -136,6 +231,7 @@ const options = ref<ApplicationTableOptionsType>({
   applicationTypes: [],
   showingTodaysAppointments: false,
   selectedDate: '',
+  applicationSearch: '',
 })
 
 const {
@@ -148,12 +244,12 @@ const {
   data,
   isLoading: isLegacyApplicationLoading,
   isFetching: isLegacyApplicationFetching,
-  refetch,
+  refetch: refetchApplications,
 } = useQuery(
   ['getAllLegacyApplications'],
   async ({ signal }) => {
     let response: {
-      items: Array<PermitsType>
+      items: Array<LegacyPermitsType>
       total: number
     } = { items: [], total: 0 }
 
@@ -197,14 +293,23 @@ const headers = [
   },
   {
     text: 'Match',
-    value: 'actions',
+    value: 'data-table-select',
   },
 ]
 
-const applicationHeaders = [{ text: 'Order ID', value: 'orderId' }]
+const applicationHeaders = [
+  { text: 'Name', value: 'name' },
+  { text: 'ID Number', value: 'idNumber' },
+  { text: 'Email', value: 'email' },
+  {
+    text: 'Match',
+    value: 'data-table-select',
+  },
+]
 
-function handleMatch(item) {
-  window.console.log(item)
+function handleMatch() {
+  window.console.log(selectedLegacyApplication.value)
+  window.console.log(selectedUser.value)
 }
 
 function handleItemExpanded({
@@ -215,37 +320,52 @@ function handleItemExpanded({
   value: boolean
 }) {
   if (value) {
-    const document = item.uploadedDocuments.find(d => {
+    const idDocument = item.uploadedDocuments.find(d => {
       return d.documentType === 'DriverLicense'
     })
 
-    if (document) {
-      openPdf(`${item.id}_${document.name}`)
+    const licenseDocument = item.uploadedDocuments.find(d => {
+      return d.documentType === 'CCWPermit'
+    })
+
+    options.value.applicationSearch = item.lastName
+
+    if (idDocument) {
+      openPdf(`${item.id}_${idDocument.name}`)
+    }
+
+    if (licenseDocument) {
+      openPdf(`${item.id}_${licenseDocument.name}`)
     }
   } else {
     idImage.value = ''
+    options.value.applicationSearch = ''
   }
 }
 
 async function openPdf(name: string) {
+  pdfLoading.value = true
+
   documentStore
     .getUnmatchedUserDocument(name)
-    .then(response => {
-      if (response.type === 'application/pdf') {
-        const pdfBlob = new Blob([response], { type: 'application/pdf' })
-
-        // eslint-disable-next-line node/no-unsupported-features/node-builtins
-        idImage.value = URL.createObjectURL(pdfBlob)
-      } else if (response.type === 'text/plain') {
-        response.text().then(base64String => {
-          fetch(base64String)
-            .then(res => res.blob())
-            .then(blob => {
+    .then(async response => {
+      response.text().then(base64String => {
+        fetch(base64String)
+          .then(res => res.blob())
+          .then(blob => {
+            if (name.includes('DriverLicense')) {
               // eslint-disable-next-line node/no-unsupported-features/node-builtins
               idImage.value = URL.createObjectURL(blob)
-            })
-        })
-      }
+            }
+
+            if (name.includes('CCWPermit')) {
+              // eslint-disable-next-line node/no-unsupported-features/node-builtins
+              licenseImage.value = URL.createObjectURL(blob)
+            }
+          })
+      })
+
+      pdfLoading.value = false
     })
     .catch(error => {
       console.error('Error fetching the PDF:', error)
@@ -253,12 +373,27 @@ async function openPdf(name: string) {
 }
 
 watch(
+  () => options.value.applicationSearch,
+  () => refetchApplications()
+)
+
+watch(
   options,
   newVal => {
     if (newVal) {
-      refetch()
+      refetchApplications()
     }
   },
   { deep: true }
 )
 </script>
+
+<style>
+.hover-zoom-in {
+  cursor: zoom-in;
+}
+
+.hover-zoom-out {
+  cursor: zoom-out;
+}
+</style>

@@ -324,7 +324,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return (results, count);
     }
 
-    public async Task<(IEnumerable<SummarizedPermitApplication>, int)> GetAllLegacyApplicationsAsync(PermitsOptions options, CancellationToken cancellationToken)
+    public async Task<(IEnumerable<SummarizedLegacyApplication>, int)> GetAllLegacyApplicationsAsync(PermitsOptions options, CancellationToken cancellationToken)
     {
         var count = await GetLegacyApplicationCount(options, cancellationToken);
 
@@ -337,15 +337,15 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             isBeyondLastPage = options.Page > totalPages;
         }
 
-        QueryDefinition query = GetQueryDefinition(options);
+        QueryDefinition query = GetLegacyQueryDefinition(options);
 
-        var results = new List<SummarizedPermitApplication>();
+        var results = new List<SummarizedLegacyApplication>();
 
-        using (var appsIterator = _legacyContainer.GetItemQueryIterator<SummarizedPermitApplication>(query))
+        using (var appsIterator = _legacyContainer.GetItemQueryIterator<SummarizedLegacyApplication>(query))
         {
             while (appsIterator.HasMoreResults)
             {
-                FeedResponse<SummarizedPermitApplication> apps = await appsIterator.ReadNextAsync(cancellationToken);
+                FeedResponse<SummarizedLegacyApplication> apps = await appsIterator.ReadNextAsync(cancellationToken);
 
                 foreach (var item in apps)
                 {
@@ -556,7 +556,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
     public async Task<int> GetLegacyApplicationCount(PermitsOptions options, CancellationToken cancellationToken)
     {
-        QueryDefinition query = GetQueryDefinition(options, true);
+        QueryDefinition query = GetLegacyQueryDefinition(options, true);
 
         using FeedIterator<int> filteredFeed = _legacyContainer.GetItemQueryIterator<int>(
             queryDefinition: query
@@ -724,6 +724,115 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         if (!string.IsNullOrEmpty(options.Search))
         {
             queryDefinition.WithParameter("@searchValue", options.Search);
+        }
+
+        if (options.ShowingTodaysAppointments || options.SelectedDate != null)
+        {
+            queryDefinition.WithParameter("@today", options.SelectedDate != null ? options.SelectedDate?.ToString("yyyy-MM-dd") : DateTime.UtcNow.Date.ToString("yyyy-MM-dd"));
+        }
+
+        return queryDefinition;
+    }
+
+    private QueryDefinition GetLegacyQueryDefinition(PermitsOptions options, bool forCount = false)
+    {
+        var offset = 0;
+
+        if (options.Page != 1)
+        {
+            offset = options.ItemsPerPage * (options.Page - 1);
+        }
+
+        var select = "SELECT a.Application.PersonalInfo.LastName as LastName, a.Application.PersonalInfo.FirstName as FirstName, a.Application.Status as Status, a.Application.AppointmentDateTime as AppointmentDateTime, a.Application.ApplicationType as ApplicationType, a.Application.OrderId as OrderId, a.Application.IdInfo.IdNumber as IdNumber, a.Application.DOB.BirthDate as BirthDate, a.Application.License.PermitNumber as PermitNumber, a.Application.UserEmail as Email, a.id FROM a ";
+        var where = "WHERE (a.Application.IsComplete = true OR a.Application.IsComplete = false) ";
+        var order = "";
+        var limit = "OFFSET @offset LIMIT @itemsPerPage";
+
+        if (options.Statuses is not null && !options.Statuses.Contains(ApplicationStatus.None))
+        {
+            where += "AND (";
+
+            foreach (var status in options.Statuses)
+            {
+                where += $"a.Application.Status = {(int)status} OR ";
+            }
+
+            where = where.Remove(where.Length - 3);
+
+            where += ") ";
+        }
+
+        if (options.AppointmentStatuses is not null)
+        {
+            where += "AND (";
+
+            foreach (var status in options.AppointmentStatuses)
+            {
+                where += $"a.Application.AppointmentStatus = {(int)status} OR ";
+            }
+
+            where = where.Remove(where.Length - 3);
+
+            where += ") ";
+        }
+
+        if (options.ApplicationTypes is not null && !options.ApplicationTypes.Contains(ApplicationType.None))
+        {
+            where += "AND (";
+
+            foreach (var type in options.ApplicationTypes)
+            {
+                where += $"a.Application.ApplicationType = {(int)type} OR ";
+            }
+
+            where = where.Remove(where.Length - 3);
+
+            where += ") ";
+        }
+
+        if (!string.IsNullOrEmpty(options.Search))
+        {
+            where += "AND (" +
+                "CONTAINS(a.Application.PersonalInfo.LastName, @searchValue, true) OR " +
+                "CONTAINS(a.Application.PersonalInfo.FirstName, @searchValue, true) OR " +
+                "CONTAINS(a.Application.OrderId, @searchValue, true)) ";
+        }
+
+        if (!string.IsNullOrEmpty(options.ApplicationSearch))
+        {
+            where += "AND (" +
+                "CONTAINS(a.Application.PersonalInfo.LastName, @applicationSearchValue, true) OR " +
+                "CONTAINS(a.Application.PersonalInfo.FirstName, @applicationSearchValue, true) OR " +
+                "CONTAINS(a.Application.IdInfo.IdNumber, @applicationSearchValue, true) OR " +
+                "CONTAINS(a.Application.UserEmail, @applicationSearchValue, true)) ";
+        }
+
+        if (options.ShowingTodaysAppointments || options.SelectedDate != null)
+        {
+            where += "AND SUBSTRING(a.Application.AppointmentDateTime, 0, 10) = @today";
+        }
+
+        var limitString = forCount ? string.Empty : limit;
+        var selectString = forCount ? "SELECT VALUE Count(1) FROM a " : select;
+        var orderString = forCount ? string.Empty : order;
+
+        var queryString = $"{selectString} {where} {limitString} {orderString}";
+
+        var queryDefinition = new QueryDefinition(queryString);
+
+        if (!forCount)
+        {
+            queryDefinition.WithParameter("@offset", offset).WithParameter("@itemsPerPage", options.ItemsPerPage);
+        }
+
+        if (!string.IsNullOrEmpty(options.Search))
+        {
+            queryDefinition.WithParameter("@searchValue", options.Search);
+        }
+
+        if (!string.IsNullOrEmpty(options.ApplicationSearch))
+        {
+            queryDefinition.WithParameter("@applicationSearchValue", options.ApplicationSearch);
         }
 
         if (options.ShowingTodaysAppointments || options.SelectedDate != null)

@@ -327,6 +327,7 @@ const options = ref<ApplicationTableOptionsType>({
   applicationTypes: [],
   showingTodaysAppointments: false,
   selectedDate: '',
+  applicationSearch: null,
 })
 const applicationStatusItems = [
   { text: 'Incomplete', value: 1 },

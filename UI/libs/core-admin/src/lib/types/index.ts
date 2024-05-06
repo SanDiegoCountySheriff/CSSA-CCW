@@ -82,6 +82,18 @@ export type PermitsType = {
   appointmentId: string
 }
 
+export type LegacyPermitsType = {
+  orderId: string
+  name: string
+  idNumber: string
+  birthDate: string
+  permitNumber: string
+  email: string
+  appointmentDateTime: string
+  status: ApplicationStatus
+  applicationType: ApplicationType
+}
+
 export type PdfValidationType = {
   BOF_4012_rev_01_2024: boolean
   BOF_4502_rev_09_2011: boolean

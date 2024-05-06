@@ -298,7 +298,7 @@ public class PermitApplicationController : ControllerBase
         {
             var (result, count) = await _applicationCosmosDbService.GetAllLegacyApplicationsAsync(options, cancellationToken: default);
 
-            var response = new SummaryResponse()
+            var response = new LegacySummaryResponse()
             {
                 Items = result.ToList(),
                 Total = count,
@@ -784,6 +784,12 @@ public class PermitApplicationController : ControllerBase
         public int Total { get; set; }
     }
 
+    public class LegacySummaryResponse
+    {
+        public List<SummarizedLegacyApplication> Items { get; set; }
+        public int Total { get; set; }
+    }
+
     public class PermitsOptions
     {
         public int Page { get; set; }
@@ -796,6 +802,7 @@ public class PermitApplicationController : ControllerBase
         public AppointmentStatus[] AppointmentStatuses { get; set; }
         public ApplicationType[] ApplicationTypes { get; set; }
         public string Search { get; set; }
+        public string ApplicationSearch { get; set; }
         public bool ShowingTodaysAppointments { get; set; }
         public DateTimeOffset? SelectedDate { get; set; }
     }

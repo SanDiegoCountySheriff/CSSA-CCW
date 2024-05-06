@@ -576,6 +576,7 @@ export type ApplicationSummaryCount = {
 export type ApplicationTableOptionsType = {
   options: DataOptions
   search: string
+  applicationSearch: string | null
   statuses: ApplicationStatus[]
   paid: boolean
   appointmentStatuses: AppointmentStatus[]

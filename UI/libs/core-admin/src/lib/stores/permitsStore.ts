@@ -1,5 +1,5 @@
 import Endpoints from '@shared-ui/api/endpoints'
-import { PermitsType } from '@core-admin/types'
+import { LegacyPermitsType, PermitsType } from '@core-admin/types'
 import axios from 'axios'
 import { defaultPermitState } from '@shared-utils/lists/defaultConstants'
 import { defineStore } from 'pinia'
@@ -173,7 +173,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     options: ApplicationTableOptionsType,
     signal: AbortSignal | undefined
   ): Promise<{
-    items: Array<PermitsType>
+    items: Array<LegacyPermitsType>
     total: number
   }> {
     const res = await axios.get(
@@ -191,6 +191,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
           appointmentStatuses: options.appointmentStatuses,
           applicationTypes: options.applicationTypes,
           search: options.search,
+          applicationSearch: options.applicationSearch,
           showingTodaysAppointments: options.showingTodaysAppointments,
           selectedDate: options.selectedDate
             ? new Date(options.selectedDate).toISOString()
@@ -202,22 +203,19 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       }
     )
 
-    const permitsData: Array<PermitsType> = res?.data?.items.map(data => {
-      const permitsType: PermitsType = {
+    const permitsData: Array<LegacyPermitsType> = res?.data?.items.map(data => {
+      const permitsType: LegacyPermitsType = {
         orderId: data.orderId,
         status: ApplicationStatus[ApplicationStatus[data.status]],
         applicationType: ApplicationType[ApplicationType[data.applicationType]],
-        appointmentStatus:
-          AppointmentStatus[AppointmentStatus[data.appointmentStatus]],
-        paid: data.paid,
-        initials: formatInitials(data.firstName, data.lastName),
         name: formatName(data),
-        assignedTo: data.assignedTo,
         appointmentDateTime: `${formatTime(
           data.appointmentDateTime
         )} on ${formatDate(data.appointmentDateTime)}`,
-        isComplete: data.isComplete,
-        appointmentId: data.appointmentId,
+        idNumber: data.idNumber,
+        birthDate: data.birthDate,
+        permitNumber: data.permitNumber,
+        email: data.email,
       }
 
       return permitsType
