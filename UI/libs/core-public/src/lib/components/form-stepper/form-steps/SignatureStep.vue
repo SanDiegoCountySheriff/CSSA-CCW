@@ -156,6 +156,7 @@
     <v-container>
       <v-row justify="center">
         <v-alert
+          v-if="!isRenew"
           color="primary"
           type="info"
           outlined

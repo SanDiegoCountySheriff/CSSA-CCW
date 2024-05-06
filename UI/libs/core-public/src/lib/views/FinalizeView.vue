@@ -53,6 +53,7 @@
         </v-row>
 
         <v-row
+          v-if="!isRenew"
           justify="center"
           class="mt-3"
         >
@@ -192,17 +193,21 @@
           </v-col>
         </v-row>
 
-        <v-row>
-          <v-col>
+        <v-row justify="center">
+          <v-col
+            cols="12"
+            md="8"
+            sm="6"
+          >
             <v-btn
               v-if="isRenew"
-              class="mb-10"
-              :disabled="!isInitialPaymentComplete"
               :loading="isUpdateLoading || isUpdatePaymentHistoryLoading"
+              block
               color="primary"
+              class="mb-10"
               @click="handleSubmit"
             >
-              {{ $t('Submit Application') }}
+              {{ $t('Submit Renewal') }}
             </v-btn>
           </v-col>
         </v-row>
