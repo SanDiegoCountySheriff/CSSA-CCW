@@ -113,26 +113,6 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     return res?.data
   }
 
-  async function deleteApplication(applicationId: string) {
-    const res = await axios
-      .put(
-        Endpoints.DELETE_PERMIT_ENDPOINT,
-        {},
-        {
-          params: {
-            applicationId,
-          },
-        }
-      )
-      .catch(err => {
-        console.warn(err)
-
-        return Promise.reject()
-      })
-
-    return res?.data
-  }
-
   return {
     allUserApplications,
     completeApplication,
@@ -144,7 +124,6 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     getCompleteApplicationFromApi,
     getAllUserApplicationsApi,
     updateApplication,
-    deleteApplication,
     getAgreementPdf,
   }
 })

@@ -526,11 +526,6 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         );
     }
 
-    public async Task DeleteApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken)
-    {
-        await _container.DeleteItemAsync<PermitApplication>(applicationId, new PartitionKey(userId), cancellationToken: cancellationToken);
-    }
-
     public async Task DeleteUserApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken)
     {
         await _container.DeleteItemAsync<PermitApplication>(applicationId, new PartitionKey(userId), cancellationToken: cancellationToken);

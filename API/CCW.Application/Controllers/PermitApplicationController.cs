@@ -490,41 +490,6 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "B2CUsers")]
-    [Route("deleteApplication")]
-    [HttpPut]
-    public async Task<IActionResult> DeleteApplication(string applicationId)
-    {
-        GetUserId(out string userId);
-
-        try
-        {
-            var existingApp = await _applicationCosmosDbService.GetLastApplicationAsync(userId, applicationId, cancellationToken: default);
-
-            if (existingApp == null)
-            {
-                return NotFound("Permit application cannot be found or has been completed and no longer can be deleted.");
-            }
-
-            if (existingApp.Application.IsComplete)
-            {
-                return NotFound("Permit application submitted changes cannot be deleted.");
-            }
-
-            await _applicationCosmosDbService.DeleteApplicationAsync(userId, existingApp.Id.ToString(), cancellationToken: default);
-
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            var originalException = e.GetBaseException();
-            _logger.LogError(originalException, originalException.Message);
-
-            return NotFound("An error occur while trying to delete permit application.");
-        }
-    }
-
-
     [Authorize(Policy = "AADUsers")]
     [Route("deleteUserApplication")]
     [HttpPut]

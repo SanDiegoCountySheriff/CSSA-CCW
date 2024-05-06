@@ -131,12 +131,6 @@ export default class Endpoints {
     }/application/v1/permitapplication/create`
   }
 
-  static get DELETE_PERMIT_ENDPOINT() {
-    return `${
-      useAppConfigStore().appConfig.applicationApiBaseUrl
-    }/application/v1/permitapplication/deleteApplication`
-  }
-
   static get GET_PERMIT_SSN_ENDPOINT() {
     return `${
       useAppConfigStore().appConfig.applicationApiBaseUrl
