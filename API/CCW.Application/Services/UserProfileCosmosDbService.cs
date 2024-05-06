@@ -41,13 +41,13 @@ public class UserProfileCosmosDbService : IUserProfileCosmosDbService
         return null!;
     }
 
-    public Task<Common.Models.User> GetUser(string id, CancellationToken cancellationToken)
+    public async Task<Common.Models.User> GetUser(string id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _userContainer.ReadItemAsync<Common.Models.User>(id, new PartitionKey(id), null, cancellationToken);
     }
 
-    public Task UpdateUser(Common.Models.User user, CancellationToken cancellationToken)
+    public async Task UpdateUser(Common.Models.User user, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await _userContainer.UpsertItemAsync(user, new PartitionKey(user.Id), null, cancellationToken);
     }
 }

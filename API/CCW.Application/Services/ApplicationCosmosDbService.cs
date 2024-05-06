@@ -838,14 +838,15 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return queryDefinition;
     }
 
-    public Task<PermitApplication> GetLegacyApplication(string applicationId, CancellationToken cancellationToken)
+    public async Task<PermitApplication> GetLegacyApplication(string applicationId, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _legacyContainer.ReadItemAsync<PermitApplication>(applicationId, new PartitionKey(applicationId), null, cancellationToken);
     }
 
-    public Task UpdateLegacyApplication(PermitApplication application, CancellationToken cancellationToken)
+    public async Task UpdateLegacyApplication(PermitApplication application, CancellationToken cancellationToken)
     {
-        // don't forget this is going to be adding it to the normal database container
-        throw new NotImplementedException();
+        await _container.CreateItemAsync(application, new PartitionKey(application.Id.ToString()), null, cancellationToken);
+
+        // TODO: historicals?
     }
 }

@@ -259,6 +259,7 @@ static async Task<AppointmentCosmosDbService> InitializeAppointmentCosmosClientI
 {
     var appointmentDatabaseName = configurationSection["AppointmentDatabaseName"];
     var appointmentContainerName = configurationSection["AppointmentContainerName"];
+    var appointmentManagementContainerName = configurationSection["AppointmentManagementContainerName"];
 #if DEBUG
     var key = configurationSection["CosmosDbEmulatorConnectionString"];
 #else
@@ -282,8 +283,9 @@ static async Task<AppointmentCosmosDbService> InitializeAppointmentCosmosClientI
 
     var appointmentDatabase = await client.CreateDatabaseIfNotExistsAsync(appointmentDatabaseName);
     await appointmentDatabase.Database.CreateContainerIfNotExistsAsync(appointmentContainerName, "/id");
+    await appointmentDatabase.Database.CreateContainerIfNotExistsAsync(appointmentManagementContainerName, "/id");
 
-    var appointmentCosmosDbService = new AppointmentCosmosDbService(client, appointmentDatabaseName, appointmentContainerName);
+    var appointmentCosmosDbService = new AppointmentCosmosDbService(client, appointmentDatabaseName, appointmentContainerName, appointmentManagementContainerName);
 
     return appointmentCosmosDbService;
 }

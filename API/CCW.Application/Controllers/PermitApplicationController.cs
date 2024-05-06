@@ -6,6 +6,7 @@ using CCW.Common.Models;
 using CCW.Common.ResponseModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Configuration;
 
 namespace CCW.Application.Controllers;
 
@@ -466,30 +467,34 @@ public class PermitApplicationController : ControllerBase
 
             var application = await _applicationCosmosDbService.GetLegacyApplication(applicationId, cancellationToken: default);
 
+            if (application.Application.AppointmentDateTime > DateTimeOffset.UtcNow && application.Application.AppointmentDateTime != null)
+            {
+                var appointmentLength = await _appointmentCosmosDbService.GetAppointmentLength(cancellationToken: default);
+
+                var appointmentWindow = new AppointmentWindow()
+                {
+                    Id = Guid.NewGuid(),
+                    ApplicationId = application.Id.ToString(),
+                    Start = (DateTimeOffset)application.Application.AppointmentDateTime,
+                    End = ((DateTimeOffset)application.Application.AppointmentDateTime).AddMinutes(appointmentLength),
+                    AppointmentCreatedDate = DateTimeOffset.UtcNow,
+                    Status = AppointmentStatus.Scheduled,
+                    Name = user.FirstName + " " + user.LastName,
+                    Permit = application.Application.OrderId,
+                    IsManuallyCreated = true,
+                    UserId = user.Id,
+                };
+
+                var appointment = await _appointmentCosmosDbService.CreateAppointment(appointmentWindow, cancellationToken: default);
+
+                application.Application.AppointmentId = appointment.Id.ToString();
+                application.Application.AppointmentStatus = AppointmentStatus.Scheduled;
+            }
+
             application.Application.UserEmail = user.Email;
             application.UserId = userId;
-            // TODO: Set Appointment Status?
 
             await _applicationCosmosDbService.UpdateLegacyApplication(application, cancellationToken: default);
-
-            // TODO: make conditional user profile should have appointment stuff in there, but maybe not reliable
-            var appointmentWindow = new AppointmentWindow()
-            {
-                ApplicationId = application.Id.ToString(),
-                // TODO: this
-                Start = DateTime.Now,
-                // TODO: this
-                End = DateTime.Now,
-                // TODO: this
-                AppointmentCreatedDate = DateTime.Now,
-                Status = AppointmentStatus.Scheduled,
-                Name = user.FirstName + " " + user.LastName,
-                Permit = application.Application.OrderId,
-                IsManuallyCreated = true,
-                UserId = user.Id,
-            };
-
-            await _appointmentCosmosDbService.CreateAppointment(appointmentWindow, cancellationToken: default);
 
             return Ok();
         }

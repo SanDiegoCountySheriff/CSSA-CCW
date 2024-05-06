@@ -6,18 +6,28 @@ namespace CCW.Application.Services;
 
 public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 {
-    private readonly Container _container;
+    private readonly Container _appointmentContainer;
+    private readonly Container _appointmentManagementContainer;
 
     public AppointmentCosmosDbService(
         CosmosClient cosmosDbClient,
         string databaseName,
-        string containerName)
+        string appointmentContainerName,
+        string appointmentManagementContainerName)
     {
-        _container = cosmosDbClient.GetContainer(databaseName, containerName);
+        _appointmentContainer = cosmosDbClient.GetContainer(databaseName, appointmentContainerName);
+        _appointmentManagementContainer = cosmosDbClient.GetContainer(databaseName, appointmentManagementContainerName);
     }
 
-    public Task<AppointmentWindow> CreateAppointment(AppointmentWindow appointmentWindow, CancellationToken cancellationToken)
+    public async Task<AppointmentWindow> CreateAppointment(AppointmentWindow appointmentWindow, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _appointmentContainer.CreateItemAsync(appointmentWindow, new PartitionKey(appointmentWindow.Id.ToString()), null, cancellationToken);
+    }
+
+    public async Task<int> GetAppointmentLength(CancellationToken cancellationToken)
+    {
+        var appointmentManagement = await _appointmentManagementContainer.ReadItemAsync<AppointmentManagement>("1", new PartitionKey("1"), null, cancellationToken);
+
+        return appointmentManagement.Resource.AppointmentLength;
     }
 }
