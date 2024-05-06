@@ -382,7 +382,7 @@ const appointmentsStore = useAppointmentsStore()
 const menu = ref(false)
 const date = ref('')
 
-const isAppointmenDisabled = computed(() => {
+const isAppointmentDisabled = computed(() => {
   const applicationType =
     permitStore.getPermitDetail.application.applicationType
 
@@ -420,11 +420,11 @@ const state = reactive({
     { text: 'Application Type', value: 'applicationType' },
     {
       text: 'Appointment Status',
-      value: isAppointmenDisabled.value ? '' : 'appointmentStatus',
+      value: isAppointmentDisabled.value ? '' : 'appointmentStatus',
     },
     {
       text: 'Appointment Date/Time',
-      value: isAppointmenDisabled.value ? '' : 'appointmentDateTime',
+      value: isAppointmentDisabled.value ? '' : 'appointmentDateTime',
     },
     { text: 'Payment Status', value: 'paymentStatus' },
     { text: 'Assigned User', value: 'assignedTo' },
