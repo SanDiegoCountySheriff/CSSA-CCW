@@ -837,4 +837,15 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
         return queryDefinition;
     }
+
+    public Task<PermitApplication> GetLegacyApplication(string applicationId, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateLegacyApplication(PermitApplication application, CancellationToken cancellationToken)
+    {
+        // don't forget this is going to be adding it to the normal database container
+        throw new NotImplementedException();
+    }
 }

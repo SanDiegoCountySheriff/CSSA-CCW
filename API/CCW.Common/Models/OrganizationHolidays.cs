@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
-using PublicHoliday;
 
-namespace CCW.Schedule.Entities;
+namespace CCW.Common.Models;
 
 public class OrganizationHolidays
 {

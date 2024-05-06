@@ -308,6 +308,9 @@ const applicationHeaders = [
 ]
 
 function handleMatch() {
+  // call api
+
+  // refetch both
   window.console.log(selectedLegacyApplication.value)
   window.console.log(selectedUser.value)
 }

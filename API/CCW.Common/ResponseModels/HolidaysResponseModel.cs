@@ -1,4 +1,4 @@
-namespace CCW.Schedule.Models;
+namespace CCW.Common.ResponseModels;
 
 public class HolidaysResponseModel
 {

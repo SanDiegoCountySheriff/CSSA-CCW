@@ -1,8 +1,8 @@
 using AutoMapper;
 using CCW.Common.Enums;
 using CCW.Common.Models;
-using CCW.Schedule.Entities;
-using CCW.Schedule.Models;
+using CCW.Common.RequestModels;
+using CCW.Common.ResponseModels;
 using CCW.Schedule.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

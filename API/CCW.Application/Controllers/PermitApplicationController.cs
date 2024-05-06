@@ -15,6 +15,8 @@ public class PermitApplicationController : ControllerBase
 {
     private readonly IDocumentAzureStorage _documentService;
     private readonly IApplicationCosmosDbService _applicationCosmosDbService;
+    private readonly IUserProfileCosmosDbService _userProfileCosmosDbService;
+    private readonly IAppointmentCosmosDbService _appointmentCosmosDbService;
     private readonly IPdfService _pdfService;
     private readonly ILogger<PermitApplicationController> _logger;
     private readonly IMapper _mapper;
@@ -22,6 +24,8 @@ public class PermitApplicationController : ControllerBase
     public PermitApplicationController(
         IDocumentAzureStorage documentService,
         IApplicationCosmosDbService applicationCosmosDbService,
+        IUserProfileCosmosDbService userProfileCosmosDbService,
+        IAppointmentCosmosDbService appointmentCosmosDbService,
         IPdfService pdfService,
         ILogger<PermitApplicationController> logger,
         IMapper mapper
@@ -29,6 +33,8 @@ public class PermitApplicationController : ControllerBase
     {
         _documentService = documentService;
         _applicationCosmosDbService = applicationCosmosDbService;
+        _userProfileCosmosDbService = userProfileCosmosDbService;
+        _appointmentCosmosDbService = appointmentCosmosDbService;
         _pdfService = pdfService;
         _logger = logger;
         _mapper = mapper;
@@ -443,6 +449,56 @@ public class PermitApplicationController : ControllerBase
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
             return NotFound("An error occur while trying to retrieve permit application history.");
+        }
+    }
+
+    [Authorize(Policy ="AADUsers")]
+    [HttpPost("matchApplication")]
+    public async Task<IActionResult> MatchApplication(string userId, string applicationId)
+    {
+        try
+        {
+            var user = await _userProfileCosmosDbService.GetUser(userId, cancellationToken: default);
+
+            user.IsPendingReview = false;
+
+            await _userProfileCosmosDbService.UpdateUser(user, cancellationToken: default);
+
+            var application = await _applicationCosmosDbService.GetLegacyApplication(applicationId, cancellationToken: default);
+
+            application.Application.UserEmail = user.Email;
+            application.UserId = userId;
+            // TODO: Set Appointment Status?
+
+            await _applicationCosmosDbService.UpdateLegacyApplication(application, cancellationToken: default);
+
+            // TODO: make conditional user profile should have appointment stuff in there, but maybe not reliable
+            var appointmentWindow = new AppointmentWindow()
+            {
+                ApplicationId = application.Id.ToString(),
+                // TODO: this
+                Start = DateTime.Now,
+                // TODO: this
+                End = DateTime.Now,
+                // TODO: this
+                AppointmentCreatedDate = DateTime.Now,
+                Status = AppointmentStatus.Scheduled,
+                Name = user.FirstName + " " + user.LastName,
+                Permit = application.Application.OrderId,
+                IsManuallyCreated = true,
+                UserId = user.Id,
+            };
+
+            await _appointmentCosmosDbService.CreateAppointment(appointmentWindow, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to match the application");
+
         }
     }
 
