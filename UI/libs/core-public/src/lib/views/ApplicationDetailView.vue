@@ -8,7 +8,8 @@
             isUpdateApplicationLoading ||
             isRefundRequestLoading ||
             isAddHistoricalApplicationLoading ||
-            isMakePaymentLoading
+            isMakePaymentLoading ||
+            isMakeRenewalPaymentLoading
           "
           outlined
         >
@@ -337,7 +338,9 @@
       >
         <v-card
           v-if="
-            !isRenew &&
+            (!isRenew ||
+              applicationStore.completeApplication.application
+                .readyForRenewalPayment) &&
             !isModification &&
             applicationStore.completeApplication.application.status !==
               ApplicationStatus['Permit Delivered']
@@ -422,6 +425,21 @@
                 <InitialPaymentConfirmationDialog
                   :disabled="isMakePaymentLoading"
                   @confirm="handleInitialPayment"
+                />
+              </v-col>
+
+              <v-col></v-col>
+            </v-row>
+            <v-row
+              v-else-if="
+                applicationStore.completeApplication.application
+                  .readyForRenewalPayment
+              "
+            >
+              <v-col>
+                <RenewalPaymentConfirmationDialog
+                  :disabled="isMakeRenewalPaymentLoading"
+                  @confirm="handleRenewalPayment"
                 />
               </v-col>
 
@@ -962,6 +980,7 @@ import InitialPaymentConfirmationDialog from '@core-public/components/dialogs/In
 import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue'
 import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue'
 import QualifyingQuestionsInfoSection from '@shared-ui/components/info-sections/QualifyingQuestionsInfoSection.vue'
+import RenewalPaymentConfirmationDialog from '@core-public/components/dialogs/RenewalPaymentConfirmationDialog.vue'
 import Routes from '@core-public/router/routes'
 import SignatureInfoSection from '@shared-ui/components/info-sections/SignatureInfoSection.vue'
 import SpouseAddressInfoSection from '@shared-ui/components/info-sections/SpouseAddressInfoSection.vue'
@@ -1608,8 +1627,63 @@ const { mutate: makeInitialPayment, isLoading: isMakePaymentLoading } =
     },
   })
 
+const { mutate: makeRenewalPayment, isLoading: isMakeRenewalPaymentLoading } =
+  useMutation({
+    mutationFn: () => {
+      let cost: number
+      let paymentType: string
+
+      switch (
+        applicationStore.completeApplication.application.applicationType
+      ) {
+        case ApplicationType['Renew Standard']:
+          paymentType =
+            PaymentType['CCW Application Renewal Payment'].toString()
+          cost = brandStore.brand.cost.renew.standard
+          break
+
+        case ApplicationType['Renew Judicial']:
+          paymentType =
+            PaymentType['CCW Application Renewal Judicial Payment'].toString()
+          cost = brandStore.brand.cost.renew.judicial
+          break
+
+        case ApplicationType['Renew Reserve']:
+          paymentType =
+            PaymentType['CCW Application Renewal Reserve Payment'].toString()
+          cost = brandStore.brand.cost.renew.reserve
+          break
+
+        case ApplicationType['Renew Employment']:
+          paymentType =
+            PaymentType['CCW Application Renewal Employment Payment'].toString()
+          cost = brandStore.brand.cost.renew.employment
+          break
+
+        default:
+          paymentType =
+            PaymentType['CCW Application Renewal Payment'].toString()
+          cost = brandStore.brand.cost.renew.standard
+      }
+
+      return paymentStore.getPayment(
+        applicationStore.completeApplication.id,
+        cost,
+        applicationStore.completeApplication.application.orderId,
+        paymentType
+      )
+    },
+    onError: () => {
+      paymentSnackbar.value = true
+    },
+  })
+
 function handleInitialPayment() {
   makeInitialPayment()
+}
+
+function handleRenewalPayment() {
+  makeRenewalPayment()
 }
 
 async function handleConfirmWithdrawModification() {
@@ -1775,6 +1849,25 @@ async function handleRenewApplication() {
       default:
         break
     }
+  }
+
+  applicationStore.completeApplication.application.cost = {
+    new: {
+      standard: brandStore.brand.cost.new.standard,
+      judicial: brandStore.brand.cost.new.judicial,
+      reserve: brandStore.brand.cost.new.reserve,
+      employment: brandStore.brand.cost.new.employment,
+    },
+    renew: {
+      standard: brandStore.brand.cost.renew.standard,
+      judicial: brandStore.brand.cost.renew.judicial,
+      reserve: brandStore.brand.cost.renew.reserve,
+      employment: brandStore.brand.cost.renew.employment,
+    },
+    issuance: brandStore.brand.cost.issuance,
+    modify: brandStore.brand.cost.modify,
+    creditFee: brandStore.brand.cost.creditFee,
+    convenienceFee: brandStore.brand.cost.convenienceFee,
   }
 
   applicationStore.completeApplication.application.isUpdatingApplication = false

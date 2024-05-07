@@ -673,6 +673,7 @@ export type CompleteApplication = {
       falseInfoAgreedDate: string | null
     }
     readyForInitialPayment: boolean
+    readyForRenewalPayment: boolean
     modificationNumber: number
     renewalNumber: number
   }
