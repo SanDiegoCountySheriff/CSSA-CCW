@@ -393,6 +393,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     {
         application.Application.Comments = existingApplication.Application.Comments;
         application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck;
+        application.History = existingApplication.History;
 
         if (existingApplication.Application.ApplicationType != application.Application.ApplicationType &&
             application.Application.ApplicationType is
@@ -408,6 +409,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             application.Application.BackgroundCheck.DOJApprovalLetter = new BackgroundCheckItem();
             application.Application.BackgroundCheck.SidLettersReceived = new BackgroundCheckItem();
             application.Application.BackgroundCheck.Probations = new BackgroundCheckItem();
+            application.Application.Comments = Array.Empty<Comment>();
         }
 
         if (existingApplication.Application.ApplicationType != application.Application.ApplicationType &&
