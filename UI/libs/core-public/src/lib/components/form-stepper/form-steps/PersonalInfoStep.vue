@@ -425,15 +425,7 @@
             <v-text-field
               v-model="formattedSSN"
               :label="$t('Social Security Number')"
-              :rules="[
-                v => !!v || $t('SSN cannot be blank'),
-                v =>
-                  /^[\d-]+$/.test(v) ||
-                  $t('SSN must contain only numbers and dashes'),
-                v =>
-                  (v.match(/\d/g) || []).length === 9 ||
-                  $t('SSN must be 9 characters in length'),
-              ]"
+              :rules="ssnRules"
               :dense="isMobile"
               @change="handleValidateForm"
               outlined
@@ -448,15 +440,7 @@
             <v-text-field
               v-model="formattedSSNConfirm"
               :label="$t('Confirm SSN')"
-              :rules="[
-                v => !!v || $t('SSN cannot be blank'),
-                v =>
-                  (v.match(/\d/g) || []).length === 9 ||
-                  $t('SSN must be 9 characters in length'),
-                v =>
-                  v.replace(/\D/g, '') === model.application.personalInfo.ssn ||
-                  $t('SSN does not match'),
-              ]"
+              :rules="ssnRules"
               :dense="isMobile"
               @change="handleValidateForm"
               outlined
@@ -836,9 +820,11 @@ watch(valid, (newValue, oldValue) => {
 const showAlias = ref(false)
 let ssnConfirm = ref('')
 const vuetify = useVuetify()
-const isMobile = computed(
-  () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
-)
+const isMobile = computed(() => {
+  window.console.log('isMobile', vuetify)
+
+  return vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
+})
 
 const formattedSSN = computed({
   get() {
@@ -858,8 +844,29 @@ const formattedSSNConfirm = computed({
   },
 })
 
+const ssnRules = computed(() => {
+  window.console.log('calling ssn rules')
+
+  return [
+    v => {
+      window.console.log('first', v)
+
+      return Boolean(v) || 'SSN cannot be blank'
+    },
+    v => {
+      window.console.log('second', v)
+
+      return /^[\d-]+$/.test(v) || 'SSN must contain only numbers and dashes'
+    },
+    v =>
+      (Boolean(v) && (v.match(/\d/g) || []).length === 9) ||
+      'SSN must be 9 characters in length',
+  ]
+})
+
 onMounted(() => {
   if (model.value.application.personalInfo.ssn) {
+    window.console.log('setting ssn confirm value')
     ssnConfirm.value = model.value.application.personalInfo.ssn
   }
 
@@ -867,6 +874,7 @@ onMounted(() => {
     !model.value.application.characterReferences ||
     model.value.application.characterReferences.length === 0
   ) {
+    window.console.log('calling the thing with char references')
     model.value.application.characterReferences = [
       { name: '', relationship: '', phoneNumber: '', email: '' },
       { name: '', relationship: '', phoneNumber: '', email: '' },
@@ -882,6 +890,7 @@ onMounted(() => {
     model.value.application.aliases &&
     model.value.application.aliases.length > 0
   ) {
+    window.console.log('calling the aliases')
     showAlias.value = true
   }
 })

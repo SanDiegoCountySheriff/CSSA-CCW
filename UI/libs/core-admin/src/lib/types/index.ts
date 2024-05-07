@@ -1,11 +1,9 @@
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 import {
-  AddressInfoType,
   ApplicationStatus,
   ApplicationType,
   AppointmentStatus,
   CostType,
-  PaymentStatus,
 } from '@shared-utils/types/defaultTypes'
 
 export type BrandType = {
@@ -83,6 +81,7 @@ export type PermitsType = {
 }
 
 export type LegacyPermitsType = {
+  id: string
   orderId: string
   name: string
   idNumber: string

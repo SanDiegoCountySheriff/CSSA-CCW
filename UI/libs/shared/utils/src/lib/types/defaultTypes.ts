@@ -91,7 +91,7 @@ export type AdminUserType = {
 }
 
 export type UserType = {
-  id?: string
+  id: string
   email: string
   firstName: string
   lastName: string

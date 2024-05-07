@@ -216,6 +216,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
         birthDate: data.birthDate,
         permitNumber: data.permitNumber,
         email: data.email,
+        id: data.id,
       }
 
       return permitsType
@@ -252,6 +253,13 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     setHistory(reorder)
 
     return res?.data || {}
+  }
+
+  async function matchApplication(userId: string, applicationId: string) {
+    await axios.post(Endpoints.MATCH_APPLICATION_ENDPOINT, {
+      userId,
+      applicationId,
+    })
   }
 
   async function addHistoricalApplication(application: CompleteApplication) {
@@ -528,5 +536,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getAssignedApplicationsSummary,
     addHistoricalApplication,
     getAllLegacyApplications,
+    matchApplication,
   }
 })

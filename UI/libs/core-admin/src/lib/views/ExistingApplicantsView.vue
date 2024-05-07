@@ -1,6 +1,7 @@
 <template>
   <v-container fluid>
     <v-card
+      :loading="isMatchApplicationLoading"
       height="90vh"
       flat
     >
@@ -187,13 +188,13 @@
 import { LegacyPermitsType } from '@core-admin/types'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { useQuery } from '@tanstack/vue-query'
 import { useUserStore } from '@shared-ui/stores/userStore'
 import {
   ApplicationTableOptionsType,
   UserType,
 } from '@shared-utils/types/defaultTypes'
 import { computed, ref, watch } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const userStore = useUserStore()
 const permitStore = usePermitsStore()
@@ -238,6 +239,7 @@ const {
   data: unmatchedUsers,
   isLoading,
   isFetching,
+  refetch: refetchUsers,
 } = useQuery(['getUnmatchedUsers'], userStore.getUnmatchedUsers)
 
 const {
@@ -278,6 +280,20 @@ const {
   { enabled: Boolean(options.value), initialData: { items: [], total: 0 } }
 )
 
+const { mutate, isLoading: isMatchApplicationLoading } = useMutation({
+  mutationFn: ({
+    userId,
+    applicationId,
+  }: {
+    userId: string
+    applicationId: string
+  }) => permitStore.matchApplication(userId, applicationId),
+  onSuccess: () => {
+    refetchApplications()
+    refetchUsers()
+  },
+})
+
 const headers = [
   {
     text: 'Name',
@@ -308,11 +324,14 @@ const applicationHeaders = [
 ]
 
 function handleMatch() {
-  // call api
+  window.console.log(selectedLegacyApplication.value[0])
 
-  // refetch both
-  window.console.log(selectedLegacyApplication.value)
-  window.console.log(selectedUser.value)
+  if (selectedUser.value[0].id && selectedLegacyApplication.value[0].id) {
+    mutate({
+      userId: selectedUser.value[0].id,
+      applicationId: selectedLegacyApplication.value[0].id,
+    })
+  }
 }
 
 function handleItemExpanded({

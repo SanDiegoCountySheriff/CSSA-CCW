@@ -453,19 +453,19 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    [Authorize(Policy ="AADUsers")]
+    [Authorize(Policy = "AADUsers")]
     [HttpPost("matchApplication")]
-    public async Task<IActionResult> MatchApplication(string userId, string applicationId)
+    public async Task<IActionResult> MatchApplication(MatchRequest data)
     {
         try
         {
-            var user = await _userProfileCosmosDbService.GetUser(userId, cancellationToken: default);
+            var user = await _userProfileCosmosDbService.GetUser(data.UserId, cancellationToken: default);
 
             user.IsPendingReview = false;
 
             await _userProfileCosmosDbService.UpdateUser(user, cancellationToken: default);
 
-            var application = await _applicationCosmosDbService.GetLegacyApplication(applicationId, cancellationToken: default);
+            var application = await _applicationCosmosDbService.GetLegacyApplication(data.ApplicationId, cancellationToken: default);
 
             if (application.Application.AppointmentDateTime > DateTimeOffset.UtcNow && application.Application.AppointmentDateTime != null)
             {
@@ -492,7 +492,19 @@ public class PermitApplicationController : ControllerBase
             }
 
             application.Application.UserEmail = user.Email;
-            application.UserId = userId;
+            application.UserId = data.UserId;
+            application.Application.UploadedDocuments = Array.Empty<UploadedDocument>();
+            application.Application.AdminUploadedDocuments = Array.Empty<UploadedDocument>();
+            application.Application.ModifyAddWeapons = Array.Empty<Weapon>();
+            application.Application.ModifyDeleteWeapons = Array.Empty<Weapon>();
+            application.History = Array.Empty<History>();
+            application.Application.Agreements = new Agreements()
+            {
+                ConditionsForIssuanceAgreed = false,
+                ConditionsForIssuanceAgreedDate = string.Empty,
+                FalseInfoAgreed = false,
+                FalseInfoAgreedDate= string.Empty,
+            };
 
             await _applicationCosmosDbService.UpdateLegacyApplication(application, cancellationToken: default);
 

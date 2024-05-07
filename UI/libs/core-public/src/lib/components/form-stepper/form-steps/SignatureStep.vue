@@ -229,11 +229,15 @@ const model = computed({
   set: (value: CompleteApplication) => emit('input', value),
 })
 
-const isMobile = computed(
-  () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
-)
+const isMobile = computed(() => {
+  window.console.log('from computed in signature', vuetify?.breakpoint.name)
+
+  return vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
+})
 
 onMounted(() => {
+  window.console.log('onMounted', vuetify?.breakpoint.name)
+
   for (let item of model.value.application.uploadedDocuments) {
     if (item.documentType === 'Signature') {
       state.previousSignature = true

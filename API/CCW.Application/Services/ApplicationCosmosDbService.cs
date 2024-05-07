@@ -739,7 +739,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         }
 
         var select = "SELECT a.Application.PersonalInfo.LastName as LastName, a.Application.PersonalInfo.FirstName as FirstName, a.Application.Status as Status, a.Application.AppointmentDateTime as AppointmentDateTime, a.Application.ApplicationType as ApplicationType, a.Application.OrderId as OrderId, a.Application.IdInfo.IdNumber as IdNumber, a.Application.DOB.BirthDate as BirthDate, a.Application.License.PermitNumber as PermitNumber, a.Application.UserEmail as Email, a.id FROM a ";
-        var where = "WHERE (a.Application.IsComplete = true OR a.Application.IsComplete = false) ";
+        var where = "WHERE (a.Application.IsComplete = true OR a.Application.IsComplete = false) AND a.userId = null ";
         var order = "";
         var limit = "OFFSET @offset LIMIT @itemsPerPage";
 
@@ -845,8 +845,8 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
     public async Task UpdateLegacyApplication(PermitApplication application, CancellationToken cancellationToken)
     {
-        await _container.CreateItemAsync(application, new PartitionKey(application.Id.ToString()), null, cancellationToken);
-
+        await _container.CreateItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
+        await _legacyContainer.UpsertItemAsync(application, new PartitionKey(application.Id.ToString()), null, cancellationToken);
         // TODO: historicals?
     }
 }
