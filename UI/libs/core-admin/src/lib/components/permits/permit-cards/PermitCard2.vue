@@ -370,13 +370,30 @@
               <v-col
                 v-if="
                   !permitStore.getPermitDetail.application
-                    .readyForInitialPayment && !isInitialPaymentComplete
+                    .readyForInitialPayment &&
+                  !isInitialPaymentComplete &&
+                  !isRenew
                 "
                 cols="12"
                 xl="6"
               >
                 <ReadyForPaymentDialog
-                  @on-ready-for-initial-payment="handleReadyForInitialPayment"
+                  @on-ready-for-payment="handleReadyForInitialPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForRenewalPayment &&
+                  !isRenewalPaymentComplete &&
+                  isRenew
+                "
+                cols="12"
+                xl="6"
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForRenewalPayment"
                 />
               </v-col>
 
@@ -1103,6 +1120,20 @@ const isInitialPaymentComplete = computed(() => {
   )
 })
 
+const isRenewalPaymentComplete = computed(() => {
+  return (
+    permitStore.permitDetail.paymentHistory.some(ph => {
+      return (
+        (ph.paymentType === 8 ||
+          ph.paymentType === 9 ||
+          ph.paymentType === 10 ||
+          ph.paymentType === 11) &&
+        ph.successful === true
+      )
+    }) || permitStore.permitDetail.application.paymentStatus === 1
+  )
+})
+
 const isRenew = computed(() => {
   const applicationType =
     permitStore.getPermitDetail.application.applicationType
@@ -1772,6 +1803,12 @@ async function handleSaveReschedule(reschedule) {
 function handleReadyForInitialPayment() {
   changed.value = 'Marked ready for initial payment'
   permitStore.getPermitDetail.application.readyForInitialPayment = true
+  updatePermitDetails()
+}
+
+function handleReadyForRenewalPayment() {
+  changed.value = 'Marked ready for renewal payment'
+  permitStore.getPermitDetail.application.readyForRenewalPayment = true
   updatePermitDetails()
 }
 </script>
