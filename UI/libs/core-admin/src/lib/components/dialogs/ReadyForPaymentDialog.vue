@@ -20,7 +20,7 @@
       <v-card-title>Ready for payment?</v-card-title>
 
       <v-card-text>
-        Would you like to mark this application as ready to payment?
+        Would you like to mark this application as ready for payment?
       </v-card-text>
 
       <v-card-actions>
