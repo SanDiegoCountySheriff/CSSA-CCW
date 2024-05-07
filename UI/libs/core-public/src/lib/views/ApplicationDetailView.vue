@@ -338,9 +338,7 @@
       >
         <v-card
           v-if="
-            (!isRenew ||
-              applicationStore.completeApplication.application
-                .readyForRenewalPayment) &&
+            !isRenew &&
             !isModification &&
             applicationStore.completeApplication.application.status !==
               ApplicationStatus['Permit Delivered']
@@ -430,12 +428,24 @@
 
               <v-col></v-col>
             </v-row>
-            <v-row
-              v-else-if="
-                applicationStore.completeApplication.application
-                  .readyForRenewalPayment
-              "
-            >
+          </v-card-text>
+        </v-card>
+        <v-card
+          v-else-if="
+            applicationStore.completeApplication.application
+              .readyForRenewalPayment
+          "
+          class="fill-height"
+          outlined
+        >
+          <v-card-title class="justify-center">
+            Ready for Renewal Payment
+          </v-card-title>
+
+          <v-divider></v-divider>
+
+          <v-card-title>
+            <v-row>
               <v-col>
                 <RenewalPaymentConfirmationDialog
                   :disabled="isMakeRenewalPaymentLoading"
@@ -445,7 +455,7 @@
 
               <v-col></v-col>
             </v-row>
-          </v-card-text>
+          </v-card-title>
         </v-card>
         <v-card
           v-else-if="
@@ -787,8 +797,8 @@
         <v-card-text>
           Are you sure you wish to begin the renewal process?<br />
           <br />
-          You will need to update some of your information, and go through the
-          payment process again.<br />
+          You will need to update some of your information, and pay the renewal
+          fee at a later date.<br />
           Your application will be changed to a renewal. This action cannot be
           undone.
         </v-card-text>

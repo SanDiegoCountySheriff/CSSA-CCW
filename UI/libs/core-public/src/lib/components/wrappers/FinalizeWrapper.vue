@@ -27,7 +27,10 @@
             {{ state.open ? 'mdi-menu-down' : 'mdi-menu-up' }}
           </v-icon>
         </v-card-title>
-        <v-card-subtitle class="text-center mr-3">
+        <v-card-subtitle
+          class="text-center mr-3"
+          v-if="!isRenew"
+        >
           {{ $t('Click to review your application') }}
         </v-card-subtitle>
         <v-card-text v-if="state.open">
@@ -196,6 +199,7 @@
 import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue'
 import AliasInfoSection from '@shared-ui/components/info-sections/AliasInfoSection.vue'
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
+import { ApplicationType } from '@shared-utils/types/defaultTypes'
 import ApplicationTypeInfoSection from '@shared-ui/components/info-sections/ApplicationTypeInfoSection.vue'
 import CharacterReferenceInfoSection from '@shared-ui/components/info-sections/CharacterReferenceInfoSection.vue'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
@@ -213,7 +217,7 @@ import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSec
 import WeaponInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRoute } from 'vue-router/composables'
-import { onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()
 
@@ -224,6 +228,17 @@ const state = reactive({
   isError: false,
   completeApplication: applicationStore.getCompleteApplication.application,
   open: false,
+})
+
+const isRenew = computed(() => {
+  const applicationType = state.completeApplication.applicationType
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment']
+  )
 })
 
 onMounted(() => {
@@ -242,6 +257,10 @@ onMounted(() => {
       })
   } else {
     state.isLoading = false
+  }
+
+  if (isRenew.value) {
+    state.open = true
   }
 })
 </script>
