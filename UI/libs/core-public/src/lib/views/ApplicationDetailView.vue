@@ -7,7 +7,9 @@
             isGetApplicationsLoading ||
             isUpdateApplicationLoading ||
             isRefundRequestLoading ||
-            isMakePaymentLoading
+            isAddHistoricalApplicationLoading ||
+            isMakePaymentLoading ||
+            isMakeRenewalPaymentLoading
           "
           outlined
         >
@@ -430,6 +432,33 @@
         </v-card>
         <v-card
           v-else-if="
+            applicationStore.completeApplication.application
+              .readyForRenewalPayment
+          "
+          class="fill-height"
+          outlined
+        >
+          <v-card-title class="justify-center">
+            Ready for Renewal Payment
+          </v-card-title>
+
+          <v-divider></v-divider>
+
+          <v-card-title>
+            <v-row>
+              <v-col>
+                <RenewalPaymentConfirmationDialog
+                  :disabled="isMakeRenewalPaymentLoading"
+                  @confirm="handleRenewalPayment"
+                />
+              </v-col>
+
+              <v-col></v-col>
+            </v-row>
+          </v-card-title>
+        </v-card>
+        <v-card
+          v-else-if="
             applicationStore.completeApplication.application.status ===
               ApplicationStatus['Permit Delivered'] ||
             isRenew ||
@@ -449,7 +478,7 @@
               color="primary"
               class="mr-2"
             >
-              mdi-calendar
+              mdi-clock-alert-outline
             </v-icon>
             {{
               applicationStore.completeApplication.application.license
@@ -767,8 +796,9 @@
 
         <v-card-text>
           Are you sure you wish to begin the renewal process?<br />
-          You will need to update some of your information, and go through the
-          payment process again.<br />
+          <br />
+          You will need to update some of your information, and pay the renewal
+          fee at a later date.<br />
           Your application will be changed to a renewal. This action cannot be
           undone.
         </v-card-text>
@@ -786,8 +816,18 @@
             @click="handleRenewApplication"
             color="primary"
             text
-            :loading="isRenewLoading"
-            :disabled="isRenewLoading"
+            :loading="
+              isRenewLoading ||
+              isGetApplicationsLoading ||
+              isUpdateApplicationLoading ||
+              isAddHistoricalApplicationLoading
+            "
+            :disabled="
+              isRenewLoading ||
+              isGetApplicationsLoading ||
+              isUpdateApplicationLoading ||
+              isAddHistoricalApplicationLoading
+            "
           >
             Begin Renewal
           </v-btn>
@@ -950,6 +990,7 @@ import InitialPaymentConfirmationDialog from '@core-public/components/dialogs/In
 import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue'
 import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue'
 import QualifyingQuestionsInfoSection from '@shared-ui/components/info-sections/QualifyingQuestionsInfoSection.vue'
+import RenewalPaymentConfirmationDialog from '@core-public/components/dialogs/RenewalPaymentConfirmationDialog.vue'
 import Routes from '@core-public/router/routes'
 import SignatureInfoSection from '@shared-ui/components/info-sections/SignatureInfoSection.vue'
 import SpouseAddressInfoSection from '@shared-ui/components/info-sections/SpouseAddressInfoSection.vue'
@@ -1511,6 +1552,14 @@ const updateMutation = useMutation({
 })
 
 const {
+  mutateAsync: addHistoricalApplicationPublic,
+  isLoading: isAddHistoricalApplicationLoading,
+} = useMutation({
+  mutationFn: (application: CompleteApplication) =>
+    applicationStore.addHistoricalApplicationPublic(application),
+})
+
+const {
   isLoading: isUpdateApplicationLoading,
   mutateAsync: updateApplication,
 } = useMutation({
@@ -1588,8 +1637,63 @@ const { mutate: makeInitialPayment, isLoading: isMakePaymentLoading } =
     },
   })
 
+const { mutate: makeRenewalPayment, isLoading: isMakeRenewalPaymentLoading } =
+  useMutation({
+    mutationFn: () => {
+      let cost: number
+      let paymentType: string
+
+      switch (
+        applicationStore.completeApplication.application.applicationType
+      ) {
+        case ApplicationType['Renew Standard']:
+          paymentType =
+            PaymentType['CCW Application Renewal Payment'].toString()
+          cost = brandStore.brand.cost.renew.standard
+          break
+
+        case ApplicationType['Renew Judicial']:
+          paymentType =
+            PaymentType['CCW Application Renewal Judicial Payment'].toString()
+          cost = brandStore.brand.cost.renew.judicial
+          break
+
+        case ApplicationType['Renew Reserve']:
+          paymentType =
+            PaymentType['CCW Application Renewal Reserve Payment'].toString()
+          cost = brandStore.brand.cost.renew.reserve
+          break
+
+        case ApplicationType['Renew Employment']:
+          paymentType =
+            PaymentType['CCW Application Renewal Employment Payment'].toString()
+          cost = brandStore.brand.cost.renew.employment
+          break
+
+        default:
+          paymentType =
+            PaymentType['CCW Application Renewal Payment'].toString()
+          cost = brandStore.brand.cost.renew.standard
+      }
+
+      return paymentStore.getPayment(
+        applicationStore.completeApplication.id,
+        cost,
+        applicationStore.completeApplication.application.orderId,
+        paymentType
+      )
+    },
+    onError: () => {
+      paymentSnackbar.value = true
+    },
+  })
+
 function handleInitialPayment() {
   makeInitialPayment()
+}
+
+function handleRenewalPayment() {
+  makeRenewalPayment()
 }
 
 async function handleConfirmWithdrawModification() {
@@ -1722,9 +1826,17 @@ function handleModifyApplication() {
   })
 }
 
-function handleRenewApplication() {
+async function handleRenewApplication() {
+  const historicalApplication: CompleteApplication = {
+    ...applicationStore.getCompleteApplication,
+  }
+
+  await addHistoricalApplicationPublic(historicalApplication)
+
   isRenewLoading.value = true
   const application = applicationStore.completeApplication.application
+
+  application.renewalNumber += 1
 
   if (!isRenew.value) {
     switch (application.applicationType) {
@@ -1749,6 +1861,25 @@ function handleRenewApplication() {
     }
   }
 
+  applicationStore.completeApplication.application.cost = {
+    new: {
+      standard: brandStore.brand.cost.new.standard,
+      judicial: brandStore.brand.cost.new.judicial,
+      reserve: brandStore.brand.cost.new.reserve,
+      employment: brandStore.brand.cost.new.employment,
+    },
+    renew: {
+      standard: brandStore.brand.cost.renew.standard,
+      judicial: brandStore.brand.cost.renew.judicial,
+      reserve: brandStore.brand.cost.renew.reserve,
+      employment: brandStore.brand.cost.renew.employment,
+    },
+    issuance: brandStore.brand.cost.issuance,
+    modify: brandStore.brand.cost.modify,
+    creditFee: brandStore.brand.cost.creditFee,
+    convenienceFee: brandStore.brand.cost.convenienceFee,
+  }
+
   applicationStore.completeApplication.application.isUpdatingApplication = false
 
   applicationStore.completeApplication.application.currentStep = 1
@@ -1757,6 +1888,10 @@ function handleRenewApplication() {
     ApplicationStatus.Incomplete
 
   applicationStore.completeApplication.application.paymentStatus = 0
+
+  applicationStore.completeApplication.application.appointmentStatus = 0
+
+  applicationStore.completeApplication.application.ciiNumber = ''
 
   resetDocuments()
   resetAgreements()
@@ -2076,4 +2211,3 @@ function resetAgreements() {
     null
 }
 </script>
-, PaymentType, PaymentType

@@ -156,6 +156,7 @@
     <v-container>
       <v-row justify="center">
         <v-alert
+          v-if="!isRenew"
           color="primary"
           type="info"
           outlined
@@ -184,6 +185,7 @@
 </template>
 
 <script setup lang="ts">
+import { ApplicationType } from '@shared-utils/types/defaultTypes'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import Endpoints from '@shared-ui/api/endpoints'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
@@ -270,6 +272,17 @@ const isConditionsForIssuanceAgreed = computed(() => {
     .conditionsForIssuanceAgreed
 })
 
+const isRenew = computed(() => {
+  const applicationType = model.value.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment']
+  )
+})
+
 const fileMutation = useMutation({
   mutationFn: handleFileUpload,
   onSuccess: () => {
@@ -314,16 +327,20 @@ function handleSave() {
 }
 
 async function handleFileUpload() {
+  const fileName = isRenew.value
+    ? `Signature_Renew_${applicationStore.completeApplication.application.renewalNumber}`
+    : 'Signature'
+
   const uploadDoc: UploadedDocType = {
     documentType: 'Signature',
-    name: 'Signature',
+    name: fileName,
     uploadedBy: applicationStore.completeApplication.application.userEmail,
     uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
   }
 
   await axios
     .post(
-      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=Signature`,
+      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${fileName}`,
       state.file
     )
     .then(() => {

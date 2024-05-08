@@ -195,6 +195,10 @@ const appStatus = [
     id: 19,
     value: 'Modification Approved',
   },
+  {
+    id: 20,
+    value: 'Renewal Approved',
+  },
 ]
 
 const appType = [

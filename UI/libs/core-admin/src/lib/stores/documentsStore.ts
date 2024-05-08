@@ -56,7 +56,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     if (res) {
       const uploadDoc: UploadedDocType = {
         documentType: target,
-        name: newFileName,
+        name: target,
         uploadedBy: authStore.getAuthState.userEmail,
         uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
       }

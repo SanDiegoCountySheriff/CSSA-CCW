@@ -354,6 +354,17 @@ const proofOfResidence2Rules = computed(() => {
   return [() => proofOfResidence2 || '2nd Proof of Residency is Required']
 })
 
+const isRenew = computed(() => {
+  const appType = model.value.application.applicationType
+
+  return (
+    appType === ApplicationType['Renew Standard'] ||
+    appType === ApplicationType['Renew Reserve'] ||
+    appType === ApplicationType['Renew Judicial'] ||
+    appType === ApplicationType['Renew Employment']
+  )
+})
+
 const loadingStates = reactive({
   DriverLicense: false,
   ProofResidency: false,
@@ -441,9 +452,16 @@ function handleMultiInput(event, target: string) {
     const formData = new FormData()
 
     formData.append('fileToUpload', file)
+
+    const name = isRenew.value
+      ? `${target}_Renew-${
+          applicationStore.completeApplication.application.renewalNumber
+        }_${startIndex.toString()}`
+      : `${target}_${startIndex.toString()}`
+
     const fileObject = {
       formData,
-      target: `${target}_${startIndex.toString()}`,
+      target: name,
     }
 
     state.files.push(fileObject)
@@ -454,7 +472,7 @@ function handleMultiInput(event, target: string) {
 }
 
 function getNextFileIndex(target: string): number {
-  const targetPrefix = `${completeApplication.personalInfo.lastName}_${completeApplication.personalInfo.firstName}_${target}_`
+  const targetPrefix = `${target}_`
 
   const indexes = completeApplication.uploadedDocuments
     .filter(doc => doc.name.startsWith(targetPrefix))
