@@ -287,7 +287,7 @@
                 <v-btn
                   color="primary"
                   block
-                  :disabled="isRenewalActive || isMakePaymentLoading"
+                  :disabled="!isRenewalActive || isMakePaymentLoading"
                   @click="handleShowRenewDialog"
                 >
                   Renew
@@ -459,10 +459,11 @@
         </v-card>
         <v-card
           v-else-if="
-            applicationStore.completeApplication.application.status ===
+            (applicationStore.completeApplication.application.status ===
               ApplicationStatus['Permit Delivered'] ||
-            isRenew ||
-            isModification
+              isRenew ||
+              isModification) &&
+            !isLicenseExpired
           "
           class="fill-height"
           outlined
@@ -516,8 +517,8 @@
                   dense
                   elevation="2"
                 >
-                  Please contact {{ brandStore.brand.agencyName }} Licensing
-                  Staff
+                  Your permit has expired past the renewal period. You must fill
+                  out a new application.
                 </v-alert>
               </v-col>
             </v-row>
@@ -931,7 +932,7 @@
       persistent
     >
       <v-card loading>
-        <v-card-title> Processing Initial Payment </v-card-title>
+        <v-card-title> Processing Payment </v-card-title>
 
         <v-card-text>
           Please do not close the browser or click the back button.
@@ -1447,30 +1448,36 @@ const getApplicationStatusText = computed(() => {
 
 const isRenewalActive = computed(() => {
   const application = applicationStore.completeApplication.application
-  const license = application.license
-  const expirationDate = license.expirationDate
-    ? new Date(license.expirationDate).setHours(23, 59, 59, 999)
-    : null
-  const expiredApplicationRenewalPeriod =
-    brandStore.brand.expiredApplicationRenewalPeriod
-  const daysBeforeActiveRenewal = brandStore.brand.daysBeforeActiveRenewal
+  const expirationDateString = application.license?.expirationDate
+  const currentDateTime = new Date()
+
+  if (!expirationDateString) return false
+
+  const expirationDate = new Date(expirationDateString)
+
+  expirationDate.setHours(23, 59, 59, 999)
+
+  const isActive = application.status === ApplicationStatus['Permit Delivered']
+
+  const expiredRenewalPeriod = brandStore.brand.expiredApplicationRenewalPeriod
+  const daysBeforeRenewal = brandStore.brand.daysBeforeActiveRenewal
+
+  const renewalActiveDate = new Date(
+    currentDateTime.getTime() - daysBeforeRenewal * 86400000
+  )
+
+  renewalActiveDate.setHours(0, 0, 0, 0)
+
+  const renewalDisableDate = new Date(
+    expirationDate.getTime() + expiredRenewalPeriod * 86400000
+  )
+
+  renewalDisableDate.setHours(23, 59, 59, 999)
 
   return (
-    application.status !== ApplicationStatus['Permit Delivered'] ||
-    (expirationDate &&
-      (new Date(expirationDate) <
-        new Date(
-          new Date(
-            new Date().getTime() -
-              expiredApplicationRenewalPeriod * 24 * 60 * 60 * 1000
-          ).setHours(23, 59, 59, 999)
-        ) ||
-        new Date(expirationDate) >
-          new Date(
-            new Date().getTime() +
-              (daysBeforeActiveRenewal + 1) * 24 * 60 * 60 * 1000
-          ))) ||
-    isGetApplicationsLoading
+    isActive &&
+    currentDateTime >= renewalActiveDate &&
+    currentDateTime <= renewalDisableDate
   )
 })
 
@@ -1889,7 +1896,7 @@ async function handleRenewApplication() {
 
   applicationStore.completeApplication.application.paymentStatus = 0
 
-  applicationStore.completeApplication.application.appointmentStatus = 0
+  applicationStore.completeApplication.application.appointmentStatus = 1
 
   applicationStore.completeApplication.application.ciiNumber = ''
 
