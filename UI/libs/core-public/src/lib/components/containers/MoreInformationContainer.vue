@@ -2,6 +2,34 @@
 <template>
   <v-container>
     <v-card>
+      <v-card-title>Privacy Policy</v-card-title>
+
+      <v-card-text>
+        We respect and are committed to protecting your privacy. We may collect
+        personally identifiable information when you visit our site. We also
+        automatically receive and record information on our server logs from
+        your browser including your IP address, cookie information and the
+        page(s) you visited. We will not sell your personally identifiable
+        information to anyone.
+      </v-card-text>
+
+      <v-card-title>Security Policy</v-card-title>
+
+      <v-card-text>
+        Your payment and personal information is always safe. Our Secure Sockets
+        Layer (SSL) software is the industry standard and among the best
+        software available today for secure commerce transactions. It encrypts
+        all of your personal information, including credit card number, name,
+        and address, so that it cannot be read over the internet.
+      </v-card-text>
+
+      <v-card-title>Refund Policy</v-card-title>
+
+      <v-card-text>
+        All refunds will be provided as a credit to the credit card used at the
+        time of purchase within five (5) business days.
+      </v-card-text>
+
       <v-card-title>
         {{ $t('Concealed Carry Weapon License Requirements:') }}
       </v-card-title>
