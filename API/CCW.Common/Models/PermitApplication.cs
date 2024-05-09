@@ -12,4 +12,5 @@ public class PermitApplication
     public List<PaymentHistory> PaymentHistory { get; set; }
     public History[] History { get; set; }
     public DateTimeOffset? HistoricalDate { get; set; }
+    public bool? IsMatchUpdated { get; set; }
 }

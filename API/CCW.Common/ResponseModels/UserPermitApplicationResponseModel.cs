@@ -13,4 +13,5 @@ public class UserPermitApplicationResponseModel
     public string UserId { get; set; }
     [JsonProperty("paymentHistory")]
     public PaymentHistory[] PaymentHistory { get; set; }
+    public bool? IsMatchUpdated { get; set; }
 }

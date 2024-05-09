@@ -149,12 +149,16 @@
         :is-final-step="true"
         @continue="handleContinue"
         @save="handleSave"
+        @save-match="handleSaveMatch"
         v-on="$listeners"
       />
     </v-container>
 
     <v-container>
-      <v-row justify="center">
+      <v-row
+        v-if="value.isMatchUpdated !== false"
+        justify="center"
+      >
         <v-alert
           color="primary"
           type="info"
@@ -222,6 +226,7 @@ const state = reactive({
   previousSignature: false,
   submitted: false,
   uploading: false,
+  isMatching: false,
 })
 
 const model = computed({
@@ -230,14 +235,10 @@ const model = computed({
 })
 
 const isMobile = computed(() => {
-  window.console.log('from computed in signature', vuetify?.breakpoint.name)
-
   return vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
 })
 
 onMounted(() => {
-  window.console.log('onMounted', vuetify?.breakpoint.name)
-
   for (let item of model.value.application.uploadedDocuments) {
     if (item.documentType === 'Signature') {
       state.previousSignature = true
@@ -279,13 +280,18 @@ const fileMutation = useMutation({
   onSuccess: () => {
     model.value.application.currentStep = 10
     applicationStore.updateApplication()
-    router.push({
-      path: Routes.FINALIZE_ROUTE_PATH,
-      query: {
-        applicationId: model.value.id,
-        isComplete: model.value.application.isComplete.toString(),
-      },
-    })
+
+    if (!state.isMatching) {
+      router.push({
+        path: Routes.FINALIZE_ROUTE_PATH,
+        query: {
+          applicationId: model.value.id,
+          isComplete: model.value.application.isComplete.toString(),
+        },
+      })
+    } else if (state.isMatching) {
+      router.push('/')
+    }
   },
   onError: () => {
     state.submitted = false
@@ -298,7 +304,7 @@ async function handleContinue() {
   const image = document.getElementById('signature')
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
+  // @ts-ignore
   image.toBlob(blob => {
     const file = new File([blob], 'signature.png', { type: 'image/png' })
     const form = new FormData()
@@ -311,6 +317,27 @@ async function handleContinue() {
   })
 
   emit('handle-continue')
+}
+
+async function handleSaveMatch() {
+  state.submitted = true
+  state.uploading = true
+  state.isMatching = true
+  applicationStore.completeApplication.isMatchUpdated = true
+  const image = document.getElementById('signature')
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  image.toBlob(blob => {
+    const file = new File([blob], 'signature.png', { type: 'image/png' })
+    const form = new FormData()
+
+    form.append('fileToUpload', file)
+
+    state.file = form
+
+    fileMutation.mutate()
+  })
 }
 
 function handleSave() {

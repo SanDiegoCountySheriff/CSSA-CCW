@@ -193,15 +193,16 @@ public class PermitApplicationController : ControllerBase
 
         try
         {
-            var responseModels = new List<UserPermitApplicationResponseModel>();
             var result = await _applicationCosmosDbService.GetAllApplicationsAsync(userId, userEmail, cancellationToken: default);
 
             if (result.Any())
             {
-                responseModels = _mapper.Map<List<UserPermitApplicationResponseModel>>(result);
+                var responseModels = _mapper.Map<List<UserPermitApplicationResponseModel>>(result);
+
+                return Ok(responseModels);
             }
 
-            return Ok(responseModels);
+            return NotFound("Application was not found");
         }
         catch (Exception e)
         {
@@ -364,7 +365,7 @@ public class PermitApplicationController : ControllerBase
             {
                 return NotFound("Permit application cannot be found or application already submitted.");
             }
-
+            
             if (application.Application.PersonalInfo.Ssn.ToLower().Contains("xxx"))
             {
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
@@ -503,8 +504,10 @@ public class PermitApplicationController : ControllerBase
                 ConditionsForIssuanceAgreed = false,
                 ConditionsForIssuanceAgreedDate = string.Empty,
                 FalseInfoAgreed = false,
-                FalseInfoAgreedDate= string.Empty,
+                FalseInfoAgreedDate = string.Empty,
             };
+            application.Application.ReferenceNotes = string.Empty;
+            application.IsMatchUpdated = false;
 
             await _applicationCosmosDbService.UpdateLegacyApplication(application, cancellationToken: default);
 

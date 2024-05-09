@@ -679,6 +679,7 @@ export type CompleteApplication = {
   paymentHistory: Array<PaymentHistoryType>
   userId: string
   id: string
+  isMatchUpdated: boolean | null
 }
 
 export type ThemeConfigType = {

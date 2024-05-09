@@ -188,7 +188,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     public async Task<IEnumerable<PermitApplication>> GetAllApplicationsAsync(string userId, string userEmail,
         CancellationToken cancellationToken)
     {
-        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory FROM applications a " +
+        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.IsMatchUpdated FROM applications a " +
                           "WHERE a.userId = @userId and a.Application.UserEmail = @userEmail " +
                           "Order by a.Application.OrderId DESC";
 

@@ -20,7 +20,9 @@ export const phoneRuleSet = [
 ]
 
 export const notRequiredPhoneRuleSet = [
-  v => v.length === 14 || v === '' || i18n.t('Must be 10 numbers in length'),
+  v =>
+    (Boolean(v) && (v.length === 14 || v === '')) ||
+    i18n.t('Must be 10 numbers in length'),
   v =>
     v === '' ||
     Boolean(/^\(\d{3}\)\s\d{3}-\d{4}$/.test(v)) ||

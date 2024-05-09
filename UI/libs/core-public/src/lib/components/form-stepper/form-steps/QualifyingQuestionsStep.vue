@@ -411,7 +411,7 @@
               outlined
               :color="
                 model.application.qualifyingQuestions.questionThree.explanation
-                  .length >
+                  ?.length >
                 config.appConfig.questions.three - 20
                   ? 'warning'
                   : ''
@@ -436,10 +436,10 @@
               type="warning"
               v-if="
                 model.application.qualifyingQuestions.questionThree.explanation
-                  .length >
+                  ?.length >
                   config.appConfig.questions.three - 20 ||
                 model.application.qualifyingQuestions.questionThree
-                  .renewalExplanation.length > config.appConfig.questions.three
+                  .renewalExplanation?.length > config.appConfig.questions.three
               "
             >
               {{
@@ -537,7 +537,7 @@
               outlined
               :color="
                 model.application.qualifyingQuestions.questionFour.explanation
-                  .length >
+                  ?.length >
                 config.appConfig.questions.four - 20
                   ? 'warning'
                   : ''
@@ -563,10 +563,10 @@
               type="warning"
               v-if="
                 model.application.qualifyingQuestions.questionFour.explanation
-                  .length >
+                  ?.length >
                   config.appConfig.questions.four - 20 ||
                 model.application.qualifyingQuestions.questionFour
-                  .renewalExplanation.length >
+                  .renewalExplanation?.length >
                   config.appConfig.questions.four - 20
               "
             >
@@ -666,7 +666,7 @@
               :maxlength="config.appConfig.questions.five"
               :color="
                 model.application.qualifyingQuestions.questionFive.explanation
-                  .length >
+                  ?.length >
                 config.appConfig.questions.five - 20
                   ? 'warning'
                   : ''
@@ -690,10 +690,10 @@
               type="warning"
               v-if="
                 model.application.qualifyingQuestions.questionFive.explanation
-                  .length >
+                  ?.length >
                   config.appConfig.questions.five - 20 ||
                 model.application.qualifyingQuestions.questionFive
-                  .renewalExplanation.length >
+                  .renewalExplanation?.length >
                   config.appConfig.questions.five - 20
               "
             >
@@ -792,7 +792,7 @@
               outlined
               :color="
                 model.application.qualifyingQuestions.questionSix.explanation
-                  .length >
+                  ?.length >
                 config.appConfig.questions.six - 20
                   ? 'warning'
                   : ''
@@ -817,10 +817,10 @@
               type="warning"
               v-if="
                 model.application.qualifyingQuestions.questionSix.explanation
-                  .length >
+                  ?.length >
                   config.appConfig.questions.six - 20 ||
                 model.application.qualifyingQuestions.questionSix
-                  .renewalExplanation.length > config.appConfig.questions.six
+                  .renewalExplanation?.length > config.appConfig.questions.six
               "
             >
               {{
@@ -917,7 +917,7 @@
               outlined
               :color="
                 model.application.qualifyingQuestions.questionSeven.explanation
-                  .length >
+                  ?.length >
                 config.appConfig.questions.seven - 20
                   ? 'warning'
                   : ''
@@ -943,10 +943,10 @@
               type="warning"
               v-if="
                 model.application.qualifyingQuestions.questionSeven.explanation
-                  .length >
+                  ?.length >
                   config.appConfig.questions.seven - 20 ||
                 model.application.qualifyingQuestions.questionSeven
-                  .renewalExplanation.length >
+                  .renewalExplanation?.length >
                   config.appConfig.questions.seven - 20
               "
             >
@@ -1045,7 +1045,7 @@
               outlined
               :color="
                 model.application.qualifyingQuestions.questionEight.explanation
-                  .length >
+                  ?.length >
                 config.appConfig.questions.eight - 20
                   ? 'warning'
                   : ''
@@ -1070,10 +1070,10 @@
               type="warning"
               v-if="
                 model.application.qualifyingQuestions.questionEight.explanation
-                  .length >
+                  ?.length >
                   config.appConfig.questions.eight - 20 ||
                 model.application.qualifyingQuestions.questionEight
-                  .renewalExplanation.length >
+                  .renewalExplanation?.length >
                   config.appConfig.questions.eight - 20
               "
             >
@@ -1172,7 +1172,7 @@
               outlined
               :color="
                 model.application.qualifyingQuestions.questionNine.explanation
-                  .length >
+                  ?.length >
                 config.appConfig.questions.nine - 2
                   ? 'warning'
                   : ''
@@ -1202,10 +1202,10 @@
               type="warning"
               v-if="
                 model.application.qualifyingQuestions.questionNine.explanation
-                  .length >
+                  ?.length >
                   config.appConfig.questions.nine - 20 ||
                 model.application.qualifyingQuestions.questionNine
-                  .renewalExplanation.length > config.appConfig.questions.nine
+                  .renewalExplanation?.length > config.appConfig.questions.nine
               "
             >
               {{
@@ -1303,7 +1303,7 @@
               outlined
               :color="
                 model.application.qualifyingQuestions.questionTen.explanation
-                  .length >
+                  ?.length >
                 config.appConfig.questions.ten - 20
                   ? 'warning'
                   : ''
@@ -1321,10 +1321,10 @@
                 type="warning"
                 v-if="
                   model.application.qualifyingQuestions.questionTen.explanation
-                    .length >
+                    ?.length >
                     config.appConfig.questions.ten - 20 ||
                   model.application.qualifyingQuestions.questionTen
-                    .renewalExplanation.length >
+                    .renewalExplanation?.length >
                     config.appConfig.questions.ten - 20
                 "
               >
@@ -1431,7 +1431,7 @@
               outlined
               :color="
                 model.application.qualifyingQuestions.questionEleven.explanation
-                  .length >
+                  ?.length >
                 config.appConfig.questions.eleven - 20
                   ? 'warning'
                   : ''
@@ -1456,10 +1456,10 @@
               type="warning"
               v-if="
                 model.application.qualifyingQuestions.questionEleven.explanation
-                  .length >
+                  ?.length >
                   config.appConfig.questions.eleven - 20 ||
                 model.application.qualifyingQuestions.questionEleven
-                  .renewalExplanation.length >
+                  .renewalExplanation?.length >
                   config.appConfig.questions.eleven - 20
               "
             >
@@ -1526,7 +1526,7 @@
           <v-row
             class="mx-5"
             v-for="index of model.application.qualifyingQuestions.questionTwelve
-              .trafficViolations.length"
+              .trafficViolations?.length"
             :key="index"
           >
             <v-col
@@ -1649,7 +1649,7 @@
               color="primary"
               :disabled="
                 model.application.qualifyingQuestions.questionTwelve
-                  .trafficViolations.length < 2
+                  .trafficViolations?.length < 2
               "
             >
               <v-icon left>mdi-minus</v-icon>Remove
@@ -1670,8 +1670,10 @@
                   .trafficViolationsExplanation
               "
               color="primary"
+              outlined
               label="Traffic Violations Explanation"
-              hint="Please transcribe these violations into the form above."
+              hint="Please transcribe these violations into the form above.  Click 'Add' to add a traffic violation."
+              persistent-hint
             >
             </v-textarea>
           </v-col>
@@ -1764,7 +1766,7 @@
               outlined
               :color="
                 model.application.qualifyingQuestions.questionThirteen
-                  .explanation.length >
+                  .explanation?.length >
                 config.appConfig.questions.thirteen - 20
                   ? 'warning'
                   : ''
@@ -1790,10 +1792,10 @@
               type="warning"
               v-if="
                 model.application.qualifyingQuestions.questionThirteen
-                  .explanation.length >
+                  .explanation?.length >
                   config.appConfig.questions.thirteen - 20 ||
                 model.application.qualifyingQuestions.questionThirteen
-                  .renewalExplanation.length >
+                  .renewalExplanation?.length >
                   config.appConfig.questions.thirteen - 20
               "
             >
@@ -1893,7 +1895,7 @@
               outlined
               :color="
                 model.application.qualifyingQuestions.questionFourteen
-                  .explanation.length >
+                  .explanation?.length >
                 config.appConfig.questions.fourteen - 20
                   ? 'warning'
                   : ''
@@ -1919,10 +1921,10 @@
               type="warning"
               v-if="
                 model.application.qualifyingQuestions.questionFourteen
-                  .explanation.length >
+                  .explanation?.length >
                   config.appConfig.questions.fourteen - 20 ||
                 model.application.qualifyingQuestions.questionFourteen
-                  .renewalExplanation.length >
+                  .renewalExplanation?.length >
                   config.appConfig.questions.fourteen - 20
               "
             >
@@ -2023,7 +2025,7 @@
               outlined
               :color="
                 model.application.qualifyingQuestions.questionFifteen
-                  .explanation.length >
+                  .explanation?.length >
                 config.appConfig.questions.fifteen - 20
                   ? 'warning'
                   : ''
@@ -2053,10 +2055,10 @@
               type="warning"
               v-if="
                 model.application.qualifyingQuestions.questionFifteen
-                  .explanation.length >
+                  .explanation?.length >
                   config.appConfig.questions.fifteen - 20 ||
                 model.application.qualifyingQuestions.questionFifteen
-                  .renewalExplanation.length >
+                  .renewalExplanation?.length >
                   config.appConfig.questions.fifteen - 20
               "
             >
@@ -2156,7 +2158,7 @@
               outlined
               :color="
                 model.application.qualifyingQuestions.questionSixteen
-                  .explanation.length >
+                  .explanation?.length >
                 config.appConfig.questions.sixteen - 20
                   ? 'warning'
                   : ''
@@ -2182,10 +2184,10 @@
               type="warning"
               v-if="
                 model.application.qualifyingQuestions.questionSixteen
-                  .explanation.length >
+                  .explanation?.length >
                   config.appConfig.questions.sixteen - 20 ||
                 model.application.qualifyingQuestions.questionSixteen
-                  .renewalExplanation.length >
+                  .renewalExplanation?.length >
                   config.appConfig.questions.sixteen - 20
               "
             >
@@ -2288,7 +2290,7 @@
               outlined
               :color="
                 model.application.qualifyingQuestions.questionSeventeen
-                  .explanation.length >
+                  .explanation?.length >
                 config.appConfig.questions.seventeen - 20
                   ? 'warning'
                   : ''
@@ -2314,10 +2316,10 @@
               type="warning"
               v-if="
                 model.application.qualifyingQuestions.questionSeventeen
-                  .explanation.length >
+                  .explanation?.length >
                   config.appConfig.questions.seventeen - 20 ||
                 model.application.qualifyingQuestions.questionSeventeen
-                  .renewalExplanation.length >
+                  .renewalExplanation?.length >
                   config.appConfig.questions.seventeen - 20
               "
             >
@@ -2417,7 +2419,7 @@
               outlined
               :color="
                 model.application.qualifyingQuestions.questionEighteen
-                  .explanation.length >
+                  .explanation?.length >
                 config.appConfig.questions.eighteen - 20
                   ? 'warning'
                   : ''
@@ -2443,10 +2445,10 @@
               type="warning"
               v-if="
                 model.application.qualifyingQuestions.questionEighteen
-                  .explanation.length >
+                  .explanation?.length >
                   config.appConfig.questions.eighteen - 20 ||
                 model.application.qualifyingQuestions.questionEighteen
-                  .renewalExplanation.length >
+                  .renewalExplanation?.length >
                   config.appConfig.questions.eighteen - 20
               "
             >
@@ -2546,7 +2548,7 @@
               outlined
               :color="
                 model.application.qualifyingQuestions.questionNineteen
-                  .explanation.length >
+                  .explanation?.length >
                 config.appConfig.questions.nineteen - 20
                   ? 'warning'
                   : ''
@@ -2572,10 +2574,10 @@
               type="warning"
               v-if="
                 model.application.qualifyingQuestions.questionNineteen
-                  .explanation.length >
+                  .explanation?.length >
                   config.appConfig.questions.nineteen - 20 ||
                 model.application.qualifyingQuestions.questionNineteen
-                  .renewalExplanation.length >
+                  .renewalExplanation?.length >
                   config.appConfig.questions.nineteen - 20
               "
             >
@@ -2674,7 +2676,7 @@
               outlined
               :color="
                 model.application.qualifyingQuestions.questionTwenty.explanation
-                  .length >
+                  ?.length >
                 config.appConfig.questions.twenty - 20
                   ? 'warning'
                   : ''
@@ -2699,10 +2701,10 @@
               type="warning"
               v-if="
                 model.application.qualifyingQuestions.questionTwenty.explanation
-                  .length >
+                  ?.length >
                   config.appConfig.questions.twenty - 20 ||
                 model.application.qualifyingQuestions.questionTwenty
-                  .renewalExplanation.length >
+                  .renewalExplanation?.length >
                   config.appConfig.questions.twenty - 20
               "
             >
@@ -2804,7 +2806,7 @@
               outlined
               :color="
                 model.application.qualifyingQuestions.questionTwentyOne
-                  .explanation.length >
+                  .explanation?.length >
                 config.appConfig.questions.twentyone - 20
                   ? 'warning'
                   : ''
@@ -2830,10 +2832,10 @@
               type="warning"
               v-if="
                 model.application.qualifyingQuestions.questionTwentyOne
-                  .explanation.length >
+                  .explanation?.length >
                   config.appConfig.questions.twentyone - 20 ||
                 model.application.qualifyingQuestions.questionTwentyOne
-                  .renewalExplanation.length >
+                  .renewalExplanation?.length >
                   config.appConfig.questions.twentyone - 20
               "
             >

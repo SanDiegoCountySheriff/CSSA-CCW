@@ -25,11 +25,7 @@
         </v-btn>
 
         <v-btn
-          v-if="
-            !props.isFinalStep ||
-            !applicationStore.completeApplication.application
-              .isUpdatingApplication
-          "
+          v-if="!props.isFinalStep"
           :disabled="!props.valid || props.loading || !props.allStepsComplete"
           :loading="props.loading"
           @click="handleContinue"
@@ -42,6 +38,19 @@
           >
             mdi-chevron-right
           </v-icon>
+        </v-btn>
+
+        <v-btn
+          v-if="
+            applicationStore.completeApplication.isMatchUpdated === false &&
+            props.isFinalStep
+          "
+          :disabled="!allStepsComplete"
+          @click="handleSaveMatched"
+          color="primary"
+        >
+          <v-icon left>mdi-content-save</v-icon>
+          {{ $t('Save') }}
         </v-btn>
       </v-col>
 
@@ -107,7 +116,7 @@ const props = withDefaults(defineProps<FormButtonContainerProps>(), {
   isModification: false,
 })
 
-const emit = defineEmits(['continue', 'save', 'previous-step'])
+const emit = defineEmits(['continue', 'save', 'previous-step', 'save-match'])
 
 const getButtonText = computed(() => {
   if (props.isModification && props.isFinalStep) {
@@ -126,11 +135,15 @@ function handlePreviousStep() {
 }
 
 function handleSave() {
-  emit('save')
-
   if (applicationStore.completeApplication.application.isUpdatingApplication) {
     applicationStore.completeApplication.application.isUpdatingApplication =
       false
   }
+
+  emit('save')
+}
+
+function handleSaveMatched() {
+  emit('save-match')
 }
 </script>

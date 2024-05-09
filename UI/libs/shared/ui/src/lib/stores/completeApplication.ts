@@ -24,6 +24,7 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     completeApplication.history = payload.history
     completeApplication.id = payload.id
     completeApplication.paymentHistory = payload.paymentHistory
+    completeApplication.isMatchUpdated = payload.isMatchUpdated
   }
 
   function setAllUserApplications(payload: Array<CompleteApplication>) {
