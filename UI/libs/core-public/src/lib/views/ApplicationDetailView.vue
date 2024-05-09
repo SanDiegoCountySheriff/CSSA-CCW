@@ -1463,7 +1463,7 @@ const isRenewalActive = computed(() => {
   const daysBeforeRenewal = brandStore.brand.daysBeforeActiveRenewal
 
   const renewalActiveDate = new Date(
-    currentDateTime.getTime() - daysBeforeRenewal * 86400000
+    expirationDate.getTime() - daysBeforeRenewal * 86400000
   )
 
   renewalActiveDate.setHours(0, 0, 0, 0)
