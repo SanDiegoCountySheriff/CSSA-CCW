@@ -144,7 +144,7 @@
 
       <FormButtonContainer
         :valid="!isSignaturePadEmpty"
-        :loading="state.uploading"
+        :loading="state.uploading || isLoading"
         :all-steps-complete="props.allStepsComplete"
         :is-final-step="true"
         @continue="handleContinue"
@@ -178,7 +178,7 @@
         <FormButtonContainer
           v-if="state.previousSignature"
           :valid="true"
-          :submitting="state.submitted"
+          :loading="state.uploading || isLoading"
           :all-steps-complete="props.allStepsComplete"
           :is-final-step="true"
           @continue="handleContinueWithoutUpload"
@@ -278,13 +278,12 @@ const isConditionsForIssuanceAgreed = computed(() => {
     .conditionsForIssuanceAgreed
 })
 
-const fileMutation = useMutation({
+const { mutate: fileMutation, isLoading } = useMutation({
   mutationFn: handleFileUpload,
   onSuccess: () => {
-    model.value.application.currentStep = 10
-    applicationStore.updateApplication()
-
     if (!state.isMatching) {
+      model.value.application.currentStep = 10
+      applicationStore.updateApplication()
       router.push({
         path: Routes.FINALIZE_ROUTE_PATH,
         query: {
@@ -293,6 +292,7 @@ const fileMutation = useMutation({
         },
       })
     } else if (state.isMatching) {
+      emit('handle-save')
       router.push('/')
     }
   },
@@ -316,7 +316,7 @@ async function handleContinue() {
 
     state.file = form
 
-    fileMutation.mutate()
+    fileMutation()
   })
 
   emit('handle-continue')
@@ -339,7 +339,7 @@ async function handleSaveMatch() {
 
     state.file = form
 
-    fileMutation.mutate()
+    fileMutation()
   })
 }
 
@@ -386,7 +386,10 @@ function setAgreedDate(agreedDateKey) {
   if (
     applicationStore.completeApplication.application.agreements[
       agreedDateKey
-    ] == null
+    ] === null ||
+    applicationStore.completeApplication.application.agreements[
+      agreedDateKey
+    ] === ''
   ) {
     applicationStore.completeApplication.application.agreements[agreedDateKey] =
       new Date().toLocaleString()

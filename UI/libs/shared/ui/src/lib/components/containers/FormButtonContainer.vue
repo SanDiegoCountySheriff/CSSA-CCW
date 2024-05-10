@@ -28,7 +28,8 @@
           v-if="
             props.isFinalStep &&
             applicationStore.completeApplication.application
-              .isUpdatingApplication
+              .isUpdatingApplication &&
+            applicationStore.completeApplication.isMatchUpdated !== false
           "
           color="primary"
           @click="handleSave"

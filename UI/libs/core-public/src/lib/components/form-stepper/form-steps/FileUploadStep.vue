@@ -233,7 +233,10 @@ import DocumentInfoSection from '@shared-ui/components/info-sections/DocumentInf
 import Endpoints from '@shared-ui/api/endpoints'
 import FileUploadContainer from '@core-public/components/containers/FileUploadContainer.vue'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
-import { UploadedDocType } from '@shared-utils/types/defaultTypes'
+import {
+  ApplicationStatus,
+  UploadedDocType,
+} from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
@@ -335,7 +338,12 @@ const driverLicenseRules = computed(() => {
     obj => obj.documentType === 'DriverLicense'
   )
 
-  return [() => documentDriverLicense || "Driver's License is Required"]
+  return [
+    () =>
+      documentDriverLicense ||
+      completeApplication.status === ApplicationStatus['Permit Delivered'] ||
+      "Driver's License is Required",
+  ]
 })
 
 const proofOfResidenceRules = computed(() => {
@@ -343,7 +351,12 @@ const proofOfResidenceRules = computed(() => {
     return obj.documentType === 'ProofResidency'
   })
 
-  return [() => proofOfResidence || 'Proof of Residency is Required']
+  return [
+    () =>
+      proofOfResidence ||
+      completeApplication.status === ApplicationStatus['Permit Delivered'] ||
+      'Proof of Residency is Required',
+  ]
 })
 
 const proofOfResidence2Rules = computed(() => {
@@ -351,7 +364,12 @@ const proofOfResidence2Rules = computed(() => {
     return obj.documentType === 'ProofResidency2'
   })
 
-  return [() => proofOfResidence2 || '2nd Proof of Residency is Required']
+  return [
+    () =>
+      proofOfResidence2 ||
+      completeApplication.status === ApplicationStatus['Permit Delivered'] ||
+      '2nd Proof of Residency is Required',
+  ]
 })
 
 const loadingStates = reactive({

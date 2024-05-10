@@ -645,15 +645,15 @@
         />
       </v-card-text>
 
-      <v-card-title v-if="!isMobile && !isRenew">
+      <v-card-title v-if="!isMobile && !showCharacterReferences">
         {{ $t('Character References') }}
       </v-card-title>
 
-      <v-card-subtitle v-if="isMobile && !isRenew">
+      <v-card-subtitle v-if="isMobile && !showCharacterReferences">
         {{ $t('Character References') }}
       </v-card-subtitle>
 
-      <v-card-text v-if="!isRenew">
+      <v-card-text v-if="!showCharacterReferences">
         <v-alert
           outlined
           type="info"
@@ -754,7 +754,10 @@
 <script setup lang="ts">
 import AliasDialog from '@shared-ui/components/dialogs/AliasDialog.vue'
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue'
-import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import {
+  ApplicationStatus,
+  CompleteApplication,
+} from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { TranslateResult } from 'vue-i18n'
 import { i18n } from '@core-public/plugins'
@@ -971,6 +974,19 @@ const isRenew = computed(() => {
     applicationType === ApplicationType['Renew Reserve'] ||
     applicationType === ApplicationType['Renew Judicial'] ||
     applicationType === ApplicationType['Renew Employment']
+  )
+})
+
+const showCharacterReferences = computed(() => {
+  const applicationType = model.value.application.applicationType
+  const applicationStatus = model.value.application.status
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment'] ||
+    applicationStatus === ApplicationStatus['Permit Delivered']
   )
 })
 

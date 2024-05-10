@@ -1,5 +1,5 @@
 <template>
-  <v-container v-if="isFetching">
+  <v-container v-if="isFetching || queryClient.isMutating()">
     <Loader />
   </v-container>
 

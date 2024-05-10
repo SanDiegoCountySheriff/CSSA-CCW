@@ -212,7 +212,9 @@
 
           <v-divider></v-divider>
 
-          <v-card-text>
+          <v-card-text
+            v-if="applicationStore.completeApplication.isMatchUpdated !== false"
+          >
             <v-row>
               <v-col
                 cols="12"
@@ -326,6 +328,16 @@
                 </v-btn>
               </v-col>
             </v-row>
+          </v-card-text>
+
+          <v-card-text v-else>
+            <v-btn
+              @click="handleUpdateApplication"
+              color="primary"
+              block
+            >
+              Verify Information
+            </v-btn>
           </v-card-text>
         </v-card>
       </v-col>
@@ -1684,32 +1696,31 @@ function handleContinueApplication() {
 }
 
 function handleUpdateApplication() {
-  const appointmentDateTime =
-    applicationStore.completeApplication.application.appointmentDateTime
-  const appointmentDate = appointmentDateTime
-    ? new Date(Date.parse(appointmentDateTime))
-    : null
-  const currentDate = new Date()
+  // const appointmentDateTime =
+  //   applicationStore.completeApplication.application.appointmentDateTime
+  // const appointmentDate = appointmentDateTime
+  //   ? new Date(Date.parse(appointmentDateTime))
+  //   : null
+  // const currentDate = new Date()
 
-  if (
-    appointmentDate &&
-    currentDate < appointmentDate &&
-    applicationStore.completeApplication.application.appointmentStatus ===
-      AppointmentStatus.Scheduled
-  ) {
-    router.push({
-      path: Routes.FORM_ROUTE_PATH,
-      query: {
-        applicationId: state.application[0].id,
-        isComplete: state.application[0].application.isComplete.toString(),
-      },
-    })
+  // if (
+  //   appointmentDate &&
+  //   currentDate < appointmentDate &&
+  //   applicationStore.completeApplication.application.appointmentStatus ===
+  //     AppointmentStatus.Scheduled
+  // ) {
+  router.push({
+    path: Routes.FORM_ROUTE_PATH,
+    query: {
+      applicationId: state.application[0].id,
+      isComplete: state.application[0].application.isComplete.toString(),
+    },
+  })
 
-    applicationStore.completeApplication.application.currentStep = 1
-    applicationStore.completeApplication.application.isUpdatingApplication =
-      true
-    applicationStore.updateApplication()
-  }
+  applicationStore.completeApplication.application.currentStep = 1
+  applicationStore.completeApplication.application.isUpdatingApplication = true
+  applicationStore.updateApplication()
+  //}
 }
 
 function handleModifyApplication() {

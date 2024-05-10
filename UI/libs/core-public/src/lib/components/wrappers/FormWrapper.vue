@@ -485,6 +485,14 @@ const { isLoading, mutate: updateMutation } = useMutation({
   },
 })
 
+const { refetch } = useQuery(
+  ['getApplicationsByUser'],
+  applicationStore.getAllUserApplicationsApi,
+  {
+    enabled: false,
+  }
+)
+
 const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
   mutationKey: ['saveMutation'],
   mutationFn: () => {
@@ -495,9 +503,10 @@ const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
         false
     }
 
-    router.push('/')
-
     return applicationStore.updateApplication()
+  },
+  onSuccess: () => {
+    refetch()
   },
 })
 
