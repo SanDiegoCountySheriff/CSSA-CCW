@@ -486,11 +486,18 @@ const { isLoading, mutate: updateMutation } = useMutation({
 })
 
 const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
+  mutationKey: ['saveMutation'],
   mutationFn: () => {
-    return applicationStore.updateApplication()
-  },
-  onSuccess: () => {
+    if (
+      applicationStore.completeApplication.application.isUpdatingApplication
+    ) {
+      applicationStore.completeApplication.application.isUpdatingApplication =
+        false
+    }
+
     router.push('/')
+
+    return applicationStore.updateApplication()
   },
 })
 

@@ -820,11 +820,9 @@ watch(valid, (newValue, oldValue) => {
 const showAlias = ref(false)
 let ssnConfirm = ref('')
 const vuetify = useVuetify()
-const isMobile = computed(() => {
-  window.console.log('isMobile', vuetify)
-
-  return vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
-})
+const isMobile = computed(
+  () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
+)
 
 const formattedSSN = computed({
   get() {
@@ -845,17 +843,11 @@ const formattedSSNConfirm = computed({
 })
 
 const ssnRules = computed(() => {
-  window.console.log('calling ssn rules')
-
   return [
     v => {
-      window.console.log('first', v)
-
       return Boolean(v) || 'SSN cannot be blank'
     },
     v => {
-      window.console.log('second', v)
-
       return /^[\d-]+$/.test(v) || 'SSN must contain only numbers and dashes'
     },
     v =>
@@ -865,8 +857,16 @@ const ssnRules = computed(() => {
 })
 
 onMounted(() => {
+  formatPhone('contact', 'primaryPhoneNumber')
+  formatPhone('contact', 'cellPhoneNumber')
+  formatPhone('contact', 'workPhoneNumber')
+  formatPhone('spouseInformation', 'phoneNumber')
+
+  for (const reference of model.value.application.characterReferences) {
+    formatReferencePhone(reference)
+  }
+
   if (model.value.application.personalInfo.ssn) {
-    window.console.log('setting ssn confirm value')
     ssnConfirm.value = model.value.application.personalInfo.ssn
   }
 
@@ -874,7 +874,6 @@ onMounted(() => {
     !model.value.application.characterReferences ||
     model.value.application.characterReferences.length === 0
   ) {
-    window.console.log('calling the thing with char references')
     model.value.application.characterReferences = [
       { name: '', relationship: '', phoneNumber: '', email: '' },
       { name: '', relationship: '', phoneNumber: '', email: '' },
@@ -890,7 +889,6 @@ onMounted(() => {
     model.value.application.aliases &&
     model.value.application.aliases.length > 0
   ) {
-    window.console.log('calling the aliases')
     showAlias.value = true
   }
 })
@@ -931,16 +929,17 @@ function handleValidateForm() {
 }
 
 function formatPhone(modelName1, modelName2) {
-  let validInput = model.value.application[modelName1][modelName2].replace(
-    /\D/g,
-    ''
-  )
-  const match = validInput.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
+  const phoneNumber = model.value.application[modelName1][modelName2]
 
-  if (match) {
-    model.value.application[modelName1][modelName2] = `(${match[1]})${
-      match[2] ? ' ' : ''
-    }${match[2]}${match[3] ? '-' : ''}${match[3]}`
+  if (phoneNumber) {
+    let validInput = phoneNumber.replace(/\D/g, '')
+    const match = validInput.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
+
+    if (match) {
+      model.value.application[modelName1][modelName2] = `(${match[1]})${
+        match[2] ? ' ' : ''
+      }${match[2]}${match[3] ? '-' : ''}${match[3]}`
+    }
   }
 }
 

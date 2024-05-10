@@ -156,7 +156,10 @@
 
     <v-container>
       <v-row
-        v-if="value.isMatchUpdated !== false"
+        v-if="
+          !applicationStore.completeApplication.application
+            .isUpdatingApplication
+        "
         justify="center"
       >
         <v-alert

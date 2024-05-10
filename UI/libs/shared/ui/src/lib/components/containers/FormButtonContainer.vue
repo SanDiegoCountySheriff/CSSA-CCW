@@ -25,6 +25,19 @@
         </v-btn>
 
         <v-btn
+          v-if="
+            props.isFinalStep &&
+            applicationStore.completeApplication.application
+              .isUpdatingApplication
+          "
+          color="primary"
+          @click="handleSave"
+        >
+          <v-icon left>mdi-content-save</v-icon>
+          {{ $t('Save') }}
+        </v-btn>
+
+        <v-btn
           v-if="!props.isFinalStep"
           :disabled="!props.valid || props.loading || !props.allStepsComplete"
           :loading="props.loading"
@@ -135,11 +148,6 @@ function handlePreviousStep() {
 }
 
 function handleSave() {
-  if (applicationStore.completeApplication.application.isUpdatingApplication) {
-    applicationStore.completeApplication.application.isUpdatingApplication =
-      false
-  }
-
   emit('save')
 }
 

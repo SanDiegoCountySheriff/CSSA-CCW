@@ -1,4 +1,4 @@
-namespace CCW.Application.Controllers;
+namespace CCW.Common.Models;
 
 public class MatchRequest
 {

@@ -98,7 +98,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     public async Task<PermitApplication> GetLastApplicationAsync(string userId, string applicationId,
         CancellationToken cancellationToken)
     {
-        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
+        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated FROM applications a " +
                           "WHERE a.userId = @userId and a.id = @applicationId " +
                           "Order by a.Application.OrderId DESC";
 
@@ -412,6 +412,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     {
         application.Application.Comments = existingApplication.Application.Comments;
         application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck;
+        application.History = existingApplication.History;
 
         if (existingApplication.Application.ApplicationType != application.Application.ApplicationType &&
             application.Application.ApplicationType is
@@ -469,16 +470,17 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             }
         }
 
-        await _container.PatchItemAsync<PermitApplication>(
-           application.Id.ToString(),
-           new PartitionKey(application.UserId),
-           new[]
-           {
-                PatchOperation.Set("/Application", application.Application)
-           },
-           null,
-           cancellationToken
-       );
+        await _container.UpsertItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
+       // await _container.PatchItemAsync<PermitApplication>(
+       //    application.Id.ToString(),
+       //    new PartitionKey(application.UserId),
+       //    new[]
+       //    {
+       //         PatchOperation.Set("/Application", application.Application),
+       //    },
+       //    null,
+       //    cancellationToken
+       //);
     }
 
     public async Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken)

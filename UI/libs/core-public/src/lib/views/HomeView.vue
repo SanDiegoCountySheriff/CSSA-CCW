@@ -366,19 +366,20 @@ import Routes from '@core-public/router/routes'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useQuery } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
 import { useUserStore } from '@shared-ui/stores/userStore'
 import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useQuery, useQueryClient } from '@tanstack/vue-query'
 
 const brandStore = useBrandStore()
 const authStore = useAuthStore()
 const userStore = useUserStore()
 const router = useRouter()
+const queryClient = useQueryClient()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 const completeApplicationStore = useCompleteApplicationStore()
 const canGetAllUserApplications = computed(() => {
-  return authStore.getAuthState.isAuthenticated
+  return authStore.getAuthState.isAuthenticated && !queryClient.isMutating()
 })
 const innerHeight = ref(0)
 const showDialog = ref(false)
