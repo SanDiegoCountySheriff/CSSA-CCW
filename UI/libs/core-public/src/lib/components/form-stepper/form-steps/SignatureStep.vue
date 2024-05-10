@@ -327,6 +327,7 @@ async function handleSaveMatch() {
   state.uploading = true
   state.isMatching = true
   applicationStore.completeApplication.isMatchUpdated = true
+  applicationStore.completeApplication.application.isComplete = true
   const image = document.getElementById('signature')
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
