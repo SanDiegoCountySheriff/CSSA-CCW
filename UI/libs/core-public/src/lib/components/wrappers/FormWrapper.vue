@@ -444,12 +444,10 @@ import QualifyingQuestionsStep from '@core-public/components/form-stepper/form-s
 import SignatureStep from '@core-public/components/form-stepper/form-steps/SignatureStep.vue'
 import WorkInfoStep from '@core-public/components/form-stepper/form-steps/WorkInfoStep.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
 import { computed, onMounted, provide, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const applicationStore = useCompleteApplicationStore()
-const router = useRouter()
 const stepOneValid = ref(false)
 const stepTwoValid = ref(false)
 const stepThreeValid = ref(false)

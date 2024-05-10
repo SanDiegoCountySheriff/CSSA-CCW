@@ -8,6 +8,7 @@
       >
         <v-btn
           v-if="!props.isFirstStep"
+          :loading="props.loading"
           @click="handlePreviousStep"
           color="primary"
           class="mr-3"
@@ -31,8 +32,9 @@
               .isUpdatingApplication &&
             applicationStore.completeApplication.isMatchUpdated !== false
           "
-          color="primary"
+          :loading="props.loading"
           @click="handleSave"
+          color="primary"
         >
           <v-icon left>mdi-content-save</v-icon>
           {{ $t('Save') }}
@@ -60,6 +62,7 @@
             props.isFinalStep
           "
           :disabled="!allStepsComplete"
+          :loading="props.loading"
           @click="handleSaveMatched"
           color="primary"
         >
