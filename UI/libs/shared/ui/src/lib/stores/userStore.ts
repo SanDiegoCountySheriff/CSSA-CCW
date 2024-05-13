@@ -6,6 +6,7 @@ import { computed, ref } from 'vue'
 
 export const useUserStore = defineStore('UserStore', () => {
   const userProfile = ref<UserType>({} as UserType)
+  const unmatchedUsersCount = ref(0)
 
   const getUserState = computed(() => userProfile.value)
 
@@ -35,12 +36,15 @@ export const useUserStore = defineStore('UserStore', () => {
     const res = await axios.get(Endpoints.GET_UNMATCHED_USERS_ENDPOINT)
 
     if (res?.data) {
+      unmatchedUsersCount.value = res.data.length
+
       return res.data
     }
   }
 
   return {
     userProfile,
+    unmatchedUsersCount,
     setUser,
     getUserState,
     getUser,

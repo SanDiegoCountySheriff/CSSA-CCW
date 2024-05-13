@@ -209,9 +209,11 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
         status: ApplicationStatus[ApplicationStatus[data.status]],
         applicationType: ApplicationType[ApplicationType[data.applicationType]],
         name: formatName(data),
-        appointmentDateTime: `${formatTime(
-          data.appointmentDateTime
-        )} on ${formatDate(data.appointmentDateTime)}`,
+        appointmentDateTime: data.appointmentDateTime
+          ? `${formatTime(data.appointmentDateTime)} on ${formatDate(
+              data.appointmentDateTime
+            )}`
+          : 'None',
         idNumber: data.idNumber,
         birthDate: data.birthDate,
         permitNumber: data.permitNumber,

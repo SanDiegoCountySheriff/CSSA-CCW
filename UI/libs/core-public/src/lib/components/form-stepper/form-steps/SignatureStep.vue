@@ -158,7 +158,7 @@
       <v-row
         v-if="
           !applicationStore.completeApplication.application
-            .isUpdatingApplication
+            .isUpdatingApplication && !state.isMatching
         "
         justify="center"
       >
@@ -293,7 +293,7 @@ const { mutate: fileMutation, isLoading } = useMutation({
       })
     } else if (state.isMatching) {
       emit('handle-save')
-      router.push('/')
+      // router.push('/')
     }
   },
   onError: () => {

@@ -127,10 +127,10 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         bool isComplete, CancellationToken cancellationToken)
     {
         var queryString = isOrderId
-            ? "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
+            ? "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated FROM applications a " +
               "WHERE a.Application.OrderId = @userEmailOrOrderId " +
               "Order by a.Application.OrderId DESC"
-            : "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
+            : "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated FROM applications a " +
               "WHERE a.Application.UserEmail = @userEmailOrOrderId " +
               "Order by a.Application.OrderId DESC";
 
@@ -471,16 +471,6 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         }
 
         await _container.UpsertItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
-       // await _container.PatchItemAsync<PermitApplication>(
-       //    application.Id.ToString(),
-       //    new PartitionKey(application.UserId),
-       //    new[]
-       //    {
-       //         PatchOperation.Set("/Application", application.Application),
-       //    },
-       //    null,
-       //    cancellationToken
-       //);
     }
 
     public async Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken)

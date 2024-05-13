@@ -14,7 +14,7 @@
           color="primary"
           class="ml-4"
         >
-          Match
+          Match Applicant/Application
         </v-btn>
       </v-card-title>
 
@@ -45,6 +45,7 @@
                     color="primary"
                     hide-details
                     outlined
+                    clearable
                   ></v-text-field>
                 </v-toolbar>
               </template>
@@ -66,17 +67,21 @@
                       <tr class="text-left">
                         <td>
                           {{
-                            new Date(item.appointmentDate).toLocaleDateString()
+                            item.appointmentDate
+                              ? new Date(
+                                  item.appointmentDate
+                                ).toLocaleDateString()
+                              : 'User did not enter'
                           }}
                         </td>
                         <td>
-                          {{ item.appointmentTime }}
+                          {{ item.appointmentTime ?? 'User did not enter' }}
                         </td>
                         <td>
                           {{ item.dateOfBirth }}
                         </td>
                         <td>
-                          {{ item.permitNumber }}
+                          {{ item.permitNumber ?? 'User did not enter' }}
                         </td>
                       </tr>
 
@@ -143,12 +148,38 @@
                     color="primary"
                     hide-details
                     outlined
+                    clearable
                   ></v-text-field>
                 </v-toolbar>
               </template>
 
               <template #[`item.name`]="{ item }">
                 {{ item.name }}
+              </template>
+
+              <template #expanded-item="{ item }">
+                <td :colspan="headers.length">
+                  <v-container>
+                    <v-simple-table>
+                      <tr class="text-left">
+                        <th>Appointment Date</th>
+                        <th>DOB</th>
+                        <th>Permit Number</th>
+                      </tr>
+                      <tr class="text-left">
+                        <td>
+                          {{ item.appointmentDateTime }}
+                        </td>
+                        <td>
+                          {{ item.birthDate }}
+                        </td>
+                        <td>
+                          {{ item.permitNumber }}
+                        </td>
+                      </tr>
+                    </v-simple-table>
+                  </v-container>
+                </td>
               </template>
             </v-data-table>
           </v-col>

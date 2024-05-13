@@ -509,6 +509,11 @@ async function handleSubmit() {
     ApplicationStatus.Submitted
   completeApplicationStore.completeApplication.application.submittedToLicensingDateTime =
     new Date().toISOString()
+
+  if (completeApplicationStore.completeApplication.isMatchUpdated === false) {
+    completeApplicationStore.completeApplication.isMatchUpdated = true
+  }
+
   updateMutation()
 }
 

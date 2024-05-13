@@ -41,7 +41,7 @@
         </v-btn>
 
         <v-btn
-          v-if="!props.isFinalStep"
+          v-if="!props.isFinalStep || isSubmittedAndMatchedWithoutAppointment"
           :disabled="!props.valid || props.loading || !props.allStepsComplete"
           :loading="props.loading"
           @click="handleContinue"
@@ -59,7 +59,8 @@
         <v-btn
           v-if="
             applicationStore.completeApplication.isMatchUpdated === false &&
-            props.isFinalStep
+            props.isFinalStep &&
+            !isSubmittedAndMatchedWithoutAppointment
           "
           :disabled="!allStepsComplete"
           :loading="props.loading"
@@ -109,6 +110,7 @@
 <script setup lang="ts">
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
+import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { computed, inject } from 'vue'
 
 const isUpdatingAllStepsComplete = inject('allStepsComplete')
@@ -141,6 +143,17 @@ const getButtonText = computed(() => {
   }
 
   return props.isFinalStep ? 'Finalize Application' : 'Next Step'
+})
+
+const isSubmittedAndMatchedWithoutAppointment = computed(() => {
+  return (
+    props.isFinalStep &&
+    applicationStore.completeApplication.isMatchUpdated === false &&
+    applicationStore.completeApplication.application.appointmentDateTime ===
+      null &&
+    applicationStore.completeApplication.application.status ===
+      ApplicationStatus.Submitted
+  )
 })
 
 function handleContinue() {

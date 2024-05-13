@@ -365,7 +365,7 @@ public class PermitApplicationController : ControllerBase
             {
                 return NotFound("Permit application cannot be found or application already submitted.");
             }
-            
+
             if (application.Application.PersonalInfo.Ssn.ToLower().Contains("xxx"))
             {
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
@@ -508,6 +508,34 @@ public class PermitApplicationController : ControllerBase
             };
             application.Application.ReferenceNotes = string.Empty;
             application.IsMatchUpdated = false;
+
+            if (application.Application.QualifyingQuestions.QuestionTwelve.Selected is not null or false)
+            {
+                application.Application.QualifyingQuestions.QuestionTwelve.TrafficViolations = new List<TrafficViolation>()
+                {
+                    new TrafficViolation()
+                    {
+                        Date = "",
+                        Violation  = "",
+                        Agency  = "",
+                        CitationNumber = ""
+                    }
+                };
+            }
+
+            if (application.Application.LegacyQualifyingQuestions?.QuestionEight.Selected is not null or false)
+            {
+                application.Application.LegacyQualifyingQuestions.QuestionEight.TrafficViolations = new List<TrafficViolation>()
+                {
+                    new TrafficViolation()
+                    {
+                        Date = "",
+                        Violation  = "",
+                        Agency  = "",
+                        CitationNumber = ""
+                    }
+                };
+            }
 
             await _applicationCosmosDbService.UpdateLegacyApplication(application, cancellationToken: default);
 

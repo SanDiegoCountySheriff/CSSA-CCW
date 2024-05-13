@@ -241,7 +241,10 @@
           :loading="props.isLoading"
         >
           <v-card-title
-            v-if="!permitStore.getPermitDetail.application.isComplete"
+            v-if="
+              !permitStore.getPermitDetail.application.isComplete &&
+              !permitStore.getPermitDetail.isMatchUpdated === false
+            "
             class="justify-center"
           >
             <v-icon
@@ -251,6 +254,19 @@
               mdi-alert
             </v-icon>
             Missing Requirement
+          </v-card-title>
+
+          <v-card-title
+            v-else-if="permitStore.getPermitDetail.isMatchUpdated === false"
+            class="justify-center"
+          >
+            <v-icon
+              color="error"
+              class="mr-2"
+            >
+              mdi-alert
+            </v-icon>
+            Waiting for Customer Verification
           </v-card-title>
 
           <v-card-title

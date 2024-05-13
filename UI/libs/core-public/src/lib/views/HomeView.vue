@@ -75,7 +75,7 @@
           <v-btn
             v-else-if="
               authStore.getAuthState.isAuthenticated &&
-              data?.length === 0 &&
+              (data?.length === 0 || data === undefined) &&
               !userStore.getUserState.isPendingReview
             "
             @click="showDialog = true"
@@ -379,7 +379,7 @@ const queryClient = useQueryClient()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 const completeApplicationStore = useCompleteApplicationStore()
 const canGetAllUserApplications = computed(() => {
-  return authStore.getAuthState.isAuthenticated && !queryClient.isMutating()
+  return authStore.getAuthState.isAuthenticated
 })
 const innerHeight = ref(0)
 const showDialog = ref(false)

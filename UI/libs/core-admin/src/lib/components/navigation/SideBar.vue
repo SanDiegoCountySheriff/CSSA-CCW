@@ -107,13 +107,13 @@
             </v-list-item-icon>
             <v-list-item-title class="text-left">
               {{ $t('Existing Applicants') }}
-              <!-- <v-chip
+              <v-chip
                 class="float-right"
                 color="primary"
                 x-small
               >
-                {{ paymentStore.refundRequestCount }}
-              </v-chip> -->
+                {{ userStore.unmatchedUsersCount }}
+              </v-chip>
             </v-list-item-title>
           </v-list-item>
 
@@ -168,6 +168,7 @@ import { useBrandStore } from '@shared-ui/stores/brandStore'
 import useEnvName from '@shared-ui/composables/useEnvName'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { useUserStore } from '@shared-ui/stores/userStore'
 import { computed, getCurrentInstance, ref, watch } from 'vue'
 
 interface ISideBarProps {
@@ -187,6 +188,7 @@ const authStore = useAuthStore()
 const permitStore = usePermitsStore()
 const paymentStore = usePaymentStore()
 const brandStore = useBrandStore()
+const userStore = useUserStore()
 const app = getCurrentInstance()
 
 const getAppTitle = useEnvName()
