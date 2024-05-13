@@ -3,10 +3,11 @@
     <v-card elevation="0">
       <v-card-title>
         {{ $t('Weapons') }}
+
         <v-spacer></v-spacer>
 
         <SaveButton
-          :disabled="false"
+          :disabled="readonly"
           @on-save="handleSave"
         />
       </v-card-title>
@@ -14,7 +15,8 @@
       <v-card-text>
         <WeaponsTable
           :weapons="items"
-          :delete-enabled="true"
+          :edit-enable="!readonly"
+          :readonly="readonly"
           :modifying="
             permitStore.getPermitDetail.application.modifiedWeaponComplete !==
             null
@@ -70,10 +72,11 @@ import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
 import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue'
 import { openPdf } from '@core-admin/components/composables/openDocuments'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { computed, set } from 'vue'
+import { computed, inject, set } from 'vue'
 
 const emit = defineEmits(['on-save'])
 const permitStore = usePermitsStore()
+const readonly = inject<boolean>('readonly')
 
 const items = computed(() => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -83,24 +86,28 @@ const items = computed(() => {
     itemArray.push({ ...weapon })
   }
 
-  for (const weapon of permitStore.getPermitDetail.application
-    .modifyAddWeapons) {
-    const item = { ...weapon, added: true }
+  if (permitStore.getPermitDetail.application.modifyAddWeapons) {
+    for (const weapon of permitStore.getPermitDetail.application
+      .modifyAddWeapons) {
+      const item = { ...weapon, added: true }
 
-    itemArray.push(item)
+      itemArray.push(item)
+    }
   }
 
-  for (const weapon of permitStore.getPermitDetail.application
-    .modifyDeleteWeapons) {
-    const index = itemArray.findIndex(
-      item => item.serialNumber === weapon.serialNumber
-    )
+  if (permitStore.getPermitDetail.application.modifyDeleteWeapons) {
+    for (const weapon of permitStore.getPermitDetail.application
+      .modifyDeleteWeapons) {
+      const index = itemArray.findIndex(
+        item => item.serialNumber === weapon.serialNumber
+      )
 
-    if (index !== -1) {
-      const deletedWeapon = itemArray[index]
+      if (index !== -1) {
+        const deletedWeapon = itemArray[index]
 
-      deletedWeapon.deleted = true
-      itemArray[index] = deletedWeapon
+        deletedWeapon.deleted = true
+        itemArray[index] = deletedWeapon
+      }
     }
   }
 

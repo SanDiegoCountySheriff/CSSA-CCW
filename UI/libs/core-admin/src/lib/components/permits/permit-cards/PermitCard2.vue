@@ -69,7 +69,6 @@
                     sm="6"
                   >
                     <FileUploadDialog
-                      :readonly="readonly"
                       :icon="'mdi-camera'"
                       :default-selection="'Portrait'"
                       :get-file-from-dialog="onFileChanged"
@@ -80,7 +79,6 @@
                     sm="6"
                   >
                     <FileUploadDialog
-                      :readonly="readonly"
                       :icon="'mdi-fingerprint'"
                       :default-selection="'Thumbprint'"
                       :get-file-from-dialog="onFileChanged"
@@ -93,7 +91,6 @@
                     sm="6"
                   >
                     <FileUploadDialog
-                      :readonly="readonly"
                       :icon="'mdi-file-upload'"
                       :get-file-from-dialog="onFileChanged"
                     />
@@ -398,7 +395,6 @@
               >
                 <ReadyForPaymentDialog
                   @on-ready-for-initial-payment="handleReadyForInitialPayment"
-                  :readonly="readonly"
                 />
               </v-col>
 
@@ -407,7 +403,7 @@
                 cols="12"
                 xl="6"
               >
-                <PaymentDialog :readonly="readonly" />
+                <PaymentDialog />
               </v-col>
             </v-row>
 
@@ -739,7 +735,6 @@
             <v-row>
               <v-col>
                 <ExpirationDateDialog
-                  :readonly="readonly"
                   @handle-save-expiration-date="handleSaveExpirationDate"
                 />
               </v-col>
@@ -840,13 +835,10 @@
             </v-row>
             <v-row>
               <v-col>
-                <DateTimePicker
-                  :readonly="readonly"
-                  @on-save-reschedule="handleSaveReschedule"
-                />
+                <DateTimePicker @on-save-reschedule="handleSaveReschedule" />
               </v-col>
               <v-col>
-                <Schedule :readonly="readonly" />
+                <Schedule />
               </v-col>
             </v-row>
           </v-card-text>
@@ -944,19 +936,19 @@ import {
   ApplicationType,
   CompleteApplication,
 } from '@shared-utils/types/defaultTypes'
-import { computed, reactive, ref } from 'vue'
+import { computed, inject, reactive, ref } from 'vue'
 
 interface IPermitCard2Props {
   isLoading: boolean
   userPhoto: string
-  readonly: boolean
 }
 
 const props = withDefaults(defineProps<IPermitCard2Props>(), {
   isLoading: false,
   userPhoto: '',
-  readonly: false,
 })
+
+const readonly = inject('readonly')
 
 const emit = defineEmits([
   'refetch',

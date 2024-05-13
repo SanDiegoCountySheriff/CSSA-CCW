@@ -212,15 +212,9 @@ import {
   AppointmentStatus,
   AppointmentType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, reactive, ref } from 'vue'
+import { computed, inject, reactive, ref } from 'vue'
 
-interface ScheduleProps {
-  readonly: boolean
-}
-
-const props = withDefaults(defineProps<ScheduleProps>(), {
-  readonly: false,
-})
+const readonly = inject('readonly')
 
 const permitStore = usePermitsStore()
 const appointmentsStore = useAppointmentsStore()

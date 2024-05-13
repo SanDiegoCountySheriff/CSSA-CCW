@@ -4,13 +4,14 @@
       <v-card-title>
         <div style="display: flex; align-items: center">
           {{ $t('Qualifying Questions') }}
+
           <ReviewDialog />
         </div>
 
         <v-spacer></v-spacer>
 
         <SaveButton
-          :disabled="false"
+          :disabled="readonly"
           @on-save="handleSave"
         />
       </v-card-title>
@@ -28,6 +29,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionOne.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -43,7 +45,7 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionOneDialog />
+              <QualifyingQuestionOneDialog :readonly="readonly" />
             </v-row>
           </v-col>
         </v-row>
@@ -60,6 +62,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionOne.agency
               "
+              :readonly="readonly"
               :label="$t('Agency')"
               :rules="[v => !!v || $t('An Agency is required.')]"
               outlined
@@ -72,6 +75,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionOne.issuingState
               "
+              :readonly="readonly"
               :label="$t('Issuing State')"
               :rules="[v => !!v || $t('An Issuing State is required.')]"
               outlined
@@ -84,6 +88,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionOne.issueDate
               "
+              :readonly="readonly"
               :label="$t('Issue Date')"
               :rules="[v => !!v || $t('An Issue Date is required.')]"
               type="date"
@@ -99,6 +104,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionOne.number
               "
+              :readonly="readonly"
               :label="$t('Number')"
               :rules="[v => !!v || $t('An Issue Number is required.')]"
               outlined
@@ -118,6 +124,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionTwo.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -133,7 +140,7 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionTwoDialog />
+              <QualifyingQuestionTwoDialog :readonly="readonly" />
             </v-row>
           </v-col>
         </v-row>
@@ -150,6 +157,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionTwo.agency
               "
+              :readonly="readonly"
               :label="$t('Agency')"
               :rules="[v => !!v || $t('An Agency is required.')]"
               outlined
@@ -162,6 +170,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionTwo.denialDate
               "
+              :readonly="readonly"
               :label="$t('Denial Date')"
               :rules="[v => !!v || $t('A Denial Date is required.')]"
               type="date"
@@ -177,6 +186,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionTwo.denialReason
               "
+              :readonly="readonly"
               :label="$t('Denial Reason')"
               :rules="[v => !!v || $t('A Denial Explanation is required.')]"
               outlined
@@ -196,6 +206,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionThree.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -211,7 +222,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Three'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Three'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -230,6 +244,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionThree.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -252,6 +267,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionFour.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -267,7 +283,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Four'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Four'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -286,6 +305,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionFour.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -308,6 +328,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionFive.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -323,7 +344,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Five'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Five'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -342,6 +366,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionFive.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -364,6 +389,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionSix.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -379,7 +405,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Six'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Six'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -398,6 +427,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionSix.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -419,6 +449,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionSeven.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -434,7 +465,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Seven'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Seven'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -453,6 +487,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionSeven.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -474,6 +509,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionEight.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -489,7 +525,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Eight'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Eight'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -508,6 +547,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionEight.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -529,6 +569,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionNine.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -544,7 +585,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Nine'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Nine'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -563,6 +607,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionNine.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -584,6 +629,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionTen.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -599,7 +645,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Ten'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Ten'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -618,6 +667,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionTen.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -639,6 +689,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionEleven.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -654,7 +705,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Eleven'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Eleven'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -673,6 +727,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionEleven.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -694,6 +749,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionTwelve.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -709,7 +765,7 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionTwelveDialog />
+              <QualifyingQuestionTwelveDialog :readonly="readonly" />
             </v-row>
           </v-col>
         </v-row>
@@ -728,6 +784,7 @@
               <v-col cols="3">
                 <v-text-field
                   v-model="violation.date"
+                  :readonly="readonly"
                   label="Date"
                   outlined
                 ></v-text-field>
@@ -736,6 +793,7 @@
               <v-col cols="3">
                 <v-text-field
                   v-model="violation.agency"
+                  :readonly="readonly"
                   label="Agency"
                   outlined
                 ></v-text-field>
@@ -744,6 +802,7 @@
               <v-col cols="3">
                 <v-text-field
                   v-model="violation.violation"
+                  :readonly="readonly"
                   label="Violation/Accident"
                   outlined
                 ></v-text-field>
@@ -752,6 +811,7 @@
               <v-col cols="3">
                 <v-text-field
                   v-model="violation.citationNumber"
+                  :readonly="readonly"
                   label="Citation Number"
                   outlined
                 ></v-text-field>
@@ -771,6 +831,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionTwelve.trafficViolationsExplanation
                 "
+                :readonly="readonly"
                 label="Traffic Violations Explanation"
               >
               </v-textarea>
@@ -789,6 +850,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionThirteen.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -804,7 +866,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Thirteen'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Thirteen'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -823,6 +888,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionThirteen.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -844,6 +910,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionFourteen.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -859,7 +926,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Fourteen'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Fourteen'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -878,6 +948,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionFourteen.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -899,6 +970,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionFifteen.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -914,7 +986,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Fifteen'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Fifteen'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -933,6 +1008,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionFifteen.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -954,6 +1030,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionSixteen.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -969,7 +1046,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Sixteen'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Sixteen'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -988,6 +1068,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionSixteen.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -1009,6 +1090,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionSeventeen.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -1024,7 +1106,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Seventeen'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Seventeen'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -1043,6 +1128,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionSeventeen.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -1064,6 +1150,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionEighteen.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -1079,7 +1166,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Eighteen'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Eighteen'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -1098,6 +1188,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionEighteen.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -1119,6 +1210,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionNineteen.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -1134,7 +1226,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Nineteen'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Nineteen'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -1153,6 +1248,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionNineteen.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -1174,6 +1270,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionTwenty.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -1189,7 +1286,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Twenty'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Twenty'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -1208,6 +1308,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionTwenty.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -1229,6 +1330,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionTwentyOne.selected
                 "
+                :disabled="readonly"
                 row
               >
                 <v-radio
@@ -1244,7 +1346,10 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'TwentyOne'" />
+              <QualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'TwentyOne'"
+              />
             </v-row>
           </v-col>
         </v-row>
@@ -1263,6 +1368,7 @@
                 permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionTwentyOne.explanation
               "
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v && v.length <= 1000) ||
@@ -1284,11 +1390,13 @@ import QualifyingQuestionTwelveDialog from '@core-admin/components/dialogs/Quali
 import QualifyingQuestionTwoDialog from '@core-admin/components/dialogs/QualifyingQuestionTwoDialog.vue'
 import ReviewDialog from '@core-admin/components/dialogs/ReviewDialog.vue'
 import SaveButton from './SaveButton.vue'
+import { inject } from 'vue'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 
 const emit = defineEmits(['on-save'])
 
 const permitStore = usePermitsStore()
+const readonly = inject<boolean>('readonly')
 
 function handleSave() {
   emit('on-save', 'Qualifying Questions')

@@ -49,15 +49,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { inject, ref } from 'vue'
 
-interface ReadyForPaymentDialogProps {
-  readonly: boolean
-}
-
-const props = withDefaults(defineProps<ReadyForPaymentDialogProps>(), {
-  readonly: false,
-})
+const readonly = inject('readonly')
 
 const emit = defineEmits(['on-ready-for-initial-payment'])
 

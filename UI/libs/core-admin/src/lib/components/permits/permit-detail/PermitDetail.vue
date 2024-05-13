@@ -4,8 +4,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        {{ readonly }}
-        <PermitCard1 :readonly="readonly" />
+        <PermitCard1 />
       </v-col>
     </v-row>
     <v-row>
@@ -13,7 +12,6 @@
         <PermitCard2
           :is-loading="isLoading"
           :user-photo="state.userPhoto"
-          :readonly="readonly"
           @refetch="refetch"
           @on-check-name="handleCheckName"
           @on-check-address="handleCheckAddress"
@@ -140,7 +138,7 @@ import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useRoute } from 'vue-router/composables'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, provide } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const permitStore = usePermitsStore()
@@ -191,6 +189,8 @@ const { isLoading, refetch } = useQuery(
 )
 
 const readonly = computed(() => Boolean(route.params.isLegacy))
+
+provide('readonly', readonly)
 
 const stepIndex = ref(1)
 const reveal = ref(false)

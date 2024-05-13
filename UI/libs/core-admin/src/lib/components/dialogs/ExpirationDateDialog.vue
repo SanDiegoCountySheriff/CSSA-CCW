@@ -80,16 +80,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { inject, ref } from 'vue'
 
-interface ExpirationDateDialogProps {
-  readonly: boolean
-}
-
-const props = withDefaults(defineProps<ExpirationDateDialogProps>(), {
-  readonly: false,
-})
-
+const readonly = inject('readonly')
 const emit = defineEmits(['handle-save-expiration-date'])
 
 const dialog = ref(false)

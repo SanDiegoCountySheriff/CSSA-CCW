@@ -7,6 +7,7 @@
       <v-btn
         v-bind="attrs"
         v-on="on"
+        :disabled="readonly"
         icon
       >
         <v-icon
@@ -98,9 +99,12 @@ import {
 
 interface IQualifyingQuestionsProps {
   question: string
+  readonly: boolean
 }
 
-const props = defineProps<IQualifyingQuestionsProps>()
+const props = withDefaults(defineProps<IQualifyingQuestionsProps>(), {
+  readonly: false,
+})
 
 const dialog = ref(false)
 const comment = ref('')

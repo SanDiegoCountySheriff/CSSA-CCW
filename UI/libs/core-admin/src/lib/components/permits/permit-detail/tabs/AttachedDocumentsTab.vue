@@ -4,7 +4,7 @@
       {{ $t('Attached Documents:') }}
       <v-spacer></v-spacer>
       <SaveButton
-        :disabled="false"
+        :disabled="readonly"
         @on-save="handleSave"
       />
     </v-card-title>
@@ -93,7 +93,7 @@ import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import { openPdf } from '@core-admin/components/composables/openDocuments'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { computed, reactive } from 'vue'
+import { computed, inject, reactive } from 'vue'
 import {
   formatDate,
   formatTime,
@@ -102,9 +102,10 @@ import {
 const emit = defineEmits(['on-save'])
 const permitStore = usePermitsStore()
 const documentStore = useDocumentsStore()
+const readonly = inject<boolean>('readonly')
 
 const state = reactive({
-  documents: permitStore.getPermitDetail.application.uploadedDocuments,
+  documents: permitStore.getPermitDetail.application.uploadedDocuments || [],
   documentTypes: [
     { value: 'DriverLicense', name: "Driver's License" },
     { value: 'ProofResidency', name: 'Proof of Residency' },

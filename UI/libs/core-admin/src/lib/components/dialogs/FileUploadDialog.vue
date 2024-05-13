@@ -69,17 +69,18 @@
 </template>
 <script lang="ts" setup>
 import { adminFileTypes } from '@shared-utils/lists/defaultConstants'
-import { reactive } from 'vue'
+import { inject, reactive } from 'vue'
 interface FileUploadDialogProps {
   icon: string
-  readonly: boolean
   defaultSelection?: string
   getFileFromDialog: (file, target) => void
 }
 const props = withDefaults(defineProps<FileUploadDialogProps>(), {
-  readonly: false,
   defaultSelection: '',
 })
+
+const readonly = inject('readonly')
+
 const state = reactive({
   dialog: false,
   fileType: props.defaultSelection ? `${props.defaultSelection}` : '',

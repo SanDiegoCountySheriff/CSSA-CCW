@@ -104,18 +104,11 @@ import {
   ApplicationType,
   AppointmentStatus,
 } from '@shared-utils/types/defaultTypes'
-import { computed, reactive } from 'vue'
-
-interface PermitCardOneProps {
-  readonly: boolean
-}
-
-const props = withDefaults(defineProps<PermitCardOneProps>(), {
-  readonly: false,
-})
+import { computed, inject, reactive } from 'vue'
 
 const permitStore = usePermitsStore()
 const appointmentStore = useAppointmentsStore()
+const readonly = inject('readonly')
 
 const state = reactive({
   update: '',

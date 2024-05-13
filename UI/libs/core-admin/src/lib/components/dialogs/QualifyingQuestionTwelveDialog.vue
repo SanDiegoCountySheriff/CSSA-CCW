@@ -7,12 +7,13 @@
       <v-btn
         v-bind="attrs"
         v-on="on"
+        :disabled="readonly"
         icon
       >
         <v-icon
           v-if="
             permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionTwelve.temporaryTrafficViolations.length > 0
+              .questionTwelve.temporaryTrafficViolations?.length > 0
           "
           color="error"
         >
@@ -177,6 +178,10 @@ import {
   CommentType,
   TrafficViolation,
 } from '@shared-utils/types/defaultTypes'
+
+const props = withDefaults(defineProps<{ readonly: boolean }>(), {
+  readonly: false,
+})
 
 const comment = ref('')
 const historyMessage = ref('')

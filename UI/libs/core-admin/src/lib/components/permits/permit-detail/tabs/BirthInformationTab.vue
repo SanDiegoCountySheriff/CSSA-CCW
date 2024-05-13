@@ -5,7 +5,7 @@
       {{ $t('Birth Information') }}
       <v-spacer></v-spacer>
       <SaveButton
-        :disabled="!valid"
+        :disabled="!valid || readonly"
         @on-save="handleSave"
       />
     </v-card-title>
@@ -16,6 +16,7 @@
             <v-menu
               v-model="menu"
               :close-on-content-click="false"
+              :disabled="readonly"
               transition="scale-transition"
               offset-y
               min-width="auto"
@@ -25,6 +26,7 @@
                   v-model="
                     permitStore.getPermitDetail.application.dob.birthDate
                   "
+                  :readonly="readonly"
                   :label="$t('Date of birth')"
                   hint="YYYY-MM-DD format"
                   persistent-hint
@@ -60,6 +62,7 @@
           </v-col>
           <v-col>
             <v-text-field
+              :readonly="readonly"
               :label="$t('Birth city')"
               :rules="[v => !!v || $t('Birth city cannot be blank')]"
               v-model="permitStore.getPermitDetail.application.dob.birthCity"
@@ -81,6 +84,7 @@
         <v-row>
           <v-col>
             <v-combobox
+              :readonly="readonly"
               :items="countries"
               :label="$t('Birth country')"
               :rules="[v => !!v || $t('Birth country cannot be blank')]"
@@ -110,6 +114,7 @@
               "
               maxlength="150"
               counter
+              :readonly="readonly"
               :items="states"
               :label="$t('Birth state')"
               :rules="[v => !!v || $t('Birth state cannot be blank')]"
@@ -134,6 +139,7 @@
                 permitStore.getPermitDetail.application.dob.birthCountry !==
                 'United States'
               "
+              :readonly="readonly"
               maxlength="150"
               counter
               :label="$t('Birth region')"
@@ -152,13 +158,14 @@
 
 <script setup lang="ts">
 import SaveButton from './SaveButton.vue'
-import { ref } from 'vue'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
+import { inject, ref } from 'vue'
 
 const emit = defineEmits(['on-save'])
 const menu = ref(false)
 const valid = ref(false)
+const readonly = inject<boolean>('readonly')
 
 const permitStore = usePermitsStore()
 

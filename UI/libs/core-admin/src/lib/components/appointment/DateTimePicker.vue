@@ -82,15 +82,9 @@
 
 <script setup lang="ts">
 import { formatLocalDateAndTimeStringToUtcDateTime } from '@shared-utils/formatters/defaultFormatters'
-import { ref } from 'vue'
+import { inject, ref } from 'vue'
 
-interface DateTimePickerProps {
-  readonly: boolean
-}
-
-const props = withDefaults(defineProps<DateTimePickerProps>(), {
-  readonly: false,
-})
+const readonly = inject('readonly')
 
 const emit = defineEmits(['on-save-reschedule'])
 const dialog = ref(false)

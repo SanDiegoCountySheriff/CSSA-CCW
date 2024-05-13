@@ -7,6 +7,7 @@
       <v-btn
         v-bind="attrs"
         v-on="on"
+        :disabled="readonly"
         icon
       >
         <v-icon
@@ -120,6 +121,10 @@ import {
   ApplicationStatus,
   CommentType,
 } from '@shared-utils/types/defaultTypes'
+
+const props = withDefaults(defineProps<{ readonly: boolean }>(), {
+  readonly: false,
+})
 
 const permitStore = usePermitsStore()
 const authStore = useAuthStore()
