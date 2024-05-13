@@ -5,6 +5,7 @@
   >
     <template #activator="{ attrs, on }">
       <v-btn
+        :disabled="readonly"
         v-on="on"
         v-bind="attrs"
         color="primary"
@@ -80,6 +81,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
+interface ExpirationDateDialogProps {
+  readonly: boolean
+}
+
+const props = withDefaults(defineProps<ExpirationDateDialogProps>(), {
+  readonly: false,
+})
 
 const emit = defineEmits(['handle-save-expiration-date'])
 

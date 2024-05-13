@@ -5,6 +5,7 @@
   >
     <template #activator="{ on, attrs }">
       <v-btn
+        :disabled="readonly"
         v-bind="attrs"
         v-on="on"
         color="primary"
@@ -49,6 +50,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
+interface ReadyForPaymentDialogProps {
+  readonly: boolean
+}
+
+const props = withDefaults(defineProps<ReadyForPaymentDialogProps>(), {
+  readonly: false,
+})
 
 const emit = defineEmits(['on-ready-for-initial-payment'])
 

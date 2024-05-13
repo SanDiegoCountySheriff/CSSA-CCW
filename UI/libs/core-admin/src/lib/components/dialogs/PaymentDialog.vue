@@ -7,6 +7,7 @@
   >
     <template #activator="{ on, attrs }">
       <v-btn
+        :disabled="readonly"
         small
         block
         color="primary"
@@ -92,6 +93,14 @@ import {
   RefundRequest,
 } from '@shared-utils/types/defaultTypes'
 import { useMutation, useQuery } from '@tanstack/vue-query'
+
+interface PaymentDialogProps {
+  readonly: boolean
+}
+
+const props = withDefaults(defineProps<PaymentDialogProps>(), {
+  readonly: false,
+})
 
 const state = reactive({
   dialog: false,

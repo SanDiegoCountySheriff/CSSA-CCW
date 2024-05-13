@@ -5,6 +5,7 @@
   >
     <template #activator="{ on }">
       <v-btn
+        :disabled="readonly"
         color="primary"
         v-on="on"
         small
@@ -82,6 +83,14 @@
 <script setup lang="ts">
 import { formatLocalDateAndTimeStringToUtcDateTime } from '@shared-utils/formatters/defaultFormatters'
 import { ref } from 'vue'
+
+interface DateTimePickerProps {
+  readonly: boolean
+}
+
+const props = withDefaults(defineProps<DateTimePickerProps>(), {
+  readonly: false,
+})
 
 const emit = defineEmits(['on-save-reschedule'])
 const dialog = ref(false)

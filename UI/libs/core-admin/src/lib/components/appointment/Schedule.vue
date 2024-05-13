@@ -6,6 +6,7 @@
     >
       <template #activator="{ attrs }">
         <v-btn
+          :disabled="readonly"
           color="primary"
           v-bind="attrs"
           @click="openDialog"
@@ -212,6 +213,14 @@ import {
   AppointmentType,
 } from '@shared-utils/types/defaultTypes'
 import { computed, reactive, ref } from 'vue'
+
+interface ScheduleProps {
+  readonly: boolean
+}
+
+const props = withDefaults(defineProps<ScheduleProps>(), {
+  readonly: false,
+})
 
 const permitStore = usePermitsStore()
 const appointmentsStore = useAppointmentsStore()

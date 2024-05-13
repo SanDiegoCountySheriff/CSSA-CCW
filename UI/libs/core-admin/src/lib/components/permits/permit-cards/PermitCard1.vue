@@ -26,6 +26,7 @@
             <v-select
               ref="select"
               :items="appType"
+              :readonly="readonly"
               label="Application Type"
               item-text="text"
               item-value="value"
@@ -46,6 +47,7 @@
             <v-select
               ref="select"
               :items="appStatus"
+              :readonly="readonly"
               label="Application Status"
               item-text="value"
               item-value="id"
@@ -103,6 +105,14 @@ import {
   AppointmentStatus,
 } from '@shared-utils/types/defaultTypes'
 import { computed, reactive } from 'vue'
+
+interface PermitCardOneProps {
+  readonly: boolean
+}
+
+const props = withDefaults(defineProps<PermitCardOneProps>(), {
+  readonly: false,
+})
 
 const permitStore = usePermitsStore()
 const appointmentStore = useAppointmentsStore()

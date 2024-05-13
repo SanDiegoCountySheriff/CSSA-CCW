@@ -229,11 +229,11 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return res.data
   }
 
-  async function getPermitDetailApi(orderId: string) {
+  async function getPermitDetailApi(orderId: string, isLegacy = 'false') {
     const isComplete = true
 
     const res = await axios.get(
-      `${Endpoints.GET_AGENCY_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true&isComplete=${isComplete}`
+      `${Endpoints.GET_AGENCY_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true&isComplete=${isComplete}&isLegacy=${isLegacy}`
     )
 
     orderIds.set(orderId, res?.data || {})

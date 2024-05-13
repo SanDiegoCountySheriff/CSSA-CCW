@@ -6,6 +6,7 @@
     >
       <template #activator="{ on, attrs }">
         <v-btn
+          :disabled="readonly"
           block
           small
           v-bind="attrs"
@@ -71,10 +72,14 @@ import { adminFileTypes } from '@shared-utils/lists/defaultConstants'
 import { reactive } from 'vue'
 interface FileUploadDialogProps {
   icon: string
+  readonly: boolean
   defaultSelection?: string
   getFileFromDialog: (file, target) => void
 }
-const props = defineProps<FileUploadDialogProps>()
+const props = withDefaults(defineProps<FileUploadDialogProps>(), {
+  readonly: false,
+  defaultSelection: '',
+})
 const state = reactive({
   dialog: false,
   fileType: props.defaultSelection ? `${props.defaultSelection}` : '',

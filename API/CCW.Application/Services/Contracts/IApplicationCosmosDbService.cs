@@ -12,7 +12,7 @@ public interface IApplicationCosmosDbService
         CancellationToken cancellationToken);
     Task<string> GetSSNAsync(string userId, CancellationToken cancellationToken);
     Task<PermitApplication> GetLastApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken);
-    Task<PermitApplication> GetUserLastApplicationAsync(string userEmailOrOrderId, bool isOrderId, bool isComplete, CancellationToken cancellationToken);
+    Task<PermitApplication> GetUserLastApplicationAsync(string userEmailOrOrderId, bool isOrderId, bool isComplete, bool isLegacy, CancellationToken cancellationToken);
     Task<IEnumerable<PermitApplication>> GetAllApplicationsAsync(string userId, string userEmail, CancellationToken cancellationToken);
     Task<IEnumerable<PermitApplication>> GetAllUserApplicationsAsync(string userEmail, CancellationToken cancellationToken);
     Task<PermitApplication> GetUserApplicationAsync(string applicationId, CancellationToken cancellationToken);

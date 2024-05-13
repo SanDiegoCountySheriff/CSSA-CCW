@@ -154,7 +154,15 @@
               </template>
 
               <template #[`item.name`]="{ item }">
-                {{ item.name }}
+                <router-link
+                  :to="{
+                    name: 'PermitDetail',
+                    params: { orderId: item.orderId, isLegacy: true },
+                  }"
+                  style="text-decoration: underline; color: inherit"
+                >
+                  {{ item.name }}
+                </router-link>
               </template>
 
               <template #expanded-item="{ item }">

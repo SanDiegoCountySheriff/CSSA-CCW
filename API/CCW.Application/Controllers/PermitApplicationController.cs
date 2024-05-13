@@ -169,11 +169,11 @@ public class PermitApplicationController : ControllerBase
 
     [Authorize(Policy = "AADUsers")]
     [HttpGet("getUserApplication")]
-    public async Task<IActionResult> GetUserApplication(string userEmailOrOrderId, bool isOrderId = false, bool isComplete = false)
+    public async Task<IActionResult> GetUserApplication(string userEmailOrOrderId, bool isOrderId = false, bool isComplete = false, bool isLegacy = false)
     {
         try
         {
-            var result = await _applicationCosmosDbService.GetUserLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, cancellationToken: default);
+            var result = await _applicationCosmosDbService.GetUserLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, isLegacy, cancellationToken: default);
 
             return (result != null) ? Ok(_mapper.Map<PermitApplicationResponseModel>(result)) : NotFound();
         }

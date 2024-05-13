@@ -124,7 +124,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     }
 
     public async Task<PermitApplication> GetUserLastApplicationAsync(string userEmailOrOrderId, bool isOrderId,
-        bool isComplete, CancellationToken cancellationToken)
+        bool isComplete, bool isLegacy, CancellationToken cancellationToken)
     {
         var queryString = isOrderId
             ? "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated FROM applications a " +
@@ -137,9 +137,10 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         var parameterizedQuery = new QueryDefinition(query: queryString)
             .WithParameter("@userEmailOrOrderId", userEmailOrOrderId);
 
-        using FeedIterator<PermitApplication> filteredFeed = _container.GetItemQueryIterator<PermitApplication>(
-            queryDefinition: parameterizedQuery
-        );
+        using FeedIterator<PermitApplication> filteredFeed = 
+            isLegacy ?
+            _legacyContainer.GetItemQueryIterator<PermitApplication>(queryDefinition: parameterizedQuery) :
+            _container.GetItemQueryIterator<PermitApplication>(queryDefinition: parameterizedQuery);
 
         if (filteredFeed.HasMoreResults)
         {
