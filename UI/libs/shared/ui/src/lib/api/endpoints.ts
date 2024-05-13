@@ -161,6 +161,12 @@ export default class Endpoints {
     }/application/v1/permitapplication/matchApplication`
   }
 
+  static get UNDO_MATCH_APPLICATION_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/undoMatchApplication`
+  }
+
   /********APPOINTMENTS******************/
 
   static get GET_APPOINTMENTS_ENDPOINT() {

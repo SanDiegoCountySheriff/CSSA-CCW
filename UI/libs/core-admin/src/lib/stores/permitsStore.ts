@@ -70,6 +70,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
     const permitsData: Array<PermitsType> = res?.data?.map(data => {
       const permitsType: PermitsType = {
+        id: data.id,
         orderId: data.orderId,
         status: ApplicationStatus[ApplicationStatus[data.status]],
         applicationType: ApplicationType[ApplicationType[data.applicationType]],
@@ -137,6 +138,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
         selectedDate: options.selectedDate
           ? new Date(options.selectedDate).toISOString()
           : '',
+        matchedApplications: options.matchedApplications,
       },
       paramsSerializer: {
         indexes: null,
@@ -145,6 +147,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
     const permitsData: Array<PermitsType> = res?.data?.items.map(data => {
       const permitsType: PermitsType = {
+        id: data.id,
         orderId: data.orderId,
         status: ApplicationStatus[ApplicationStatus[data.status]],
         applicationType: ApplicationType[ApplicationType[data.applicationType]],
@@ -259,6 +262,13 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
   async function matchApplication(userId: string, applicationId: string) {
     await axios.post(Endpoints.MATCH_APPLICATION_ENDPOINT, {
+      userId,
+      applicationId,
+    })
+  }
+
+  async function undoMatchApplication(userId: string, applicationId: string) {
+    await axios.post(Endpoints.UNDO_MATCH_APPLICATION_ENDPOINT, {
       userId,
       applicationId,
     })
@@ -539,5 +549,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     addHistoricalApplication,
     getAllLegacyApplications,
     matchApplication,
+    undoMatchApplication,
   }
 })

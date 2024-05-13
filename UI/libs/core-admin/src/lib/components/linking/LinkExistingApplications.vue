@@ -272,6 +272,7 @@ const options = ref<ApplicationTableOptionsType>({
   showingTodaysAppointments: false,
   selectedDate: '',
   applicationSearch: '',
+  matchedApplications: false,
 })
 
 const {

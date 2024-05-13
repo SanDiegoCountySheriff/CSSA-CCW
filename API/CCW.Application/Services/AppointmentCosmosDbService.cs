@@ -24,6 +24,11 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         return await _appointmentContainer.CreateItemAsync(appointmentWindow, new PartitionKey(appointmentWindow.Id.ToString()), null, cancellationToken);
     }
 
+    public async Task DeleteAppointment(string appointmentId, CancellationToken cancellationToken)
+    {
+        await _appointmentContainer.DeleteItemAsync<AppointmentWindow>(appointmentId, new PartitionKey(appointmentId), null, cancellationToken);
+    }
+
     public async Task<int> GetAppointmentLength(CancellationToken cancellationToken)
     {
         var appointmentManagement = await _appointmentManagementContainer.ReadItemAsync<AppointmentManagement>("1", new PartitionKey("1"), null, cancellationToken);

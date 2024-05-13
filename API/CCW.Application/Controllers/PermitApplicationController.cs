@@ -455,6 +455,44 @@ public class PermitApplicationController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
+    [HttpPost("undoMatchApplication")]
+    public async Task<IActionResult> UndoMatchApplication(MatchRequest data)
+    {
+        try
+        {
+            var user = await _userProfileCosmosDbService.GetUser(data.UserId, cancellationToken: default);
+
+            user.IsPendingReview = true;
+
+            await _userProfileCosmosDbService.UpdateUser(user, cancellationToken: default);
+
+            var application = await _applicationCosmosDbService.GetUserApplicationAsync(data.ApplicationId, cancellationToken: default);
+
+            if (!string.IsNullOrEmpty(application.Application.AppointmentId))
+            {
+                await _appointmentCosmosDbService.DeleteAppointment(application.Application.AppointmentId, cancellationToken: default);
+            }
+
+            await _applicationCosmosDbService.DeleteUserApplicationAsync(application.UserId, application.Id.ToString(), cancellationToken: default);
+
+            var legacyApplication = await _applicationCosmosDbService.GetLegacyApplication(application.Id.ToString(), cancellationToken: default);
+
+            legacyApplication.UserId = null;
+            legacyApplication.Application.AppointmentId = null;
+
+            await _applicationCosmosDbService.UpdateLegacyApplication(legacyApplication, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to undo match application");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
     [HttpPost("matchApplication")]
     public async Task<IActionResult> MatchApplication(MatchRequest data)
     {
@@ -546,7 +584,6 @@ public class PermitApplicationController : ControllerBase
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
             return NotFound("An error occur while trying to match the application");
-
         }
     }
 
@@ -874,5 +911,6 @@ public class PermitApplicationController : ControllerBase
         public string ApplicationSearch { get; set; }
         public bool ShowingTodaysAppointments { get; set; }
         public DateTimeOffset? SelectedDate { get; set; }
+        public bool MatchedApplications { get; set; }
     }
 }

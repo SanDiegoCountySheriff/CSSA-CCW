@@ -583,6 +583,7 @@ export type ApplicationTableOptionsType = {
   applicationTypes: ApplicationType[]
   showingTodaysAppointments: boolean
   selectedDate: string
+  matchedApplications: boolean
 }
 
 export type CompleteApplication = {

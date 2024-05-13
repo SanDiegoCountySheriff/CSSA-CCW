@@ -641,6 +641,11 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         var order = "";
         var limit = "OFFSET @offset LIMIT @itemsPerPage";
 
+        if (options.MatchedApplications)
+        {
+            where += "AND (a.IsMatchUpdated = true OR a.IsMatchUpdated = false) ";
+        }
+
         if (options.Statuses is not null && !options.Statuses.Contains(ApplicationStatus.None))
         {
             where += "AND (";
