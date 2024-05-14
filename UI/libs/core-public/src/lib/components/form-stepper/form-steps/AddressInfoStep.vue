@@ -116,6 +116,24 @@
             >
             </v-autocomplete>
 
+            <v-row
+              v-if="
+                model.application.currentAddress.state &&
+                model.application.citizenship.militaryStatus === 'Active' &&
+                model.application.currentAddress.state !== 'California'
+              "
+            >
+              <v-col>
+                <v-alert
+                  type="warning"
+                  outlined
+                >
+                  You'll need to upload your military orders in the required
+                  documents section.
+                </v-alert>
+              </v-col>
+            </v-row>
+
             <v-text-field
               v-if="
                 model.application.currentAddress.country !== 'United States'
