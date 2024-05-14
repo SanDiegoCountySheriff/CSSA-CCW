@@ -259,6 +259,30 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return res || {}
   }
 
+  async function printModificationApi() {
+    const applicationId = permitDetail.value.id
+    const formattedDateTime = formatDateTimeNow()
+    const fileName = `${applicationId}_${permitDetail.value.application.personalInfo.lastName}_${permitDetail.value.application.personalInfo.firstName}_Modification_${formattedDateTime}`
+
+    const res = await axios({
+      url: `${Endpoints.GET_PRINT_MODIFICATION_ENDPOINT}?applicationId=${applicationId}&fileName=${fileName}`,
+      method: 'PUT',
+      responseType: 'blob',
+    })
+
+    const uploadAdminDoc: UploadedDocType = {
+      documentType: 'Modification',
+      name: `${permitDetail.value.application.personalInfo.lastName}_${permitDetail.value.application.personalInfo.firstName}_Modification_${formattedDateTime}`,
+      uploadedBy: authStore.auth.userEmail,
+      uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
+    }
+
+    permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
+    updatePermitDetailApi(`Uploaded new ${uploadAdminDoc.documentType}`)
+
+    return res || {}
+  }
+
   function formatDateTimeNow() {
     const date = new Date(Date.now())
     const month =
@@ -460,6 +484,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getHistoryApi,
     getPermitSsn,
     printApplicationApi,
+    printModificationApi,
     printOfficialLicenseApi,
     printUnofficialLicenseApi,
     printLiveScanApi,

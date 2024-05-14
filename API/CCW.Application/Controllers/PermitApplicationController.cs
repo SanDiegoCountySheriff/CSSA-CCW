@@ -635,6 +635,45 @@ public class PermitApplicationController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
+    [Route("printModification")]
+    [HttpPut]
+    public async Task<IActionResult> PrintModification(string applicationId, string fileName, bool shouldAddDownloadFilename = true)
+    {
+        try
+        {
+            GetAADUserName(out string userName);
+            GetUserId(out string userId);
+
+            var userApplication = await _applicationCosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+
+            if (userApplication == null)
+            {
+                return NotFound("Permit application cannot be found.");
+            }
+
+            Response.Headers.Append("Content-Disposition", "inline");
+            Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+            var outStream = await _pdfService.GetModificationMemoryStream(userApplication, userId, fileName);
+
+            FileStreamResult fileStreamResultDownload = new FileStreamResult(outStream, "application/pdf");
+
+            if (shouldAddDownloadFilename)
+            {
+                fileStreamResultDownload.FileDownloadName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-") + fileName + ".pdf";
+            }
+
+            return fileStreamResultDownload;
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to print permit application.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
     [Route("printOfficialLicense")]
     [HttpPut]
     public async Task<IActionResult> PrintOfficialLicense(string applicationId, string fileName, bool shouldAddDownloadFilename = true)

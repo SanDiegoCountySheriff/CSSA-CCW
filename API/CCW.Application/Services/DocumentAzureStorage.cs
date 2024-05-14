@@ -20,6 +20,7 @@ public class DocumentAzureStorage : IDocumentAzureStorage
     private readonly string _sheriffLogo;
     private readonly string _applicationTemplate;
     private readonly string _unofficialPermitTemplate;
+    private readonly string _modificationTemplate;
     private readonly string _officialPermitTemplate;
     private readonly string _liveScanTemplate;
     private readonly string _revocationLetterTemplate;
@@ -36,6 +37,7 @@ public class DocumentAzureStorage : IDocumentAzureStorage
         _liveScanTemplate = documentSettings.GetSection("LiveScanTemplateName").Value;
         _revocationLetterTemplate = documentSettings.GetSection("RevocationTemplateName").Value;
         _adminSignatureFileName = documentSettings.GetSection("AdminSignatureFileName").Value;
+        _modificationTemplate = documentSettings.GetSection("AmendmentTemplateName").Value;
 
         var client = new SecretClient(new Uri(configuration.GetSection("KeyVault:VaultUri").Value),
             credential: new DefaultAzureCredential());
@@ -193,6 +195,17 @@ public class DocumentAzureStorage : IDocumentAzureStorage
         await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
 
         return await container.GetBlobClient(_unofficialPermitTemplate).OpenReadAsync(cancellationToken: cancellationToken);
+    }
+    public async Task<Stream> GetModificationTemplateAsync(CancellationToken cancellationToken)
+    {
+#if DEBUG
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
+#else
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
+#endif
+        await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
+
+        return await container.GetBlobClient(_modificationTemplate).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task SaveAdminApplicationPdfAsync(FormFile fileToSave, string fileName, CancellationToken cancellationToken)
