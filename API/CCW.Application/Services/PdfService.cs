@@ -1181,6 +1181,13 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[0].CITY[1]").SetValue(userApplication.Application.ModifiedAddress.City ?? "", true);
         form.GetField("form1[0].#subform[0].COUNTY[0]").SetValue(userApplication.Application.ModifiedAddress.County ?? "", true);
         form.GetField("form1[0].#subform[0].ZIP_CODE[0]").SetValue(userApplication.Application.ModifiedAddress.Zip ?? "", true);
+        if (userApplication.Application.Status == ApplicationStatus.ModificationApproved)
+        {
+            form.GetField("form1[0].#subform[0].CheckBox1[0]").SetValue("Yes", true);
+        }
+            
+        var addedWeapons = userApplication.Application.ModifyAddWeapons;
+        var deletedWeapons = userApplication.Application.ModifyDeleteWeapons;
 
         // docFileAll.Flush();
         form.FlattenFields();
