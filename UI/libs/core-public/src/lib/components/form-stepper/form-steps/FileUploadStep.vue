@@ -87,6 +87,7 @@
             :is-loading="loadingStates.MilitaryDoc"
             @file-opening="loadingStates.MilitaryDoc = true"
             @file-opened="loadingStates.MilitaryDoc = false"
+            :rules="militaryDocRules"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'MilitaryDoc'"
             @upload-files="files => handleMultiInput(files, 'MilitaryDoc')"
@@ -352,6 +353,21 @@ const proofOfResidence2Rules = computed(() => {
   })
 
   return [() => proofOfResidence2 || '2nd Proof of Residency is Required']
+})
+
+const militaryDocRules = computed(() => {
+  const militaryStatus = completeApplication.citizenship.militaryStatus
+  const addressState = completeApplication.currentAddress.state
+
+  if (militaryStatus === 'Active' && addressState !== 'California') {
+    const documentMilitaryDocument = completeApplication.uploadedDocuments.some(
+      obj => obj.documentType === 'MilitaryDocuments'
+    )
+
+    return [() => documentMilitaryDocument || 'Military Documents are Required']
+  }
+
+  return [() => true]
 })
 
 const isRenew = computed(() => {
