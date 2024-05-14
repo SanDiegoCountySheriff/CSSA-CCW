@@ -128,7 +128,7 @@
                   type="warning"
                   outlined
                 >
-                  You'll need to upload your military orders in the required
+                  You will need to upload your military orders in the required
                   documents section.
                 </v-alert>
               </v-col>
