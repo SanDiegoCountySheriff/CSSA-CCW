@@ -283,17 +283,20 @@ const { refetch: updatePermitDetails } = useQuery(
   }
 )
 
-const submittedDate = computed(
-  () =>
-    new Date(
+const submittedDate = computed(() => {
+  if (permitStore.getPermitDetail.application.submittedToLicensingDateTime) {
+    return new Date(
       permitStore.getPermitDetail.application
         .submittedToLicensingDateTime as string
     )?.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-    }) || ''
-)
+    })
+  }
+
+  return 'n/a'
+})
 
 function updateApplicationStatus(update: string) {
   state.update = `Changed application status to ${ApplicationStatus[update]}`

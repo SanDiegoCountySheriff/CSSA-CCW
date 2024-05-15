@@ -153,10 +153,10 @@ const headers = [
   { text: 'Application Type', value: 'applicationType' },
   { text: 'Appointment Status', value: 'appointmentStatus' },
   { text: 'Appointment Date/Time', value: 'appointmentDateTime' },
-  { text: 'Payment Status', value: 'paymentStatus' },
-  { text: 'Assigned User', value: 'assignedUser' },
+  { text: 'Payment Status', value: 'paymentStatus', sortable: false },
+  { text: 'Assigned User', value: 'assignedTo' },
   { text: 'Application Status', value: 'status' },
-  { text: 'Actions', value: 'actions' },
+  { text: 'Actions', value: 'actions', sortable: false },
 ]
 
 const { isLoading, isFetching, data, refetch } = useQuery(
