@@ -91,7 +91,7 @@ export type AdminUserType = {
 }
 
 export type UserType = {
-  id?: string
+  id: string
   email: string
   firstName: string
   lastName: string
@@ -577,12 +577,14 @@ export type ApplicationSummaryCount = {
 export type ApplicationTableOptionsType = {
   options: DataOptions
   search: string
+  applicationSearch: string | null
   statuses: ApplicationStatus[]
   paid: boolean
   appointmentStatuses: AppointmentStatus[]
   applicationTypes: ApplicationType[]
   showingTodaysAppointments: boolean
   selectedDate: string
+  matchedApplications: boolean
 }
 
 export type CompleteApplication = {
@@ -681,6 +683,7 @@ export type CompleteApplication = {
   paymentHistory: Array<PaymentHistoryType>
   userId: string
   id: string
+  isMatchUpdated: boolean | null
 }
 
 export type ThemeConfigType = {

@@ -39,4 +39,8 @@ export default class Routes {
   static get REFUND_REQUESTS_PATH() {
     return `/refunds`
   }
+
+  static get EXISTING_APPLICANTS_PATH() {
+    return `/existing-applicants`
+  }
 }

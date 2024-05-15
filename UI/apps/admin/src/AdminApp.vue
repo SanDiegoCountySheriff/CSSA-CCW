@@ -6,6 +6,7 @@
           isAdminUserLoading ||
           isAllAdminUsersLoading ||
           isRefundRequestLoading ||
+          isGetUnmatchedUsersCountLoading ||
           isAssignedApplicationsLoading) &&
         isAuthenticated
       "
@@ -58,6 +59,7 @@ import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
+import { useUserStore } from '@shared-ui/stores/userStore'
 import {
   MsalBrowser,
   getMsalInstance,
@@ -77,6 +79,7 @@ const authStore = useAuthStore()
 const paymentStore = usePaymentStore()
 const brandStore = useBrandStore()
 const configStore = useAppConfigStore()
+const userStore = useUserStore()
 const permitsStore = usePermitsStore()
 const adminUserStore = useAdminUserStore()
 const themeStore = useThemeStore()
@@ -111,6 +114,14 @@ useQuery(['logo'], brandStore.getAgencyLogoDocumentsApi, {
 const { isLoading: isRefundRequestLoading } = useQuery(
   ['getAllRefundRequests'],
   paymentStore.getAllRefundRequests,
+  {
+    enabled: validApiUrl,
+  }
+)
+
+const { isLoading: isGetUnmatchedUsersCountLoading } = useQuery(
+  ['getUnmatchedUsers'],
+  userStore.getUnmatchedUsers,
   {
     enabled: validApiUrl,
   }

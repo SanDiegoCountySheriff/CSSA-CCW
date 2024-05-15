@@ -1,5 +1,5 @@
 using CCW.Common.Enums;
-using CCW.Schedule.Entities;
+using CCW.Common.Models;
 using CCW.Schedule.Services.Contracts;
 using Microsoft.Azure.Cosmos;
 using PublicHoliday;

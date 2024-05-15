@@ -313,22 +313,25 @@ watch(valid, (newValue, oldValue) => {
 })
 
 onMounted(() => {
+  formatPhone('employerPhone')
+
   if (form.value) {
     form.value.validate()
   }
 })
 
 function formatPhone(modelName1) {
-  let validInput = model.value.application.workInformation[modelName1].replace(
-    /\D/g,
-    ''
-  )
-  const match = validInput.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
+  const phoneNumber = model.value.application.workInformation[modelName1]
 
-  if (match) {
-    model.value.application.workInformation[modelName1] = `(${match[1]})${
-      match[2] ? ' ' : ''
-    }${match[2]}${match[3] ? '-' : ''}${match[3]}`
+  if (phoneNumber) {
+    let validInput = phoneNumber.replace(/\D/g, '')
+    const match = validInput.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
+
+    if (match) {
+      model.value.application.workInformation[modelName1] = `(${match[1]})${
+        match[2] ? ' ' : ''
+      }${match[2]}${match[3] ? '-' : ''}${match[3]}`
+    }
   }
 }
 

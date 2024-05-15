@@ -4,7 +4,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <PermitCard1 :is-loading="isLoading" />
+        <PermitCard1 />
       </v-col>
     </v-row>
     <v-row>
@@ -139,7 +139,7 @@ import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useRoute } from 'vue-router/composables'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref, provide } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const permitStore = usePermitsStore()
@@ -184,9 +184,14 @@ const { refetch: getPortrait } = useQuery(
 
 const { isLoading, refetch } = useQuery(
   ['permitDetail'],
-  () => permitStore.getPermitDetailApi(route.params.orderId),
+  () =>
+    permitStore.getPermitDetailApi(route.params.orderId, route.params.isLegacy),
   { refetchOnMount: 'always', onSuccess: () => getPortrait() }
 )
+
+const readonly = computed(() => Boolean(route.params.isLegacy))
+
+provide('readonly', readonly)
 
 const stepIndex = ref(1)
 const reveal = ref(false)

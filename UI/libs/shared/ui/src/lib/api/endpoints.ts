@@ -95,6 +95,12 @@ export default class Endpoints {
     }/application/v1/permitapplication/getAllPermitsSummary`
   }
 
+  static get GET_ALL_LEGACY_APPLICATIONS_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getAllLegacyApplications`
+  }
+
   static get PUT_UPDATE_PERMIT_ENDPOINT() {
     return `${
       useAppConfigStore().appConfig.applicationApiBaseUrl
@@ -125,12 +131,6 @@ export default class Endpoints {
     }/application/v1/permitapplication/create`
   }
 
-  static get DELETE_PERMIT_ENDPOINT() {
-    return `${
-      useAppConfigStore().appConfig.applicationApiBaseUrl
-    }/application/v1/permitapplication/deleteApplication`
-  }
-
   static get GET_PERMIT_SSN_ENDPOINT() {
     return `${
       useAppConfigStore().appConfig.applicationApiBaseUrl
@@ -153,6 +153,18 @@ export default class Endpoints {
     return `${
       useAppConfigStore().appConfig.applicationApiBaseUrl
     }/application/v1/permitapplication/putAddHistoricalApplication`
+  }
+
+  static get MATCH_APPLICATION_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/matchApplication`
+  }
+
+  static get UNDO_MATCH_APPLICATION_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/undoMatchApplication`
   }
 
   static get PUT_ADD_HISTORICAL_APPLICATION_PUBLIC_ENDPOINT() {
@@ -355,6 +367,12 @@ export default class Endpoints {
     return `${
       useAppConfigStore().appConfig.userProfileApiBaseUrl
     }/userprofile/v1/adminuser/getAllAdminUsers`
+  }
+
+  static get GET_UNMATCHED_USERS_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.userProfileApiBaseUrl
+    }/userprofile/v1/userprofile/getUnmatchedUserProfiles`
   }
 
   /********DOCUMENTS******************/

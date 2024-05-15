@@ -4,7 +4,7 @@
       {{ $t('Admin Attached Documents:') }}
       <v-spacer></v-spacer>
       <SaveButton
-        :disabled="false"
+        :disabled="readonly"
         @on-save="handleSave"
       />
     </v-card-title>
@@ -81,20 +81,22 @@
 <script setup lang="ts">
 import SaveButton from './SaveButton.vue'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
-import { reactive } from 'vue'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
   formatDate,
   formatTime,
 } from '@shared-utils/formatters/defaultFormatters'
+import { inject, reactive } from 'vue'
 
 const emit = defineEmits(['on-save'])
 const permitStore = usePermitsStore()
 const documentStore = useDocumentsStore()
+const readonly = inject<boolean>('readonly')
 
 const state = reactive({
-  documents: permitStore.getPermitDetail.application.adminUploadedDocuments,
+  documents:
+    permitStore.getPermitDetail.application.adminUploadedDocuments || [],
   documentTypes: [
     'Unofficial_License',
     'Official_License',

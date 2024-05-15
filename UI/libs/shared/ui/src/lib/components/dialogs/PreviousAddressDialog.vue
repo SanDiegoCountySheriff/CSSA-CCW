@@ -5,6 +5,7 @@
   >
     <template #activator="{ on, attrs }">
       <v-btn
+        :disabled="readonly"
         small
         color="primary"
         v-bind="attrs"
@@ -170,9 +171,11 @@
 <script setup lang="ts">
 import { AddressInfoType } from '@shared-utils/types/defaultTypes'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
-import { reactive, ref } from 'vue'
+import { inject, reactive, ref } from 'vue'
 
 const emit = defineEmits(['get-previous-address-from-dialog'])
+
+const readonly = inject<boolean>('readonly')
 
 const state = reactive({
   address: {

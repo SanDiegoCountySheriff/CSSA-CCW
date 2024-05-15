@@ -1,5 +1,5 @@
 <template>
-  <v-container v-if="isFetching">
+  <v-container v-if="isFetching || queryClient.isMutating()">
     <Loader />
   </v-container>
 
@@ -75,7 +75,7 @@
           <v-btn
             v-else-if="
               authStore.getAuthState.isAuthenticated &&
-              data?.length === 0 &&
+              (data?.length === 0 || data === undefined) &&
               !userStore.getUserState.isPendingReview
             "
             @click="showDialog = true"
@@ -366,15 +366,16 @@ import Routes from '@core-public/router/routes'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useQuery } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
 import { useUserStore } from '@shared-ui/stores/userStore'
 import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useQuery, useQueryClient } from '@tanstack/vue-query'
 
 const brandStore = useBrandStore()
 const authStore = useAuthStore()
 const userStore = useUserStore()
 const router = useRouter()
+const queryClient = useQueryClient()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 const completeApplicationStore = useCompleteApplicationStore()
 const canGetAllUserApplications = computed(() => {

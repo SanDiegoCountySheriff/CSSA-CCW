@@ -5,6 +5,7 @@
   >
     <template #activator="{ attrs, on }">
       <v-btn
+        :disabled="readonly"
         v-on="on"
         v-bind="attrs"
         color="primary"
@@ -79,8 +80,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { inject, ref } from 'vue'
 
+const readonly = inject('readonly')
 const emit = defineEmits(['handle-save-expiration-date'])
 
 const dialog = ref(false)

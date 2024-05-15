@@ -498,6 +498,7 @@ export const defaultPermitState: CompleteApplication = {
   paymentHistory: [],
   id: '',
   userId: '',
+  isMatchUpdated: null,
 }
 
 export const defaultAllPermitsState = {

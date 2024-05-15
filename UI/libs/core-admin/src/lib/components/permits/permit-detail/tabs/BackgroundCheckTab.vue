@@ -14,12 +14,13 @@
                   <v-tooltip bottom>
                     <template #activator="{ on, attrs }">
                       <v-btn
-                        icon
-                        small
+                        v-on="on"
+                        v-bind="attrs"
+                        :disabled="readonly"
                         :input-value="active"
                         @click="handlePass(item.value, item.label)"
-                        v-bind="attrs"
-                        v-on="on"
+                        icon
+                        small
                       >
                         <v-icon
                           v-if="
@@ -53,12 +54,13 @@
                   <v-tooltip bottom>
                     <template #activator="{ on, attrs }">
                       <v-btn
-                        icon
-                        small
+                        v-on="on"
+                        v-bind="attrs"
+                        :disabled="readonly"
                         :input-value="active"
                         @click="handleFail(item.value, item.label)"
-                        v-bind="attrs"
-                        v-on="on"
+                        icon
+                        small
                       >
                         <v-icon
                           v-if="
@@ -308,7 +310,7 @@ import {
   formatInitials,
   formatTime,
 } from '@shared-utils/formatters/defaultFormatters'
-import { reactive, ref } from 'vue'
+import { inject, reactive, ref } from 'vue'
 
 interface IBackgroundCheckTabProps {
   isLoading: boolean
@@ -317,6 +319,8 @@ interface IBackgroundCheckTabProps {
 const props = withDefaults(defineProps<IBackgroundCheckTabProps>(), {
   isLoading: false,
 })
+
+const readonly = inject('readonly')
 
 const permitStore = usePermitsStore()
 const authStore = useAuthStore()

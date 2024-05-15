@@ -11,4 +11,5 @@ public interface ICosmosDbService
     Task<User> AddUserAsync(User user, CancellationToken cancellationToken);
     Task<User> GetUserAsync(string userId, CancellationToken cancellationToken);
     Task<IEnumerable<User>> GetAllUsers(CancellationToken cancellationToken);
+    Task<List<User>> GetUnmatchedUserProfiles(CancellationToken cancellationToken);
 }

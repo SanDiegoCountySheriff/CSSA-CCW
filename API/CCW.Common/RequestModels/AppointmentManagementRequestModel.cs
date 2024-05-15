@@ -1,11 +1,9 @@
 using Newtonsoft.Json;
 
-namespace CCW.Schedule.Entities;
+namespace CCW.Common.RequestModels;
 
-public class AppointmentManagement
+public class AppointmentManagementRequestModel
 {
-    [JsonProperty("id")]
-    public string Id { get; set; }
     [JsonProperty("daysOfTheWeek")]
     public List<string> DaysOfTheWeek { get; set; }
     [JsonProperty("firstAppointmentStartTime")]
@@ -25,3 +23,4 @@ public class AppointmentManagement
     [JsonProperty("startDate")]
     public DateTimeOffset StartDate { get; set; }
 }
+

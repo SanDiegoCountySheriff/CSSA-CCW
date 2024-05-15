@@ -1,4 +1,4 @@
-namespace CCW.Schedule.Models;
+namespace CCW.Common.RequestModels;
 
 public class OrganizationHolidaysRequestModel
 {

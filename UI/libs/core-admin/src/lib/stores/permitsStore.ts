@@ -1,5 +1,5 @@
 import Endpoints from '@shared-ui/api/endpoints'
-import { PermitsType } from '@core-admin/types'
+import { LegacyPermitsType, PermitsType } from '@core-admin/types'
 import axios from 'axios'
 import { defaultPermitState } from '@shared-utils/lists/defaultConstants'
 import { defineStore } from 'pinia'
@@ -70,6 +70,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
     const permitsData: Array<PermitsType> = res?.data?.map(data => {
       const permitsType: PermitsType = {
+        id: data.id,
         orderId: data.orderId,
         status: ApplicationStatus[ApplicationStatus[data.status]],
         applicationType: ApplicationType[ApplicationType[data.applicationType]],
@@ -137,6 +138,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
         selectedDate: options.selectedDate
           ? new Date(options.selectedDate).toISOString()
           : '',
+        matchedApplications: options.matchedApplications,
       },
       paramsSerializer: {
         indexes: null,
@@ -145,6 +147,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
     const permitsData: Array<PermitsType> = res?.data?.items.map(data => {
       const permitsType: PermitsType = {
+        id: data.id,
         orderId: data.orderId,
         status: ApplicationStatus[ApplicationStatus[data.status]],
         applicationType: ApplicationType[ApplicationType[data.applicationType]],
@@ -169,11 +172,71 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return res.data
   }
 
-  async function getPermitDetailApi(orderId: string) {
+  async function getAllLegacyApplications(
+    options: ApplicationTableOptionsType,
+    signal: AbortSignal | undefined
+  ): Promise<{
+    items: Array<LegacyPermitsType>
+    total: number
+  }> {
+    const res = await axios.get(
+      Endpoints.GET_ALL_LEGACY_APPLICATIONS_ENDPOINT,
+      {
+        signal,
+        params: {
+          page: options.options.page,
+          itemsPerPage: options.options.itemsPerPage,
+          sortBy: options.options.sortBy,
+          sortDesc: options.options.sortDesc,
+          groupBy: options.options.groupBy,
+          groupDesc: options.options.groupDesc,
+          statuses: options.statuses,
+          appointmentStatuses: options.appointmentStatuses,
+          applicationTypes: options.applicationTypes,
+          search: options.search,
+          applicationSearch: options.applicationSearch,
+          showingTodaysAppointments: options.showingTodaysAppointments,
+          selectedDate: options.selectedDate
+            ? new Date(options.selectedDate).toISOString()
+            : '',
+        },
+        paramsSerializer: {
+          indexes: null,
+        },
+      }
+    )
+
+    const permitsData: Array<LegacyPermitsType> = res?.data?.items.map(data => {
+      const permitsType: LegacyPermitsType = {
+        orderId: data.orderId,
+        status: ApplicationStatus[ApplicationStatus[data.status]],
+        applicationType: ApplicationType[ApplicationType[data.applicationType]],
+        name: formatName(data),
+        appointmentDateTime: data.appointmentDateTime
+          ? `${formatTime(data.appointmentDateTime)} on ${formatDate(
+              data.appointmentDateTime
+            )}`
+          : 'None',
+        idNumber: data.idNumber,
+        birthDate: data.birthDate,
+        permitNumber: data.permitNumber,
+        email: data.email,
+        id: data.id,
+      }
+
+      return permitsType
+    })
+
+    res.data.items = permitsData
+
+    return res.data
+  }
+
+  async function getPermitDetailApi(orderId: string, isLegacy = 'false') {
     const isComplete = true
 
     const res = await axios.get(
-      `${Endpoints.GET_AGENCY_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true&isComplete=${isComplete}`
+      `${Endpoints.GET_AGENCY_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true&isComplete=${isComplete}&isLegacy=${isLegacy}`
     )
 
     orderIds.set(orderId, res?.data || {})
@@ -195,6 +258,19 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     setHistory(reorder)
 
     return res?.data || {}
+  }
+
+  async function matchApplication(userId: string, applicationId: string) {
+    await axios.post(Endpoints.MATCH_APPLICATION_ENDPOINT, {
+      userId,
+      applicationId,
+    })
+  }
+
+  async function undoMatchApplication(applicationId: string) {
+    await axios.post(
+      `${Endpoints.UNDO_MATCH_APPLICATION_ENDPOINT}?applicationId=${applicationId}`
+    )
   }
 
   async function addHistoricalApplication(application: CompleteApplication) {
@@ -470,5 +546,8 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getApplicationSummaryCount,
     getAssignedApplicationsSummary,
     addHistoricalApplication,
+    getAllLegacyApplications,
+    matchApplication,
+    undoMatchApplication,
   }
 })

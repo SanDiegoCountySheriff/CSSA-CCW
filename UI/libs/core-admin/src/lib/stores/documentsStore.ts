@@ -105,6 +105,20 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     return res?.data || {}
   }
 
+  async function getUnmatchedUserDocument(name) {
+    const res = await axios
+      .get(
+        `${Endpoints.GET_DOCUMENT_AGENCY_FILE_ENDPOINT}?applicantFileName=${name}`,
+        { responseType: 'blob' }
+      )
+
+      .catch(err => {
+        window.console.warn(err)
+      })
+
+    return res?.data || {}
+  }
+
   async function editAdminApplicationFileName(oldName, newName) {
     try {
       await axios.post(
@@ -150,6 +164,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     formatName,
     setUserApplicationFile,
     getUserDocument,
+    getUnmatchedUserDocument,
     getAdminApplicationFile,
     postUploadAdminUserFile,
     deleteAdminApplicationFile,

@@ -10,4 +10,5 @@ public class UserPermitApplicationRequestModel
     public Guid Id { get; set; }
     [JsonProperty("userId")]
     public string UserId { get; set; }
+    public bool? IsMatchUpdated { get; set; }
 }

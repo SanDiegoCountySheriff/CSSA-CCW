@@ -6,7 +6,7 @@
           {{ $t('Citizenship Information') }}
           <v-spacer></v-spacer>
           <SaveButton
-            :disabled="!valid"
+            :disabled="!valid || readonly"
             @on-save="handleSave"
           />
         </v-card-title>
@@ -20,6 +20,7 @@
                   permitStore.getPermitDetail.application.citizenship.citizen
                 "
                 :label="$t('Citizen')"
+                :disabled="readonly"
               >
                 <v-radio
                   :value="true"
@@ -41,6 +42,7 @@
                     .militaryStatus
                 "
                 :items="items"
+                :readonly="readonly"
                 :label="$t('Military Status')"
                 :rules="[v => !!v || 'A military status is required.']"
                 outlined
@@ -78,6 +80,7 @@
                       .countryOfCitizenship
                   "
                   :items="countries"
+                  :readonly="readonly"
                   :label="$t('Country of Citizenship')"
                   :rules="[v => !!v || $t('You must enter a country')]"
                 >
@@ -90,6 +93,7 @@
                       .countryOfBirth
                   "
                   :items="countries"
+                  :readonly="readonly"
                   :label="$t('Country of Birth')"
                   :rules="[v => !!v || $t('You must enter a country')]"
                 >
@@ -103,6 +107,7 @@
                     permitStore.getPermitDetail.application.immigrantInformation
                       .immigrantAlien
                   "
+                  :disabled="readonly"
                   :label="$t('Immigrant Alien')"
                   row
                 >
@@ -124,6 +129,7 @@
                     permitStore.getPermitDetail.application.immigrantInformation
                       .nonImmigrantAlien
                   "
+                  :disabled="readonly"
                   :label="$t('Non-Immigrant Alien')"
                   row
                 >
@@ -150,8 +156,8 @@
 <script setup lang="ts">
 import SaveButton from './SaveButton.vue'
 import { countries } from '@shared-utils/lists/defaultConstants'
-import { ref } from 'vue'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { inject, ref } from 'vue'
 
 const emit = defineEmits(['on-save'])
 const items = ref([
@@ -162,6 +168,7 @@ const items = ref([
   'Never Served in the Military',
 ])
 const valid = ref(false)
+const readonly = inject<boolean>('readonly')
 
 const permitStore = usePermitsStore()
 

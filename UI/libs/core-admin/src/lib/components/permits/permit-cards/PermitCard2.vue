@@ -107,6 +107,7 @@
                         <v-btn
                           block
                           :loading="state.loading"
+                          :disabled="readonly"
                           v-bind="attrs"
                           v-on="on"
                           color="primary"
@@ -241,7 +242,10 @@
           :loading="props.isLoading"
         >
           <v-card-title
-            v-if="!permitStore.getPermitDetail.application.isComplete"
+            v-if="
+              !permitStore.getPermitDetail.application.isComplete &&
+              !permitStore.getPermitDetail.isMatchUpdated === false
+            "
             class="justify-center"
           >
             <v-icon
@@ -251,6 +255,19 @@
               mdi-alert
             </v-icon>
             Missing Requirement
+          </v-card-title>
+
+          <v-card-title
+            v-else-if="permitStore.getPermitDetail.isMatchUpdated === false"
+            class="justify-center"
+          >
+            <v-icon
+              color="error"
+              class="mr-2"
+            >
+              mdi-alert
+            </v-icon>
+            Waiting for Customer Verification
           </v-card-title>
 
           <v-card-title
@@ -344,6 +361,7 @@
                 <v-menu offset-y>
                   <template #activator="{ on }">
                     <v-btn
+                      :disabled="readonly"
                       color="primary"
                       v-on="on"
                       small
@@ -413,6 +431,7 @@
               >
                 <v-btn
                   v-if="showStart90DayCountdownButton"
+                  :disabled="readonly"
                   @click="handleStart90DayCountdown"
                   color="primary"
                   small
@@ -424,6 +443,7 @@
 
                 <v-btn
                   v-else-if="showPause90DayCountdownButton"
+                  :disabled="readonly"
                   @click="pause90DayCountdown"
                   color="primary"
                   small
@@ -435,6 +455,7 @@
 
                 <v-btn
                   v-else-if="showReactivate90DayCountdownButton"
+                  :disabled="readonly"
                   @click="reactivate90DayCountdown"
                   color="primary"
                   small
@@ -450,6 +471,7 @@
                 xl="6"
               >
                 <v-btn
+                  :disabled="readonly"
                   color="primary"
                   :href="`mailto:${permitStore.getPermitDetail.application.userEmail}`"
                   target="_blank"
@@ -509,6 +531,7 @@
               <v-col>
                 <v-btn
                   v-if="modificationReadyForApproval"
+                  :disabled="readonly"
                   @click="handleApproveModification"
                   color="primary"
                   block
@@ -520,6 +543,7 @@
 
                 <v-alert
                   v-if="modificationMissingChecklistItems"
+                  :disabled="readonly"
                   color="primary"
                   type="info"
                   dense
@@ -548,7 +572,7 @@
               <v-col>
                 <v-btn
                   @click="emit('on-check-name')"
-                  :disabled="!isModifyingName"
+                  :disabled="!isModifyingName || readonly"
                   :color="
                     permitStore.getPermitDetail.application.modifiedNameComplete
                       ? 'success'
@@ -580,7 +604,7 @@
               <v-col>
                 <v-btn
                   @click="emit('on-check-address')"
-                  :disabled="!isModifyingAddress"
+                  :disabled="!isModifyingAddress || readonly"
                   :color="
                     permitStore.getPermitDetail.application
                       .modifiedAddressComplete
@@ -615,7 +639,7 @@
               <v-col>
                 <v-btn
                   @click="emit('on-check-weapons')"
-                  :disabled="!isModifyingWeapon"
+                  :disabled="!isModifyingWeapon || readonly"
                   :color="
                     permitStore.getPermitDetail.application
                       .modifiedWeaponComplete
@@ -648,6 +672,7 @@
               <v-col>
                 <v-btn
                   @click="emit('on-check-documents')"
+                  :disabled="readonly"
                   :color="
                     permitStore.getPermitDetail.application.status ===
                     ApplicationStatus['Modification Approved']
@@ -898,6 +923,7 @@
                     permitStore.getPermitDetail.application
                       .appointmentStatus !== 3
                   "
+                  :disabled="readonly"
                   @click="handleCheckIn"
                   color="primary"
                   small
@@ -908,6 +934,7 @@
                 </v-btn>
                 <v-btn
                   v-else
+                  :disabled="readonly"
                   @click="handleSetAppointmentScheduled"
                   small
                   block
@@ -923,6 +950,7 @@
                     permitStore.getPermitDetail.application
                       .appointmentStatus !== 4
                   "
+                  :disabled="readonly"
                   @click="handleNoShow"
                   color="primary"
                   small
@@ -933,6 +961,7 @@
                 </v-btn>
                 <v-btn
                   v-else
+                  :disabled="readonly"
                   @click="handleSetAppointmentScheduled"
                   color="primary"
                   small
@@ -1046,7 +1075,7 @@ import {
   ApplicationType,
   CompleteApplication,
 } from '@shared-utils/types/defaultTypes'
-import { computed, reactive, ref } from 'vue'
+import { computed, inject, reactive, ref } from 'vue'
 import {
   getOriginalApplicationTypeModification,
   getOriginalApplicationTypeRenwal,
@@ -1061,6 +1090,8 @@ const props = withDefaults(defineProps<IPermitCard2Props>(), {
   isLoading: false,
   userPhoto: '',
 })
+
+const readonly = inject('readonly')
 
 const emit = defineEmits([
   'refetch',
@@ -1103,21 +1134,25 @@ const allowedExtension = [
 ]
 
 const isInitialPaymentComplete = computed(() => {
-  return (
-    permitStore.permitDetail.paymentHistory.some(ph => {
-      return (
-        (ph.paymentType === 0 ||
-          ph.paymentType === 1 ||
-          ph.paymentType === 2 ||
-          ph.paymentType === 3 ||
-          ph.paymentType === 8 ||
-          ph.paymentType === 9 ||
-          ph.paymentType === 10 ||
-          ph.paymentType === 11) &&
-        ph.successful === true
-      )
-    }) || permitStore.permitDetail.application.paymentStatus === 1
-  )
+  if (permitStore.permitDetail.paymentHistory) {
+    return (
+      permitStore.permitDetail.paymentHistory.some(ph => {
+        return (
+          (ph.paymentType === 0 ||
+            ph.paymentType === 1 ||
+            ph.paymentType === 2 ||
+            ph.paymentType === 3 ||
+            ph.paymentType === 8 ||
+            ph.paymentType === 9 ||
+            ph.paymentType === 10 ||
+            ph.paymentType === 11) &&
+          ph.successful === true
+        )
+      }) || permitStore.permitDetail.application.paymentStatus === 1
+    )
+  }
+
+  return false
 })
 
 const isRenewalPaymentComplete = computed(() => {
@@ -1600,52 +1635,64 @@ const isAppointmentLoading = computed(() => {
 })
 
 const isOfficialLicenseMissingInformation = computed(() => {
-  const uploadedDocuments =
-    permitStore.getPermitDetail.application.uploadedDocuments
-  const missingThumbprint = !uploadedDocuments.some(
-    doc => doc.documentType.toLowerCase().indexOf('thumbprint') !== -1
-  )
-  const missingPortrait = !uploadedDocuments.some(
-    doc => doc.documentType.toLowerCase().indexOf('portrait') !== -1
-  )
+  if (permitStore.getPermitDetail.application.uploadedDocuments) {
+    const uploadedDocuments =
+      permitStore.getPermitDetail.application.uploadedDocuments
+    const missingThumbprint = !uploadedDocuments.some(
+      doc => doc.documentType.toLowerCase().indexOf('thumbprint') !== -1
+    )
+    const missingPortrait = !uploadedDocuments.some(
+      doc => doc.documentType.toLowerCase().indexOf('portrait') !== -1
+    )
 
-  return missingThumbprint || missingPortrait
+    return missingThumbprint || missingPortrait
+  }
+
+  return true
 })
 
 const isUnofficialLicenseMissingInformation = computed(() => {
-  const uploadedDocuments =
-    permitStore.getPermitDetail.application.uploadedDocuments
-  const missingThumbprint = !uploadedDocuments.some(
-    doc => doc.documentType.toLowerCase().indexOf('thumbprint') !== -1
-  )
-  const missingPortrait = !uploadedDocuments.some(
-    doc => doc.documentType.toLowerCase().indexOf('portrait') !== -1
-  )
+  if (permitStore.getPermitDetail.application.uploadedDocuments) {
+    const uploadedDocuments =
+      permitStore.getPermitDetail.application.uploadedDocuments
+    const missingThumbprint = !uploadedDocuments.some(
+      doc => doc.documentType.toLowerCase().indexOf('thumbprint') !== -1
+    )
+    const missingPortrait = !uploadedDocuments.some(
+      doc => doc.documentType.toLowerCase().indexOf('portrait') !== -1
+    )
 
-  return missingThumbprint || missingPortrait
+    return missingThumbprint || missingPortrait
+  }
+
+  return true
 })
 
 const tooltipText = computed(() => {
-  const uploadedDocuments =
-    permitStore.getPermitDetail.application.uploadedDocuments
-  const missingThumbprint = !uploadedDocuments.some(
-    doc => doc.documentType.toLowerCase().indexOf('thumbprint') !== -1
-  )
-  const missingPortrait = !uploadedDocuments.some(
-    doc => doc.documentType.toLowerCase().indexOf('portrait') !== -1
-  )
+  if (permitStore.getPermitDetail.application.uploadedDocuments) {
+    const uploadedDocuments =
+      permitStore.getPermitDetail.application.uploadedDocuments
+    const missingThumbprint = !uploadedDocuments.some(
+      doc => doc.documentType.toLowerCase().indexOf('thumbprint') !== -1
+    )
+    const missingPortrait = !uploadedDocuments.some(
+      doc => doc.documentType.toLowerCase().indexOf('portrait') !== -1
+    )
 
-  let output = ''
+    let output = ''
 
-  if (missingThumbprint && missingPortrait) {
-    output = 'Please upload both the Thumbprint and Portrait documents.'
-  } else if (missingThumbprint) {
-    output = 'Please upload the Thumbprint document.'
-  } else if (missingPortrait) {
-    output = 'Please upload the Portrait document.'
+    if (missingThumbprint && missingPortrait) {
+      output = 'Please upload both the Thumbprint and Portrait documents.'
+    } else if (missingThumbprint) {
+      output = 'Please upload the Thumbprint document.'
+    } else if (missingPortrait) {
+      output = 'Please upload the Portrait document.'
+    }
+
+    return output
   }
 
-  return output
+  return ''
 })
 
 function handleCheckIn() {

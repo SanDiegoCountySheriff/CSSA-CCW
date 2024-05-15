@@ -15,6 +15,7 @@
 
           <v-btn
             v-if="editEnable"
+            :disabled="readonly"
             @click="openAddWeaponDialog"
             color="primary"
             small
@@ -112,11 +113,13 @@ interface IWeaponTableProps {
   editEnable?: boolean
   modifying: boolean
   weapons: Array<WeaponInfoType>
+  readonly: boolean
 }
 
 const props = withDefaults(defineProps<IWeaponTableProps>(), {
   editEnable: true,
   modifying: false,
+  readonly: false,
 })
 
 const emit = defineEmits([

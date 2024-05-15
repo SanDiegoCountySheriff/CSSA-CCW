@@ -26,6 +26,7 @@
             <v-select
               ref="select"
               :items="appType"
+              :readonly="readonly"
               label="Application Type"
               item-text="text"
               item-value="value"
@@ -46,6 +47,7 @@
             <v-select
               ref="select"
               :items="appStatus"
+              :readonly="readonly"
               label="Application Status"
               item-text="value"
               item-value="id"
@@ -102,10 +104,11 @@ import {
   ApplicationType,
   AppointmentStatus,
 } from '@shared-utils/types/defaultTypes'
-import { computed, reactive } from 'vue'
+import { computed, inject, reactive } from 'vue'
 
 const permitStore = usePermitsStore()
 const appointmentStore = useAppointmentsStore()
+const readonly = inject('readonly')
 
 const state = reactive({
   update: '',

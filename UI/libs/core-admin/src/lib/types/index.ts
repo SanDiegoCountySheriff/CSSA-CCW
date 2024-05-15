@@ -1,11 +1,9 @@
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 import {
-  AddressInfoType,
   ApplicationStatus,
   ApplicationType,
   AppointmentStatus,
   CostType,
-  PaymentStatus,
 } from '@shared-utils/types/defaultTypes'
 
 export type BrandType = {
@@ -69,6 +67,7 @@ export type AdminAppConfigType = {
 }
 
 export type PermitsType = {
+  id: string
   orderId: string
   name: string
   appointmentStatus: AppointmentStatus
@@ -80,6 +79,19 @@ export type PermitsType = {
   applicationType: ApplicationType
   assignedTo: string
   appointmentId: string
+}
+
+export type LegacyPermitsType = {
+  id: string
+  orderId: string
+  name: string
+  idNumber: string
+  birthDate: string
+  permitNumber: string
+  email: string
+  appointmentDateTime: string
+  status: ApplicationStatus
+  applicationType: ApplicationType
 }
 
 export type PdfValidationType = {

@@ -1,10 +1,13 @@
 using CCW.Common.Enums;
 using Newtonsoft.Json;
 
-namespace CCW.Schedule.Models;
+namespace CCW.Common.RequestModels;
 
-public class AppointmentWindowCreateRequestModel
+public class AppointmentWindowUpdateRequestModel
 {
+    [JsonProperty("id")]
+    public string Id { get; set; }
+
     [JsonProperty("start")]
     public DateTimeOffset Start { get; set; }
 

@@ -127,7 +127,7 @@
               md="6"
             >
               <FileUploadContainer
-                :accepted-formats="'image/png, image/jpeg, application/pdf'"
+                :accepted-formats="'image/png, image/jpeg'"
                 :document-label="'Photo of Drivers License'"
                 :is-loading="loadingStates.DriverLicense"
                 @file-opening="loadingStates.DriverLicense = true"
@@ -147,7 +147,7 @@
               md="6"
             >
               <FileUploadContainer
-                :accepted-formats="'image/png, image/jpeg, application/pdf'"
+                :accepted-formats="'image/png, image/jpeg'"
                 :document-label="'Photo of CCW Permit'"
                 :is-loading="loadingStates.CCWPermit"
                 @file-opening="loadingStates.CCWPermit = true"

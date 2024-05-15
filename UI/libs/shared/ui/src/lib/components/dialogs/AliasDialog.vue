@@ -5,6 +5,7 @@
   >
     <template #activator="{ on, attrs }">
       <v-btn
+        :disabled="readonly"
         small
         color="primary"
         v-bind="attrs"
@@ -156,6 +157,14 @@ import {
   requireReasonRuleSet,
 } from '@shared-ui/rule-sets/ruleSets'
 import { reactive, ref } from 'vue'
+
+interface AliasDialogProps {
+  readonly: boolean
+}
+
+const props = withDefaults(defineProps<AliasDialogProps>(), {
+  readonly: false,
+})
 
 const emit = defineEmits(['save-alias'])
 

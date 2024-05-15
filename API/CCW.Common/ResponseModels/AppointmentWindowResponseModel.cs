@@ -1,7 +1,7 @@
 using CCW.Common.Enums;
 using Newtonsoft.Json;
 
-namespace CCW.Schedule.Models;
+namespace CCW.Common.ResponseModels;
 
 public class AppointmentWindowResponseModel
 {

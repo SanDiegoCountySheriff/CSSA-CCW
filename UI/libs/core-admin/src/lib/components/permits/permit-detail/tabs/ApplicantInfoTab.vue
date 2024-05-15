@@ -7,7 +7,7 @@
         {{ $t('Personal Information') }}
         <v-spacer></v-spacer>
         <SaveButton
-          :disabled="!state.valid"
+          :disabled="!state.valid || readonly"
           @on-save="handleSave"
         />
       </v-card-title>
@@ -27,6 +27,7 @@
                   permitStore.getPermitDetail.application.personalInfo
                     .modifiedFirstName
                 "
+                :readonly="readonly"
                 label="Modified First Name"
                 color="primary"
                 outlined
@@ -40,6 +41,7 @@
                   permitStore.getPermitDetail.application.personalInfo
                     .modifiedMiddleName
                 "
+                :readonly="readonly"
                 label="Modified Middle Name"
                 color="primary"
                 outlined
@@ -53,6 +55,7 @@
                   permitStore.getPermitDetail.application.personalInfo
                     .modifiedLastName
                 "
+                :readonly="readonly"
                 label="Modified Last Name"
                 color="primary"
                 outlined
@@ -107,6 +110,7 @@
               v-model="
                 permitStore.getPermitDetail.application.personalInfo.lastName
               "
+              :readonly="readonly"
               :label="$t('Last name')"
               :rules="[v => !!v || 'Last name is required']"
               required
@@ -132,6 +136,7 @@
               v-model="
                 permitStore.getPermitDetail.application.personalInfo.firstName
               "
+              :readonly="readonly"
               :label="$t('First name')"
               :rules="[v => !!v || 'First name is required']"
               required
@@ -156,10 +161,11 @@
         <v-row>
           <v-col cols="6">
             <v-text-field
-              :label="$t('Middle name')"
               v-model="
                 permitStore.getPermitDetail.application.personalInfo.middleName
               "
+              :label="$t('Middle name')"
+              :readonly="readonly"
               outlined
               dense
             >
@@ -167,10 +173,11 @@
           </v-col>
           <v-col cols="6">
             <v-text-field
-              :label="$t('Maiden name')"
               v-model="
                 permitStore.getPermitDetail.application.personalInfo.maidenName
               "
+              :readonly="readonly"
+              :label="$t('Maiden name')"
               outlined
               dense
             >
@@ -180,10 +187,11 @@
         <v-row>
           <v-col cols="6">
             <v-text-field
-              :label="$t('Suffix')"
               v-model="
                 permitStore.getPermitDetail.application.personalInfo.suffix
               "
+              :readonly="readonly"
+              :label="$t('Suffix')"
               outlined
               dense
             >
@@ -192,10 +200,10 @@
           <v-col cols="6">
             <v-text-field
               v-if="!state.ssn"
+              v-model="permitStore.getPermitDetail.application.personalInfo.ssn"
               :label="$t('Partial Social Security Number')"
               readonly
               type="text"
-              v-model="permitStore.getPermitDetail.application.personalInfo.ssn"
               required
               outlined
               dense
@@ -247,9 +255,10 @@
               :label="'Marital status'"
               :rules="[v => !!v || $t('Marital status is required')]"
               :items="['Married', 'Single', 'Widowed', 'Divorced']"
+              :menu-props="{ bottom: true, offsetY: true }"
+              :readonly="readonly"
               outlined
               dense
-              :menu-props="{ bottom: true, offsetY: true }"
             >
               <template #append>
                 <v-icon
@@ -311,6 +320,7 @@
             <v-text-field
               :label="$t('Spouse Last Name')"
               :rules="[v => !!v || $t('Spouse Last name cannot be blank')]"
+              :readonly="readonly"
               required
               v-model="
                 permitStore.getPermitDetail.application.spouseInformation
@@ -324,6 +334,7 @@
           <v-col cols="6">
             <v-text-field
               :label="$t('Spouse Middle Name')"
+              :readonly="readonly"
               v-model="
                 permitStore.getPermitDetail.application.spouseInformation
                   .middleName
@@ -336,6 +347,7 @@
             <v-text-field
               :label="$t('Spouse First Name')"
               :rules="[v => !!v || $t('Spouse First name cannot be blank')]"
+              :readonly="readonly"
               v-model="
                 permitStore.getPermitDetail.application.spouseInformation
                   .firstName
@@ -348,6 +360,7 @@
           <v-col cols="6">
             <v-text-field
               :label="$t('Spouse Maiden Name')"
+              :readonly="readonly"
               v-model="
                 permitStore.getPermitDetail.application.spouseInformation
                   .maidenName
@@ -374,9 +387,9 @@
 <script setup lang="ts">
 import SaveButton from './SaveButton.vue'
 import { openPdf } from '@core-admin/components/composables/openDocuments'
-import { reactive } from 'vue'
 import { useMutation } from '@tanstack/vue-query'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { inject, reactive } from 'vue'
 
 const permitStore = usePermitsStore()
 const emit = defineEmits(['on-save'])
@@ -384,6 +397,7 @@ const state = reactive({
   ssn: '',
   valid: false,
 })
+const readonly = inject<boolean>('readonly')
 
 const {
   isError,

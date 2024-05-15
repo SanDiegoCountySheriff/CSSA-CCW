@@ -449,7 +449,6 @@ import { computed, onMounted, provide, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const applicationStore = useCompleteApplicationStore()
-const router = useRouter()
 const stepOneValid = ref(false)
 const stepTwoValid = ref(false)
 const stepThreeValid = ref(false)
@@ -458,6 +457,7 @@ const stepFiveValid = ref(false)
 const stepSixValid = ref(false)
 const stepSevenValid = ref(false)
 const stepEightValid = ref(false)
+const router = useRouter()
 
 const stepIndex = reactive({
   step: 0,
@@ -485,11 +485,28 @@ const { isLoading, mutate: updateMutation } = useMutation({
   },
 })
 
+const { refetch } = useQuery(
+  ['getApplicationsByUser'],
+  applicationStore.getAllUserApplicationsApi,
+  {
+    enabled: false,
+  }
+)
+
 const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
+  mutationKey: ['saveMutation'],
   mutationFn: () => {
+    if (
+      applicationStore.completeApplication.application.isUpdatingApplication
+    ) {
+      applicationStore.completeApplication.application.isUpdatingApplication =
+        false
+    }
+
     return applicationStore.updateApplication()
   },
   onSuccess: () => {
+    refetch()
     router.push('/')
   },
 })

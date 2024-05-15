@@ -42,6 +42,11 @@ const routes: Array<RouteConfig> = [
     component: () => import('@core-admin/views/RefundRequestsView.vue'),
   },
   {
+    path: Routes.EXISTING_APPLICANTS_PATH,
+    name: 'ExistingApplicants',
+    component: () => import('@core-admin/views/ExistingApplicantsView.vue'),
+  },
+  {
     // keep this at the very end
     path: '*',
     component: () => import('@core-admin/views/NotFoundView.vue'),

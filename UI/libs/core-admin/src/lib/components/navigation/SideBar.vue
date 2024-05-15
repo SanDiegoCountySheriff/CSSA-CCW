@@ -98,6 +98,26 @@
           </v-list-item>
 
           <v-list-item
+            v-if="authStore.auth.roles.includes('CCW-ADMIN-ROLE')"
+            :to="Routes.EXISTING_APPLICANTS_PATH"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-account-star</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="text-left">
+              {{ $t('Existing Applicants') }}
+              <v-chip
+                class="float-right"
+                color="primary"
+                x-small
+              >
+                {{ userStore.unmatchedUsersCount }}
+              </v-chip>
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item
             :to="Routes.SETTINGS_ROUTE_PATH"
             link
           >
@@ -148,6 +168,7 @@ import { useBrandStore } from '@shared-ui/stores/brandStore'
 import useEnvName from '@shared-ui/composables/useEnvName'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { useUserStore } from '@shared-ui/stores/userStore'
 import { computed, getCurrentInstance, ref, watch } from 'vue'
 
 interface ISideBarProps {
@@ -167,6 +188,7 @@ const authStore = useAuthStore()
 const permitStore = usePermitsStore()
 const paymentStore = usePaymentStore()
 const brandStore = useBrandStore()
+const userStore = useUserStore()
 const app = getCurrentInstance()
 
 const getAppTitle = useEnvName()

@@ -144,17 +144,24 @@
 
       <FormButtonContainer
         :valid="!isSignaturePadEmpty"
-        :loading="state.uploading"
+        :loading="state.uploading || isLoading"
         :all-steps-complete="props.allStepsComplete"
         :is-final-step="true"
         @continue="handleContinue"
         @save="handleSave"
+        @save-match="handleSaveMatch"
         v-on="$listeners"
       />
     </v-container>
 
     <v-container>
-      <v-row justify="center">
+      <v-row
+        v-if="
+          !applicationStore.completeApplication.application
+            .isUpdatingApplication && !state.isMatching
+        "
+        justify="center"
+      >
         <v-alert
           v-if="!isRenew"
           color="primary"
@@ -172,7 +179,7 @@
         <FormButtonContainer
           v-if="state.previousSignature"
           :valid="true"
-          :submitting="state.submitted"
+          :loading="state.uploading || isLoading"
           :all-steps-complete="props.allStepsComplete"
           :is-final-step="true"
           @continue="handleContinueWithoutUpload"
@@ -224,6 +231,7 @@ const state = reactive({
   previousSignature: false,
   submitted: false,
   uploading: false,
+  isMatching: false,
 })
 
 const model = computed({
@@ -231,9 +239,9 @@ const model = computed({
   set: (value: CompleteApplication) => emit('input', value),
 })
 
-const isMobile = computed(
-  () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
-)
+const isMobile = computed(() => {
+  return vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
+})
 
 onMounted(() => {
   for (let item of model.value.application.uploadedDocuments) {
@@ -283,18 +291,22 @@ const isRenew = computed(() => {
   )
 })
 
-const fileMutation = useMutation({
+const { mutate: fileMutation, isLoading } = useMutation({
   mutationFn: handleFileUpload,
   onSuccess: () => {
-    model.value.application.currentStep = 10
-    applicationStore.updateApplication()
-    router.push({
-      path: Routes.FINALIZE_ROUTE_PATH,
-      query: {
-        applicationId: model.value.id,
-        isComplete: model.value.application.isComplete.toString(),
-      },
-    })
+    if (!state.isMatching) {
+      model.value.application.currentStep = 10
+      applicationStore.updateApplication()
+      router.push({
+        path: Routes.FINALIZE_ROUTE_PATH,
+        query: {
+          applicationId: model.value.id,
+          isComplete: model.value.application.isComplete.toString(),
+        },
+      })
+    } else if (state.isMatching) {
+      emit('handle-save')
+    }
   },
   onError: () => {
     state.submitted = false
@@ -307,7 +319,7 @@ async function handleContinue() {
   const image = document.getElementById('signature')
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
+  // @ts-ignore
   image.toBlob(blob => {
     const file = new File([blob], 'signature.png', { type: 'image/png' })
     const form = new FormData()
@@ -316,10 +328,32 @@ async function handleContinue() {
 
     state.file = form
 
-    fileMutation.mutate()
+    fileMutation()
   })
 
   emit('handle-continue')
+}
+
+async function handleSaveMatch() {
+  state.submitted = true
+  state.uploading = true
+  state.isMatching = true
+  applicationStore.completeApplication.isMatchUpdated = true
+  applicationStore.completeApplication.application.isComplete = true
+  const image = document.getElementById('signature')
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  image.toBlob(blob => {
+    const file = new File([blob], 'signature.png', { type: 'image/png' })
+    const form = new FormData()
+
+    form.append('fileToUpload', file)
+
+    state.file = form
+
+    fileMutation()
+  })
 }
 
 function handleSave() {
@@ -369,7 +403,10 @@ function setAgreedDate(agreedDateKey) {
   if (
     applicationStore.completeApplication.application.agreements[
       agreedDateKey
-    ] == null
+    ] === null ||
+    applicationStore.completeApplication.application.agreements[
+      agreedDateKey
+    ] === ''
   ) {
     applicationStore.completeApplication.application.agreements[agreedDateKey] =
       new Date().toLocaleString()

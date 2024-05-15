@@ -15,11 +15,14 @@ export const phoneRuleSet = [
   v =>
     Boolean(/^\(\d{3}\)\s\d{3}-\d{4}$/.test(v)) ||
     i18n.t('Must only contain numbers'),
-  v => v.length === 14 || i18n.t('Must be 10 numbers in length'),
+  v =>
+    (Boolean(v) && v.length === 14) || i18n.t('Must be 10 numbers in length'),
 ]
 
 export const notRequiredPhoneRuleSet = [
-  v => v.length === 14 || v === '' || i18n.t('Must be 10 numbers in length'),
+  v =>
+    (Boolean(v) && (v.length === 14 || v === '')) ||
+    i18n.t('Must be 10 numbers in length'),
   v =>
     v === '' ||
     Boolean(/^\(\d{3}\)\s\d{3}-\d{4}$/.test(v)) ||

@@ -1,6 +1,7 @@
 using AutoMapper;
-using CCW.Schedule.Entities;
-using CCW.Schedule.Models;
+using CCW.Common.Models;
+using CCW.Common.RequestModels;
+using CCW.Common.ResponseModels;
 
 namespace CCW.Schedule.Profiles;
 

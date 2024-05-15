@@ -5,6 +5,7 @@
   >
     <template #activator="{ on, attrs }">
       <v-btn
+        :disabled="readonly"
         v-bind="attrs"
         v-on="on"
         color="primary"
@@ -47,7 +48,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { inject, ref } from 'vue'
+
+const readonly = inject('readonly')
 
 const emit = defineEmits(['on-ready-for-payment'])
 

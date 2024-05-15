@@ -112,7 +112,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     public async Task<PermitApplication> GetLastApplicationAsync(string userId, string applicationId,
         CancellationToken cancellationToken)
     {
-        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
+        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated FROM applications a " +
                           "WHERE a.userId = @userId and a.id = @applicationId " +
                           "Order by a.Application.OrderId DESC";
 
@@ -138,22 +138,23 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     }
 
     public async Task<PermitApplication> GetUserLastApplicationAsync(string userEmailOrOrderId, bool isOrderId,
-        bool isComplete, CancellationToken cancellationToken)
+        bool isComplete, bool isLegacy, CancellationToken cancellationToken)
     {
         var queryString = isOrderId
-            ? "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
+            ? "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated FROM applications a " +
               "WHERE a.Application.OrderId = @userEmailOrOrderId " +
               "Order by a.Application.OrderId DESC"
-            : "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
+            : "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated FROM applications a " +
               "WHERE a.Application.UserEmail = @userEmailOrOrderId " +
               "Order by a.Application.OrderId DESC";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
             .WithParameter("@userEmailOrOrderId", userEmailOrOrderId);
 
-        using FeedIterator<PermitApplication> filteredFeed = _container.GetItemQueryIterator<PermitApplication>(
-            queryDefinition: parameterizedQuery
-        );
+        using FeedIterator<PermitApplication> filteredFeed =
+            isLegacy ?
+            _legacyContainer.GetItemQueryIterator<PermitApplication>(queryDefinition: parameterizedQuery) :
+            _container.GetItemQueryIterator<PermitApplication>(queryDefinition: parameterizedQuery);
 
         if (filteredFeed.HasMoreResults)
         {
@@ -202,7 +203,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     public async Task<IEnumerable<PermitApplication>> GetAllApplicationsAsync(string userId, string userEmail,
         CancellationToken cancellationToken)
     {
-        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory FROM applications a " +
+        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.IsMatchUpdated FROM applications a " +
                           "WHERE a.userId = @userId and a.Application.UserEmail = @userEmail " +
                           "Order by a.Application.OrderId DESC";
 
@@ -338,6 +339,39 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return (results, count);
     }
 
+    public async Task<(IEnumerable<SummarizedLegacyApplication>, int)> GetAllLegacyApplicationsAsync(PermitsOptions options, CancellationToken cancellationToken)
+    {
+        var count = await GetLegacyApplicationCount(options, cancellationToken);
+
+        int totalPages = count / options.ItemsPerPage;
+        var isBeyondLastPage = options.Page > totalPages + 1;
+
+        while (isBeyondLastPage && options.Page > 1)
+        {
+            options.Page -= 1;
+            isBeyondLastPage = options.Page > totalPages;
+        }
+
+        QueryDefinition query = GetLegacyQueryDefinition(options);
+
+        var results = new List<SummarizedLegacyApplication>();
+
+        using (var appsIterator = _legacyContainer.GetItemQueryIterator<SummarizedLegacyApplication>(query))
+        {
+            while (appsIterator.HasMoreResults)
+            {
+                FeedResponse<SummarizedLegacyApplication> apps = await appsIterator.ReadNextAsync(cancellationToken);
+
+                foreach (var item in apps)
+                {
+                    results.Add(item);
+                }
+            }
+        }
+
+        return (results, count);
+    }
+
     public async Task<IEnumerable<SummarizedPermitApplication>> SearchApplicationsAsync(string searchValue,
         CancellationToken cancellationToken)
     {
@@ -451,16 +485,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             }
         }
 
-        await _container.PatchItemAsync<PermitApplication>(
-           application.Id.ToString(),
-           new PartitionKey(application.UserId),
-           new[]
-           {
-                PatchOperation.Set("/Application", application.Application)
-           },
-           null,
-           cancellationToken
-       );
+        await _container.UpsertItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
     }
 
     public async Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken)
@@ -508,11 +533,6 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         );
     }
 
-    public async Task DeleteApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken)
-    {
-        await _container.DeleteItemAsync<PermitApplication>(applicationId, new PartitionKey(userId), cancellationToken: cancellationToken);
-    }
-
     public async Task DeleteUserApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken)
     {
         await _container.DeleteItemAsync<PermitApplication>(applicationId, new PartitionKey(userId), cancellationToken: cancellationToken);
@@ -523,6 +543,24 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         QueryDefinition query = GetQueryDefinition(options, true);
 
         using FeedIterator<int> filteredFeed = _container.GetItemQueryIterator<int>(
+            queryDefinition: query
+        );
+
+        if (filteredFeed.HasMoreResults)
+        {
+            FeedResponse<int> response = await filteredFeed.ReadNextAsync(cancellationToken);
+
+            return response.Resource.FirstOrDefault();
+        }
+
+        return 0;
+    }
+
+    public async Task<int> GetLegacyApplicationCount(PermitsOptions options, CancellationToken cancellationToken)
+    {
+        QueryDefinition query = GetLegacyQueryDefinition(options, true);
+
+        using FeedIterator<int> filteredFeed = _legacyContainer.GetItemQueryIterator<int>(
             queryDefinition: query
         );
 
@@ -617,6 +655,11 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         var order = "";
         var limit = "OFFSET @offset LIMIT @itemsPerPage";
 
+        if (options.MatchedApplications)
+        {
+            where += "AND (a.IsMatchUpdated = true OR a.IsMatchUpdated = false) ";
+        }
+
         if (options.Statuses is not null && !options.Statuses.Contains(ApplicationStatus.None))
         {
             where += "AND (";
@@ -696,5 +739,128 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         }
 
         return queryDefinition;
+    }
+
+    private QueryDefinition GetLegacyQueryDefinition(PermitsOptions options, bool forCount = false)
+    {
+        var offset = 0;
+
+        if (options.Page != 1)
+        {
+            offset = options.ItemsPerPage * (options.Page - 1);
+        }
+
+        var select = "SELECT a.Application.PersonalInfo.LastName as LastName, a.Application.PersonalInfo.FirstName as FirstName, a.Application.Status as Status, a.Application.AppointmentDateTime as AppointmentDateTime, a.Application.ApplicationType as ApplicationType, a.Application.OrderId as OrderId, a.Application.IdInfo.IdNumber as IdNumber, a.Application.DOB.BirthDate as BirthDate, a.Application.License.PermitNumber as PermitNumber, a.Application.UserEmail as Email, a.id FROM a ";
+        var where = "WHERE (a.Application.IsComplete = true OR a.Application.IsComplete = false) AND a.userId = null ";
+        var order = "";
+        var limit = "OFFSET @offset LIMIT @itemsPerPage";
+
+        if (options.Statuses is not null && !options.Statuses.Contains(ApplicationStatus.None))
+        {
+            where += "AND (";
+
+            foreach (var status in options.Statuses)
+            {
+                where += $"a.Application.Status = {(int)status} OR ";
+            }
+
+            where = where.Remove(where.Length - 3);
+
+            where += ") ";
+        }
+
+        if (options.AppointmentStatuses is not null)
+        {
+            where += "AND (";
+
+            foreach (var status in options.AppointmentStatuses)
+            {
+                where += $"a.Application.AppointmentStatus = {(int)status} OR ";
+            }
+
+            where = where.Remove(where.Length - 3);
+
+            where += ") ";
+        }
+
+        if (options.ApplicationTypes is not null && !options.ApplicationTypes.Contains(ApplicationType.None))
+        {
+            where += "AND (";
+
+            foreach (var type in options.ApplicationTypes)
+            {
+                where += $"a.Application.ApplicationType = {(int)type} OR ";
+            }
+
+            where = where.Remove(where.Length - 3);
+
+            where += ") ";
+        }
+
+        if (!string.IsNullOrEmpty(options.Search))
+        {
+            where += "AND (" +
+                "CONTAINS(a.Application.PersonalInfo.LastName, @searchValue, true) OR " +
+                "CONTAINS(a.Application.PersonalInfo.FirstName, @searchValue, true) OR " +
+                "CONTAINS(a.Application.OrderId, @searchValue, true)) ";
+        }
+
+        if (!string.IsNullOrEmpty(options.ApplicationSearch))
+        {
+            where += "AND (" +
+                "CONTAINS(a.Application.PersonalInfo.LastName, @applicationSearchValue, true) OR " +
+                "CONTAINS(a.Application.PersonalInfo.FirstName, @applicationSearchValue, true) OR " +
+                "CONTAINS(a.Application.IdInfo.IdNumber, @applicationSearchValue, true) OR " +
+                "CONTAINS(a.Application.UserEmail, @applicationSearchValue, true)) ";
+        }
+
+        if (options.ShowingTodaysAppointments || options.SelectedDate != null)
+        {
+            where += "AND SUBSTRING(a.Application.AppointmentDateTime, 0, 10) = @today";
+        }
+
+        var limitString = forCount ? string.Empty : limit;
+        var selectString = forCount ? "SELECT VALUE Count(1) FROM a " : select;
+        var orderString = forCount ? string.Empty : order;
+
+        var queryString = $"{selectString} {where} {limitString} {orderString}";
+
+        var queryDefinition = new QueryDefinition(queryString);
+
+        if (!forCount)
+        {
+            queryDefinition.WithParameter("@offset", offset).WithParameter("@itemsPerPage", options.ItemsPerPage);
+        }
+
+        if (!string.IsNullOrEmpty(options.Search))
+        {
+            queryDefinition.WithParameter("@searchValue", options.Search);
+        }
+
+        if (!string.IsNullOrEmpty(options.ApplicationSearch))
+        {
+            queryDefinition.WithParameter("@applicationSearchValue", options.ApplicationSearch);
+        }
+
+        if (options.ShowingTodaysAppointments || options.SelectedDate != null)
+        {
+            queryDefinition.WithParameter("@today", options.SelectedDate != null ? options.SelectedDate?.ToString("yyyy-MM-dd") : DateTime.UtcNow.Date.ToString("yyyy-MM-dd"));
+        }
+
+        return queryDefinition;
+    }
+
+    public async Task<PermitApplication> GetLegacyApplication(string applicationId, CancellationToken cancellationToken)
+    {
+        return await _legacyContainer.ReadItemAsync<PermitApplication>(applicationId, new PartitionKey(applicationId), null, cancellationToken);
+    }
+
+    public async Task UpdateLegacyApplication(PermitApplication application, bool createApplication, CancellationToken cancellationToken)
+    {
+        if (createApplication)
+        {
+            await _container.CreateItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
+        }
+        await _legacyContainer.UpsertItemAsync(application, new PartitionKey(application.Id.ToString()), null, cancellationToken);
     }
 }

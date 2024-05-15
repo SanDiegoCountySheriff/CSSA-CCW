@@ -8,6 +8,7 @@
       >
         <v-btn
           v-if="!props.isFirstStep"
+          :loading="props.loading"
           @click="handlePreviousStep"
           color="primary"
           class="mr-3"
@@ -26,10 +27,21 @@
 
         <v-btn
           v-if="
-            !props.isFinalStep ||
-            !applicationStore.completeApplication.application
-              .isUpdatingApplication
+            props.isFinalStep &&
+            applicationStore.completeApplication.application
+              .isUpdatingApplication &&
+            applicationStore.completeApplication.isMatchUpdated !== false
           "
+          :loading="props.loading"
+          @click="handleSave"
+          color="primary"
+        >
+          <v-icon left>mdi-content-save</v-icon>
+          {{ $t('Save') }}
+        </v-btn>
+
+        <v-btn
+          v-if="!props.isFinalStep || isSubmittedAndMatchedWithoutAppointment"
           :disabled="!props.valid || props.loading || !props.allStepsComplete"
           :loading="props.loading"
           @click="handleContinue"
@@ -42,6 +54,21 @@
           >
             mdi-chevron-right
           </v-icon>
+        </v-btn>
+
+        <v-btn
+          v-if="
+            applicationStore.completeApplication.isMatchUpdated === false &&
+            props.isFinalStep &&
+            !isSubmittedAndMatchedWithoutAppointment
+          "
+          :disabled="!allStepsComplete"
+          :loading="props.loading"
+          @click="handleSaveMatched"
+          color="primary"
+        >
+          <v-icon left>mdi-content-save</v-icon>
+          {{ $t('Save') }}
         </v-btn>
       </v-col>
 
@@ -83,6 +110,7 @@
 <script setup lang="ts">
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
+import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { computed, inject } from 'vue'
 
 const isUpdatingAllStepsComplete = inject('allStepsComplete')
@@ -107,7 +135,7 @@ const props = withDefaults(defineProps<FormButtonContainerProps>(), {
   isModification: false,
 })
 
-const emit = defineEmits(['continue', 'save', 'previous-step'])
+const emit = defineEmits(['continue', 'save', 'previous-step', 'save-match'])
 
 const getButtonText = computed(() => {
   if (props.isModification && props.isFinalStep) {
@@ -115,6 +143,17 @@ const getButtonText = computed(() => {
   }
 
   return props.isFinalStep ? 'Finalize Application' : 'Next Step'
+})
+
+const isSubmittedAndMatchedWithoutAppointment = computed(() => {
+  return (
+    props.isFinalStep &&
+    applicationStore.completeApplication.isMatchUpdated === false &&
+    applicationStore.completeApplication.application.appointmentDateTime ===
+      null &&
+    applicationStore.completeApplication.application.status ===
+      ApplicationStatus.Submitted
+  )
 })
 
 function handleContinue() {
@@ -127,10 +166,9 @@ function handlePreviousStep() {
 
 function handleSave() {
   emit('save')
+}
 
-  if (applicationStore.completeApplication.application.isUpdatingApplication) {
-    applicationStore.completeApplication.application.isUpdatingApplication =
-      false
-  }
+function handleSaveMatched() {
+  emit('save-match')
 }
 </script>

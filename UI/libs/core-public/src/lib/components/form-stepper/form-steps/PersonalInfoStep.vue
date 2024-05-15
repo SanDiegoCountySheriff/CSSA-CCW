@@ -426,15 +426,7 @@
             <v-text-field
               v-model="formattedSSN"
               :label="$t('Social Security Number')"
-              :rules="[
-                v => !!v || $t('SSN cannot be blank'),
-                v =>
-                  /^[\d-]+$/.test(v) ||
-                  $t('SSN must contain only numbers and dashes'),
-                v =>
-                  (v.match(/\d/g) || []).length === 9 ||
-                  $t('SSN must be 9 characters in length'),
-              ]"
+              :rules="ssnRules"
               :dense="isMobile"
               @change="handleValidateForm"
               outlined
@@ -449,15 +441,7 @@
             <v-text-field
               v-model="formattedSSNConfirm"
               :label="$t('Confirm SSN')"
-              :rules="[
-                v => !!v || $t('SSN cannot be blank'),
-                v =>
-                  (v.match(/\d/g) || []).length === 9 ||
-                  $t('SSN must be 9 characters in length'),
-                v =>
-                  v.replace(/\D/g, '') === model.application.personalInfo.ssn ||
-                  $t('SSN does not match'),
-              ]"
+              :rules="ssnRules"
               :dense="isMobile"
               @change="handleValidateForm"
               outlined
@@ -662,15 +646,15 @@
         />
       </v-card-text>
 
-      <v-card-title v-if="!isMobile && !isRenew">
+      <v-card-title v-if="!isMobile && !showCharacterReferences">
         {{ $t('Character References') }}
       </v-card-title>
 
-      <v-card-subtitle v-if="isMobile && !isRenew">
+      <v-card-subtitle v-if="isMobile && !showCharacterReferences">
         {{ $t('Character References') }}
       </v-card-subtitle>
 
-      <v-card-text v-if="!isRenew">
+      <v-card-text v-if="!showCharacterReferences">
         <v-alert
           outlined
           type="info"
@@ -771,7 +755,10 @@
 <script setup lang="ts">
 import AliasDialog from '@shared-ui/components/dialogs/AliasDialog.vue'
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue'
-import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import {
+  ApplicationStatus,
+  CompleteApplication,
+} from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { TranslateResult } from 'vue-i18n'
 import { i18n } from '@core-public/plugins'
@@ -859,7 +846,30 @@ const formattedSSNConfirm = computed({
   },
 })
 
+const ssnRules = computed(() => {
+  return [
+    v => {
+      return Boolean(v) || 'SSN cannot be blank'
+    },
+    v => {
+      return /^[\d-]+$/.test(v) || 'SSN must contain only numbers and dashes'
+    },
+    v =>
+      (Boolean(v) && (v.match(/\d/g) || []).length === 9) ||
+      'SSN must be 9 characters in length',
+  ]
+})
+
 onMounted(() => {
+  formatPhone('contact', 'primaryPhoneNumber')
+  formatPhone('contact', 'cellPhoneNumber')
+  formatPhone('contact', 'workPhoneNumber')
+  formatPhone('spouseInformation', 'phoneNumber')
+
+  for (const reference of model.value.application.characterReferences) {
+    formatReferencePhone(reference)
+  }
+
   if (model.value.application.personalInfo.ssn) {
     ssnConfirm.value = model.value.application.personalInfo.ssn
   }
@@ -923,16 +933,17 @@ function handleValidateForm() {
 }
 
 function formatPhone(modelName1, modelName2) {
-  let validInput = model.value.application[modelName1][modelName2].replace(
-    /\D/g,
-    ''
-  )
-  const match = validInput.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
+  const phoneNumber = model.value.application[modelName1][modelName2]
 
-  if (match) {
-    model.value.application[modelName1][modelName2] = `(${match[1]})${
-      match[2] ? ' ' : ''
-    }${match[2]}${match[3] ? '-' : ''}${match[3]}`
+  if (phoneNumber) {
+    let validInput = phoneNumber.replace(/\D/g, '')
+    const match = validInput.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
+
+    if (match) {
+      model.value.application[modelName1][modelName2] = `(${match[1]})${
+        match[2] ? ' ' : ''
+      }${match[2]}${match[3] ? '-' : ''}${match[3]}`
+    }
   }
 }
 
@@ -964,6 +975,19 @@ const isRenew = computed(() => {
     applicationType === ApplicationType['Renew Reserve'] ||
     applicationType === ApplicationType['Renew Judicial'] ||
     applicationType === ApplicationType['Renew Employment']
+  )
+})
+
+const showCharacterReferences = computed(() => {
+  const applicationType = model.value.application.applicationType
+  const applicationStatus = model.value.application.status
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment'] ||
+    applicationStatus === ApplicationStatus['Permit Delivered']
   )
 })
 

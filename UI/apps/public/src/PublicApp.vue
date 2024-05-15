@@ -6,7 +6,7 @@
         v-if="
           isAgencyLogoLoading ||
           isBrandSettingLoading ||
-          isUserLoading ||
+          isUserFetching ||
           authStore.auth.handlingRedirectPromise
         "
       >
@@ -73,9 +73,7 @@ const brandStore = useBrandStore()
 const msalInstance = ref<MsalBrowser>()
 const userStore = useUserStore()
 const user = computed(() => userStore.userProfile)
-const canGetUserProfile = computed(() => {
-  return authStore.getAuthState.isAuthenticated
-})
+const canGetUserProfile = computed(() => authStore.getAuthState.isAuthenticated)
 
 provide(
   'msalInstance',
@@ -84,7 +82,7 @@ provide(
 
 const { mutate: createUser } = useMutation(
   ['createUserProfile'],
-  async () => await userStore.putCreateUser(user.value),
+  () => userStore.putCreateUser(user.value),
   {
     onSuccess: res => {
       userStore.setUser(res)
@@ -92,7 +90,7 @@ const { mutate: createUser } = useMutation(
   }
 )
 
-const { isFetching: isUserLoading } = useQuery(
+const { isFetching: isUserFetching } = useQuery(
   ['getUserProfile'],
   userStore.getUser,
   {
