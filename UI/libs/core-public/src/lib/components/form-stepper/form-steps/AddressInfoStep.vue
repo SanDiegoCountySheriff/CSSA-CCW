@@ -110,29 +110,13 @@
               :label="$t('State')"
               :dense="isMobile"
               :items="states"
+              :hint="militaryOutOfStateHint"
+              persistent-hint
               auto-select-first
               maxlength="100"
               outlined
             >
             </v-autocomplete>
-
-            <v-row
-              v-if="
-                model.application.currentAddress.state &&
-                model.application.citizenship.militaryStatus === 'Active' &&
-                model.application.currentAddress.state !== 'California'
-              "
-            >
-              <v-col>
-                <v-alert
-                  type="warning"
-                  outlined
-                >
-                  You will need to upload your military orders in the required
-                  documents section.
-                </v-alert>
-              </v-col>
-            </v-row>
 
             <v-text-field
               v-if="
@@ -589,6 +573,23 @@ const isRenew = computed(() => {
     applicationType === ApplicationType['Renew Judicial'] ||
     applicationType === ApplicationType['Renew Employment']
   )
+})
+
+
+const militaryOutOfStateHint = computed(() => {
+  const militaryStatus = model.value.application.citizenship.militaryStatus;
+  const driverLicenseState = model.value.application.idInfo.issuingState;
+  const currentAddressState = model.value.application.currentAddress.state;
+
+  if (
+    militaryStatus === 'Active' &&
+    (driverLicenseState !== 'California' ||
+      currentAddressState !== 'California')
+  ) {
+    return 'You will need to upload your military orders in the required documents section.';
+  }
+
+  return ''
 })
 
 const previousAddressRules = computed(() => {

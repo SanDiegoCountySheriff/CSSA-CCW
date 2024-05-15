@@ -70,6 +70,8 @@
               :label="$t(' Issuing State')"
               :rules="[v => !!v || $t('Issuing state is required')]"
               outlined
+              :hint="militaryOutOfStateHint"
+              persistent-hint
               :dense="isMobile"
               auto-select-first
             >
@@ -270,6 +272,18 @@ const isRenew = computed(() => {
     applicationType === ApplicationType['Renew Judicial'] ||
     applicationType === ApplicationType['Renew Employment']
   )
+})
+
+const militaryOutOfStateHint = computed(() => {
+  const militaryStatus = model.value.application.citizenship.militaryStatus;
+  const driverLicenseState = model.value.application.idInfo.issuingState;
+
+
+  if (militaryStatus === 'Active' && driverLicenseState !== 'California') {
+    return 'You will need to upload your military orders in the required documents section.';
+  }
+
+  return ''
 })
 
 onMounted(() => {
