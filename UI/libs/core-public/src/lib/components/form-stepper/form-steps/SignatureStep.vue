@@ -306,7 +306,6 @@ const { mutate: fileMutation, isLoading } = useMutation({
       })
     } else if (state.isMatching) {
       emit('handle-save')
-      // router.push('/')
     }
   },
   onError: () => {

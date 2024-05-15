@@ -1807,19 +1807,6 @@ function handleContinueApplication() {
 }
 
 function handleUpdateApplication() {
-  // const appointmentDateTime =
-  //   applicationStore.completeApplication.application.appointmentDateTime
-  // const appointmentDate = appointmentDateTime
-  //   ? new Date(Date.parse(appointmentDateTime))
-  //   : null
-  // const currentDate = new Date()
-
-  // if (
-  //   appointmentDate &&
-  //   currentDate < appointmentDate &&
-  //   applicationStore.completeApplication.application.appointmentStatus ===
-  //     AppointmentStatus.Scheduled
-  // ) {
   router.push({
     path: Routes.FORM_ROUTE_PATH,
     query: {
@@ -1831,7 +1818,6 @@ function handleUpdateApplication() {
   applicationStore.completeApplication.application.currentStep = 1
   applicationStore.completeApplication.application.isUpdatingApplication = true
   applicationStore.updateApplication()
-  //}
 }
 
 function handleModifyApplication() {
