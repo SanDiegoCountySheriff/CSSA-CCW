@@ -1549,6 +1549,7 @@
                     "
                     :label="$t('Date')"
                     :rules="[v => !!v || $t('Date is required')]"
+                    dense
                     outlined
                     hint="YYYY-MM-DD format"
                     prepend-inner-icon="mdi-calendar"
@@ -1582,6 +1583,7 @@
                   model.application.qualifyingQuestions.questionTwelve
                     .trafficViolations[index - 1].violation
                 "
+                dense
                 outlined
                 label="Violation/Accident"
                 :rules="[v => !!v || $t('Violation is required')]"
@@ -1607,6 +1609,7 @@
                   !model.application.qualifyingQuestions.questionTwelve
                     .updateInformation
                 "
+                dense
                 outlined
                 label="Agency"
               ></v-text-field>
@@ -1626,6 +1629,7 @@
                   !model.application.qualifyingQuestions.questionTwelve
                     .updateInformation
                 "
+                dense
                 outlined
                 label="Citation Number"
                 hint="If unknown please enter unknown"
@@ -1671,6 +1675,7 @@
                   .trafficViolationsExplanation
               "
               color="primary"
+              dense
               outlined
               label="Traffic Violations Explanation"
               hint="Please transcribe these violations into the form above.  Click 'Add' to add a traffic violation."
