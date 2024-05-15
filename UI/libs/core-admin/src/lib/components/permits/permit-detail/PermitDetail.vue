@@ -17,6 +17,7 @@
           @on-check-address="handleCheckAddress"
           @on-check-weapons="handleCheckWeapons"
           @on-check-documents="handleCheckDocuments"
+          @on-check-questions="handleCheckQuestions"
         />
       </v-col>
     </v-row>
@@ -248,6 +249,10 @@ function handleCheckWeapons() {
 
 function handleCheckDocuments() {
   state.tab = 10
+}
+
+function handleCheckQuestions() {
+  state.tab = 9
 }
 </script>
 

@@ -53,6 +53,24 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     return res?.data || {}
   }
 
+  async function addHistoricalApplicationPublic(
+    application: CompleteApplication
+  ) {
+    await axios
+      .put(
+        Endpoints.PUT_ADD_HISTORICAL_APPLICATION_PUBLIC_ENDPOINT,
+        application
+      )
+      .then(res => {
+        return res.data
+      })
+      .catch(err => {
+        window.console.log(err)
+
+        return Promise.reject()
+      })
+  }
+
   /**
    * Get all applications by the user
    * @param userEmail
@@ -115,6 +133,7 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
   }
 
   return {
+    addHistoricalApplicationPublic,
     allUserApplications,
     completeApplication,
     createApplication,

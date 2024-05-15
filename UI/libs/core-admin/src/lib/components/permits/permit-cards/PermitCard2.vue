@@ -388,13 +388,30 @@
               <v-col
                 v-if="
                   !permitStore.getPermitDetail.application
-                    .readyForInitialPayment && !isInitialPaymentComplete
+                    .readyForInitialPayment &&
+                  !isInitialPaymentComplete &&
+                  !isRenew
                 "
                 cols="12"
                 xl="6"
               >
                 <ReadyForPaymentDialog
-                  @on-ready-for-initial-payment="handleReadyForInitialPayment"
+                  @on-ready-for-payment="handleReadyForInitialPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForRenewalPayment &&
+                  !isRenewalPaymentComplete &&
+                  isRenew
+                "
+                cols="12"
+                xl="6"
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForRenewalPayment"
                 />
               </v-col>
 
@@ -471,10 +488,7 @@
       </v-col>
 
       <v-col
-        v-if="
-          permitStore.getPermitDetail.application.applicationType ===
-          ApplicationType['Modify Standard']
-        "
+        v-if="isModify"
         cols="4"
         class="pt-0"
       >
@@ -677,6 +691,131 @@
                     }}
                   </v-icon>
                   Check Documents
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col
+        v-else-if="isRenew"
+        cols="4"
+        class="pt-0"
+      >
+        <v-card
+          :loading="isAppointmentLoading"
+          class="d-flex flex-column fill-height"
+          outlined
+        >
+          <v-card-title class="justify-center">
+            <v-icon
+              v-if="
+                permitStore.getPermitDetail.application.status !==
+                ApplicationStatus['Renewal Approved']
+              "
+              color="primary"
+              class="mr-2"
+            >
+              mdi-shield-alert
+            </v-icon>
+
+            <v-icon
+              v-else
+              color="success"
+              class="mr-2"
+            >
+              mdi-shield-check
+            </v-icon>
+            Renewal
+          </v-card-title>
+
+          <v-spacer></v-spacer>
+
+          <v-card-text class="text-center">
+            <v-row>
+              <v-col>
+                <v-btn
+                  v-if="renewalReadyForApproval"
+                  @click="handleApproveRenewal"
+                  color="primary"
+                  block
+                  small
+                >
+                  <v-icon left>mdi-check-bold</v-icon>
+                  Approve Renewal
+                </v-btn>
+
+                <v-alert
+                  v-if="renewalMissingChecklistItems"
+                  color="primary"
+                  type="info"
+                  dense
+                  outlined
+                >
+                  <span
+                    :class="
+                      themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                    "
+                  >
+                    Approve Checklist Items Next
+                  </span>
+                </v-alert>
+
+                <FinishRenewalDialog
+                  v-if="
+                    permitStore.getPermitDetail.application.status ===
+                    ApplicationStatus['Renewal Approved']
+                  "
+                  @handle-finish-renewal="handleFinishRenewal"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-btn
+                  @click="emit('on-check-documents')"
+                  :color="
+                    permitStore.getPermitDetail.application.status ===
+                    ApplicationStatus['Renewal Approved']
+                      ? 'success'
+                      : 'primary'
+                  "
+                  block
+                  small
+                >
+                  <v-icon left>
+                    {{
+                      permitStore.getPermitDetail.application.status ===
+                      ApplicationStatus['Renewal Approved']
+                        ? 'mdi-check-bold'
+                        : 'mdi-file-document-check'
+                    }}
+                  </v-icon>
+                  Check Documents
+                </v-btn>
+              </v-col>
+              <v-col>
+                <v-btn
+                  @click="emit('on-check-questions')"
+                  :color="
+                    permitStore.getPermitDetail.application.status ===
+                    ApplicationStatus['Renewal Approved']
+                      ? 'success'
+                      : 'primary'
+                  "
+                  block
+                  small
+                >
+                  <v-icon left>
+                    {{
+                      permitStore.getPermitDetail.application.status ===
+                      ApplicationStatus['Renewal Approved']
+                        ? 'mdi-check-bold'
+                        : 'mdi-file-document-check'
+                    }}
+                  </v-icon>
+                  Check Survey Details
                 </v-btn>
               </v-col>
             </v-row>
@@ -917,10 +1056,10 @@ import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vu
 import ExpirationDateDialog from '@core-admin/components/dialogs/ExpirationDateDialog.vue'
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
 import FinishModificationDialog from '@core-admin/components/dialogs/FinishModificationDialog.vue'
+import FinishRenewalDialog from '@core-admin/components/dialogs/FinishRenewalDialog.vue'
 import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import ReadyForPaymentDialog from '@core-admin/components/dialogs/ReadyForPaymentDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
-import { getOriginalApplicationTypeModification } from '@shared-ui/composables/getOriginalApplicationType'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
@@ -937,6 +1076,10 @@ import {
   CompleteApplication,
 } from '@shared-utils/types/defaultTypes'
 import { computed, inject, reactive, ref } from 'vue'
+import {
+  getOriginalApplicationTypeModification,
+  getOriginalApplicationTypeRenwal,
+} from '@shared-ui/composables/getOriginalApplicationType'
 
 interface IPermitCard2Props {
   isLoading: boolean
@@ -956,6 +1099,7 @@ const emit = defineEmits([
   'on-check-address',
   'on-check-weapons',
   'on-check-documents',
+  'on-check-questions',
 ])
 
 const state = reactive({
@@ -1011,6 +1155,44 @@ const isInitialPaymentComplete = computed(() => {
   return false
 })
 
+const isRenewalPaymentComplete = computed(() => {
+  return (
+    permitStore.permitDetail.paymentHistory.some(ph => {
+      return (
+        (ph.paymentType === 8 ||
+          ph.paymentType === 9 ||
+          ph.paymentType === 10 ||
+          ph.paymentType === 11) &&
+        ph.successful === true
+      )
+    }) || permitStore.permitDetail.application.paymentStatus === 1
+  )
+})
+
+const isRenew = computed(() => {
+  const applicationType =
+    permitStore.getPermitDetail.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment']
+  )
+})
+
+const isModify = computed(() => {
+  const applicationType =
+    permitStore.getPermitDetail.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Modify Standard'] ||
+    applicationType === ApplicationType['Modify Reserve'] ||
+    applicationType === ApplicationType['Modify Judicial'] ||
+    applicationType === ApplicationType['Modify Employment']
+  )
+})
+
 const { mutate: updatePermitDetails, isLoading } = useMutation({
   mutationFn: () =>
     permitStore.updatePermitDetailApi(`Updated ${changed.value}`),
@@ -1063,6 +1245,18 @@ const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
 function handleApproveModification() {
   permitStore.getPermitDetail.application.status =
     ApplicationStatus['Modification Approved']
+
+  changed.value = 'Application Status - Modification Approved'
+
+  updatePermitDetails()
+}
+
+function handleApproveRenewal() {
+  permitStore.getPermitDetail.application.status =
+    ApplicationStatus['Renewal Approved']
+
+  changed.value = 'Application Status - Renewal Approved'
+
   updatePermitDetails()
 }
 
@@ -1076,6 +1270,8 @@ async function handleFinishModification() {
   const app = permitStore.getPermitDetail.application
 
   app.status = ApplicationStatus['Permit Delivered']
+
+  changed.value = 'Modification - Permit Delivered'
 
   app.applicationType = getOriginalApplicationTypeModification(
     app.applicationType
@@ -1152,6 +1348,18 @@ async function handleFinishModification() {
   updatePermitDetails()
 }
 
+function handleFinishRenewal() {
+  const app = permitStore.getPermitDetail.application
+
+  app.status = ApplicationStatus['Permit Delivered']
+
+  app.applicationType = getOriginalApplicationTypeRenwal(app.applicationType)
+
+  changed.value = 'Renewal - Permit Delivered'
+
+  updatePermitDetails()
+}
+
 function handleSaveExpirationDate(expirationDate: string) {
   changed.value = 'Expiration Date'
 
@@ -1206,6 +1414,41 @@ const modificationReadyForApproval = computed(() => {
   )
 })
 
+const renewalReadyForApproval = computed(() => {
+  const ciiNumberComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.ciiNumber?.value ===
+    true
+
+  const dojComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.doj?.value === true
+
+  const fbiComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.fbi?.value === true
+
+  const dojLetterComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.dojApprovalLetter
+      ?.value === true
+
+  const sidLettersCompelete =
+    permitStore.getPermitDetail.application.backgroundCheck.sidLettersReceived
+      ?.value === true
+
+  const probationsComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.probations
+      ?.value === true
+
+  return (
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Renewal Approved'] &&
+    ciiNumberComplete &&
+    dojComplete &&
+    fbiComplete &&
+    dojLetterComplete &&
+    sidLettersCompelete &&
+    probationsComplete
+  )
+})
+
 const modificationMissingChecklistItems = computed(() => {
   const checkListAddressComplete =
     permitStore.getPermitDetail.application.modifiedAddressComplete !== false &&
@@ -1231,6 +1474,41 @@ const modificationMissingChecklistItems = computed(() => {
     (!checkListAddressComplete ||
       !checkListNameComplete ||
       !checkListWeaponComplete)
+  )
+})
+
+const renewalMissingChecklistItems = computed(() => {
+  const ciiNumberComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.ciiNumber?.value ===
+    true
+
+  const dojComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.doj?.value === true
+
+  const fbiComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.fbi?.value === true
+
+  const dojLetterComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.dojApprovalLetter
+      ?.value === true
+
+  const sidLettersCompelete =
+    permitStore.getPermitDetail.application.backgroundCheck.sidLettersReceived
+      ?.value === true
+
+  const probationsComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.probations
+      ?.value === true
+
+  return (
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Renewal Approved'] &&
+    (!ciiNumberComplete ||
+      !dojComplete ||
+      !fbiComplete ||
+      !dojLetterComplete ||
+      !sidLettersCompelete ||
+      !probationsComplete)
   )
 })
 
@@ -1572,6 +1850,12 @@ async function handleSaveReschedule(reschedule) {
 function handleReadyForInitialPayment() {
   changed.value = 'Marked ready for initial payment'
   permitStore.getPermitDetail.application.readyForInitialPayment = true
+  updatePermitDetails()
+}
+
+function handleReadyForRenewalPayment() {
+  changed.value = 'Marked ready for renewal payment'
+  permitStore.getPermitDetail.application.readyForRenewalPayment = true
   updatePermitDetails()
 }
 </script>

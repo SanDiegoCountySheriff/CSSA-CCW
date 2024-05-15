@@ -1050,6 +1050,8 @@ public class PdfService : IPdfService
         form.GetField("CITY").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
         form.GetField("STATE").SetValue(GetStateByName(userApplication.Application.CurrentAddress?.State) ?? "", true);
         form.GetField("ZIP").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
+        form.GetField("DOJ").SetValue("true");
+        form.GetField("FBI").SetValue("true");
         docFileAll.Flush();
         form.FlattenFields();
         docFileAll.Close();
@@ -1068,8 +1070,9 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantSignatureImageForApplication(PermitApplication userApplication, Document mainDocument)
     {
-        string fullFilename = $"{userApplication.UserId}_{userApplication.Application.PersonalInfo.LastName}_{userApplication.Application.PersonalInfo.FirstName}_Signature";
-        var imageBinaryData = await _documentService.GetApplicantImageAsync(fullFilename, cancellationToken: default);
+
+        var fullFileName = BuildApplicantDocumentName(userApplication, "Signature");
+        var imageBinaryData = await _documentService.GetApplicantImageAsync(fullFileName, cancellationToken: default);
 
         var imageData = ImageDataFactory.Create(imageBinaryData);
 
@@ -1649,13 +1652,13 @@ public class PdfService : IPdfService
         docFileAll.Add(leftImage);
     }
 
-    private string BuildApplicantDocumentName(PermitApplication userApplication, string documentName)
+    private string BuildApplicantDocumentName(PermitApplication userApplication, string documentType)
     {
-        string fullFilename = userApplication.UserId + "_" +
-            userApplication.Application.PersonalInfo?.LastName + "_" +
-            userApplication.Application.PersonalInfo?.FirstName + "_" + documentName;
+        var matchingDocument = userApplication.Application.UploadedDocuments.FirstOrDefault(doc => doc.DocumentType == documentType);
 
-        return fullFilename;
+        string fullFileName = $"{userApplication.UserId}_{matchingDocument.Name}";
+
+        return fullFileName;
     }
 
     private async Task<ImageData> GetImageData(string fileName)

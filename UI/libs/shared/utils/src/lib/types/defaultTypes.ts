@@ -513,6 +513,7 @@ export enum ApplicationStatus {
   'Ready To Issue',
   'Waiting For Customer',
   'Modification Approved',
+  'Renewal Approved',
 }
 
 export enum PaymentType {
@@ -674,7 +675,9 @@ export type CompleteApplication = {
       falseInfoAgreedDate: string | null
     }
     readyForInitialPayment: boolean
+    readyForRenewalPayment: boolean
     modificationNumber: number
+    renewalNumber: number
   }
   history: Array<HistoryType>
   paymentHistory: Array<PaymentHistoryType>

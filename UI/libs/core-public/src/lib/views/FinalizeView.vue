@@ -46,6 +46,40 @@
       </v-container>
 
       <v-container v-else>
+        <v-row
+          v-if="isRenew"
+          class="mb-5 mt-5 text-center"
+        >
+          <v-col>
+            <v-btn
+              :loading="isUpdateLoading || isUpdatePaymentHistoryLoading"
+              color="primary"
+              @click="handleSubmit"
+            >
+              {{ $t('Submit Renewal') }}
+            </v-btn>
+          </v-col>
+        </v-row>
+
+        <v-row
+          v-if="isRenew"
+          justify="center"
+          class="mt-3"
+        >
+          <v-alert
+            type="info"
+            color="primary"
+            outlined
+          >
+            <span
+              :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
+            >
+              Review your information before submitting your renewal
+              application. You will be notified to pay at a later date.
+            </span>
+          </v-alert>
+        </v-row>
+
         <v-row class="mt-3 mb-3">
           <v-col>
             <FinalizeContainer />
@@ -53,6 +87,7 @@
         </v-row>
 
         <v-row
+          v-if="!isRenew"
           justify="center"
           class="mt-3"
         >
@@ -71,7 +106,7 @@
           </v-alert>
         </v-row>
 
-        <template v-if="appConfigStore.appConfig.payBeforeSubmit && isRenew">
+        <template v-if="appConfigStore.appConfig.payBeforeSubmit">
           <v-row class="mt-3 mb-3">
             <v-col>
               <PaymentContainer
@@ -189,21 +224,6 @@
                 </v-alert>
               </v-card>
             </template>
-          </v-col>
-        </v-row>
-
-        <v-row>
-          <v-col>
-            <v-btn
-              v-if="isRenew"
-              class="mb-10"
-              :disabled="!isInitialPaymentComplete"
-              :loading="isUpdateLoading || isUpdatePaymentHistoryLoading"
-              color="primary"
-              @click="handleSubmit"
-            >
-              {{ $t('Submit Application') }}
-            </v-btn>
           </v-col>
         </v-row>
       </v-container>

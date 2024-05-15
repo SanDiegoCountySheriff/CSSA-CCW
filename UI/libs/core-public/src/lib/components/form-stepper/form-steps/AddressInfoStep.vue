@@ -22,6 +22,7 @@
           md="6"
         >
           <v-alert
+            :class="{ 'mt-5': isMobile }"
             type="info"
             color="primary"
             dark
@@ -114,6 +115,24 @@
               outlined
             >
             </v-autocomplete>
+
+            <v-row
+              v-if="
+                model.application.currentAddress.state &&
+                model.application.citizenship.militaryStatus === 'Active' &&
+                model.application.currentAddress.state !== 'California'
+              "
+            >
+              <v-col>
+                <v-alert
+                  type="warning"
+                  outlined
+                >
+                  You will need to upload your military orders in the required
+                  documents section.
+                </v-alert>
+              </v-col>
+            </v-row>
 
             <v-text-field
               v-if="

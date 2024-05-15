@@ -149,9 +149,10 @@ public class PaymentController : ControllerBase
             var paymentHistory = new PaymentHistory();
 
             var failedPaymentHistory = application.PaymentHistory.Where(ph => ph.Successful == false && ph.PaymentType == paymentType).FirstOrDefault();
-            var duplicatePaymentHistory = application.PaymentHistory.Where(ph => ph.PaymentType == paymentType && ph.ModificationNumber == application.Application.ModificationNumber).FirstOrDefault();
+            var duplicateModificationPaymentHistory = application.PaymentHistory.Where(ph => ph.PaymentType == paymentType && ph.ModificationNumber == application.Application.ModificationNumber).FirstOrDefault();
+            var duplicatePaymentHistory = application.PaymentHistory.Where(ph => ph.PaymentType == paymentType && ph.TransactionId == transactionId).FirstOrDefault();
 
-            if (duplicatePaymentHistory != null)
+            if (duplicateModificationPaymentHistory != null || duplicatePaymentHistory != null)
             {
                 return new UnprocessableEntityResult();
             }
@@ -174,6 +175,11 @@ public class PaymentController : ControllerBase
                 if (paymentType is Common.Enums.PaymentType.InitialStandard or Common.Enums.PaymentType.InitialJudicial or Common.Enums.PaymentType.InitialReserve or Common.Enums.PaymentType.InitialEmployment)
                 {
                     application.Application.ReadyForInitialPayment = false;
+                }
+
+                if (paymentType is Common.Enums.PaymentType.RenewalStandard or Common.Enums.PaymentType.RenewalJudicial or Common.Enums.PaymentType.RenewalReserve or Common.Enums.PaymentType.RenewalEmployment)
+                {
+                    application.Application.ReadyForRenewalPayment = false;
                 }
 
                 if (paymentType is Common.Enums.PaymentType.ModificationStandard or Common.Enums.PaymentType.ModificationJudicial or Common.Enums.PaymentType.ModificationReserve or Common.Enums.PaymentType.ModificationEmployment)
@@ -348,6 +354,10 @@ public class PaymentController : ControllerBase
     static string GetResponseEndpoint(string paymentType)
     {
         if (paymentType is "InitialEmployment" or "InitialJudicial" or "InitialReserve" or "InitialStandard")
+        {
+            return "application-details";
+        }
+        if (paymentType is "RenewalEmployment" or "RenewalJudicial" or "RenewalReserve" or "RenewalStandard")
         {
             return "application-details";
         }

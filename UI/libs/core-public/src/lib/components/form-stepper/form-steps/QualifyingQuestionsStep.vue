@@ -19,6 +19,7 @@
           md="6"
         >
           <v-alert
+            :class="{ 'mt-5': isMobile }"
             type="info"
             color="primary"
             dark
@@ -2872,6 +2873,7 @@
 <script setup lang="ts">
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
+import { useVuetify } from '@shared-ui/composables/useVuetify'
 import {
   ApplicationType,
   CompleteApplication,
@@ -2900,6 +2902,7 @@ const form = ref()
 const snackbar = ref(false)
 const valid = ref(false)
 const config = useAppConfigStore()
+const vuetify = useVuetify()
 const state = reactive({
   menu: false,
 })
@@ -2914,6 +2917,10 @@ const isRenew = computed(() => {
     applicationType === ApplicationType['Renew Employment']
   )
 })
+
+const isMobile = computed(
+  () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
+)
 
 onMounted(() => {
   if (form.value) {

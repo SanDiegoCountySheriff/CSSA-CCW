@@ -18,11 +18,10 @@
     </template>
 
     <v-card>
-      <v-card-title>Ready for initial payment?</v-card-title>
+      <v-card-title>Ready for payment?</v-card-title>
 
       <v-card-text>
-        Would you like to mark this application as ready to accept initial
-        payment?
+        Would you like to mark this application as ready for payment?
       </v-card-text>
 
       <v-card-actions>
@@ -37,7 +36,7 @@
         <v-spacer />
 
         <v-btn
-          @click="onReadyForInitialPayment"
+          @click="onReadyForPayment"
           color="primary"
           text
         >
@@ -53,12 +52,12 @@ import { inject, ref } from 'vue'
 
 const readonly = inject('readonly')
 
-const emit = defineEmits(['on-ready-for-initial-payment'])
+const emit = defineEmits(['on-ready-for-payment'])
 
 const dialog = ref(false)
 
-function onReadyForInitialPayment() {
-  emit('on-ready-for-initial-payment')
+function onReadyForPayment() {
+  emit('on-ready-for-payment')
   dialog.value = false
 }
 </script>

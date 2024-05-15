@@ -42,6 +42,20 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return createdItem;
     }
 
+    public async Task<PermitApplication> AddHistoricalApplicationPublicAsync(PermitApplication application, PermitApplication existingApplication, CancellationToken cancellationToken)
+    {
+        application.Id = Guid.NewGuid();
+        application.HistoricalDate = DateTimeOffset.UtcNow;
+
+        application.History = existingApplication.History;
+        application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck; 
+        application.Application.Comments = existingApplication.Application.Comments;
+        application.Application.ReferenceNotes = existingApplication.Application.ReferenceNotes;
+
+        PermitApplication createdItem = await _historicalContainer.CreateItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
+        return createdItem;
+    }
+
     public async Task<IEnumerable<PermitApplication>> GetAllOpenApplicationsForUserAsync(string userId,
         CancellationToken cancellationToken)
     {
@@ -429,6 +443,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             application.Application.BackgroundCheck.DOJApprovalLetter = new BackgroundCheckItem();
             application.Application.BackgroundCheck.SidLettersReceived = new BackgroundCheckItem();
             application.Application.BackgroundCheck.Probations = new BackgroundCheckItem();
+            application.Application.Comments = Array.Empty<Comment>();
         }
 
         if (existingApplication.Application.ApplicationType != application.Application.ApplicationType &&
@@ -439,10 +454,9 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             ApplicationType.ModifyStandard
         )
         {
-            // TODO: Historical application save
             if (application.Application.UploadedDocuments.Any(doc =>
             {
-                return doc.DocumentType == $"ModifyName-{application.Application.ModificationNumber}";
+                return doc.DocumentType == "ModifyName";
             })
             )
             {
@@ -452,7 +466,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
             if (application.Application.UploadedDocuments.Any(doc =>
             {
-                return doc.DocumentType == $"ModifyAddress-{application.Application.ModificationNumber}";
+                return doc.DocumentType == "ModifyAddress";
             })
             )
             {
@@ -462,7 +476,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
             if (application.Application.UploadedDocuments.Any(doc =>
             {
-                return doc.DocumentType == $"ModifyWeapons-{application.Application.ModificationNumber}";
+                return doc.DocumentType == "ModifyWeapons";
             })
             )
             {
