@@ -247,7 +247,7 @@
         >
           <v-col
             cols="12"
-            md="4"
+            md="3"
           >
             <v-text-field
               outlined
@@ -266,7 +266,7 @@
           </v-col>
           <v-col
             cols="12"
-            md="4"
+            md="3"
           >
             <v-menu
               :v-model="state.menu"
@@ -306,7 +306,7 @@
           </v-col>
           <v-col
             cols="12"
-            md="4"
+            md="3"
           >
             <v-text-field
               outlined
