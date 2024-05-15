@@ -479,6 +479,7 @@ public class PermitApplicationController : ControllerBase
 
             legacyApplication.UserId = null;
             legacyApplication.Application.AppointmentId = null;
+            legacyApplication.Application.UserEmail = string.Empty;
 
             await _applicationCosmosDbService.UpdateLegacyApplication(legacyApplication, false, cancellationToken: default);
 
