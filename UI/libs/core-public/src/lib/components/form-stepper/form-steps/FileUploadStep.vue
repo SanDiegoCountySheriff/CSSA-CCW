@@ -358,8 +358,12 @@ const proofOfResidence2Rules = computed(() => {
 const militaryDocRules = computed(() => {
   const militaryStatus = completeApplication.citizenship.militaryStatus
   const addressState = completeApplication.currentAddress.state
+  const issuingState = completeApplication.idInfo.issuingState
 
-  if (militaryStatus === 'Active' && addressState !== 'California') {
+  if (
+    militaryStatus === 'Active' &&
+    (addressState !== 'California' || issuingState !== 'California')
+  ) {
     const documentMilitaryDocument = completeApplication.uploadedDocuments.some(
       obj => obj.documentType === 'MilitaryDocuments'
     )
