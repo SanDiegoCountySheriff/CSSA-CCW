@@ -350,6 +350,7 @@ const headers = [
   {
     text: 'Match',
     value: 'data-table-select',
+    sortable: false,
   },
 ]
 

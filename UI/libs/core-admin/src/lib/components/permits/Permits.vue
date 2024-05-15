@@ -211,7 +211,15 @@
       </template>
 
       <template #[`item.appointmentStatus`]="props">
-        {{ AppointmentStatus[props.item.appointmentStatus] }}
+        {{
+          props.item.appointmentDateTime
+            ? AppointmentStatus[props.item.appointmentStatus]
+            : 'n/a'
+        }}
+      </template>
+
+      <template #[`item.appointmentDateTime`]="props">
+        {{ props.item.appointmentDateTime ?? 'n/a' }}
       </template>
 
       <template #[`item.paymentStatus`]="{ item }">
@@ -384,29 +392,6 @@ const appointmentsStore = useAppointmentsStore()
 const menu = ref(false)
 const date = ref('')
 
-const isAppointmentDisabled = computed(() => {
-  const applicationType =
-    permitStore.getPermitDetail.application.applicationType
-
-  const applicationStatus = permitStore.getPermitDetail.application.status
-
-  const appointmentStatus = permitStore.getPermitDetail.application.appointmentStatus
-
-  return (
-    applicationType === ApplicationType['Renew Standard'] ||
-    applicationType === ApplicationType['Renew Reserve'] ||
-    applicationType === ApplicationType['Renew Judicial'] ||
-    applicationType === ApplicationType['Renew Employment'] ||
-    applicationType === ApplicationType['Modify Standard'] ||
-    applicationType === ApplicationType['Modify Reserve'] ||
-    applicationType === ApplicationType['Modify Judicial'] ||
-    applicationType === ApplicationType['Modify Employment'] ||
-    applicationStatus === ApplicationStatus['Permit Delivered'] ||
-    appointmentStatus === 0 ||
-    appointmentStatus === 1
-  )
-})
-
 const state = reactive({
   selected: [] as PermitsType[],
   selectedAdminUser: '',
@@ -422,16 +407,16 @@ const state = reactive({
     { text: 'Application Type', value: 'applicationType' },
     {
       text: 'Appointment Status',
-      value: isAppointmentDisabled.value ? '' : 'appointmentStatus',
+      value: 'appointmentStatus',
     },
     {
       text: 'Appointment Date/Time',
-      value: isAppointmentDisabled.value ? '' : 'appointmentDateTime',
+      value: 'appointmentDateTime',
     },
-    { text: 'Payment Status', value: 'paymentStatus' },
+    { text: 'Payment Status', value: 'paymentStatus', sortable: false },
     { text: 'Assigned User', value: 'assignedTo' },
     { text: 'Application Status', value: 'status' },
-    { text: 'Actions', value: 'actions' },
+    { text: 'Actions', value: 'actions', sortable: false },
   ],
 })
 

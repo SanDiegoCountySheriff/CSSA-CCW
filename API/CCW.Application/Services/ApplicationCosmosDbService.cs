@@ -655,6 +655,29 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         var order = "";
         var limit = "OFFSET @offset LIMIT @itemsPerPage";
 
+        if (options.SortBy?.Length > 0)
+        {
+            var field = options.SortBy[0] switch
+            {
+                "email" => "a.Application.UserEmail",
+                "idNumber" => "a.Application.IdInfo.IdNumber",
+                "name" => "a.Application.PersonalInfo.LastName",
+                "applicationType" => "a.Application.ApplicationType",
+                "appointmentStatus" => "a.Application.AppointmentStatus",
+                "appointmentDateTime" => "a.Application.AppointmentDateTime",
+                "assignedTo" => "a.Application.AssignedTo",
+                "status" => "a.Application.Status",
+                _ => string.Empty
+            };
+
+            order += $" ORDER BY {field} ";
+
+            if (options.SortDesc[0])
+            {
+                order += "DESC ";
+            }
+        }
+
         if (options.MatchedApplications)
         {
             where += "AND (a.IsMatchUpdated = true OR a.IsMatchUpdated = false) ";
@@ -719,7 +742,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         var selectString = forCount ? "SELECT VALUE Count(1) FROM a " : select;
         var orderString = forCount ? string.Empty : order;
 
-        var queryString = $"{selectString} {where} {limitString} {orderString}";
+        var queryString = $"{selectString} {where} {orderString} {limitString}";
 
         var queryDefinition = new QueryDefinition(queryString);
 
@@ -754,6 +777,29 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         var where = "WHERE (a.Application.IsComplete = true OR a.Application.IsComplete = false) AND a.userId = null ";
         var order = "";
         var limit = "OFFSET @offset LIMIT @itemsPerPage";
+
+        if (options.SortBy?.Length > 0)
+        {
+            var field = options.SortBy[0] switch
+            {
+                "email" => "a.Application.UserEmail",
+                "idNumber" => "a.Application.IdInfo.IdNumber",
+                "name" => "a.Application.PersonalInfo.LastName",
+                "applicationType" => "a.Application.ApplicationType",
+                "appointmentStatus" => "a.Application.AppointmentStatus",
+                "appointmentDateTime" => "a.Application.AppointmentDateTime",
+                "assignedTo" => "a.Application.AssignedTo",
+                "status" => "a.Application.Status",
+                _ => string.Empty
+            };
+
+            order += $" ORDER BY {field} ";
+
+            if (options.SortDesc[0])
+            {
+                order += "DESC ";
+            }
+        }
 
         if (options.Statuses is not null && !options.Statuses.Contains(ApplicationStatus.None))
         {
@@ -823,7 +869,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         var selectString = forCount ? "SELECT VALUE Count(1) FROM a " : select;
         var orderString = forCount ? string.Empty : order;
 
-        var queryString = $"{selectString} {where} {limitString} {orderString}";
+        var queryString = $"{selectString} {where} {orderString} {limitString}";
 
         var queryDefinition = new QueryDefinition(queryString);
 
