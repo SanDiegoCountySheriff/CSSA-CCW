@@ -267,11 +267,10 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     })
   }
 
-  async function undoMatchApplication(userId: string, applicationId: string) {
-    await axios.post(Endpoints.UNDO_MATCH_APPLICATION_ENDPOINT, {
-      userId,
-      applicationId,
-    })
+  async function undoMatchApplication(applicationId: string) {
+    await axios.post(
+      `${Endpoints.UNDO_MATCH_APPLICATION_ENDPOINT}?applicationId=${applicationId}`
+    )
   }
 
   async function addHistoricalApplication(application: CompleteApplication) {

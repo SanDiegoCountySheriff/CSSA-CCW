@@ -137,7 +137,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         var parameterizedQuery = new QueryDefinition(query: queryString)
             .WithParameter("@userEmailOrOrderId", userEmailOrOrderId);
 
-        using FeedIterator<PermitApplication> filteredFeed = 
+        using FeedIterator<PermitApplication> filteredFeed =
             isLegacy ?
             _legacyContainer.GetItemQueryIterator<PermitApplication>(queryDefinition: parameterizedQuery) :
             _container.GetItemQueryIterator<PermitApplication>(queryDefinition: parameterizedQuery);
@@ -841,10 +841,12 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return await _legacyContainer.ReadItemAsync<PermitApplication>(applicationId, new PartitionKey(applicationId), null, cancellationToken);
     }
 
-    public async Task UpdateLegacyApplication(PermitApplication application, CancellationToken cancellationToken)
+    public async Task UpdateLegacyApplication(PermitApplication application, bool createApplication, CancellationToken cancellationToken)
     {
-        await _container.CreateItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
+        if (createApplication)
+        {
+            await _container.CreateItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
+        }
         await _legacyContainer.UpsertItemAsync(application, new PartitionKey(application.Id.ToString()), null, cancellationToken);
-        // TODO: historicals?
     }
 }

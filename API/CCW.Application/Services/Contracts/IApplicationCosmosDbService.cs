@@ -28,5 +28,5 @@ public interface IApplicationCosmosDbService
     Task<List<AssignedApplicationSummary>> GetAssignedApplicationsSummary(string userName, CancellationToken cancellationToken);
     Task<(IEnumerable<SummarizedLegacyApplication>, int)> GetAllLegacyApplicationsAsync(PermitsOptions options, CancellationToken cancellationToken);
     Task<PermitApplication> GetLegacyApplication(string applicationId, CancellationToken cancellationToken);
-    Task UpdateLegacyApplication(PermitApplication application, CancellationToken cancellationToken);
+    Task UpdateLegacyApplication(PermitApplication application, bool createApplication, CancellationToken cancellationToken);
 }

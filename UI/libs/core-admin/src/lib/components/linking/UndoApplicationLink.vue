@@ -6,7 +6,7 @@
           :items="data.items"
           :server-items-length="data.total"
           :options.sync="options.options"
-          :loading="isLoading || isFetching"
+          :loading="isLoading || isFetching || isUndoMatchLoading"
           :loading-text="$t('Loading permit applications...')"
           :headers="headers"
           :items-per-page="10"
@@ -109,7 +109,6 @@
 <script setup lang="ts">
 import { PermitsType } from '@core-admin/types'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { useMutation, useQuery } from '@tanstack/vue-query'
 import {
   ApplicationStatus,
   ApplicationTableOptionsType,
@@ -119,6 +118,7 @@ import {
   AppointmentStatus,
 } from '@shared-utils/types/defaultTypes'
 import { ref, watch } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const permitStore = usePermitsStore()
 
@@ -195,17 +195,15 @@ const { isLoading, isFetching, data, refetch } = useQuery(
 
 const { isLoading: isUndoMatchLoading, mutate: undoMatchApplication } =
   useMutation({
-    mutationFn: ({
-      userId,
-      applicationId,
-    }: {
-      userId: string
-      applicationId: string
-    }) => permitStore.undoMatchApplication(userId, applicationId),
+    mutationFn: (applicationId: string) =>
+      permitStore.undoMatchApplication(applicationId),
+    onSuccess: () => {
+      refetch()
+    },
   })
 
 function handleUndo(item) {
-  window.console.log(item.item.id)
+  undoMatchApplication(item.item.id)
 }
 
 watch(

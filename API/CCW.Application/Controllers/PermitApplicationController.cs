@@ -456,17 +456,17 @@ public class PermitApplicationController : ControllerBase
 
     [Authorize(Policy = "AADUsers")]
     [HttpPost("undoMatchApplication")]
-    public async Task<IActionResult> UndoMatchApplication(MatchRequest data)
+    public async Task<IActionResult> UndoMatchApplication(string applicationId)
     {
         try
         {
-            var user = await _userProfileCosmosDbService.GetUser(data.UserId, cancellationToken: default);
+            var application = await _applicationCosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+
+            var user = await _userProfileCosmosDbService.GetUser(application.UserId, cancellationToken: default);
 
             user.IsPendingReview = true;
 
             await _userProfileCosmosDbService.UpdateUser(user, cancellationToken: default);
-
-            var application = await _applicationCosmosDbService.GetUserApplicationAsync(data.ApplicationId, cancellationToken: default);
 
             if (!string.IsNullOrEmpty(application.Application.AppointmentId))
             {
@@ -480,7 +480,7 @@ public class PermitApplicationController : ControllerBase
             legacyApplication.UserId = null;
             legacyApplication.Application.AppointmentId = null;
 
-            await _applicationCosmosDbService.UpdateLegacyApplication(legacyApplication, cancellationToken: default);
+            await _applicationCosmosDbService.UpdateLegacyApplication(legacyApplication, false, cancellationToken: default);
 
             return Ok();
         }
@@ -575,7 +575,7 @@ public class PermitApplicationController : ControllerBase
                 };
             }
 
-            await _applicationCosmosDbService.UpdateLegacyApplication(application, cancellationToken: default);
+            await _applicationCosmosDbService.UpdateLegacyApplication(application, true, cancellationToken: default);
 
             return Ok();
         }
