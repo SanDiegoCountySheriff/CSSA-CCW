@@ -8,8 +8,7 @@
             isUpdateApplicationLoading ||
             isRefundRequestLoading ||
             isAddHistoricalApplicationLoading ||
-            isMakePaymentLoading ||
-            isMakeRenewalPaymentLoading
+            isMakePaymentLoading
           "
           outlined
         >
@@ -432,9 +431,10 @@
               "
             >
               <v-col>
-                <InitialPaymentConfirmationDialog
+                <PaymentConfirmationDialog
                   :disabled="isMakePaymentLoading"
-                  @confirm="handleInitialPayment"
+                  payment-type="Initial"
+                  @confirm="handlePayment"
                 />
               </v-col>
 
@@ -442,6 +442,7 @@
             </v-row>
           </v-card-text>
         </v-card>
+
         <v-card
           v-else-if="
             applicationStore.completeApplication.application
@@ -458,10 +459,13 @@
 
           <v-card-title>
             <v-row>
+              <v-col></v-col>
+
               <v-col>
-                <RenewalPaymentConfirmationDialog
-                  :disabled="isMakeRenewalPaymentLoading"
-                  @confirm="handleRenewalPayment"
+                <PaymentConfirmationDialog
+                  :disabled="isMakePaymentLoading"
+                  payment-type="Renewal"
+                  @confirm="handlePayment"
                 />
               </v-col>
 
@@ -469,6 +473,38 @@
             </v-row>
           </v-card-title>
         </v-card>
+
+        <v-card
+          v-else-if="
+            applicationStore.completeApplication.application
+              .readyForModificationPayment
+          "
+          class="fill-height"
+          outlined
+        >
+          <v-card-title class="justify-center">
+            Ready for Modification Payment
+          </v-card-title>
+
+          <v-divider></v-divider>
+
+          <v-card-title>
+            <v-row>
+              <v-col></v-col>
+
+              <v-col>
+                <PaymentConfirmationDialog
+                  :disabled="isMakePaymentLoading"
+                  payment-type="Modification"
+                  @confirm="handlePayment"
+                />
+              </v-col>
+
+              <v-col></v-col>
+            </v-row>
+          </v-card-title>
+        </v-card>
+
         <v-card
           v-else-if="
             (applicationStore.completeApplication.application.status ===
@@ -999,11 +1035,10 @@ import EmploymentInfoSection from '@shared-ui/components/info-sections/Employmen
 import Endpoints from '@shared-ui/api/endpoints'
 import FileUploadInfoSection from '@shared-ui/components/info-sections/FileUploadInfoSection.vue'
 import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue'
-import InitialPaymentConfirmationDialog from '@core-public/components/dialogs/InitialPaymentConfirmationDialog.vue'
+import PaymentConfirmationDialog from '@core-public/components/dialogs/PaymentConfirmationDialog.vue'
 import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue'
 import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue'
 import QualifyingQuestionsInfoSection from '@shared-ui/components/info-sections/QualifyingQuestionsInfoSection.vue'
-import RenewalPaymentConfirmationDialog from '@core-public/components/dialogs/RenewalPaymentConfirmationDialog.vue'
 import Routes from '@core-public/router/routes'
 import SignatureInfoSection from '@shared-ui/components/info-sections/SignatureInfoSection.vue'
 import SpouseAddressInfoSection from '@shared-ui/components/info-sections/SpouseAddressInfoSection.vue'
@@ -1605,114 +1640,105 @@ const renewMutation = useMutation({
   onError: () => null,
 })
 
-const { mutate: makeInitialPayment, isLoading: isMakePaymentLoading } =
-  useMutation({
-    mutationFn: () => {
-      let cost: number
-      let paymentType: string
+const { mutate: makePayment, isLoading: isMakePaymentLoading } = useMutation({
+  mutationFn: () => {
+    let cost: number
+    let paymentType: string
 
-      switch (
-        applicationStore.completeApplication.application.applicationType
-      ) {
-        case ApplicationType.Standard:
-          paymentType =
-            PaymentType['CCW Application Initial Payment'].toString()
-          cost = brandStore.brand.cost.new.standard
-          break
+    switch (applicationStore.completeApplication.application.applicationType) {
+      case ApplicationType.Standard:
+        paymentType = PaymentType['CCW Application Initial Payment'].toString()
+        cost = brandStore.brand.cost.new.standard
+        break
 
-        case ApplicationType.Judicial:
-          paymentType =
-            PaymentType['CCW Application Initial Judicial Payment'].toString()
-          cost = brandStore.brand.cost.new.judicial
-          break
+      case ApplicationType.Judicial:
+        paymentType =
+          PaymentType['CCW Application Initial Judicial Payment'].toString()
+        cost = brandStore.brand.cost.new.judicial
+        break
 
-        case ApplicationType.Reserve:
-          paymentType =
-            PaymentType['CCW Application Initial Reserve Payment'].toString()
-          cost = brandStore.brand.cost.new.reserve
-          break
+      case ApplicationType.Reserve:
+        paymentType =
+          PaymentType['CCW Application Initial Reserve Payment'].toString()
+        cost = brandStore.brand.cost.new.reserve
+        break
 
-        case ApplicationType.Employment:
-          paymentType =
-            PaymentType['CCW Application Initial Employment Payment'].toString()
-          cost = brandStore.brand.cost.new.employment
-          break
+      case ApplicationType.Employment:
+        paymentType =
+          PaymentType['CCW Application Initial Employment Payment'].toString()
+        cost = brandStore.brand.cost.new.employment
+        break
 
-        default:
-          paymentType =
-            PaymentType['CCW Application Initial Payment'].toString()
-          cost = brandStore.brand.cost.new.standard
-      }
+      case ApplicationType['Renew Standard']:
+        paymentType = PaymentType['CCW Application Renewal Payment'].toString()
+        cost = brandStore.brand.cost.renew.standard
+        break
 
-      return paymentStore.getPayment(
-        applicationStore.completeApplication.id,
-        cost,
-        applicationStore.completeApplication.application.orderId,
-        paymentType
-      )
-    },
-    onError: () => {
-      paymentSnackbar.value = true
-    },
-  })
+      case ApplicationType['Renew Judicial']:
+        paymentType =
+          PaymentType['CCW Application Renewal Judicial Payment'].toString()
+        cost = brandStore.brand.cost.renew.judicial
+        break
 
-const { mutate: makeRenewalPayment, isLoading: isMakeRenewalPaymentLoading } =
-  useMutation({
-    mutationFn: () => {
-      let cost: number
-      let paymentType: string
+      case ApplicationType['Renew Reserve']:
+        paymentType =
+          PaymentType['CCW Application Renewal Reserve Payment'].toString()
+        cost = brandStore.brand.cost.renew.reserve
+        break
 
-      switch (
-        applicationStore.completeApplication.application.applicationType
-      ) {
-        case ApplicationType['Renew Standard']:
-          paymentType =
-            PaymentType['CCW Application Renewal Payment'].toString()
-          cost = brandStore.brand.cost.renew.standard
-          break
+      case ApplicationType['Renew Employment']:
+        paymentType =
+          PaymentType['CCW Application Renewal Employment Payment'].toString()
+        cost = brandStore.brand.cost.renew.employment
+        break
 
-        case ApplicationType['Renew Judicial']:
-          paymentType =
-            PaymentType['CCW Application Renewal Judicial Payment'].toString()
-          cost = brandStore.brand.cost.renew.judicial
-          break
+      case ApplicationType['Modify Standard']:
+        paymentType =
+          PaymentType['CCW Application Modification Payment'].toString()
+        cost = brandStore.brand.cost.modify
+        break
 
-        case ApplicationType['Renew Reserve']:
-          paymentType =
-            PaymentType['CCW Application Renewal Reserve Payment'].toString()
-          cost = brandStore.brand.cost.renew.reserve
-          break
+      case ApplicationType['Modify Judicial']:
+        paymentType =
+          PaymentType[
+            'CCW Application Modification Judicial Payment'
+          ].toString()
+        cost = brandStore.brand.cost.modify
+        break
 
-        case ApplicationType['Renew Employment']:
-          paymentType =
-            PaymentType['CCW Application Renewal Employment Payment'].toString()
-          cost = brandStore.brand.cost.renew.employment
-          break
+      case ApplicationType['Modify Reserve']:
+        paymentType =
+          PaymentType['CCW Application Modification Reserve Payment'].toString()
+        cost = brandStore.brand.cost.modify
+        break
 
-        default:
-          paymentType =
-            PaymentType['CCW Application Renewal Payment'].toString()
-          cost = brandStore.brand.cost.renew.standard
-      }
+      case ApplicationType['Modify Employment']:
+        paymentType =
+          PaymentType[
+            'CCW Application Modification Employment Payment'
+          ].toString()
+        cost = brandStore.brand.cost.modify
+        break
 
-      return paymentStore.getPayment(
-        applicationStore.completeApplication.id,
-        cost,
-        applicationStore.completeApplication.application.orderId,
-        paymentType
-      )
-    },
-    onError: () => {
-      paymentSnackbar.value = true
-    },
-  })
+      default:
+        paymentType = PaymentType['CCW Application Initial Payment'].toString()
+        cost = brandStore.brand.cost.new.standard
+    }
 
-function handleInitialPayment() {
-  makeInitialPayment()
-}
+    return paymentStore.getPayment(
+      applicationStore.completeApplication.id,
+      cost,
+      applicationStore.completeApplication.application.orderId,
+      paymentType
+    )
+  },
+  onError: () => {
+    paymentSnackbar.value = true
+  },
+})
 
-function handleRenewalPayment() {
-  makeRenewalPayment()
+function handlePayment() {
+  makePayment()
 }
 
 async function handleConfirmWithdrawModification() {

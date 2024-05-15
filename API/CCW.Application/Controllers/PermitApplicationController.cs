@@ -572,6 +572,17 @@ public class PermitApplicationController : ControllerBase
             };
             application.Application.ReferenceNotes = string.Empty;
             application.IsMatchUpdated = false;
+            application.Application.ModifiedAddress = new Address()
+            {
+                StreetAddress = "",
+                State = "",
+                City = "",
+                County = "",
+                Country = "",
+                Zip = "",
+            };
+            application.Application.CurrentStep = 1;
+            application.PaymentHistory = new List<PaymentHistory>();
 
             if (application.Application.QualifyingQuestions.QuestionTwelve.Selected is not null or false)
             {
