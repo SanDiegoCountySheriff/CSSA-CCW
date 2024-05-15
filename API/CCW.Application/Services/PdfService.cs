@@ -1146,6 +1146,8 @@ public class PdfService : IPdfService
         PdfAcroForm form = PdfAcroForm.GetAcroForm(doc, true);
         form.SetGenerateAppearance(true);
 
+        await AddApplicantSignatureImageForModification(userApplication, docFileAll);
+
         form.GetField("form1[0].#subform[0].AGENCY[0]").SetValue(adminResponse.AgencyName);
         form.GetField("form1[0].#subform[0].ORI[0]").SetValue(adminResponse.ORI);
         form.GetField("form1[0].#subform[0].MAILINGADDRESS[0]").SetValue(adminResponse.AgencyShippingStreetAddress + " " + adminResponse.AgencyShippingCity + " " 
@@ -1185,11 +1187,64 @@ public class PdfService : IPdfService
         {
             form.GetField("form1[0].#subform[0].CheckBox1[0]").SetValue("Yes", true);
         }
-            
+        var correctionReasons = new List<string>();
+        if (!string.IsNullOrEmpty(userApplication.Application.ModifiedAddress.StreetAddress) ||
+            !string.IsNullOrEmpty(userApplication.Application.ModifiedAddress.City) ||
+            !string.IsNullOrEmpty(userApplication.Application.ModifiedAddress.State) ||
+            !string.IsNullOrEmpty(userApplication.Application.ModifiedAddress.Zip))
+        {
+            correctionReasons.Add("Address Modification");
+        }
+
+        if (!string.IsNullOrEmpty(userApplication.Application.PersonalInfo.ModifiedFirstName) ||
+            !string.IsNullOrEmpty(userApplication.Application.PersonalInfo.ModifiedLastName) ||
+            !string.IsNullOrEmpty(userApplication.Application.PersonalInfo.ModifiedMiddleName))
+        {
+            correctionReasons.Add("Name Modification");
+        }
+
+        if (userApplication.Application.ModifyAddWeapons != null && userApplication.Application.ModifyAddWeapons.Any() ||
+            userApplication.Application.ModifyDeleteWeapons != null && userApplication.Application.ModifyDeleteWeapons.Any())
+        {
+            correctionReasons.Add("Weapons Modification");
+        }
+
+        string correctionReason = string.Join("\n", correctionReasons);
+        form.GetField("form1[0].#subform[0].CORRECTION_REASON[1]").SetValue(correctionReason, true);
+
         var addedWeapons = userApplication.Application.ModifyAddWeapons;
         var deletedWeapons = userApplication.Application.ModifyDeleteWeapons;
 
-        // docFileAll.Flush();
+        int currentIndex = 0;
+
+        if (addedWeapons != null)
+        {
+            for (int i = 0; i < addedWeapons.Length && currentIndex < 15; i++)
+            {
+                form.GetField($"form1[0].#subform[1].ADD[{currentIndex}]").SetValue("Yes", true);
+                form.GetField($"form1[0].#subform[1].MANUFACTURER[{currentIndex}]").SetValue(addedWeapons[i].Make, true);
+                form.GetField($"form1[0].#subform[1].MODEL[{currentIndex}]").SetValue(addedWeapons[i].Model, true);
+                form.GetField($"form1[0].#subform[1].CALIBER[{currentIndex}]").SetValue(addedWeapons[i].Caliber, true);
+                form.GetField($"form1[0].#subform[1].SERIAL_NUMBER[{currentIndex}]").SetValue(addedWeapons[i].SerialNumber, true);
+                currentIndex++;
+            }
+        }
+
+        if (deletedWeapons != null && currentIndex < 15)
+        {
+            for (int i = 0; i < deletedWeapons.Length && currentIndex < 15; i++)
+            {
+                form.GetField($"form1[0].#subform[1].DELETE[{currentIndex}]").SetValue("Yes", true);
+                form.GetField($"form1[0].#subform[1].MANUFACTURER[{currentIndex}]").SetValue(deletedWeapons[i].Make, true);
+                form.GetField($"form1[0].#subform[1].MODEL[{currentIndex}]").SetValue(deletedWeapons[i].Model, true);
+                form.GetField($"form1[0].#subform[1].CALIBER[{currentIndex}]").SetValue(deletedWeapons[i].Caliber, true);
+                form.GetField($"form1[0].#subform[1].SERIAL_NUMBER[{currentIndex}]").SetValue(deletedWeapons[i].SerialNumber, true);
+                currentIndex++;
+            }
+        }
+
+        form.GetField("form1[0].#subform[1].DATE[0]").SetValue(DateTime.Now.ToShortDateString());
+
         form.FlattenFields();
         docFileAll.Close();
 
@@ -1210,7 +1265,6 @@ public class PdfService : IPdfService
         var adminResponse = await _adminCosmosDbService.GetAgencyProfileSettingsAsync(cancellationToken: default);
         var streamToReadFrom = await _documentService.GetLiveScanTemplateAsync(cancellationToken: default);
 
-        // Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
         MemoryStream outStream = new MemoryStream();
 
         PdfReader pdfReader = new PdfReader(streamToReadFrom);
@@ -1831,6 +1885,24 @@ public class PdfService : IPdfService
             Height = 20,
             Left = 133,
             Bottom = 0
+        };
+
+        var leftImage = GetImageForImageData(imageData, leftPosition);
+        docFileAll.Add(leftImage);
+    }
+
+    private async Task AddApplicantSignatureImageForModification(PermitApplication userApplication, Document docFileAll)
+    {
+        var signatureFileName = BuildApplicantDocumentName(userApplication, "Signature");
+        var imageData = await GetImageData(signatureFileName);
+
+        var leftPosition = new ImagePosition()
+        {
+            Page = 2,
+            Width = 185,
+            Height = 40,
+            Left = 110,
+            Bottom = 117
         };
 
         var leftImage = GetImageForImageData(imageData, leftPosition);
