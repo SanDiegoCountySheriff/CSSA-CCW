@@ -6,9 +6,6 @@ using CCW.Common.Models;
 using CCW.Common.ResponseModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Configuration;
-using Microsoft.Azure.Cosmos;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CCW.Application.Controllers;
 
