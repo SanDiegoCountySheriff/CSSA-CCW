@@ -327,20 +327,16 @@ function handleSave() {
 }
 
 async function handleFileUpload() {
-  const fileName = isRenew.value
-    ? `Signature_Renew_${applicationStore.completeApplication.application.renewalNumber}`
-    : 'Signature'
-
   const uploadDoc: UploadedDocType = {
     documentType: 'Signature',
-    name: fileName,
+    name: 'Signature',
     uploadedBy: applicationStore.completeApplication.application.userEmail,
     uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
   }
 
   await axios
     .post(
-      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${fileName}`,
+      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${'Signature'}`,
       state.file
     )
     .then(() => {
