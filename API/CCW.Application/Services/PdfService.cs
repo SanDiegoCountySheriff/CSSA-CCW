@@ -754,120 +754,268 @@ public class PdfService : IPdfService
         await AddApplicantSignatureImageForOfficial(userApplication, mainDocument);
         await AddApplicantThumbprintImageForOfficial(userApplication, mainDocument);
         await AddApplicantPhotoImageForOfficial(userApplication, mainDocument);
+        await AddSheriffLogoForOfficial(mainDocument);
 
-        form.GetField("AGENCY").SetValue(adminResponse.AgencyName ?? "", true);
-        form.GetField("ORI").SetValue(adminResponse.ORI ?? "", true);
-        form.GetField("CII_NUMBER").SetValue(userApplication.Application.CiiNumber ?? "", true);
-        form.GetField("LOCAL_AGENCY_NUMBER").SetValue(adminResponse.LocalAgencyNumber ?? "", true);
+        form.GetField("AGENCY_NAME[0]").SetValue(adminResponse.AgencyName ?? "", true);
+        form.GetField("AGENCY_ORI[0]").SetValue(adminResponse.ORI ?? "", true);
+        form.GetField("CII_NUMBER[0]").SetValue(userApplication.Application.CiiNumber ?? "", true);
+        form.GetField("AGENCY_LICENSE_NUMBER[0]").SetValue(userApplication.Application.CiiNumber ?? "", true);
+        form.GetField("HEAD_OF_AGENCY[0]").SetValue(adminResponse.AgencySheriffName);
+        form.GetField("ISSUED_DATE[0]").SetValue(userApplication.Application.License.IssueDate.Value.Date.ToShortDateString() ?? "", true);
+        form.GetField("EXPIRED_DATE[0]").SetValue(userApplication.Application.License.ExpirationDate.Value.Date.ToShortDateString() ?? "", true);
+        form.GetField("CII_NUMBER[0]").SetValue(userApplication.Application.CiiNumber ?? "", true);
+        form.GetField("COUNTY_NAME[0]").SetValue(userApplication.Application.CurrentAddress.County);
+        string fullname = BuildApplicantFullName(userApplication);
+        form.GetField("APPLICANT_NAME[0]").SetValue(fullname.Trim(), true);
+        string residenceAddress = userApplication.Application.CurrentAddress?.StreetAddress + ", " + userApplication.Application.CurrentAddress?.City +
+         " " + userApplication.Application.CurrentAddress.State + " " + userApplication.Application.CurrentAddress.Zip;
+        form.GetField("RESIDENTIAL_ADDRESS[0]").SetValue(residenceAddress ?? "", true);
+        form.GetField("DATE_OF_BIRTH[0]").SetValue(userApplication.Application.DOB.BirthDate ?? "", true);
+        form.GetField("ID_NUMBER[0]").SetValue(userApplication.Application.IdInfo.IdNumber);
+        if (userApplication.Application.Employment == "Unemployed")
+        {
+            form.GetField("OCCUPATION[0]").SetValue("Unemployed", true);
+        }
+        else if (userApplication.Application.Employment == "Retired")
+        {
+            form.GetField("OCCUPATION[0]").SetValue("Retired", true);
+        }
+        else
+        {
+            form.GetField("OCCUPATION[0]").SetValue(userApplication.Application.WorkInformation.Occupation ?? "", true);
+        }
+
+        string businessAddress = userApplication.Application.WorkInformation?.EmployerStreetAddress + ", " + userApplication.Application.WorkInformation?.EmployerCity + " "
+        + userApplication.Application.WorkInformation.EmployerState + " " + userApplication.Application.WorkInformation.EmployerZip;
+        if (userApplication.Application.Employment != "Unemployed" && userApplication.Application.Employment != "Retired")
+        {
+            form.GetField("BUSINESS_ADDRESS[0]").SetValue(businessAddress ?? "", true);
+        }
+        form.GetField("HEIGHT[0]").SetValue(userApplication.Application.PhysicalAppearance.HeightFeet + "'" + userApplication.Application.PhysicalAppearance.HeightInch ?? "", true);
+        form.GetField("WEIGHT[0]").SetValue(userApplication.Application.PhysicalAppearance.Weight ?? "", true);
+        form.GetField("EYE_COLOR[0]").SetValue(userApplication.Application.PhysicalAppearance.EyeColor ?? "", true);
+        form.GetField("HAIR_COLOR[0]").SetValue(userApplication.Application.PhysicalAppearance.HairColor ?? "", true);
 
         switch (userApplication.Application.ApplicationType)
         {
             case ApplicationType.Reserve:
             case ApplicationType.RenewReserve:
-                form.GetField("RESERVE_LICENSE_TYPE_CHECKBOX").SetValue("true", true);
+            case ApplicationType.ModifyReserve:
+                form.GetField("LICENSE_TYPE[0]").SetValue("RESERVE", true);
                 break;
             case ApplicationType.Judicial:
             case ApplicationType.RenewJudicial:
-                form.GetField("JUDICIAL_LICENSE_TYPE_CHECKBOX").SetValue("true", true);
+            case ApplicationType.ModifyJudicial:
+                form.GetField("LICENSE_TYPE[0]").SetValue("JUDICIAL", true);
                 break;
             case ApplicationType.Employment:
             case ApplicationType.RenewEmployment:
-                form.GetField("EMPLOYMENT_LICENSE_TYPE_CHECKBOX").SetValue("true", true);
+            case ApplicationType.ModifyEmployment:
+                form.GetField("LICENSE_TYPE[0]").SetValue("EMPLOYMENT", true);
                 break;
             default:
-                form.GetField("STANDARD_LICENSE_TYPE_CHECKBOX").SetValue("true", true);
+                form.GetField("LICENSE_TYPE[0]").SetValue("STANDARD", true);
                 break;
         }
 
-        form.GetField("ISSUE_DATE").SetValue(userApplication.Application.License.IssueDate.ToString(), true);
-        form.GetField("EXPIRATION_DATE").SetValue(userApplication.Application.License.ExpirationDate.ToString(), true);
-
-        if (userApplication.Application.ApplicationType == ApplicationType.RenewStandard ||
-            userApplication.Application.ApplicationType == ApplicationType.RenewReserve ||
-            userApplication.Application.ApplicationType == ApplicationType.RenewJudicial ||
-            userApplication.Application.ApplicationType == ApplicationType.RenewEmployment)
+        switch (userApplication.Application.ApplicationType)
         {
-            form.GetField("SUBSEQUENT_CHECKBOX").SetValue(userApplication.Application.License.ExpirationDate.ToString(), true);
+            case ApplicationType.RenewJudicial:
+            case ApplicationType.RenewReserve:
+            case ApplicationType.RenewEmployment:
+            case ApplicationType.RenewStandard:
+                form.GetField("LICENSE_ISSUED[0]").SetValue("RENEWAL", true);
+                break;
+            case ApplicationType.ModifyJudicial:
+            case ApplicationType.ModifyEmployment:
+            case ApplicationType.ModifyReserve:
+            case ApplicationType.ModifyStandard:
+                form.GetField("LICENSE_ISSUED[0]").SetValue("MODIFICATION", true);
+                break;
+            default:
+                form.GetField("LICENSE_ISSUED[0]").SetValue("INITIAL", true);
+                break;
+        }
+
+        form.GetField("AGENCY_NAME[1]").SetValue(adminResponse.AgencyName ?? "", true);
+        form.GetField("AGENCY_ORI[1]").SetValue(adminResponse.ORI ?? "", true);
+        form.GetField("CII_NUMBER[1]").SetValue(userApplication.Application.CiiNumber ?? "", true);
+        form.GetField("AGENCY_LICENSE_NUMBER[1]").SetValue(userApplication.Application.CiiNumber ?? "", true);
+        form.GetField("HEAD_OF_AGENCY[1]").SetValue(adminResponse.AgencySheriffName);
+        form.GetField("ISSUED_DATE[1]").SetValue(userApplication.Application.License.IssueDate.Value.Date.ToShortDateString() ?? "", true);
+        form.GetField("EXPIRED_DATE[1]").SetValue(userApplication.Application.License.ExpirationDate.Value.Date.ToShortDateString() ?? "", true);
+        form.GetField("CII_NUMBER[1]").SetValue(userApplication.Application.CiiNumber ?? "", true);
+        form.GetField("COUNTY_NAME[1]").SetValue(userApplication.Application.CurrentAddress.County);
+        form.GetField("APPLICANT_NAME[1]").SetValue(fullname.Trim(), true);
+        form.GetField("RESIDENTIAL_ADDRESS[1]").SetValue(residenceAddress ?? "", true);
+        form.GetField("DATE_OF_BIRTH[1]").SetValue(userApplication.Application.DOB.BirthDate ?? "", true);
+        form.GetField("ID_NUMBER[1]").SetValue(userApplication.Application.IdInfo.IdNumber);
+        if (userApplication.Application.Employment == "Unemployed")
+        {
+            form.GetField("OCCUPATION[1]").SetValue("Unemployed", true);
+        }
+        else if (userApplication.Application.Employment == "Retired")
+        {
+            form.GetField("OCCUPATION[1]").SetValue("Retired", true);
         }
         else
         {
-            form.GetField("NEW_PERMIT_CHECKBOX").SetValue(userApplication.Application.License.ExpirationDate.ToString(), true);
+            form.GetField("OCCUPATION[1]").SetValue(userApplication.Application.WorkInformation.Occupation ?? "", true);
         }
 
-        //Section A
-        string fullName = BuildApplicantFullName(userApplication);
-
-        form.GetField("FULL_NAME").SetValue(fullName, true);
-
-        string residenceAddress = userApplication.Application.CurrentAddress?.StreetAddress;
-        form.GetField("RESIDENCE_ADDRESS").SetValue(residenceAddress ?? "", true);
-        form.GetField("CITY").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
-        form.GetField("ZIP").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
-        form.GetField("COUNTY").SetValue(userApplication.Application.CurrentAddress?.County ?? "", true);
-
-        string workAddress = userApplication.Application.WorkInformation?.EmployerStreetAddress + ", " +
-                             userApplication.Application.WorkInformation?.EmployerCity + ", " +
-                             GetStateByName(userApplication.Application.WorkInformation?.EmployerState) + " " +
-                             userApplication.Application.WorkInformation?.EmployerZip;
-
-        if (workAddress.Replace(" ", "") != ",,")
+        if (userApplication.Application.Employment != "Unemployed" && userApplication.Application.Employment != "Retired")
         {
-            form.GetField("BUSINESS_ADDRESS").SetValue(workAddress, true);
+            form.GetField("BUSINESS_ADDRESS[1]").SetValue(businessAddress ?? "", true);
+        }
+        form.GetField("HEIGHT[1]").SetValue(userApplication.Application.PhysicalAppearance.HeightFeet + "'" + userApplication.Application.PhysicalAppearance.HeightInch ?? "", true);
+        form.GetField("WEIGHT[1]").SetValue(userApplication.Application.PhysicalAppearance.Weight ?? "", true);
+        form.GetField("EYE_COLOR[1]").SetValue(userApplication.Application.PhysicalAppearance.EyeColor ?? "", true);
+        form.GetField("HAIR_COLOR[1]").SetValue(userApplication.Application.PhysicalAppearance.HairColor ?? "", true);
+
+        switch (userApplication.Application.ApplicationType)
+        {
+            case ApplicationType.Reserve:
+            case ApplicationType.RenewReserve:
+            case ApplicationType.ModifyReserve:
+                form.GetField("LICENSE_TYPE[1]").SetValue("RESERVE", true);
+                break;
+            case ApplicationType.Judicial:
+            case ApplicationType.RenewJudicial:
+            case ApplicationType.ModifyJudicial:
+                form.GetField("LICENSE_TYPE[1]").SetValue("JUDICIAL", true);
+                break;
+            case ApplicationType.Employment:
+            case ApplicationType.RenewEmployment:
+            case ApplicationType.ModifyEmployment:
+                form.GetField("LICENSE_TYPE[1]").SetValue("EMPLOYMENT", true);
+                break;
+            default:
+                form.GetField("LICENSE_TYPE[1]").SetValue("STANDARD", true);
+                break;
         }
 
-        form.GetField("OCCUPATION").SetValue(userApplication.Application.WorkInformation?.Occupation ?? "", true);
-        form.GetField("BIRTHDATE").SetValue(userApplication.Application.DOB.BirthDate ?? "", true);
-        form.GetField("HEIGHT_FEET").SetValue(userApplication.Application.PhysicalAppearance?.HeightFeet + "'" ?? "", true);
-        form.GetField("HEIGHT_INCHES").SetValue(userApplication.Application.PhysicalAppearance?.HeightInch + "\"" ?? "", true);
-        form.GetField("WEIGHT").SetValue(userApplication.Application.PhysicalAppearance?.Weight ?? "", true);
-        form.GetField("EYE_COLOR").SetValue(GetEyeColor(userApplication.Application.PhysicalAppearance?.EyeColor), true);
-        form.GetField("HAIR_COLOR").SetValue(GetHairColor(userApplication.Application.PhysicalAppearance?.HairColor), true);
+        switch (userApplication.Application.ApplicationType)
+        {
+            case ApplicationType.RenewJudicial:
+            case ApplicationType.RenewReserve:
+            case ApplicationType.RenewEmployment:
+            case ApplicationType.RenewStandard:
+                form.GetField("LICENSE_ISSUED[1]").SetValue("RENEWAL", true);
+                break;
+            case ApplicationType.ModifyJudicial:
+            case ApplicationType.ModifyEmployment:
+            case ApplicationType.ModifyReserve:
+            case ApplicationType.ModifyStandard:
+                form.GetField("LICENSE_ISSUED[1]").SetValue("MODIFICATION", true);
+                break;
+            default:
+                form.GetField("LICENSE_ISSUED[1]").SetValue("INITIAL", true);
+                break;
+        }
+
+        form.GetField("AGENCY_NAME[2]").SetValue(adminResponse.AgencyName ?? "", true);
+        form.GetField("AGENCY_ORI[2]").SetValue(adminResponse.ORI ?? "", true);
+        form.GetField("CII_NUMBER[2]").SetValue(userApplication.Application.CiiNumber ?? "", true);
+        form.GetField("AGENCY_LICENSE_NUMBER[2]").SetValue(userApplication.Application.CiiNumber ?? "", true);
+        form.GetField("HEAD_OF_AGENCY[2]").SetValue(adminResponse.AgencySheriffName);
+        form.GetField("ISSUED_DATE[2]").SetValue(userApplication.Application.License.IssueDate.Value.Date.ToShortDateString() ?? "", true);
+        form.GetField("EXPIRED_DATE[2]").SetValue(userApplication.Application.License.ExpirationDate.Value.Date.ToShortDateString() ?? "", true);
+        form.GetField("CII_NUMBER[2]").SetValue(userApplication.Application.CiiNumber ?? "", true);
+        form.GetField("COUNTY_NAME[2]").SetValue(userApplication.Application.CurrentAddress.County);
+        form.GetField("APPLICANT_NAME[2]").SetValue(fullname.Trim(), true);
+        form.GetField("RESIDENTIAL_ADDRESS[2]").SetValue(residenceAddress?? "", true);
+
+        switch (userApplication.Application.ApplicationType)
+        {
+            case ApplicationType.Reserve:
+            case ApplicationType.RenewReserve:
+            case ApplicationType.ModifyReserve:
+                form.GetField("LICENSE_TYPE[2]").SetValue("RESERVE", true);
+                break;
+            case ApplicationType.Judicial:
+            case ApplicationType.RenewJudicial:
+            case ApplicationType.ModifyJudicial:
+                form.GetField("LICENSE_TYPE[2]").SetValue("JUDICIAL", true);
+                break;
+            case ApplicationType.Employment:
+            case ApplicationType.RenewEmployment:
+            case ApplicationType.ModifyEmployment:
+                form.GetField("LICENSE_TYPE[2]").SetValue("EMPLOYMENT", true);
+                break;
+            default:
+                form.GetField("LICENSE_TYPE[2]").SetValue("STANDARD", true);
+                break;
+        }
+
+        switch (userApplication.Application.ApplicationType)
+        {
+            case ApplicationType.RenewJudicial:
+            case ApplicationType.RenewReserve:
+            case ApplicationType.RenewEmployment:
+            case ApplicationType.RenewStandard:
+                form.GetField("LICENSE_ISSUED[2]").SetValue("RENEWAL", true);
+                break;
+            case ApplicationType.ModifyJudicial:
+            case ApplicationType.ModifyEmployment:
+            case ApplicationType.ModifyReserve:
+            case ApplicationType.ModifyStandard:
+                form.GetField("LICENSE_ISSUED[2]").SetValue("MODIFICATION", true);
+                break;
+            default:
+                form.GetField("LICENSE_ISSUED[2]").SetValue("INITIAL", true);
+                break;
+        }
 
         var weapons = userApplication.Application.Weapons;
-        //Section B
         if (null != weapons && weapons.Length > 0)
         {
-            int totalWeapons = (weapons.Length > 3) ? 3 : weapons.Length;
+            int totalWeapons = weapons.Length;
+            string makeField;
+            string modelField;
+            string serialField;
+            string caliberField;
 
-            StringBuilder makeSB = new StringBuilder();
-            StringBuilder serialSB = new StringBuilder();
-            StringBuilder caliberSB = new StringBuilder();
-            StringBuilder modelSB = new StringBuilder();
-
-            for (int i = 0; i < totalWeapons; i++)
+            for (int i = 0; i < totalWeapons && i < 5; i++)
             {
-                makeSB.AppendLine(weapons[i].Make);
-                serialSB.AppendLine(weapons[i].SerialNumber);
-                caliberSB.AppendLine(weapons[i].Caliber);
-                modelSB.AppendLine(weapons[i].Model);
-            }
-
-            form.GetField("WEAPON_MAKE").SetValue(makeSB.ToString(), true);
-            form.GetField("WEAPON_SERIAL").SetValue(serialSB.ToString(), true);
-            form.GetField("WEAPON_CALIBER").SetValue(caliberSB.ToString(), true);
-            form.GetField("WEAPON_MODEL").SetValue(modelSB.ToString(), true);
-
-            if (weapons.Length > 3)
-            {
-                makeSB = new StringBuilder();
-                serialSB = new StringBuilder();
-                caliberSB = new StringBuilder();
-                modelSB = new StringBuilder();
-
-                totalWeapons = weapons.Length > 42 ? 42 : weapons.Length;
-
-                for (int x = 3; x < totalWeapons; x++)
+                for (int j = 0; j < 2; j++)
                 {
-                    makeSB.AppendLine(weapons[x].Make);
-                    serialSB.AppendLine(weapons[x].SerialNumber);
-                    caliberSB.AppendLine(weapons[x].Caliber);
-                    modelSB.AppendLine(weapons[x].Model);
-                }
 
-                form.GetField("ADDITIONAL_WEAPON_MAKE").SetValue(makeSB.ToString(), true);
-                form.GetField("ADDITIONAL_WEAPON_SERIAL").SetValue(serialSB.ToString(), true);
-                form.GetField("ADDITIONAL_WEAPON_CALIBER").SetValue(caliberSB.ToString(), true);
-                form.GetField("ADDITIONAL_WEAPON_MODEL").SetValue(modelSB.ToString(), true);
+                    makeField = $"MANUFACTURER{i + 1}[{j}]";
+                    modelField = $"MODEL{i + 1}[{j}]";
+                    serialField = $"SERIAL{i + 1}[{j}]";
+                    caliberField = $"CALIBER{i + 1}[{j}]";
+
+                    form.GetField(makeField).SetValue(weapons[i].Make);
+                    form.GetField(modelField).SetValue(weapons[i].Model);
+                    form.GetField(serialField).SetValue(weapons[i].SerialNumber);
+                    form.GetField(caliberField).SetValue(weapons[i].Caliber);
+                }
+            }
+        }
+
+        if (null != weapons && weapons.Length > 0)
+        {
+            int totalWeapons = weapons.Length;
+            string makeField;
+            string modelField;
+            string serialField;
+            string caliberField;
+
+            for (int i = 0; i < totalWeapons && i < 30; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+
+                    makeField = $"MANUFACTURER_AM{i + 1}[{j}]";
+                    modelField = $"MODEL_AM{i + 1}[{j}]";
+                    serialField = $"SERIAL_AM{i + 1}[{j}]";
+                    caliberField = $"CALIBER_AM{i + 1}[{j}]";
+
+                    form.GetField(makeField).SetValue(weapons[i].Make);
+                    form.GetField(modelField).SetValue(weapons[i].Model);
+                    form.GetField(serialField).SetValue(weapons[i].SerialNumber);
+                    form.GetField(caliberField).SetValue(weapons[i].Caliber);
+                }
             }
         }
 
@@ -907,7 +1055,6 @@ public class PdfService : IPdfService
         await AddApplicantSignatureImageForUnOfficial(userApplication, docFileAll);
         await AddApplicantThumbprintImageForUnOfficial(userApplication, docFileAll);
         await AddApplicantPhotoImageForUnOfficial(userApplication, docFileAll);
-        await AddSheriffLogoForUnOfficial(docFileAll);
         await AddSheriffIssuingOfficierSignatureImageForUnOfficial(docFileAll);
 
         form.GetField("AGENCY_NAME").SetValue(adminResponse.AgencyName ?? "", true);
@@ -980,12 +1127,144 @@ public class PdfService : IPdfService
         return outStream;
     }
 
+    public async Task<MemoryStream> GetModificationMemoryStream(PermitApplication userApplication, string licensingUsername, string fileName)
+    {
+        var adminResponse = await _adminCosmosDbService.GetAgencyProfileSettingsAsync(cancellationToken: default);
+        var adminUserProfile = await _userProfileCosmosDbService.GetAdminUserProfileAsync(licensingUsername, cancellationToken: default);
+        var streamToReadFrom = await _documentService.GetModificationTemplateAsync(cancellationToken: default);
+
+        MemoryStream outStream = new MemoryStream();
+
+        PdfReader pdfReader = new PdfReader(streamToReadFrom);
+        pdfReader.SetUnethicalReading(true);
+        PdfWriter pdfWriter = new PdfWriter(outStream);
+        PdfDocument doc = new PdfDocument(pdfReader, pdfWriter);
+
+        Document docFileAll = new Document(doc);
+        pdfWriter.SetCloseStream(false);
+
+        PdfAcroForm form = PdfAcroForm.GetAcroForm(doc, true);
+        form.SetGenerateAppearance(true);
+
+        await AddApplicantSignatureImageForModification(userApplication, docFileAll);
+
+        form.GetField("form1[0].#subform[0].AGENCY[0]").SetValue(adminResponse.AgencyName);
+        form.GetField("form1[0].#subform[0].ORI[0]").SetValue(adminResponse.ORI);
+        form.GetField("form1[0].#subform[0].MAILINGADDRESS[0]").SetValue(adminResponse.AgencyShippingStreetAddress + " " + adminResponse.AgencyShippingCity + " " 
+        + adminResponse.AgencyShippingState + " " + adminResponse.AgencyShippingZip);
+        form.GetField("form1[0].#subform[0].CITY[0]").SetValue(adminResponse.AgencyCity);
+        form.GetField("form1[0].#subform[0].ZIP[0]").SetValue(adminResponse.AgencyZip);
+        string fullName = adminUserProfile.Name;
+        string[] parts = fullName.Split(',');
+        string lastName = parts[0].Trim();
+        string firstName = parts[1].Trim();
+        form.GetField("form1[0].#subform[0].LAST_NAME[0]").SetValue(lastName);
+        form.GetField("form1[0].#subform[0].FIRSTNAME[0]").SetValue(firstName);
+        form.GetField("form1[0].#subform[0].JOBRANK[0]").SetValue(adminUserProfile.JobTitle);
+        form.GetField("form1[0].#subform[0].TELEPHONENUMBER[0]").SetValue(adminResponse.AgencyTelephone);
+        form.GetField("form1[0].#subform[0].FAXNUMBER[0]").SetValue(adminResponse.AgencyFax);
+        form.GetField("form1[0].#subform[0].EMAILADDRESS[0]").SetValue(adminResponse.AgencyEmail);
+        form.GetField("form1[0].#subform[0].CIINUMBER[0]").SetValue(userApplication.Application.CiiNumber ?? "", true);
+        form.GetField("form1[0].#subform[0].CA_DL[0]").SetValue(userApplication.Application.IdInfo.IdNumber ?? "", true);
+        form.GetField("form1[0].#subform[0].LOCAL_NUMBER[0]").SetValue(userApplication.Application.CiiNumber ?? "", true);
+        form.GetField("form1[0].#subform[0].DATE_OF_ISSUE[0]").SetValue(userApplication.Application.License.IssueDate.Value.Date.ToShortDateString() ?? "", true);
+        form.GetField("form1[0].#subform[0].DATE_OF_EXP[0]").SetValue(userApplication.Application.License.ExpirationDate.Value.Date.ToShortDateString() ?? "", true);
+        form.GetField("form1[0].#subform[0].LAST_NAME[1]").SetValue(userApplication.Application.PersonalInfo.LastName ?? "", true);
+        form.GetField("form1[0].#subform[0].SUFFIX[0]").SetValue(userApplication.Application.PersonalInfo.Suffix ?? "", true);
+        form.GetField("form1[0].#subform[0].FIRST_NAME[0]").SetValue(userApplication.Application.PersonalInfo.FirstName ?? "", true);
+        form.GetField("form1[0].#subform[0].AMEND_DATE[0]").SetValue(DateTime.Now.ToShortDateString());
+        form.GetField("form1[0].#subform[0].MIDDLE_NAME[0]").SetValue(userApplication.Application.PersonalInfo.MiddleName ?? "", true);
+        var birthDate = DateTimeOffset.Parse(userApplication.Application.DOB.BirthDate);
+        form.GetField("form1[0].#subform[0].DOB[0]").SetValue(birthDate.Date.ToShortDateString() ?? "", true);
+        form.GetField("form1[0].#subform[0].LAST_NAME[2]").SetValue(userApplication.Application.PersonalInfo.ModifiedLastName ?? "", true);
+        form.GetField("form1[0].#subform[0].FIRST_NAME[1]").SetValue(userApplication.Application.PersonalInfo.ModifiedFirstName ?? "", true);
+        form.GetField("form1[0].#subform[0].MIDDLE_NAME[1]").SetValue(userApplication.Application.PersonalInfo.ModifiedLastName ?? "", true);
+        form.GetField("form1[0].#subform[0].RESIDENCE_STREET_ADDRESS[0]").SetValue(userApplication.Application.ModifiedAddress.StreetAddress ?? "", true);
+        form.GetField("form1[0].#subform[0].CITY[1]").SetValue(userApplication.Application.ModifiedAddress.City ?? "", true);
+        form.GetField("form1[0].#subform[0].COUNTY[0]").SetValue(userApplication.Application.ModifiedAddress.County ?? "", true);
+        form.GetField("form1[0].#subform[0].ZIP_CODE[0]").SetValue(userApplication.Application.ModifiedAddress.Zip ?? "", true);
+        if (userApplication.Application.Status == ApplicationStatus.ModificationApproved)
+        {
+            form.GetField("form1[0].#subform[0].CheckBox1[0]").SetValue("Yes", true);
+        }
+        var correctionReasons = new List<string>();
+        if (!string.IsNullOrEmpty(userApplication.Application.ModifiedAddress.StreetAddress) ||
+            !string.IsNullOrEmpty(userApplication.Application.ModifiedAddress.City) ||
+            !string.IsNullOrEmpty(userApplication.Application.ModifiedAddress.State) ||
+            !string.IsNullOrEmpty(userApplication.Application.ModifiedAddress.Zip))
+        {
+            correctionReasons.Add("Address Modification");
+        }
+
+        if (!string.IsNullOrEmpty(userApplication.Application.PersonalInfo.ModifiedFirstName) ||
+            !string.IsNullOrEmpty(userApplication.Application.PersonalInfo.ModifiedLastName) ||
+            !string.IsNullOrEmpty(userApplication.Application.PersonalInfo.ModifiedMiddleName))
+        {
+            correctionReasons.Add("Name Modification");
+        }
+
+        if (userApplication.Application.ModifyAddWeapons != null && userApplication.Application.ModifyAddWeapons.Any() ||
+            userApplication.Application.ModifyDeleteWeapons != null && userApplication.Application.ModifyDeleteWeapons.Any())
+        {
+            correctionReasons.Add("Weapons Modification");
+        }
+
+        string correctionReason = string.Join("\n", correctionReasons);
+        form.GetField("form1[0].#subform[0].CORRECTION_REASON[1]").SetValue(correctionReason, true);
+
+        var addedWeapons = userApplication.Application.ModifyAddWeapons;
+        var deletedWeapons = userApplication.Application.ModifyDeleteWeapons;
+
+        int currentIndex = 0;
+
+        if (addedWeapons != null)
+        {
+            for (int i = 0; i < addedWeapons.Length && currentIndex < 15; i++)
+            {
+                form.GetField($"form1[0].#subform[1].ADD[{currentIndex}]").SetValue("Yes", true);
+                form.GetField($"form1[0].#subform[1].MANUFACTURER[{currentIndex}]").SetValue(addedWeapons[i].Make, true);
+                form.GetField($"form1[0].#subform[1].MODEL[{currentIndex}]").SetValue(addedWeapons[i].Model, true);
+                form.GetField($"form1[0].#subform[1].CALIBER[{currentIndex}]").SetValue(addedWeapons[i].Caliber, true);
+                form.GetField($"form1[0].#subform[1].SERIAL_NUMBER[{currentIndex}]").SetValue(addedWeapons[i].SerialNumber, true);
+                currentIndex++;
+            }
+        }
+
+        if (deletedWeapons != null && currentIndex < 15)
+        {
+            for (int i = 0; i < deletedWeapons.Length && currentIndex < 15; i++)
+            {
+                form.GetField($"form1[0].#subform[1].DELETE[{currentIndex}]").SetValue("Yes", true);
+                form.GetField($"form1[0].#subform[1].MANUFACTURER[{currentIndex}]").SetValue(deletedWeapons[i].Make, true);
+                form.GetField($"form1[0].#subform[1].MODEL[{currentIndex}]").SetValue(deletedWeapons[i].Model, true);
+                form.GetField($"form1[0].#subform[1].CALIBER[{currentIndex}]").SetValue(deletedWeapons[i].Caliber, true);
+                form.GetField($"form1[0].#subform[1].SERIAL_NUMBER[{currentIndex}]").SetValue(deletedWeapons[i].SerialNumber, true);
+                currentIndex++;
+            }
+        }
+
+        form.GetField("form1[0].#subform[1].DATE[0]").SetValue(DateTime.Now.ToShortDateString());
+
+        form.FlattenFields();
+        docFileAll.Close();
+
+        FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
+        FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
+
+        await _documentService.SaveAdminApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
+
+        byte[] byteInfo = outStream.ToArray();
+        outStream.Write(byteInfo, 0, byteInfo.Length);
+        outStream.Position = 0;
+
+        return outStream;
+    }
+
     public async Task<MemoryStream> GetLivescanMemoryStream(PermitApplication userApplication, string fileName)
     {
         var adminResponse = await _adminCosmosDbService.GetAgencyProfileSettingsAsync(cancellationToken: default);
         var streamToReadFrom = await _documentService.GetLiveScanTemplateAsync(cancellationToken: default);
 
-        // Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
         MemoryStream outStream = new MemoryStream();
 
         PdfReader pdfReader = new PdfReader(streamToReadFrom);
@@ -1141,10 +1420,14 @@ public class PdfService : IPdfService
 
     private static string BuildApplicantFullName(PermitApplication userApplication)
     {
-        return (userApplication.Application.PersonalInfo?.FirstName + " " +
-                                   userApplication.Application.PersonalInfo?.MiddleName + " " +
-                                   userApplication.Application.PersonalInfo?.LastName + " " +
-                                   userApplication.Application.PersonalInfo?.Suffix).Trim();
+        var personalInfo = userApplication.Application.PersonalInfo;
+        return string.Join(" ", new[]
+        {
+        personalInfo?.FirstName,
+        personalInfo?.MiddleName,
+        personalInfo?.LastName,
+        personalInfo?.Suffix
+        }.Where(name => !string.IsNullOrWhiteSpace(name)));
     }
 
     private void AddAppendixPage(string header, string content, PdfAcroForm form, PdfDocument pdfDoc, bool userBorder = false)
@@ -1424,26 +1707,38 @@ public class PdfService : IPdfService
         var leftPosition = new ImagePosition()
         {
             Page = 1,
-            Width = 180,
-            Height = 17,
-            Left = 90,
-            Bottom = 667
+            Width = 177,
+            Height = 14,
+            Left = 185,
+            Bottom = 17
         };
 
         var leftImage = GetImageForImageData(imageData, leftPosition);
         mainDocument.Add(leftImage);
 
-        var rightPosition = new ImagePosition()
+        var secondPosition = new ImagePosition()
         {
-            Page = 1,
-            Width = 180,
-            Height = 17,
+            Page = 3,
+            Width = 200,
+            Height = 25,
             Left = 395,
-            Bottom = 667
+            Bottom = 485
         };
 
-        var rightImage = GetImageForImageData(imageData, rightPosition);
-        mainDocument.Add(rightImage);
+        var secondCard = GetImageForImageData(imageData, secondPosition);
+        mainDocument.Add(secondCard);
+
+        var addendumPosition = new ImagePosition()
+        {
+            Page = 4,
+            Width = 177,
+            Height = 14,
+            Left = 185,
+            Bottom = 17
+        };
+
+        var addendumImage = GetImageForImageData(imageData, addendumPosition);
+        mainDocument.Add(addendumImage);
     }
 
     private async Task AddApplicantSignatureImageForOfficial(PermitApplication userApplication, Document mainDocument)
@@ -1454,10 +1749,10 @@ public class PdfService : IPdfService
         var leftPosition = new ImagePosition()
         {
             Page = 1,
-            Width = 160,
+            Width = 80,
             Height = 20,
-            Left = 145,
-            Bottom = 465
+            Left = 2,
+            Bottom = 17
         };
 
         var leftImage = GetImageForImageData(imageData, leftPosition);
@@ -1465,15 +1760,27 @@ public class PdfService : IPdfService
 
         var rightPosition = new ImagePosition()
         {
-            Page = 1,
-            Width = 160,
+            Page = 3,
+            Width = 100,
             Height = 20,
-            Left = 450,
-            Bottom = 465
+            Left = 125,
+            Bottom = 485
         };
 
         var rightImage = GetImageForImageData(imageData, rightPosition);
         mainDocument.Add(rightImage);
+
+        var addendumPosition= new ImagePosition()
+        {
+            Page = 4,
+            Width = 80,
+            Height = 20,
+            Left = 2,
+            Bottom = 17
+        };
+
+        var addendumImage = GetImageForImageData(imageData, addendumPosition);
+        mainDocument.Add(addendumImage);
     }
 
     private async Task AddApplicantSignatureImageForLiveScan(PermitApplication userApplication, Document docFileAll)
@@ -1501,11 +1808,11 @@ public class PdfService : IPdfService
 
         var leftPosition = new ImagePosition()
         {
-            Page = 1,
+            Page = 2,
             Width = 60,
-            Height = 70,
-            Left = 35,
-            Bottom = 425
+            Height = 60,
+            Left = 12,
+            Bottom = 8
         };
 
         var leftImage = GetImageForImageData(imageData, leftPosition);
@@ -1513,11 +1820,11 @@ public class PdfService : IPdfService
 
         var rightPosition = new ImagePosition()
         {
-            Page = 1,
-            Width = 60,
-            Height = 70,
-            Left = 340,
-            Bottom = 425
+            Page = 3,
+            Width = 150,
+            Height = 90,
+            Left = 135,
+            Bottom = 215
         };
 
         var rightImage = GetImageForImageData(imageData, rightPosition);
@@ -1532,10 +1839,10 @@ public class PdfService : IPdfService
         var leftPosition = new ImagePosition()
         {
             Page = 1,
-            Width = 70,
-            Height = 95,
-            Left = 127,
-            Bottom = 374
+            Width = 60,
+            Height = 85,
+            Left = 7,
+            Bottom = 40
         };
 
         var leftImage = GetImageForImageData(imageData, leftPosition);
@@ -1543,15 +1850,27 @@ public class PdfService : IPdfService
 
         var rightPosition = new ImagePosition()
         {
-            Page = 1,
-            Width = 70,
-            Height = 95,
-            Left = 432,
-            Bottom = 374
+            Page = 3,
+            Width = 100,
+            Height = 120,
+            Left = 115,
+            Bottom = 510
         };
 
         var rightImage = GetImageForImageData(imageData, rightPosition);
         mainDocument.Add(rightImage);
+
+        var addendumPosition = new ImagePosition()
+        {
+            Page = 4,
+            Width = 60,
+            Height = 85,
+            Left = 7,
+            Bottom = 40
+        };
+
+        var addendumImage = GetImageForImageData(imageData, addendumPosition);
+        mainDocument.Add(addendumImage);
     }
 
     private async Task AddApplicantSignatureImageForUnOfficial(PermitApplication userApplication, Document docFileAll)
@@ -1566,6 +1885,24 @@ public class PdfService : IPdfService
             Height = 20,
             Left = 133,
             Bottom = 0
+        };
+
+        var leftImage = GetImageForImageData(imageData, leftPosition);
+        docFileAll.Add(leftImage);
+    }
+
+    private async Task AddApplicantSignatureImageForModification(PermitApplication userApplication, Document docFileAll)
+    {
+        var signatureFileName = BuildApplicantDocumentName(userApplication, "Signature");
+        var imageData = await GetImageData(signatureFileName);
+
+        var leftPosition = new ImagePosition()
+        {
+            Page = 2,
+            Width = 185,
+            Height = 40,
+            Left = 110,
+            Bottom = 117
         };
 
         var leftImage = GetImageForImageData(imageData, leftPosition);
@@ -1608,7 +1945,7 @@ public class PdfService : IPdfService
         docFileAll.Add(leftImage);
     }
 
-    private async Task AddSheriffLogoForUnOfficial(Document docFileAll)
+    private async Task AddSheriffLogoForOfficial(Document docFileAll)
     {
         var streamContent = await _documentService.GetSheriffLogoAsync(cancellationToken: default);
 
@@ -1619,15 +1956,39 @@ public class PdfService : IPdfService
 
         var leftPosition = new ImagePosition()
         {
-            Page = 2,
-            Width = 50,
-            Height = 60,
-            Left = 92,
-            Bottom = 6
+            Page = 1,
+            Width = 22,
+            Height = 46,
+            Left = 2,
+            Bottom = 126
         };
 
         var leftImage = GetImageForImageData(imageData, leftPosition);
         docFileAll.Add(leftImage);
+
+        var rightPosition = new ImagePosition()
+        {
+            Page = 3,
+            Width = 35,
+            Height = 75,
+            Left = 115,
+            Bottom = 660
+        };
+
+        var rightImage = GetImageForImageData(imageData, rightPosition);
+        docFileAll.Add(rightImage);
+
+        var addendumPosition = new ImagePosition()
+        {
+            Page = 4,
+            Width = 22,
+            Height = 46,
+            Left = 2,
+            Bottom = 126
+        };
+
+        var addendumImage = GetImageForImageData(imageData, addendumPosition);
+        docFileAll.Add(addendumImage);
     }
 
     private async Task AddSheriffIssuingOfficierSignatureImageForUnOfficial(Document docFileAll)
