@@ -114,8 +114,6 @@ const { isLoading, isFetching } = useQuery(
     refetchOnMount: 'always',
     onSuccess: response => {
       if (response.status !== 204 && response.data) {
-        window.console.log('response', response)
-
         completeApplicationStore.setCompleteApplication(
           response.data[0] as CompleteApplication
         )
