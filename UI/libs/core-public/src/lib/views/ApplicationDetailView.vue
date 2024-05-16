@@ -258,7 +258,7 @@
                 />
 
                 <v-btn
-                  v-if="showInitialWithdrawButton"
+                  v-if="showInitialWithdrawButton && canWithdrawApplication"
                   @click="handleShowWithdrawDialog"
                   :disabled="
                     isGetApplicationsLoading ||
