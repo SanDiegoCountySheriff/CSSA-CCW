@@ -1,5 +1,7 @@
 <template>
-  <v-container class="info-section-container rounded">
+  <v-container
+    fluid
+    class="info-section-container rounded">
     <v-banner class="sub-header font-weight-bold text-left my-5">
       {{ $t('Employment Information: ') }}
       <template #actions>
