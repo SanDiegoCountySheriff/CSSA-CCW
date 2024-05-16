@@ -1,5 +1,8 @@
 <template>
-  <v-container class="citizen-info-container rounded">
+   <v-container
+    fluid
+    class="confirm-info-section rounded mt-5"
+  >
     <v-banner class="sub-header font-weight-bold text-xl text-left my-5">
       {{ $t('Citizenship Information: ') }}
       <template #actions>

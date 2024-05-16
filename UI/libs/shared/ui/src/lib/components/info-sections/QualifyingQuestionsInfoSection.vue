@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-banner class="sub-header font-weight-bold text-left my-5">
       {{ $t('Qualifying Questions: ') }}
       <template #actions>

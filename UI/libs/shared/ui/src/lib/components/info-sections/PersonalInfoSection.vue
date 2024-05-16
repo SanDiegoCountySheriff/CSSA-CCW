@@ -1,5 +1,8 @@
 <template>
-  <v-container class="info-section-container rounded">
+  <v-container
+    fluid
+    class="confirm-info-section rounded mt-5"
+  >
     <v-banner
       single-line
       class="sub-header font-weight-bold text-xl text-left my-5"
