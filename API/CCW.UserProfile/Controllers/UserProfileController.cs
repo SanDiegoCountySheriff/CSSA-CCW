@@ -122,7 +122,9 @@ public class UserProfileController : ControllerBase
     {
         try
         {
-            await _cosmosDbService.UpdateUserAsync(_mapper.Map<User>(user), cancellationToken: default);
+            GetUserId(out var userId);
+
+            await _cosmosDbService.UpdateUserAsync(_mapper.Map<User>(user), userId, cancellationToken: default);
 
             return Ok();
         }

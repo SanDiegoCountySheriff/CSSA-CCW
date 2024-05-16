@@ -79,9 +79,10 @@ public class CosmosDbService : ICosmosDbService
         return await _userContainer.CreateItemAsync(user, new PartitionKey(user.Id), null, cancellationToken);
     }
 
-    public async Task<User> UpdateUserAsync(User user, CancellationToken cancellationToken)
+    public async Task<User> UpdateUserAsync(User user, string userId, CancellationToken cancellationToken)
     {
-        return await _userContainer.UpsertItemAsync(user, new PartitionKey(user.Id), null, cancellationToken);
+        user.Id = userId;
+        return await _userContainer.UpsertItemAsync(user, new PartitionKey(userId), null, cancellationToken);
     }
 
     public async Task<User> GetUserAsync(string userId, CancellationToken cancellationToken)

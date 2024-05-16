@@ -9,7 +9,7 @@ public interface ICosmosDbService
     Task<AdminUser> GetAdminUserAsync(string adminUserId, CancellationToken cancellationToken);
     Task<IEnumerable<AdminUser>> GetAllAdminUsers(CancellationToken cancellationToken);
     Task<User> AddUserAsync(User user, CancellationToken cancellationToken);
-    Task<User> UpdateUserAsync(User user, CancellationToken cancellationToken);
+    Task<User> UpdateUserAsync(User user, string id, CancellationToken cancellationToken);
     Task<User> GetUserAsync(string userId, CancellationToken cancellationToken);
     Task<IEnumerable<User>> GetAllUsers(CancellationToken cancellationToken);
     Task<List<User>> GetUnmatchedUserProfiles(CancellationToken cancellationToken);
