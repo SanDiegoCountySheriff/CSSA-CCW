@@ -22,18 +22,13 @@ builder.Services.AddSingleton<IAppointmentCosmosDbService>(
 
 builder.Services.AddSingleton<IApplicationCosmosDbService>(InitializeApplicationCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
 
-builder.Services.AddHeaderPropagation(o =>
-{
-    o.Headers.Add("Authorization");
-});
-
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
-    .AddAuthentication("aad")
+    .AddAuthentication()
     .AddJwtBearer("aad", o =>
     {
         o.Authority = builder.Configuration.GetSection("JwtBearerAAD:Authority").Value;
@@ -166,7 +161,6 @@ app.UseCors();
 
 
 app.UseAuthorization();
-app.UseHeaderPropagation();
 app.MapControllers();
 
 app.Run();

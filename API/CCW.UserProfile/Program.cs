@@ -25,7 +25,7 @@ builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
-    .AddAuthentication("aad")
+    .AddAuthentication()
     .AddJwtBearer("aad", o =>
     {
         o.Authority = builder.Configuration.GetSection("JwtBearerAAD:Authority").Value;
@@ -78,12 +78,18 @@ builder.Services
             {
                 policy.RequireRole("CCW-ADMIN-ROLE");
                 policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
+                policy.RequireAuthenticatedUser();
+                policy.AddAuthenticationSchemes("aad");
+                policy.Build();
             });
 
         options.AddPolicy("RequireSystemAdminOnly", policy =>
         {
             policy.RequireRole("CCW-SYSTEM-ADMINS-ROLE");
             policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
+            policy.RequireAuthenticatedUser();
+            policy.AddAuthenticationSchemes("aad");
+            policy.Build();
         });
 
         options.AddPolicy("RequireAdminOrSystemAdminOnly",
@@ -92,19 +98,18 @@ builder.Services
                 policy.RequireRole(new string[] { "CCW-ADMIN-ROLE", "CCW-SYSTEM-ADMINS-ROLE" });
                 policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
                 policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
+                policy.RequireAuthenticatedUser();
+                policy.AddAuthenticationSchemes("aad");
+                policy.Build();
             });
-
 
         options.AddPolicy("RequireProcessorOnly", policy =>
         {
             policy.RequireRole("CCW-PROCESSORS-ROLE");
             policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
-        });
-
-        options.AddPolicy("PublicOnly", policy =>
-        {
-            policy.RequireRole("CCW-PROCESSORS-ROLE");
-            policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
+            policy.RequireAuthenticatedUser();
+            policy.AddAuthenticationSchemes("aad");
+            policy.Build();
         });
     });
 
@@ -172,7 +177,6 @@ app.UseHealthChecks("/health");
 
 app.UseCors();
 
-app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

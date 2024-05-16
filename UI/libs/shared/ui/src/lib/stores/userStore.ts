@@ -17,9 +17,11 @@ export const useUserStore = defineStore('UserStore', () => {
   async function getUser() {
     const res = await axios.get(Endpoints.GET_USER_ENDPOINT)
 
-    if (res?.data) setUser(res.data)
+    if (res?.data) {
+      setUser(res.data)
+    }
 
-    return res?.data || {}
+    return res
   }
 
   async function putCreateUser() {
