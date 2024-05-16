@@ -301,7 +301,15 @@
                 xl="6"
               >
                 <v-btn
-                  v-if="canApplicationBeUpdated"
+                  v-if="
+                    canApplicationBeUpdated &&
+                    applicationStore.completeApplication.application
+                      .appointmentDateTime &&
+                    new Date() <=
+                      new Date(
+                        applicationStore.completeApplication.application.appointmentDateTime
+                      )
+                  "
                   color="primary"
                   block
                   :disabled="
@@ -1310,9 +1318,17 @@ const canApplicationBeUpdated = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Contingently Approved'] &&
     applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Contingently Denied'] &&
+    applicationStore.completeApplication.application.status !==
       ApplicationStatus.Approved &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Permit Delivered'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Ready To Issue'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Modification Approved'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Renewal Approved'] &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Suspended &&
     applicationStore.completeApplication.application.status !==
@@ -1351,9 +1367,17 @@ const canApplicationBeContinued = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Contingently Approved'] &&
     applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Contingently Denied'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Modification Approved'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Renewal Approved'] &&
+    applicationStore.completeApplication.application.status !==
       ApplicationStatus.Approved &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Permit Delivered'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Ready To Issue'] &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Suspended &&
     applicationStore.completeApplication.application.status !==
