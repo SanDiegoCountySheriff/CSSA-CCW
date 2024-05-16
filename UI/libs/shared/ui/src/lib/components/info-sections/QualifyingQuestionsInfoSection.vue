@@ -212,7 +212,7 @@ const props = defineProps<IQualifyingQuestionsProps>()
 const router = useRouter()
 
 function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 9
+  applicationStore.completeApplication.application.currentStep = 7
   router.push({
     path: '/form',
     query: {
