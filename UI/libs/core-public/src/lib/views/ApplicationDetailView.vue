@@ -219,8 +219,8 @@
           >
             <v-row>
               <v-col
+                v-if="canApplicationBeContinued"
                 cols="12"
-                xl="6"
               >
                 <v-btn
                   color="primary"
@@ -238,8 +238,13 @@
               </v-col>
 
               <v-col
+                v-if="
+                  showModifyWithdrawButton ||
+                  showInitialWithdrawButton ||
+                  applicationStore.completeApplication.application.status ===
+                    ApplicationStatus.Withdrawn
+                "
                 cols="12"
-                xl="6"
               >
                 <WithdrawModifyDialog
                   v-if="showModifyWithdrawButton"
@@ -283,8 +288,8 @@
 
             <v-row>
               <v-col
+                v-if="isRenewalActive"
                 cols="12"
-                xl="6"
               >
                 <v-btn
                   color="primary"
@@ -297,8 +302,8 @@
               </v-col>
 
               <v-col
+                v-if="canApplicationBeUpdated || canApplicationBeModified"
                 cols="12"
-                xl="6"
               >
                 <v-btn
                   v-if="
@@ -315,13 +320,7 @@
                   :disabled="
                     !canApplicationBeUpdated ||
                     isGetApplicationsLoading ||
-                    isMakePaymentLoading ||
-                    (applicationStore.completeApplication.application
-                      .appointmentDateTime &&
-                      new Date() >=
-                        new Date(
-                          applicationStore.completeApplication.application.appointmentDateTime
-                        ))
+                    isMakePaymentLoading
                   "
                   @click="handleUpdateApplication"
                 >
