@@ -72,7 +72,6 @@ const themeStore = useThemeStore()
 const brandStore = useBrandStore()
 const msalInstance = ref<MsalBrowser>()
 const userStore = useUserStore()
-const user = computed(() => userStore.userProfile)
 const canGetUserProfile = computed(() => authStore.getAuthState.isAuthenticated)
 
 provide(
@@ -82,7 +81,7 @@ provide(
 
 const { mutate: createUser } = useMutation(
   ['createUserProfile'],
-  () => userStore.putCreateUser(user.value),
+  () => userStore.putCreateUser(),
   {
     onSuccess: res => {
       userStore.setUser(res)

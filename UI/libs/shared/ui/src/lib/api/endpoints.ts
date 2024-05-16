@@ -351,6 +351,12 @@ export default class Endpoints {
     }/userprofile/v1/userprofile/createUserProfile`
   }
 
+  static get UPDATE_USER_PROFILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.userProfileApiBaseUrl
+    }/userprofile/v1/userprofile/updateUserProfile`
+  }
+
   static get GET_USER_ENDPOINT() {
     return `${
       useAppConfigStore().appConfig.userProfileApiBaseUrl
@@ -360,19 +366,19 @@ export default class Endpoints {
   static get GET_ADMIN_USER_ENDPOINT() {
     return `${
       useAppConfigStore().appConfig.userProfileApiBaseUrl
-    }/userprofile/v1/adminuser/getAdminUser`
+    }/userprofile/v1/userprofile/getAdminUser`
   }
 
   static get PUT_CREATE_ADMIN_USER_ENDPOINT() {
     return `${
       useAppConfigStore().appConfig.userProfileApiBaseUrl
-    }/userprofile/v1/adminuser/createAdminUser`
+    }/userprofile/v1/userprofile/createAdminUser`
   }
 
   static get GET_ALL_ADMIN_USERS_ENDPOINT() {
     return `${
       useAppConfigStore().appConfig.userProfileApiBaseUrl
-    }/userprofile/v1/adminuser/getAllAdminUsers`
+    }/userprofile/v1/userprofile/getAllAdminUsers`
   }
 
   static get GET_UNMATCHED_USERS_ENDPOINT() {
