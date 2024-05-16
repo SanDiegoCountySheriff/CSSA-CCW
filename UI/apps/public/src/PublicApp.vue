@@ -8,7 +8,6 @@
           isBrandSettingLoading ||
           isUserFetching ||
           authStore.auth.handlingRedirectPromise ||
-          isLoading ||
           isFetching
         "
       >
@@ -107,7 +106,7 @@ const { isFetching: isUserFetching } = useQuery(
   }
 )
 
-const { isLoading, isFetching } = useQuery(
+const { isFetching } = useQuery(
   ['getApplicationsByUser'],
   completeApplicationStore.getAllUserApplicationsApi,
   {
