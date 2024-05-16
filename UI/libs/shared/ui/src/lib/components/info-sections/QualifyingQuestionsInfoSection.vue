@@ -15,7 +15,9 @@
               v-bind="attrs"
               v-on="on"
             >
-              <v-icon color="primary"> mdi-square-edit-outline </v-icon>
+              <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
+                mdi-square-edit-outline
+              </v-icon>
             </v-btn>
           </template>
           {{ $t('Edit Section') }}
