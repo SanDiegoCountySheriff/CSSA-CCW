@@ -7,6 +7,7 @@
         <WeaponsTable
           :weapons="items"
           :modifying="true"
+          :readonly="false"
           @modify-delete-weapon="deleteWeapon"
           @save-weapon="handleSaveWeapon"
           @undo-add-weapon="undoAddWeapon"

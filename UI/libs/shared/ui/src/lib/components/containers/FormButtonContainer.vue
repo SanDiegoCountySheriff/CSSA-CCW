@@ -41,7 +41,11 @@
         </v-btn>
 
         <v-btn
-          v-if="!props.isFinalStep || isSubmittedAndMatchedWithoutAppointment"
+          v-if="
+            !props.isFinalStep ||
+            isSubmittedAndMatchedWithoutAppointment ||
+            props.isModification
+          "
           :disabled="!props.valid || props.loading || !props.allStepsComplete"
           :loading="props.loading"
           @click="handleContinue"
@@ -108,9 +112,9 @@
 </template>
 
 <script setup lang="ts">
+import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
-import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { computed, inject } from 'vue'
 
 const isUpdatingAllStepsComplete = inject('allStepsComplete')

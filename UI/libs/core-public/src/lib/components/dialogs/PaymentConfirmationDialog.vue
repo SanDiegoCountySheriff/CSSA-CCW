@@ -16,7 +16,9 @@
     </template>
 
     <v-card>
-      <v-card-title>Are you ready to make your initial payment?</v-card-title>
+      <v-card-title>
+        Are you ready to make your {{ paymentType }} payment?
+      </v-card-title>
 
       <v-card-text>
         Clicking confirm will redirect you to the payment provider. Please do
@@ -49,11 +51,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-interface InitialPaymentDialogProps {
+interface PaymentDialogProps {
   disabled: boolean
+  paymentType: string
 }
 
-defineProps<InitialPaymentDialogProps>()
+defineProps<PaymentDialogProps>()
 
 const emit = defineEmits(['confirm'])
 
