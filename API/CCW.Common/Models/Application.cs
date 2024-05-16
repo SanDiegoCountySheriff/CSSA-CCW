@@ -63,7 +63,8 @@ public class Application
     public Agreements Agreements { get; set; }
     public string ReferenceNotes { get; set; }
     public bool ReadyForInitialPayment { get; set; } = false;
-    public bool ReadyForRenewalPayment { get; set; } = false;  
+    public bool ReadyForRenewalPayment { get; set; } = false;
+    public bool ReadyForModificationPayment { get; set; } = false;
     public int ModificationNumber { get; set; } = 1;
     public int RenewalNumber { get; set; } = 0;
 }
