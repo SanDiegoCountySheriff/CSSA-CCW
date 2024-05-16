@@ -68,7 +68,7 @@ public class UserProfileController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "RequireAdminOrSystemAdminOnly")]
+    [Authorize(Policy = "AADUsers")]
     [Route("getAllAdminUsers")]
     [HttpGet]
     public async Task<IActionResult> GetAllAdminUsers()
@@ -146,7 +146,7 @@ public class UserProfileController : ControllerBase
             GetUserId(out var userId);
             var result = await _cosmosDbService.GetUserAsync(userId, cancellationToken: default);
 
-            return (result != null) ? Ok(_mapper.Map<UserProfileResponseModel>(result)) : NotFound();
+            return (result != null) ? Ok(_mapper.Map<UserProfileResponseModel>(result)) : NoContent();
         }
         catch (Exception e)
         {

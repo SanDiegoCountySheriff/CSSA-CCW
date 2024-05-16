@@ -7,7 +7,9 @@
           isAgencyLogoLoading ||
           isBrandSettingLoading ||
           isUserFetching ||
-          authStore.auth.handlingRedirectPromise
+          authStore.auth.handlingRedirectPromise ||
+          isLoading ||
+          isFetching
         "
       >
         <Loader />
@@ -48,6 +50,7 @@
 
 <script setup lang="ts">
 import { ApplicationInsights } from '@microsoft/applicationinsights-web'
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import Footer from '@shared-ui/components/footer/Footer.vue'
 import Loader from '@core-public/views/Loader.vue'
 import NavBar from '@core-public/components/navbar/NavBar.vue'
@@ -55,6 +58,7 @@ import Vue from 'vue'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
 import { useUserStore } from '@shared-ui/stores/userStore'
 import {
@@ -67,12 +71,13 @@ import { useMutation, useQuery } from '@tanstack/vue-query'
 const prompt = ref(false)
 const app = getCurrentInstance()
 const authStore = useAuthStore()
+const completeApplicationStore = useCompleteApplicationStore()
 const configStore = useAppConfigStore()
 const themeStore = useThemeStore()
 const brandStore = useBrandStore()
 const msalInstance = ref<MsalBrowser>()
 const userStore = useUserStore()
-const canGetUserProfile = computed(() => authStore.getAuthState.isAuthenticated)
+const canFetch = computed(() => authStore.getAuthState.isAuthenticated)
 
 provide(
   'msalInstance',
@@ -93,10 +98,28 @@ const { isFetching: isUserFetching } = useQuery(
   ['getUserProfile'],
   userStore.getUser,
   {
-    enabled: canGetUserProfile,
-    onError: () => {
-      createUser()
+    enabled: canFetch,
+    onSuccess: response => {
+      if (response.status === 204) {
+        createUser()
+      }
     },
+  }
+)
+
+const { isLoading, isFetching } = useQuery(
+  ['getApplicationsByUser'],
+  completeApplicationStore.getAllUserApplicationsApi,
+  {
+    refetchOnMount: 'always',
+    onSuccess: response => {
+      if (response.status !== 204 && response.data) {
+        completeApplicationStore.setCompleteApplication(
+          response.data[0] as CompleteApplication
+        )
+      }
+    },
+    enabled: canFetch,
   }
 )
 

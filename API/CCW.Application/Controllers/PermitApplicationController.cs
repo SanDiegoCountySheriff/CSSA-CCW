@@ -227,7 +227,7 @@ public class PermitApplicationController : ControllerBase
                 return Ok(responseModels);
             }
 
-            return NotFound("Application was not found");
+            return NoContent();
         }
         catch (Exception e)
         {
