@@ -1,7 +1,6 @@
 using CCW.Common.Models;
 using Microsoft.Azure.Cosmos;
 using System.Net;
-using System.Threading;
 using User = CCW.Common.Models.User;
 
 namespace CCW.UserProfile.Services;
@@ -76,6 +75,11 @@ public class CosmosDbService : ICosmosDbService
     }
 
     public async Task<User> AddUserAsync(User user, CancellationToken cancellationToken)
+    {
+        return await _userContainer.CreateItemAsync(user, new PartitionKey(user.Id), null, cancellationToken);
+    }
+
+    public async Task<User> UpdateUserAsync(User user, CancellationToken cancellationToken)
     {
         return await _userContainer.UpsertItemAsync(user, new PartitionKey(user.Id), null, cancellationToken);
     }

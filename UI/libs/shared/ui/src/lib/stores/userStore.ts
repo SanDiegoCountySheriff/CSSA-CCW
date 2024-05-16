@@ -22,8 +22,18 @@ export const useUserStore = defineStore('UserStore', () => {
     return res?.data || {}
   }
 
-  async function putCreateUser(user) {
-    const res = await axios.put(Endpoints.PUT_CREATE_USER_ENDPOINT, user)
+  async function putCreateUser() {
+    const res = await axios.put(Endpoints.PUT_CREATE_USER_ENDPOINT)
+
+    if (res?.data) {
+      setUser(res.data)
+    }
+
+    return res?.data || {}
+  }
+
+  async function updateUserProfile(user: UserType) {
+    const res = await axios.post(Endpoints.UPDATE_USER_PROFILE_ENDPOINT, user)
 
     if (res?.data) {
       setUser(res.data)
@@ -50,5 +60,6 @@ export const useUserStore = defineStore('UserStore', () => {
     getUser,
     putCreateUser,
     getUnmatchedUsers,
+    updateUserProfile,
   }
 })

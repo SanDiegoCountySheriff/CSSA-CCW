@@ -263,8 +263,8 @@ const menu = ref(false)
 const appointmentMenu = ref(false)
 
 const { mutate: updateUser } = useMutation(
-  ['createUserProfile'],
-  async () => await userStore.putCreateUser(user.value),
+  ['updateUserProfile'],
+  async () => await userStore.updateUserProfile(user.value),
   {
     onSuccess: async () => {
       await userStore.getUser()

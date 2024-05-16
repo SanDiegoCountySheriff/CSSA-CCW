@@ -10,16 +10,16 @@ namespace CCW.UserProfile.Controllers;
 
 [ApiController]
 [Route(Constants.AppName + "/v1/[controller]")]
-public class AdminUserController : ControllerBase
+public class UserProfileController : ControllerBase
 {
     private readonly ICosmosDbService _cosmosDbService;
     private readonly IMapper _mapper;
-    private readonly ILogger<AdminUserController> _logger;
+    private readonly ILogger<UserProfileController> _logger;
 
-    public AdminUserController(
+    public UserProfileController(
         ICosmosDbService cosmosDbService,
         IMapper mapper,
-        ILogger<AdminUserController> logger)
+        ILogger<UserProfileController> logger)
     {
         _cosmosDbService = cosmosDbService;
         _mapper = mapper;
@@ -29,7 +29,7 @@ public class AdminUserController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("createAdminUser")]
     [HttpPut]
-    public async Task<IActionResult> Put([FromBody] AdminUserProfileRequestModel request)
+    public async Task<IActionResult> CreateAdminUser([FromBody] AdminUserProfileRequestModel request)
     {
         try
         {
@@ -51,7 +51,7 @@ public class AdminUserController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("getAdminUser")]
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> GetAdminUser()
     {
         try
         {
@@ -90,18 +90,41 @@ public class AdminUserController : ControllerBase
     [Authorize(Policy = "B2CUsers")]
     [Route("createUserProfile")]
     [HttpPut]
-    public async Task<IActionResult> CreateUserProfile([FromBody] UserProfileRequestModel request)
+    public async Task<IActionResult> CreateUserProfile()
     {
         try
         {
             GetUserId(out var userId);
-            User newUser = _mapper.Map<User>(request);
-            newUser.Id = userId;
+
+            User newUser = new()
+            {
+                Id = userId
+            };
+
             var userEmail = User.Claims.FirstOrDefault(c => c.Type == "emails")?.Value;
             newUser.Email = userEmail;
             var createdUser = await _cosmosDbService.AddUserAsync(newUser, cancellationToken: default);
 
             return Ok(_mapper.Map<UserProfileResponseModel>(createdUser));
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to create new user.");
+        }
+    }
+
+    [Authorize(Policy = "B2CUsers")]
+    [Route("updateUserProfile")]
+    [HttpPost]
+    public async Task<IActionResult> UpdateUserProfile([FromBody] UserProfileRequestModel user)
+    {
+        try
+        {
+            await _cosmosDbService.UpdateUserAsync(_mapper.Map<User>(user), cancellationToken: default);
+
+            return Ok();
         }
         catch (Exception e)
         {
