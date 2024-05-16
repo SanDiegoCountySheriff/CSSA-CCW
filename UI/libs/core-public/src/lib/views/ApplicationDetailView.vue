@@ -218,8 +218,8 @@
           >
             <v-row>
               <v-col
+                v-if="canApplicationBeContinued"
                 cols="12"
-                xl="6"
               >
                 <v-btn
                   color="primary"
@@ -237,8 +237,13 @@
               </v-col>
 
               <v-col
+                v-if="
+                  showModifyWithdrawButton ||
+                  showInitialWithdrawButton ||
+                  applicationStore.completeApplication.application.status ===
+                    ApplicationStatus.Withdrawn
+                "
                 cols="12"
-                xl="6"
               >
                 <WithdrawModifyDialog
                   v-if="showModifyWithdrawButton"
@@ -252,7 +257,7 @@
                 />
 
                 <v-btn
-                  v-if="showInitialWithdrawButton"
+                  v-if="showInitialWithdrawButton && canWithdrawApplication"
                   @click="handleShowWithdrawDialog"
                   :disabled="
                     isGetApplicationsLoading ||
@@ -282,8 +287,8 @@
 
             <v-row>
               <v-col
+                v-if="isRenewalActive"
                 cols="12"
-                xl="6"
               >
                 <v-btn
                   color="primary"
@@ -296,23 +301,25 @@
               </v-col>
 
               <v-col
+                v-if="canApplicationBeUpdated || canApplicationBeModified"
                 cols="12"
-                xl="6"
               >
                 <v-btn
-                  v-if="canApplicationBeUpdated"
+                  v-if="
+                    canApplicationBeUpdated &&
+                    applicationStore.completeApplication.application
+                      .appointmentDateTime &&
+                    new Date() <=
+                      new Date(
+                        applicationStore.completeApplication.application.appointmentDateTime
+                      )
+                  "
                   color="primary"
                   block
                   :disabled="
                     !canApplicationBeUpdated ||
                     isGetApplicationsLoading ||
-                    isMakePaymentLoading ||
-                    (applicationStore.completeApplication.application
-                      .appointmentDateTime &&
-                      new Date() >=
-                        new Date(
-                          applicationStore.completeApplication.application.appointmentDateTime
-                        ))
+                    isMakePaymentLoading
                   "
                   @click="handleUpdateApplication"
                 >
@@ -1345,9 +1352,17 @@ const canApplicationBeUpdated = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Contingently Approved'] &&
     applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Contingently Denied'] &&
+    applicationStore.completeApplication.application.status !==
       ApplicationStatus.Approved &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Permit Delivered'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Ready To Issue'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Modification Approved'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Renewal Approved'] &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Suspended &&
     applicationStore.completeApplication.application.status !==
@@ -1386,9 +1401,17 @@ const canApplicationBeContinued = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Contingently Approved'] &&
     applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Contingently Denied'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Modification Approved'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Renewal Approved'] &&
+    applicationStore.completeApplication.application.status !==
       ApplicationStatus.Approved &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Permit Delivered'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Ready To Issue'] &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Suspended &&
     applicationStore.completeApplication.application.status !==
