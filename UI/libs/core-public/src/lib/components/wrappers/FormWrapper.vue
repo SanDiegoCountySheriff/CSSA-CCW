@@ -205,6 +205,7 @@
             <SignatureStep
               v-model="applicationStore.completeApplication"
               :all-steps-complete="allStepsComplete"
+              :loading="isSaveLoading"
               @update-step-eight-valid="handleUpdateStepEightValid"
               @handle-save="handleSave"
               @previous-step="handlePrevious"
@@ -422,6 +423,7 @@
             <SignatureStep
               v-model="applicationStore.completeApplication"
               :all-steps-complete="allStepsComplete"
+              :loading="isSaveLoading"
               @update-step-eight-valid="handleUpdateStepEightValid"
               @handle-save="handleSave"
               @previous-step="handlePrevious"
@@ -533,7 +535,13 @@ const { isLoading: isGetApplicationsLoading } = useQuery(
   }
 )
 
-function handleSave() {
+function handleSave(isMatching = false) {
+  if (isMatching) {
+    applicationStore.completeApplication.isMatchUpdated = true
+    applicationStore.completeApplication.application.isComplete = true
+    applicationStore.completeApplication.application.currentStep = 1
+  }
+
   saveMutation()
 }
 

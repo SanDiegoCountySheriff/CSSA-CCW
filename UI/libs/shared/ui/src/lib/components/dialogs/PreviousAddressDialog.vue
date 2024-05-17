@@ -175,7 +175,7 @@ import { inject, reactive, ref } from 'vue'
 
 const emit = defineEmits(['get-previous-address-from-dialog'])
 
-const readonly = inject<boolean>('readonly')
+const readonly = inject<boolean>('readonly', false)
 
 const state = reactive({
   address: {

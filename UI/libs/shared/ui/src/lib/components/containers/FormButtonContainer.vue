@@ -25,55 +25,61 @@
           </span>
         </v-btn>
 
+        <!-- Finalize Initial/Modification/Renewal -->
         <v-btn
-          v-if="
-            props.isFinalStep &&
-            applicationStore.completeApplication.application
-              .isUpdatingApplication &&
-            applicationStore.completeApplication.isMatchUpdated !== false
-          "
+          v-if="isFinalizeInitialModificationRenewal"
           :loading="props.loading"
-          @click="handleSave"
-          color="primary"
-        >
-          <v-icon left>mdi-content-save</v-icon>
-          {{ $t('Save') }}
-        </v-btn>
-
-        <v-btn
-          v-if="
-            (isSubmittedAndMatchedWithoutAppointment &&
-              !isUpdatingOnFinalStep) ||
-            props.isModification ||
-            isUpdatingNotOnFinalStep
-          "
           :disabled="!props.valid || props.loading || !props.allStepsComplete"
-          :loading="props.loading"
           @click="handleContinue"
           color="primary"
         >
           {{ getButtonText }}
-          <v-icon
-            v-if="!props.isFinalStep"
-            right
-          >
-            mdi-chevron-right
-          </v-icon>
         </v-btn>
 
+        <!-- Save and Exit Matched with appointment and delivered -->
         <v-btn
-          v-if="
-            applicationStore.completeApplication.isMatchUpdated === false &&
-            props.isFinalStep &&
-            !isSubmittedAndMatchedWithoutAppointment
-          "
-          :disabled="!allStepsComplete"
+          v-else-if="isSubmittedAndMatchedWithAppointmentOrDelivered"
           :loading="props.loading"
+          :disabled="!props.valid || props.loading || !props.allStepsComplete"
           @click="handleSaveMatched"
           color="primary"
         >
           <v-icon left>mdi-content-save</v-icon>
           {{ $t('Save') }}
+        </v-btn>
+
+        <!-- Finalize Matched Submitted Without Appointment -->
+        <v-btn
+          v-else-if="isSubmittedAndMatchedWithoutAppointment"
+          :loading="props.loading"
+          :disabled="!props.valid || props.loading || !props.allStepsComplete"
+          @click="handleContinue"
+          color="primary"
+        >
+          {{ $t('Finalize Application') }}
+        </v-btn>
+
+        <!-- Save and Exit Update application -->
+        <v-btn
+          v-else-if="isUpdatingOnFinalStep"
+          :loading="props.loading"
+          @click="handleSave"
+          color="primary"
+        >
+          <v-icon left>mdi-content-save</v-icon>
+          {{ $t('Save And Exit') }}
+        </v-btn>
+
+        <!-- Next Step -->
+        <v-btn
+          v-else-if="!props.isFinalStep"
+          :disabled="!props.valid || props.loading || !props.allStepsComplete"
+          :loading="props.loading"
+          @click="handleContinue"
+          color="primary"
+        >
+          {{ $t('Next Step') }}
+          <v-icon right> mdi-chevron-right </v-icon>
         </v-btn>
       </v-col>
 
@@ -143,23 +149,11 @@ const props = withDefaults(defineProps<FormButtonContainerProps>(), {
 const emit = defineEmits(['continue', 'save', 'previous-step', 'save-match'])
 
 const getButtonText = computed(() => {
-  if (props.isModification && props.isFinalStep) {
+  if (props.isModification) {
     return 'Finalize Modification'
   }
 
-  return props.isFinalStep ? 'Finalize Application' : 'Next Step'
-})
-
-const isSubmittedAndMatchedWithoutAppointment = computed(() => {
-  return (
-    (props.isFinalStep &&
-      applicationStore.completeApplication.isMatchUpdated === false &&
-      applicationStore.completeApplication.application.appointmentDateTime ===
-        null &&
-      applicationStore.completeApplication.application.status ===
-        ApplicationStatus.Submitted) ||
-    applicationStore.completeApplication.isMatchUpdated === null
-  )
+  return 'Finalize Application'
 })
 
 const isUpdatingNotOnFinalStep = computed(() => {
@@ -169,10 +163,43 @@ const isUpdatingNotOnFinalStep = computed(() => {
   )
 })
 
+const isSubmittedAndMatchedWithoutAppointment = computed(() => {
+  return (
+    props.isFinalStep &&
+    applicationStore.completeApplication.isMatchUpdated === false &&
+    applicationStore.completeApplication.application.appointmentDateTime ===
+      null &&
+    applicationStore.completeApplication.application.status ===
+      ApplicationStatus.Submitted
+  )
+})
+
 const isUpdatingOnFinalStep = computed(() => {
   return (
     applicationStore.completeApplication.application.isUpdatingApplication &&
     props.isFinalStep
+  )
+})
+
+const isFinalizeInitialModificationRenewal = computed(() => {
+  return (
+    props.isFinalStep === true &&
+    applicationStore.completeApplication.application.isUpdatingApplication ===
+      false &&
+    applicationStore.completeApplication.isMatchUpdated !== false &&
+    isSubmittedAndMatchedWithoutAppointment.value === false &&
+    isUpdatingNotOnFinalStep.value === false
+  )
+})
+
+const isSubmittedAndMatchedWithAppointmentOrDelivered = computed(() => {
+  return (
+    props.isFinalStep === true &&
+    applicationStore.completeApplication.application.isUpdatingApplication ===
+      true &&
+    applicationStore.completeApplication.isMatchUpdated === false &&
+    isSubmittedAndMatchedWithoutAppointment.value === false &&
+    isUpdatingNotOnFinalStep.value === false
   )
 })
 
