@@ -144,7 +144,7 @@
 
       <FormButtonContainer
         :valid="!isSignaturePadEmpty"
-        :loading="state.uploading || isLoading"
+        :loading="state.uploading || isLoading || loading"
         :all-steps-complete="props.allStepsComplete"
         :is-final-step="true"
         @continue="handleContinue"
@@ -179,7 +179,7 @@
         <FormButtonContainer
           v-if="state.previousSignature"
           :valid="true"
-          :loading="state.uploading || isLoading"
+          :loading="state.uploading || isLoading || loading"
           :all-steps-complete="props.allStepsComplete"
           :is-final-step="true"
           @continue="handleContinueWithoutUpload"
@@ -210,6 +210,7 @@ import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 interface ISecondFormStepFourProps {
   value: CompleteApplication
   allStepsComplete: boolean
+  loading: boolean
 }
 
 const props = defineProps<ISecondFormStepFourProps>()
@@ -305,7 +306,7 @@ const { mutate: fileMutation, isLoading } = useMutation({
         },
       })
     } else if (state.isMatching) {
-      emit('handle-save')
+      emit('handle-save', true)
     }
   },
   onError: () => {
@@ -338,8 +339,6 @@ async function handleSaveMatch() {
   state.submitted = true
   state.uploading = true
   state.isMatching = true
-  applicationStore.completeApplication.isMatchUpdated = true
-  applicationStore.completeApplication.application.isComplete = true
   const image = document.getElementById('signature')
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
