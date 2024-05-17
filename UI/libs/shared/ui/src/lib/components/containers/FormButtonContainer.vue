@@ -42,9 +42,9 @@
 
         <v-btn
           v-if="
-            !props.isFinalStep ||
-            isSubmittedAndMatchedWithoutAppointment ||
-            props.isModification
+            (isSubmittedAndMatchedWithoutAppointment || props.isModification) &&
+            !applicationStore.completeApplication.application
+              .isUpdatingApplication
           "
           :disabled="!props.valid || props.loading || !props.allStepsComplete"
           :loading="props.loading"
@@ -151,12 +151,13 @@ const getButtonText = computed(() => {
 
 const isSubmittedAndMatchedWithoutAppointment = computed(() => {
   return (
-    props.isFinalStep &&
-    applicationStore.completeApplication.isMatchUpdated === false &&
-    applicationStore.completeApplication.application.appointmentDateTime ===
-      null &&
-    applicationStore.completeApplication.application.status ===
-      ApplicationStatus.Submitted
+    (props.isFinalStep &&
+      applicationStore.completeApplication.isMatchUpdated === false &&
+      applicationStore.completeApplication.application.appointmentDateTime ===
+        null &&
+      applicationStore.completeApplication.application.status ===
+        ApplicationStatus.Submitted) ||
+    applicationStore.completeApplication.isMatchUpdated === null
   )
 })
 
