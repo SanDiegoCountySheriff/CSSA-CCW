@@ -1,108 +1,104 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <v-container fluid>
-    <v-row>
-      <v-col>
-        <v-data-table
-          :headers="headers"
-          :items="weapons"
-          mobile-breakpoint="800"
-        >
-          <template #top>
-            <v-toolbar flat>
-              <v-toolbar-title> Weapon Information </v-toolbar-title>
+    <v-data-table
+      :headers="headers"
+      :items="weapons"
+      mobile-breakpoint="800"
+    >
+      <template #top>
+        <v-toolbar flat>
+          <v-toolbar-title> Weapon Information </v-toolbar-title>
 
-              <v-spacer></v-spacer>
+          <v-spacer></v-spacer>
 
-              <v-btn
-                v-if="editEnable"
-                :disabled="readonly"
-                @click="openAddWeaponDialog"
-                color="primary"
-                small
-              >
-                {{ $t('Add Weapon') }}
-              </v-btn>
-            </v-toolbar>
-          </template>
-          <template
+          <v-btn
             v-if="editEnable"
-            #[`item.actions`]="{ item, index }"
+            :disabled="readonly"
+            @click="openAddWeaponDialog"
+            color="primary"
+            small
           >
-            <v-tooltip
-              v-if="!item.deleted && !item.added"
-              top
-            >
-              <template #activator="{ on, attrs }">
-                <v-icon
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="handleDelete(index)"
-                  color="primary"
-                  default
-                >
-                  mdi-delete
-                </v-icon>
-              </template>
-              <span>{{ $t('Delete Weapon') }}</span>
-            </v-tooltip>
-
+            {{ $t('Add Weapon') }}
+          </v-btn>
+        </v-toolbar>
+      </template>
+      <template
+        v-if="editEnable"
+        #[`item.actions`]="{ item, index }"
+      >
+        <v-tooltip
+          v-if="!item.deleted && !item.added"
+          top
+        >
+          <template #activator="{ on, attrs }">
             <v-icon
-              v-if="item.added && !item.deleted"
+              v-bind="attrs"
+              v-on="on"
+              @click="handleDelete(index)"
               color="primary"
-              @click="undoAddWeapon(item)"
+              default
             >
-              mdi-undo
+              mdi-delete
             </v-icon>
+          </template>
+          <span>{{ $t('Delete Weapon') }}</span>
+        </v-tooltip>
 
+        <v-icon
+          v-if="item.added && !item.deleted"
+          color="primary"
+          @click="undoAddWeapon(item)"
+        >
+          mdi-undo
+        </v-icon>
+
+        <v-icon
+          v-if="item.deleted"
+          color="primary"
+          @click="undoDeleteWeapon(item)"
+        >
+          mdi-undo
+        </v-icon>
+
+        <v-tooltip
+          v-if="!props.modifying"
+          top
+        >
+          <template #activator="{ on, attrs }">
             <v-icon
-              v-if="item.deleted"
+              v-bind="attrs"
+              v-on="on"
+              @click="editWeapon(item)"
               color="primary"
-              @click="undoDeleteWeapon(item)"
+              class="mx-3"
+              default
             >
-              mdi-undo
+              mdi-pencil
             </v-icon>
-
-            <v-tooltip
-              v-if="!props.modifying"
-              top
-            >
-              <template #activator="{ on, attrs }">
-                <v-icon
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="editWeapon(item)"
-                  color="primary"
-                  class="mx-3"
-                  default
-                >
-                  mdi-pencil
-                </v-icon>
-              </template>
-
-              <span>{{ $t('Edit Weapon') }}</span>
-            </v-tooltip>
           </template>
 
-          <template #[`item.status`]="{ item }">
-            <div v-if="item.deleted">Deleted</div>
+          <span>{{ $t('Edit Weapon') }}</span>
+        </v-tooltip>
+      </template>
 
-            <div v-else-if="item.added">Added</div>
+      <template #[`item.status`]="{ item }">
+        <div v-if="item.deleted">Deleted</div>
 
-            <div v-else>Existing</div>
-          </template>
-        </v-data-table>
+        <div v-else-if="item.added">Added</div>
 
-        <WeaponsDialog
-          v-model="weaponDialog"
-          :item="currentWeapon"
-          :editing="isEditing"
-          @update-weapon="handleUpdateWeapon"
-          @edit-weapon="handleEditWeapon"
-          v-on="$listeners"
-        />
-      </v-col>
-    </v-row>
+        <div v-else>Existing</div>
+      </template>
+    </v-data-table>
+
+    <WeaponsDialog
+      v-model="weaponDialog"
+      :item="currentWeapon"
+      :editing="isEditing"
+      @update-weapon="handleUpdateWeapon"
+      @edit-weapon="handleEditWeapon"
+      v-on="$listeners"
+    />
   </v-container>
 </template>
 
@@ -177,12 +173,6 @@ const headers = computed(() => {
 
   return headersWithoutActions
 })
-
-const footerProps = {
-  'items-per-page-options': [5, 10, 15, 20],
-  'show-first-last-page': true,
-  'show-current-page': true,
-}
 
 const currentWeapon = ref<WeaponInfoType>({
   make: '',
