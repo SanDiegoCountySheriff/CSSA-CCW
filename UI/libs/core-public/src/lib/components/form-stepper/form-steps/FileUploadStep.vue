@@ -383,7 +383,7 @@ const militaryDocRules = computed(() => {
     (addressState !== 'California' || issuingState !== 'California')
   ) {
     const documentMilitaryDocument = completeApplication.uploadedDocuments.some(
-      obj => obj.documentType === 'MilitaryDocuments'
+      obj => obj.documentType === 'MilitaryDoc'
     )
 
     return [() => documentMilitaryDocument || 'Military Documents are Required']
