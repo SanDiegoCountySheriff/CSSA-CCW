@@ -736,13 +736,7 @@
               />
             </v-tab-item>
             <v-tab-item>
-              <QualifyingQuestionsInfoSection
-                :color="'primary'"
-                :qualifying-questions-info="
-                  applicationStore.completeApplication.application
-                    .qualifyingQuestions
-                "
-              />
+              <QualifyingQuestionsInfoSection />
             </v-tab-item>
             <v-tab-item>
               <FileUploadInfoSection
@@ -1594,20 +1588,6 @@ const isLicenseExpired = computed(() => {
   )
 })
 
-const createMutation = useMutation({
-  mutationFn: applicationStore.createApplication,
-  onSuccess: () => {
-    router.push({
-      path: Routes.RENEW_FORM_ROUTE_PATH,
-      query: {
-        applicationId: state.application[0].id,
-        isComplete: state.application[0].application.isComplete.toString(),
-      },
-    })
-  },
-  onError: () => null,
-})
-
 const updateWithoutRouteMutation = useMutation({
   mutationFn: applicationStore.updateApplication,
   onSuccess: () => {
@@ -2044,128 +2024,130 @@ function showReviewDialog() {
 
   flaggedQuestionText.value = ''
 
-  const questionOneAgencyTempValue =
-    qualifyingQuestions.questionOne.temporaryAgency || ''
-  const questionOneIssueDateTempValue =
-    qualifyingQuestions.questionOne.temporaryIssueDate || ''
-  const questionOneNumberTempValue =
-    qualifyingQuestions.questionOne.temporaryNumber || ''
-  const questionOneTemporaryIssuingStateValue =
-    qualifyingQuestions.questionOne.temporaryIssuingState || ''
+  if (qualifyingQuestions) {
+    const questionOneAgencyTempValue =
+      qualifyingQuestions.questionOne.temporaryAgency || ''
+    const questionOneIssueDateTempValue =
+      qualifyingQuestions.questionOne.temporaryIssueDate || ''
+    const questionOneNumberTempValue =
+      qualifyingQuestions.questionOne.temporaryNumber || ''
+    const questionOneTemporaryIssuingStateValue =
+      qualifyingQuestions.questionOne.temporaryIssuingState || ''
 
-  const questionTwoAgencyTempValue =
-    qualifyingQuestions.questionTwo.temporaryAgency || ''
-  const questionTwoDenialDateTempValue =
-    qualifyingQuestions.questionTwo.temporaryDenialDate || ''
-  const questionTwoDenialReasonTempValue =
-    qualifyingQuestions.questionTwo.temporaryDenialReason || ''
+    const questionTwoAgencyTempValue =
+      qualifyingQuestions.questionTwo.temporaryAgency || ''
+    const questionTwoDenialDateTempValue =
+      qualifyingQuestions.questionTwo.temporaryDenialDate || ''
+    const questionTwoDenialReasonTempValue =
+      qualifyingQuestions.questionTwo.temporaryDenialReason || ''
 
-  if (
-    questionOneAgencyTempValue ||
-    questionOneIssueDateTempValue ||
-    questionOneNumberTempValue ||
-    questionOneTemporaryIssuingStateValue
-  ) {
-    flaggedQuestionText.value += `${i18n.t('QUESTION-ONE')}\n\n`
-
-    flaggedQuestionText.value += `Original Response:\n`
-    flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionOne.agency || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issuing State: ${
-      qualifyingQuestions.questionOne.issuingState || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionOne.issueDate || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionOne.number || 'N/A'
-    }\n\n`
-
-    flaggedQuestionText.value += `Revised Changes:\n`
-    flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionOne.temporaryAgency || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issuing State: ${
-      qualifyingQuestions.questionOne.temporaryIssuingState || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionOne.temporaryIssueDate || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionOne.temporaryNumber || 'N/A'
-    }\n\n`
-  }
-
-  if (
-    questionTwoAgencyTempValue ||
-    questionTwoDenialDateTempValue ||
-    questionTwoDenialReasonTempValue
-  ) {
-    flaggedQuestionText.value += `${i18n.t('QUESTION-TWO')}\n\n`
-
-    flaggedQuestionText.value += `Original Response:\n`
-    flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionTwo.agency || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Denial Date: ${
-      qualifyingQuestions.questionTwo.denialDate || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Denial Reason Number: ${
-      qualifyingQuestions.questionTwo.denialReason || 'N/A'
-    }\n\n`
-
-    flaggedQuestionText.value += `Revised Changes:\n`
-    flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionTwo.temporaryAgency || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionTwo.temporaryDenialDate || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionTwo.temporaryDenialReason || 'N/A'
-    }\n\n`
-  }
-
-  if (
-    qualifyingQuestions.questionTwelve.temporaryTrafficViolations.length > 0
-  ) {
-    flaggedQuestionText.value += `${i18n.t('QUESTION-TWELVE')}\n\n`
-
-    for (const trafficViolation of qualifyingQuestions.questionTwelve
-      .temporaryTrafficViolations) {
-      flaggedQuestionText.value += `Additional Citations Found: \n`
-      flaggedQuestionText.value += `Date: ${trafficViolation.date}\n`
-      flaggedQuestionText.value += `Agency: ${trafficViolation.agency}\n`
-      flaggedQuestionText.value += `Violation: ${trafficViolation.violation}\n`
-      flaggedQuestionText.value += `Citation Number: ${trafficViolation.citationNumber}\n\n`
-    }
-  }
-
-  for (const [key, value] of Object.entries(qualifyingQuestions)) {
     if (
-      key !== 'questionOne' &&
-      key !== 'questionTwo' &&
-      key !== 'questionTwelve' &&
-      convertToQualifyingQuestionStandard(value).temporaryExplanation
+      questionOneAgencyTempValue ||
+      questionOneIssueDateTempValue ||
+      questionOneNumberTempValue ||
+      questionOneTemporaryIssuingStateValue
     ) {
-      const questionNumber = key.slice(8)
+      flaggedQuestionText.value += `${i18n.t('QUESTION-ONE')}\n\n`
 
-      flaggedQuestionText.value += `Question ${i18n.t(
-        `QUESTION-${questionNumber.toUpperCase()}`
-      )}\n\n`
-      flaggedQuestionText.value += `Original Response: ${
-        convertToQualifyingQuestionStandard(value).explanation
+      flaggedQuestionText.value += `Original Response:\n`
+      flaggedQuestionText.value += `Agency: ${
+        qualifyingQuestions.questionOne.agency || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Issuing State: ${
+        qualifyingQuestions.questionOne.issuingState || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Issue Date: ${
+        qualifyingQuestions.questionOne.issueDate || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `License Number: ${
+        qualifyingQuestions.questionOne.number || 'N/A'
       }\n\n`
-      flaggedQuestionText.value += `Revised Changes: ${
-        convertToQualifyingQuestionStandard(value).temporaryExplanation
+
+      flaggedQuestionText.value += `Revised Changes:\n`
+      flaggedQuestionText.value += `Agency: ${
+        qualifyingQuestions.questionOne.temporaryAgency || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Issuing State: ${
+        qualifyingQuestions.questionOne.temporaryIssuingState || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Issue Date: ${
+        qualifyingQuestions.questionOne.temporaryIssueDate || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `License Number: ${
+        qualifyingQuestions.questionOne.temporaryNumber || 'N/A'
       }\n\n`
     }
-  }
 
-  if (flaggedQuestionText.value !== '') {
-    reviewDialog.value = true
-    flaggedQuestionHeader.value = 'Review Required'
+    if (
+      questionTwoAgencyTempValue ||
+      questionTwoDenialDateTempValue ||
+      questionTwoDenialReasonTempValue
+    ) {
+      flaggedQuestionText.value += `${i18n.t('QUESTION-TWO')}\n\n`
+
+      flaggedQuestionText.value += `Original Response:\n`
+      flaggedQuestionText.value += `Agency: ${
+        qualifyingQuestions.questionTwo.agency || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Denial Date: ${
+        qualifyingQuestions.questionTwo.denialDate || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Denial Reason Number: ${
+        qualifyingQuestions.questionTwo.denialReason || 'N/A'
+      }\n\n`
+
+      flaggedQuestionText.value += `Revised Changes:\n`
+      flaggedQuestionText.value += `Agency: ${
+        qualifyingQuestions.questionTwo.temporaryAgency || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Issue Date: ${
+        qualifyingQuestions.questionTwo.temporaryDenialDate || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `License Number: ${
+        qualifyingQuestions.questionTwo.temporaryDenialReason || 'N/A'
+      }\n\n`
+    }
+
+    if (
+      qualifyingQuestions.questionTwelve.temporaryTrafficViolations.length > 0
+    ) {
+      flaggedQuestionText.value += `${i18n.t('QUESTION-TWELVE')}\n\n`
+
+      for (const trafficViolation of qualifyingQuestions.questionTwelve
+        .temporaryTrafficViolations) {
+        flaggedQuestionText.value += `Additional Citations Found: \n`
+        flaggedQuestionText.value += `Date: ${trafficViolation.date}\n`
+        flaggedQuestionText.value += `Agency: ${trafficViolation.agency}\n`
+        flaggedQuestionText.value += `Violation: ${trafficViolation.violation}\n`
+        flaggedQuestionText.value += `Citation Number: ${trafficViolation.citationNumber}\n\n`
+      }
+    }
+
+    for (const [key, value] of Object.entries(qualifyingQuestions)) {
+      if (
+        key !== 'questionOne' &&
+        key !== 'questionTwo' &&
+        key !== 'questionTwelve' &&
+        convertToQualifyingQuestionStandard(value).temporaryExplanation
+      ) {
+        const questionNumber = key.slice(8)
+
+        flaggedQuestionText.value += `Question ${i18n.t(
+          `QUESTION-${questionNumber.toUpperCase()}`
+        )}\n\n`
+        flaggedQuestionText.value += `Original Response: ${
+          convertToQualifyingQuestionStandard(value).explanation
+        }\n\n`
+        flaggedQuestionText.value += `Revised Changes: ${
+          convertToQualifyingQuestionStandard(value).temporaryExplanation
+        }\n\n`
+      }
+    }
+
+    if (flaggedQuestionText.value !== '') {
+      reviewDialog.value = true
+      flaggedQuestionHeader.value = 'Review Required'
+    }
   }
 }
 

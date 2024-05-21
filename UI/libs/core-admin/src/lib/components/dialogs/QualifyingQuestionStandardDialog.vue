@@ -10,17 +10,7 @@
         :disabled="readonly"
         icon
       >
-        <v-icon
-          :color="
-            permitStore.getPermitDetail.application.qualifyingQuestions[
-              `question${props.question}`
-            ].temporaryExplanation
-              ? 'error'
-              : 'primary'
-          "
-        >
-          mdi-flag
-        </v-icon>
+        <v-icon :color="flagColor"> mdi-flag </v-icon>
       </v-btn>
     </template>
 
@@ -87,7 +77,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useMutation } from '@tanstack/vue-query'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -96,6 +85,7 @@ import {
   CommentType,
   QualifyingQuestionStandard,
 } from '@shared-utils/types/defaultTypes'
+import { computed, ref } from 'vue'
 
 interface IQualifyingQuestionsProps {
   question: string
@@ -112,24 +102,39 @@ const historyMessage = ref('')
 const temporaryExplanation = ref('')
 const permitStore = usePermitsStore()
 const authStore = useAuthStore()
+const flagColor = computed(() => {
+  if (permitStore.getPermitDetail.application.qualifyingQuestions) {
+    return permitStore.getPermitDetail.application.qualifyingQuestions[
+      `question${props.question}`
+    ].temporaryExplanation
+      ? 'error'
+      : 'primary'
+  }
+
+  return 'primary'
+})
 
 const { mutate: updatePermitDetails } = useMutation({
   mutationFn: () => permitStore.updatePermitDetailApi(historyMessage.value),
 })
 
 function handleCopy() {
-  temporaryExplanation.value =
-    permitStore.getPermitDetail.application.qualifyingQuestions[
-      `question${props.question}`
-    ].explanation
+  if (permitStore.getPermitDetail.application.qualifyingQuestions) {
+    temporaryExplanation.value =
+      permitStore.getPermitDetail.application.qualifyingQuestions[
+        `question${props.question}`
+      ].explanation
+  }
 }
 
 function handleSaveFlag() {
-  convertToQualifyingQuestionStandard(
-    permitStore.getPermitDetail.application.qualifyingQuestions[
-      `question${props.question}`
-    ]
-  ).temporaryExplanation = temporaryExplanation.value
+  if (permitStore.getPermitDetail.application.qualifyingQuestions) {
+    convertToQualifyingQuestionStandard(
+      permitStore.getPermitDetail.application.qualifyingQuestions[
+        `question${props.question}`
+      ]
+    ).temporaryExplanation = temporaryExplanation.value
+  }
 
   if (comment.value !== '') {
     const newComment: CommentType = {

@@ -575,18 +575,17 @@ const isRenew = computed(() => {
   )
 })
 
-
 const militaryOutOfStateHint = computed(() => {
-  const militaryStatus = model.value.application.citizenship.militaryStatus;
-  const driverLicenseState = model.value.application.idInfo.issuingState;
-  const currentAddressState = model.value.application.currentAddress.state;
+  const militaryStatus = model.value.application.citizenship.militaryStatus
+  const driverLicenseState = model.value.application.idInfo.issuingState
+  const currentAddressState = model.value.application.currentAddress.state
 
   if (
     militaryStatus === 'Active' &&
     (driverLicenseState !== 'California' ||
       currentAddressState !== 'California')
   ) {
-    return 'You will need to upload your military orders in the required documents section.';
+    return 'You will need to upload your military orders in the required documents section.'
   }
 
   return ''

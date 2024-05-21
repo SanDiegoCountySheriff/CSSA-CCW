@@ -11,10 +11,7 @@
         icon
       >
         <v-icon
-          v-if="
-            permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionTwelve.temporaryTrafficViolations?.length > 0
-          "
+          v-if="showErrorFlag"
           color="error"
         >
           mdi-flag
@@ -169,7 +166,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useMutation } from '@tanstack/vue-query'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -216,6 +213,17 @@ const editedTrafficViolation = ref<TrafficViolation>({
 const permitStore = usePermitsStore()
 const authStore = useAuthStore()
 
+const showErrorFlag = computed(() => {
+  if (permitStore.getPermitDetail.application.qualifyingQuestions) {
+    return (
+      permitStore.getPermitDetail.application.qualifyingQuestions.questionTwelve
+        .temporaryTrafficViolations?.length > 0
+    )
+  }
+
+  return false
+})
+
 const { mutate: updatePermitDetails } = useMutation({
   mutationFn: () => permitStore.updatePermitDetailApi(historyMessage.value),
 })
@@ -240,8 +248,10 @@ function deleteViolation(item: TrafficViolation) {
 }
 
 function handleSaveQuestionTwelveFlag() {
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwelve.temporaryTrafficViolations =
-    temporaryTrafficViolations.value
+  if (permitStore.getPermitDetail.application.qualifyingQuestions) {
+    permitStore.getPermitDetail.application.qualifyingQuestions.questionTwelve.temporaryTrafficViolations =
+      temporaryTrafficViolations.value
+  }
 
   const newComment: CommentType = {
     text: comment.value,

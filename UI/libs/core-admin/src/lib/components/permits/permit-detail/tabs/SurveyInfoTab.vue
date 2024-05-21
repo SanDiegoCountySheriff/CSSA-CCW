@@ -16,7 +16,9 @@
         />
       </v-card-title>
 
-      <v-card-text>
+      <v-card-text
+        v-if="permitStore.getPermitDetail.application.qualifyingQuestions"
+      >
         <v-row align="center">
           <v-col>
             {{ $t('QUESTION-ONE') }}

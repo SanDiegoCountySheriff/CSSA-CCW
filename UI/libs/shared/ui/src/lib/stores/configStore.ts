@@ -43,6 +43,10 @@ export const useAppConfigStore = defineStore('ConfigStore', () => {
       fifteen: 440,
       sixteen: 767,
       seventeen: 2661,
+      eighteen: 2661,
+      nineteen: 2661,
+      twenty: 2661,
+      twentyone: 2661,
     } as QuestionsConfig,
   })
 

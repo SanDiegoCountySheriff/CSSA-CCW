@@ -85,7 +85,7 @@ export class MsalBrowser {
       environmentName:
         response.data.Configuration?.Environment.toUpperCase() || 'DEV',
       refreshTime: response.data.Authentication.RefreshTimeInMinutes || 30,
-      questions: response.data.QuestionsConfig || [],
+      questions: response.data.Questions || {},
       isPaymentServiceAvailable:
         response.data.Configuration.IsPaymentServiceAvailable === 'True',
       payBeforeSubmit: response.data.Configuration.PayBeforeSubmit === 'True',

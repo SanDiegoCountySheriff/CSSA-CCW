@@ -191,7 +191,6 @@
 
 <script lang="ts" setup>
 import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
-import { QualifyingQuestions } from '@shared-utils/types/defaultTypes'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
@@ -202,13 +201,7 @@ import {
   QualifyingQuestionTwo,
 } from '@shared-utils/types/defaultTypes'
 
-interface IQualifyingQuestionsProps {
-  qualifyingQuestionsInfo: QualifyingQuestions
-  color: string
-}
-
 const applicationStore = useCompleteApplicationStore()
-const props = defineProps<IQualifyingQuestionsProps>()
 const router = useRouter()
 
 function handleEditRequest() {

@@ -87,81 +87,89 @@ function acceptChanges() {
   const qualifyingQuestions =
     permitStore.getPermitDetail.application.qualifyingQuestions
 
-  if (qualifyingQuestions.questionOne.temporaryAgency) {
-    qualifyingQuestions.questionOne.agency =
-      qualifyingQuestions.questionOne.temporaryAgency
-    qualifyingQuestions.questionOne.temporaryAgency = ''
-    qualifyingQuestions.questionOne.selected = true
-  }
+  if (qualifyingQuestions) {
+    if (qualifyingQuestions.questionOne.temporaryAgency) {
+      qualifyingQuestions.questionOne.agency =
+        qualifyingQuestions.questionOne.temporaryAgency
+      qualifyingQuestions.questionOne.temporaryAgency = ''
+      qualifyingQuestions.questionOne.selected = true
+    }
 
-  if (qualifyingQuestions.questionOne.temporaryIssueDate) {
-    qualifyingQuestions.questionOne.issueDate =
-      qualifyingQuestions.questionOne.temporaryIssueDate
-    qualifyingQuestions.questionOne.temporaryIssueDate = ''
-    qualifyingQuestions.questionOne.selected = true
-  }
+    if (qualifyingQuestions.questionOne.temporaryIssueDate) {
+      qualifyingQuestions.questionOne.issueDate =
+        qualifyingQuestions.questionOne.temporaryIssueDate
+      qualifyingQuestions.questionOne.temporaryIssueDate = ''
+      qualifyingQuestions.questionOne.selected = true
+    }
 
-  if (qualifyingQuestions.questionOne.temporaryNumber) {
-    qualifyingQuestions.questionOne.number =
-      qualifyingQuestions.questionOne.temporaryNumber
-    qualifyingQuestions.questionOne.temporaryNumber = ''
-    qualifyingQuestions.questionOne.selected = true
-  }
+    if (qualifyingQuestions.questionOne.temporaryNumber) {
+      qualifyingQuestions.questionOne.number =
+        qualifyingQuestions.questionOne.temporaryNumber
+      qualifyingQuestions.questionOne.temporaryNumber = ''
+      qualifyingQuestions.questionOne.selected = true
+    }
 
-  if (qualifyingQuestions.questionOne.temporaryIssuingState) {
-    qualifyingQuestions.questionOne.issuingState =
-      qualifyingQuestions.questionOne.temporaryIssuingState
-    qualifyingQuestions.questionOne.temporaryIssuingState = ''
-    qualifyingQuestions.questionOne.selected = true
-  }
+    if (qualifyingQuestions.questionOne.temporaryIssuingState) {
+      qualifyingQuestions.questionOne.issuingState =
+        qualifyingQuestions.questionOne.temporaryIssuingState
+      qualifyingQuestions.questionOne.temporaryIssuingState = ''
+      qualifyingQuestions.questionOne.selected = true
+    }
 
-  if (qualifyingQuestions.questionTwo.temporaryAgency) {
-    qualifyingQuestions.questionTwo.agency =
-      qualifyingQuestions.questionTwo.temporaryAgency
-    qualifyingQuestions.questionTwo.temporaryAgency = ''
-    qualifyingQuestions.questionTwo.selected = true
-  }
+    if (qualifyingQuestions.questionTwo.temporaryAgency) {
+      qualifyingQuestions.questionTwo.agency =
+        qualifyingQuestions.questionTwo.temporaryAgency
+      qualifyingQuestions.questionTwo.temporaryAgency = ''
+      qualifyingQuestions.questionTwo.selected = true
+    }
 
-  if (qualifyingQuestions.questionTwo.temporaryDenialDate) {
-    qualifyingQuestions.questionTwo.denialDate =
-      qualifyingQuestions.questionTwo.temporaryDenialDate
-    qualifyingQuestions.questionTwo.temporaryDenialDate = ''
-    qualifyingQuestions.questionTwo.selected = true
-  }
+    if (qualifyingQuestions.questionTwo.temporaryDenialDate) {
+      qualifyingQuestions.questionTwo.denialDate =
+        qualifyingQuestions.questionTwo.temporaryDenialDate
+      qualifyingQuestions.questionTwo.temporaryDenialDate = ''
+      qualifyingQuestions.questionTwo.selected = true
+    }
 
-  if (qualifyingQuestions.questionTwo.temporaryDenialReason) {
-    qualifyingQuestions.questionTwo.denialReason =
-      qualifyingQuestions.questionTwo.temporaryDenialReason
-    qualifyingQuestions.questionTwo.temporaryDenialReason = ''
-    qualifyingQuestions.questionTwo.selected = true
-  }
+    if (qualifyingQuestions.questionTwo.temporaryDenialReason) {
+      qualifyingQuestions.questionTwo.denialReason =
+        qualifyingQuestions.questionTwo.temporaryDenialReason
+      qualifyingQuestions.questionTwo.temporaryDenialReason = ''
+      qualifyingQuestions.questionTwo.selected = true
+    }
 
-  for (const trafficViolation of qualifyingQuestions.questionTwelve
-    .temporaryTrafficViolations) {
-    qualifyingQuestions.questionTwelve.trafficViolations.push(trafficViolation)
-    qualifyingQuestions.questionTwelve.selected = true
-  }
+    for (const trafficViolation of qualifyingQuestions.questionTwelve
+      .temporaryTrafficViolations) {
+      qualifyingQuestions.questionTwelve.trafficViolations.push(
+        trafficViolation
+      )
+      qualifyingQuestions.questionTwelve.selected = true
+    }
 
-  qualifyingQuestions.questionTwelve.temporaryTrafficViolations = []
+    qualifyingQuestions.questionTwelve.temporaryTrafficViolations = []
 
-  for (const [key, value] of Object.entries(qualifyingQuestions)) {
-    if (
-      key !== 'questionOne' &&
-      key !== 'questionTwo' &&
-      key !== 'questionTwelve' &&
-      convertToQualifyingQuestionStandard(value).temporaryExplanation
-    ) {
-      convertToQualifyingQuestionStandard(value).selected = true
-      convertToQualifyingQuestionStandard(value).explanation =
+    for (const [key, value] of Object.entries(qualifyingQuestions)) {
+      if (
+        key !== 'questionOne' &&
+        key !== 'questionTwo' &&
+        key !== 'questionTwelve' &&
         convertToQualifyingQuestionStandard(value).temporaryExplanation
-      convertToQualifyingQuestionStandard(value).temporaryExplanation = ''
+      ) {
+        convertToQualifyingQuestionStandard(value).selected = true
+        convertToQualifyingQuestionStandard(value).explanation =
+          convertToQualifyingQuestionStandard(value).temporaryExplanation
+        convertToQualifyingQuestionStandard(value).temporaryExplanation = ''
+      }
     }
   }
 
   permitStore.getPermitDetail.application.flaggedForLicensingReview = false
   permitStore.getPermitDetail.application.flaggedForCustomerReview = false
-  permitStore.getPermitDetail.application.status =
-    permitStore.getPermitDetail.application.originalStatus
+
+  if (permitStore.getPermitDetail.application.originalStatus) {
+    permitStore.getPermitDetail.application.status =
+      permitStore.getPermitDetail.application.originalStatus
+  }
+
   historyMessage.value = `Updated Qualifying Questions`
 
   updatePermitDetails()
@@ -175,122 +183,124 @@ function showReviewDialog() {
 
   flaggedQuestionText.value = ''
 
-  const questionOneAgencyTempValue =
-    qualifyingQuestions.questionOne.temporaryAgency || ''
-  const questionOneIssueDateTempValue =
-    qualifyingQuestions.questionOne.temporaryIssueDate || ''
-  const questionOneNumberTempValue =
-    qualifyingQuestions.questionOne.temporaryNumber || ''
-  const questionOneTemporaryIssuingStateValue =
-    qualifyingQuestions.questionOne.temporaryIssuingState || ''
+  if (qualifyingQuestions) {
+    const questionOneAgencyTempValue =
+      qualifyingQuestions.questionOne.temporaryAgency || ''
+    const questionOneIssueDateTempValue =
+      qualifyingQuestions.questionOne.temporaryIssueDate || ''
+    const questionOneNumberTempValue =
+      qualifyingQuestions.questionOne.temporaryNumber || ''
+    const questionOneTemporaryIssuingStateValue =
+      qualifyingQuestions.questionOne.temporaryIssuingState || ''
 
-  const questionTwoAgencyTempValue =
-    qualifyingQuestions.questionTwo.temporaryAgency || ''
-  const questionTwoDenialDateTempValue =
-    qualifyingQuestions.questionTwo.temporaryDenialDate || ''
-  const questionTwoDenialReasonTempValue =
-    qualifyingQuestions.questionTwo.temporaryDenialReason || ''
+    const questionTwoAgencyTempValue =
+      qualifyingQuestions.questionTwo.temporaryAgency || ''
+    const questionTwoDenialDateTempValue =
+      qualifyingQuestions.questionTwo.temporaryDenialDate || ''
+    const questionTwoDenialReasonTempValue =
+      qualifyingQuestions.questionTwo.temporaryDenialReason || ''
 
-  if (
-    questionOneAgencyTempValue ||
-    questionOneIssueDateTempValue ||
-    questionOneNumberTempValue ||
-    questionOneTemporaryIssuingStateValue
-  ) {
-    flaggedQuestionText.value += `${i18n.t('QUESTION-ONE')}\n\n`
-
-    flaggedQuestionText.value += `Original Response:\n`
-    flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionOne.agency || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issuing State: ${
-      qualifyingQuestions.questionOne.issuingState || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionOne.issueDate || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionOne.number || 'N/A'
-    }\n\n`
-
-    flaggedQuestionText.value += `Revised Changes:\n`
-    flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionOne.temporaryAgency || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issuing State: ${
-      qualifyingQuestions.questionOne.temporaryIssuingState || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionOne.temporaryIssueDate || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionOne.temporaryNumber || 'N/A'
-    }\n\n`
-  }
-
-  if (
-    questionTwoAgencyTempValue ||
-    questionTwoDenialDateTempValue ||
-    questionTwoDenialReasonTempValue
-  ) {
-    flaggedQuestionText.value += `${i18n.t('QUESTION-TWO')}\n\n`
-
-    flaggedQuestionText.value += `Original Response:\n`
-    flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionTwo.agency || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Denial Date: ${
-      qualifyingQuestions.questionTwo.denialDate || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Denial Reason Number: ${
-      qualifyingQuestions.questionTwo.denialReason || 'N/A'
-    }\n\n`
-
-    flaggedQuestionText.value += `Revised Changes:\n`
-    flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionTwo.temporaryAgency || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionTwo.temporaryDenialDate || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionTwo.temporaryDenialReason || 'N/A'
-    }\n\n`
-  }
-
-  if (
-    qualifyingQuestions.questionTwelve.temporaryTrafficViolations.length > 0
-  ) {
-    flaggedQuestionText.value += `${i18n.t('QUESTION-TWELVE')}\n\n`
-
-    for (const trafficViolation of qualifyingQuestions.questionTwelve
-      .temporaryTrafficViolations) {
-      flaggedQuestionText.value += `Additional Citations Found: \n`
-      flaggedQuestionText.value += `Date: ${trafficViolation.date}\n`
-      flaggedQuestionText.value += `Agency: ${trafficViolation.agency}\n`
-      flaggedQuestionText.value += `Violation: ${trafficViolation.violation}\n`
-      flaggedQuestionText.value += `Citation Number: ${trafficViolation.citationNumber}\n\n`
-    }
-  }
-
-  for (const [key, value] of Object.entries(qualifyingQuestions)) {
     if (
-      key !== 'questionOne' &&
-      key !== 'questionTwo' &&
-      key !== 'questionTwelve' &&
-      convertToQualifyingQuestionStandard(value).temporaryExplanation
+      questionOneAgencyTempValue ||
+      questionOneIssueDateTempValue ||
+      questionOneNumberTempValue ||
+      questionOneTemporaryIssuingStateValue
     ) {
-      const questionNumber = key.slice(8)
+      flaggedQuestionText.value += `${i18n.t('QUESTION-ONE')}\n\n`
 
-      flaggedQuestionText.value += `Question ${i18n.t(
-        `QUESTION-${questionNumber.toUpperCase()}`
-      )}\n\n`
-      flaggedQuestionText.value += `Original Response: ${
-        convertToQualifyingQuestionStandard(value).explanation
+      flaggedQuestionText.value += `Original Response:\n`
+      flaggedQuestionText.value += `Agency: ${
+        qualifyingQuestions.questionOne.agency || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Issuing State: ${
+        qualifyingQuestions.questionOne.issuingState || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Issue Date: ${
+        qualifyingQuestions.questionOne.issueDate || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `License Number: ${
+        qualifyingQuestions.questionOne.number || 'N/A'
       }\n\n`
-      flaggedQuestionText.value += `Revised Changes: ${
+
+      flaggedQuestionText.value += `Revised Changes:\n`
+      flaggedQuestionText.value += `Agency: ${
+        qualifyingQuestions.questionOne.temporaryAgency || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Issuing State: ${
+        qualifyingQuestions.questionOne.temporaryIssuingState || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Issue Date: ${
+        qualifyingQuestions.questionOne.temporaryIssueDate || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `License Number: ${
+        qualifyingQuestions.questionOne.temporaryNumber || 'N/A'
+      }\n\n`
+    }
+
+    if (
+      questionTwoAgencyTempValue ||
+      questionTwoDenialDateTempValue ||
+      questionTwoDenialReasonTempValue
+    ) {
+      flaggedQuestionText.value += `${i18n.t('QUESTION-TWO')}\n\n`
+
+      flaggedQuestionText.value += `Original Response:\n`
+      flaggedQuestionText.value += `Agency: ${
+        qualifyingQuestions.questionTwo.agency || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Denial Date: ${
+        qualifyingQuestions.questionTwo.denialDate || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Denial Reason Number: ${
+        qualifyingQuestions.questionTwo.denialReason || 'N/A'
+      }\n\n`
+
+      flaggedQuestionText.value += `Revised Changes:\n`
+      flaggedQuestionText.value += `Agency: ${
+        qualifyingQuestions.questionTwo.temporaryAgency || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Issue Date: ${
+        qualifyingQuestions.questionTwo.temporaryDenialDate || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `License Number: ${
+        qualifyingQuestions.questionTwo.temporaryDenialReason || 'N/A'
+      }\n\n`
+    }
+
+    if (
+      qualifyingQuestions.questionTwelve.temporaryTrafficViolations.length > 0
+    ) {
+      flaggedQuestionText.value += `${i18n.t('QUESTION-TWELVE')}\n\n`
+
+      for (const trafficViolation of qualifyingQuestions.questionTwelve
+        .temporaryTrafficViolations) {
+        flaggedQuestionText.value += `Additional Citations Found: \n`
+        flaggedQuestionText.value += `Date: ${trafficViolation.date}\n`
+        flaggedQuestionText.value += `Agency: ${trafficViolation.agency}\n`
+        flaggedQuestionText.value += `Violation: ${trafficViolation.violation}\n`
+        flaggedQuestionText.value += `Citation Number: ${trafficViolation.citationNumber}\n\n`
+      }
+    }
+
+    for (const [key, value] of Object.entries(qualifyingQuestions)) {
+      if (
+        key !== 'questionOne' &&
+        key !== 'questionTwo' &&
+        key !== 'questionTwelve' &&
         convertToQualifyingQuestionStandard(value).temporaryExplanation
-      }\n\n`
+      ) {
+        const questionNumber = key.slice(8)
+
+        flaggedQuestionText.value += `Question ${i18n.t(
+          `QUESTION-${questionNumber.toUpperCase()}`
+        )}\n\n`
+        flaggedQuestionText.value += `Original Response: ${
+          convertToQualifyingQuestionStandard(value).explanation
+        }\n\n`
+        flaggedQuestionText.value += `Revised Changes: ${
+          convertToQualifyingQuestionStandard(value).temporaryExplanation
+        }\n\n`
+      }
     }
   }
 

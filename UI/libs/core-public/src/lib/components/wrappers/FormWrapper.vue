@@ -194,6 +194,18 @@
           </v-stepper-content>
           <v-stepper-content :step="7">
             <QualifyingQuestionsStep
+              v-if="
+                applicationStore.completeApplication.application
+                  .qualifyingQuestions
+              "
+              v-model="applicationStore.completeApplication"
+              @update-step-seven-valid="handleUpdateStepSevenValid"
+              @handle-save="handleSave"
+              @handle-continue="handleContinue"
+              @previous-step="handlePrevious"
+            />
+            <LegacyQualifyingQuestionsStep
+              v-else
               v-model="applicationStore.completeApplication"
               @update-step-seven-valid="handleUpdateStepSevenValid"
               @handle-save="handleSave"
@@ -396,6 +408,18 @@
 
           <v-expansion-panel-content eager>
             <QualifyingQuestionsStep
+              v-if="
+                applicationStore.completeApplication.application
+                  .qualifyingQuestions
+              "
+              v-model="applicationStore.completeApplication"
+              @update-step-seven-valid="handleUpdateStepSevenValid"
+              @handle-save="handleSave"
+              @handle-continue="handleContinue"
+              @previous-step="handlePrevious"
+            />
+            <LegacyQualifyingQuestionsStep
+              v-else
               v-model="applicationStore.completeApplication"
               @update-step-seven-valid="handleUpdateStepSevenValid"
               @handle-save="handleSave"
@@ -441,6 +465,7 @@ import ApplicationTypeStep from '@core-public/components/form-stepper/form-steps
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FileUploadStep from '@core-public/components/form-stepper/form-steps/FileUploadStep.vue'
 import IdBirthInfoStep from '@core-public/components/form-stepper/form-steps/IdBirthInfoStep.vue'
+import LegacyQualifyingQuestionsStep from '../form-stepper/form-steps/LegacyQualifyingQuestionsStep.vue'
 import PersonalInfoStep from '@core-public/components/form-stepper/form-steps/PersonalInfoStep.vue'
 import QualifyingQuestionsStep from '@core-public/components/form-stepper/form-steps/QualifyingQuestionsStep.vue'
 import SignatureStep from '@core-public/components/form-stepper/form-steps/SignatureStep.vue'
