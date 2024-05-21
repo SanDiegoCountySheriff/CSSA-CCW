@@ -378,25 +378,8 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     const formattedDateTime = formatDateTimeNow()
     const fileName = `${applicationId}_${permitDetail.value.application.personalInfo.lastName}_${permitDetail.value.application.personalInfo.firstName}_Official_License_${formattedDateTime}`
 
-    const res = await axios({
-      url: `${Endpoints.GET_PRINT_OFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}&fileName=${fileName}`,
-      method: 'PUT',
-      responseType: 'blob',
-    })
-
-    const uploadAdminDoc: UploadedDocType = {
-      documentType: 'Official_License',
-      name: `${permitDetail.value.application.personalInfo.lastName}_${
-        permitDetail.value.application.personalInfo.firstName
-      }_${'Official_License'}_${formattedDateTime}`,
-      uploadedBy: authStore.auth.userEmail,
-      uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
-    }
-
     let issueDate: Date
     let expDate: Date
-
-    let historyMessage = `Uploaded new ${uploadAdminDoc.documentType}`
 
     const license = permitDetail.value.application.license
     const applicationType = permitDetail.value.application.applicationType
@@ -405,7 +388,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       issueDate = new Date(license.issueDate)
       expDate = new Date(license.expirationDate)
     } else {
-      historyMessage += ' and recorded License Issue & Expiration Date'
       issueDate = new Date()
       expDate = new Date()
 
@@ -433,6 +415,23 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
     permitDetail.value.application.license.issueDate = issueDateISO
     permitDetail.value.application.license.expirationDate = expDateISO
+
+    const res = await axios({
+      url: `${Endpoints.GET_PRINT_OFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}&fileName=${fileName}`,
+      method: 'PUT',
+      responseType: 'blob',
+    })
+
+    const uploadAdminDoc: UploadedDocType = {
+      documentType: 'Official_License',
+      name: `${permitDetail.value.application.personalInfo.lastName}_${
+        permitDetail.value.application.personalInfo.firstName
+      }_${'Official_License'}_${formattedDateTime}`,
+      uploadedBy: authStore.auth.userEmail,
+      uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
+    }
+
+    const historyMessage = `Uploaded new ${uploadAdminDoc.documentType}`
 
     permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
     updatePermitDetailApi(historyMessage)
