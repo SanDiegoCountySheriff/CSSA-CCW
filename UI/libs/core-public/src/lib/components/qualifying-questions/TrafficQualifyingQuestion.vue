@@ -192,8 +192,6 @@ function removeTrafficViolation() {
 }
 
 function handleChangeQuestionTwelve() {
-  window.console.log('selected', viewModel.value.selected)
-
   if (viewModel.value.selected) {
     viewModel.value.trafficViolations.push({
       date: '',
