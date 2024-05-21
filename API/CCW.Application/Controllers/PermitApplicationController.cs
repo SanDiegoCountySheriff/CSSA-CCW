@@ -586,7 +586,7 @@ public class PermitApplicationController : ControllerBase
             application.Application.CurrentStep = 1;
             application.PaymentHistory = new List<PaymentHistory>();
 
-            if (application.Application.QualifyingQuestions.QuestionTwelve.Selected is not null or false)
+            if (application.Application.QualifyingQuestions?.QuestionTwelve.Selected is not null or false)
             {
                 application.Application.QualifyingQuestions.QuestionTwelve.TrafficViolations = new List<TrafficViolation>()
                 {
