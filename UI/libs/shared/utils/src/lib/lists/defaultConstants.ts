@@ -172,6 +172,7 @@ export const defaultPermitState: CompleteApplication = {
       weight: '',
     },
     previousAddresses: [],
+    legacyQualifyingQuestions: undefined,
     qualifyingQuestions: {
       questionOne: {
         selected: null,
@@ -492,6 +493,7 @@ export const defaultPermitState: CompleteApplication = {
     modifiedWeaponComplete: null,
     modificationNumber: 1,
     renewalNumber: 0,
+    readyForModificationPayment: false,
   },
 
   history: [],

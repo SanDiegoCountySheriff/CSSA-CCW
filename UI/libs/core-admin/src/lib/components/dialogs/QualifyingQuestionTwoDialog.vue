@@ -13,11 +13,11 @@
         <v-icon
           v-if="
             permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionTwo.temporaryAgency ||
+              ?.questionTwo.temporaryAgency ||
             permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionTwo.temporaryDenialDate ||
+              ?.questionTwo.temporaryDenialDate ||
             permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionTwo.temporaryDenialReason
+              ?.questionTwo.temporaryDenialReason
           "
           color="error"
         >
@@ -129,12 +129,14 @@ const { mutate: updatePermitDetails } = useMutation({
 })
 
 function handleSaveQuestionTwoFlag() {
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryAgency =
-    temporaryAgency.value
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryDenialDate =
-    temporaryDenialDate.value
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryDenialReason =
-    temporaryDenialReason.value
+  if (permitStore.getPermitDetail.application.qualifyingQuestions) {
+    permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryAgency =
+      temporaryAgency.value
+    permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryDenialDate =
+      temporaryDenialDate.value
+    permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryDenialReason =
+      temporaryDenialReason.value
+  }
 
   const newComment: CommentType = {
     text: comment.value,
