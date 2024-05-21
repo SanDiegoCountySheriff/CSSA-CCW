@@ -236,6 +236,14 @@ export type QualifyingQuestionTwelve = {
   updateInformation: boolean | null
 }
 
+export type QualifyingQuestionEight = {
+  selected: boolean | null
+  trafficViolations: TrafficViolation[]
+  temporaryTrafficViolations: TrafficViolation[]
+  trafficViolationsExplanation: string
+  updateInformation: boolean | null
+}
+
 export type QualifyingQuestions = {
   questionOne: QualifyingQuestionOne
   questionTwo: QualifyingQuestionTwo
@@ -258,6 +266,26 @@ export type QualifyingQuestions = {
   questionNineteen: QualifyingQuestionStandard
   questionTwenty: QualifyingQuestionStandard
   questionTwentyOne: QualifyingQuestionStandard
+}
+
+export type LegacyQualifyingQuestions = {
+  questionOne: QualifyingQuestionOne
+  questionTwo: QualifyingQuestionTwo
+  questionThree: QualifyingQuestionStandard
+  questionFour: QualifyingQuestionStandard
+  questionFive: QualifyingQuestionStandard
+  questionSix: QualifyingQuestionStandard
+  questionSeven: QualifyingQuestionStandard
+  questionEight: QualifyingQuestionEight
+  questionNine: QualifyingQuestionStandard
+  questionTen: QualifyingQuestionStandard
+  questionEleven: QualifyingQuestionStandard
+  questionTwelve: QualifyingQuestionStandard
+  questionThirteen: QualifyingQuestionStandard
+  questionFourteen: QualifyingQuestionStandard
+  questionFifteen: QualifyingQuestionStandard
+  questionSixteen: QualifyingQuestionStandard
+  questionSeventeen: QualifyingQuestionStandard
 }
 
 export type PaymentInfoType = {
@@ -630,7 +658,8 @@ export type CompleteApplication = {
     modifiedNameComplete: boolean | null
     physicalAppearance: AppearanceInfoType
     previousAddresses: Array<AddressInfoType>
-    qualifyingQuestions: QualifyingQuestions
+    qualifyingQuestions?: QualifyingQuestions
+    legacyQualifyingQuestions?: LegacyQualifyingQuestions
     referenceNotes: string
     revocationInfo: RevocationInfoType
     spouseAddressInformation: {

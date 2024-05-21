@@ -194,6 +194,18 @@
           </v-stepper-content>
           <v-stepper-content :step="7">
             <QualifyingQuestionsStep
+              v-if="
+                applicationStore.completeApplication.application
+                  .qualifyingQuestions
+              "
+              v-model="applicationStore.completeApplication"
+              @update-step-seven-valid="handleUpdateStepSevenValid"
+              @handle-save="handleSave"
+              @handle-continue="handleContinue"
+              @previous-step="handlePrevious"
+            />
+            <LegacyQualifyingQuestionsStep
+              v-else
               v-model="applicationStore.completeApplication"
               @update-step-seven-valid="handleUpdateStepSevenValid"
               @handle-save="handleSave"
@@ -449,6 +461,7 @@ import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplicati
 import { useRouter } from 'vue-router/composables'
 import { computed, onMounted, provide, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
+import LegacyQualifyingQuestionsStep from '../form-stepper/form-steps/LegacyQualifyingQuestionsStep.vue'
 
 const applicationStore = useCompleteApplicationStore()
 const stepOneValid = ref(false)
