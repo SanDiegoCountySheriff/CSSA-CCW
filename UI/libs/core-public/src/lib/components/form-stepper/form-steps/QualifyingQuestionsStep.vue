@@ -8,7 +8,7 @@
       v-on="$listeners"
     />
 
-    <v-container>
+    <v-container v-if="model.application.qualifyingQuestions">
       <v-row
         v-if="isRenew"
         justify="center"
@@ -2952,10 +2952,12 @@ function handleSave() {
 }
 
 function toggleUpdateInformation(questionKey) {
-  const question = model.value.application.qualifyingQuestions[questionKey]
+  if (model.value.application.qualifyingQuestions) {
+    const question = model.value.application.qualifyingQuestions[questionKey]
 
-  question.updateInformation = true
-  question.selected = true
+    question.updateInformation = true
+    question.selected = true
+  }
 }
 
 function appendRenewalExplanation() {
@@ -2981,7 +2983,7 @@ function appendRenewalExplanation() {
 
 function addTrafficViolation() {
   menu.value.push(false)
-  model.value.application.qualifyingQuestions.questionTwelve.trafficViolations.push(
+  model.value.application.qualifyingQuestions?.questionTwelve.trafficViolations.push(
     {
       date: '',
       violation: '',
@@ -2993,12 +2995,12 @@ function addTrafficViolation() {
 
 function removeTrafficViolation() {
   menu.value.pop()
-  model.value.application.qualifyingQuestions.questionTwelve.trafficViolations.pop()
+  model.value.application.qualifyingQuestions?.questionTwelve.trafficViolations.pop()
 }
 
 function handleChangeQuestionTwelve() {
-  if (model.value.application.qualifyingQuestions.questionTwelve.selected) {
-    model.value.application.qualifyingQuestions.questionTwelve.trafficViolations.push(
+  if (model.value.application.qualifyingQuestions?.questionTwelve.selected) {
+    model.value.application.qualifyingQuestions?.questionTwelve.trafficViolations.push(
       {
         date: '',
         violation: '',
@@ -3006,7 +3008,7 @@ function handleChangeQuestionTwelve() {
         citationNumber: '',
       }
     )
-  } else {
+  } else if (model.value.application.qualifyingQuestions) {
     model.value.application.qualifyingQuestions.questionTwelve.trafficViolations =
       []
   }
