@@ -25,7 +25,7 @@
               successful! {{ brandStore.getBrand.agencyName }} Licensing Staff
               will contact you once the application has been reviewed. Due to
               the volume of applications submitted, it may be several months
-              before staff contacts you.
+              before staff contact you.
             </p>
             <span
               style="color: red"
@@ -44,7 +44,7 @@
               class="mt-5"
               @click="goToDashBoard"
             >
-              Back To Home
+              Back to Home
             </v-btn>
           </v-card-text>
         </v-card>

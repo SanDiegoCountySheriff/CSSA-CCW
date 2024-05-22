@@ -12,6 +12,7 @@
     <v-card-text>
       <template>
         <v-data-table
+          v-if="state.documents.length"
           :headers="state.headers"
           :items="state.documents"
           class="elevation-0"
@@ -41,6 +42,14 @@
               mdi-delete
             </v-icon>
           </template>
+        </v-data-table>
+        <v-data-table
+          v-else
+          :headers="state.headers"
+          :items="state.noDocs"
+          class="elevation-0"
+          :editable="true"
+        >
         </v-data-table>
       </template>
       <v-dialog
@@ -110,6 +119,14 @@ const state = reactive({
     { text: 'UPLOADED BY', value: 'uploadedBy' },
     { text: 'UPLOADED DATE', value: 'uploadedDateTimeUtc' },
     { text: 'ACTIONS', value: 'actions' },
+  ],
+  noDocs: [
+    {
+      name: '',
+      uploadedDateTimeUtc: '',
+      uploadedBy: 'No documents found.',
+      documentType: '',
+    },
   ],
   showDeleteDialog: false,
   itemToDelete: null as UploadedDocType | null,
