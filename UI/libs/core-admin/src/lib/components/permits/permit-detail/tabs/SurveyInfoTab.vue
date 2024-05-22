@@ -1381,11 +1381,1143 @@
           </v-col>
         </v-row>
       </v-card-text>
+      <v-card-text
+        v-else-if="
+          permitStore.getPermitDetail.application.legacyQualifyingQuestions
+        "
+      >
+        <v-row align="center">
+          <v-col>
+            {{ $t('LEGACY-QUESTION-ONE') }}
+          </v-col>
+
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionOne.selected
+                "
+                :disabled="readonly"
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <LegacyQualifyingQuestionOneDialog :readonly="readonly" />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row
+          v-if="
+            permitStore.getPermitDetail.application.legacyQualifyingQuestions
+              .questionOne.selected
+          "
+        >
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionOne.agency
+              "
+              :readonly="readonly"
+              :label="$t('Agency')"
+              :rules="[v => !!v || $t('An Agency is required.')]"
+              outlined
+            ></v-text-field>
+          </v-col>
+
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionOne.issuingState
+              "
+              :readonly="readonly"
+              :label="$t('Issuing State')"
+              :rules="[v => !!v || $t('An Issuing State is required.')]"
+              outlined
+            ></v-text-field>
+          </v-col>
+
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionOne.issueDate
+              "
+              :readonly="readonly"
+              :label="$t('Issue Date')"
+              :rules="[v => !!v || $t('An Issue Date is required.')]"
+              type="date"
+              append-icon="mdi-calendar"
+              clearable
+              outlined
+            ></v-text-field>
+          </v-col>
+
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionOne.number
+              "
+              :readonly="readonly"
+              :label="$t('Number')"
+              :rules="[v => !!v || $t('An Issue Number is required.')]"
+              outlined
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col>
+            {{ $t('LEGACY-QUESTION-TWO') }}
+          </v-col>
+
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionTwo.selected
+                "
+                :disabled="readonly"
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <LegacyQualifyingQuestionTwoDialog :readonly="readonly" />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row
+          v-if="
+            permitStore.getPermitDetail.application.legacyQualifyingQuestions
+              .questionTwo.selected
+          "
+        >
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionTwo.agency
+              "
+              :readonly="readonly"
+              :label="$t('Agency')"
+              :rules="[v => !!v || $t('An Agency is required.')]"
+              outlined
+            ></v-text-field>
+          </v-col>
+
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionTwo.denialDate
+              "
+              :readonly="readonly"
+              :label="$t('Denial Date')"
+              :rules="[v => !!v || $t('A Denial Date is required.')]"
+              type="date"
+              append-icon="mdi-calendar"
+              clearable
+              outlined
+            ></v-text-field>
+          </v-col>
+
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionTwo.denialReason
+              "
+              :readonly="readonly"
+              :label="$t('Denial Reason')"
+              :rules="[v => !!v || $t('A Denial Explanation is required.')]"
+              outlined
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col>
+            {{ $t('LEGACY-QUESTION-THREE') }}
+          </v-col>
+
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionThree.selected
+                "
+                :disabled="readonly"
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <LegacyQualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Three'"
+              />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.legacyQualifyingQuestions
+                .questionThree.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionThree.explanation
+              "
+              :readonly="readonly"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col>
+            {{ $t('LEGACY-QUESTION-FOUR') }}
+          </v-col>
+
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionFour.selected
+                "
+                :disabled="readonly"
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <LegacyQualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Four'"
+              />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.legacyQualifyingQuestions
+                .questionFour.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionFour.explanation
+              "
+              :readonly="readonly"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col class="text-left">
+            {{ $t('LEGACY-QUESTION-FIVE') }}
+          </v-col>
+
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionFive.selected
+                "
+                :disabled="readonly"
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <LegacyQualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Five'"
+              />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.legacyQualifyingQuestions
+                .questionFive.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionFive.explanation
+              "
+              :readonly="readonly"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col class="text-left">
+            {{ $t('LEGACY-QUESTION-SIX') }}
+          </v-col>
+
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionSix.selected
+                "
+                :disabled="readonly"
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <LegacyQualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Six'"
+              />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.legacyQualifyingQuestions
+                .questionSix.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionSix.explanation
+              "
+              :readonly="readonly"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col class="text-left">
+            {{ $t('LEGACY-QUESTION-SEVEN') }}
+          </v-col>
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionSeven.selected
+                "
+                :disabled="readonly"
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <LegacyQualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Seven'"
+              />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.legacyQualifyingQuestions
+                .questionSeven.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionSeven.explanation
+              "
+              :readonly="readonly"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col class="text-left">
+            {{ $t('LEGACY-QUESTION-EIGHT') }}
+          </v-col>
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionEight.selected
+                "
+                :disabled="readonly"
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <LegacyQualifyingQuestionEightDialog :readonly="readonly" />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row
+          v-if="
+            permitStore.getPermitDetail.application.legacyQualifyingQuestions
+              .questionEight.selected
+          "
+        >
+          <template
+            v-for="(violation, index) of permitStore.getPermitDetail.application
+              .legacyQualifyingQuestions.questionEight.trafficViolations"
+          >
+            <v-row :key="index">
+              <v-col cols="3">
+                <v-text-field
+                  v-model="violation.date"
+                  :readonly="readonly"
+                  label="Date"
+                  outlined
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="3">
+                <v-text-field
+                  v-model="violation.agency"
+                  :readonly="readonly"
+                  label="Agency"
+                  outlined
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="3">
+                <v-text-field
+                  v-model="violation.violation"
+                  :readonly="readonly"
+                  label="Violation/Accident"
+                  outlined
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="3">
+                <v-text-field
+                  v-model="violation.citationNumber"
+                  :readonly="readonly"
+                  label="Citation Number"
+                  outlined
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </template>
+
+          <v-row
+            v-if="
+              permitStore.getPermitDetail.application.legacyQualifyingQuestions
+                .questionEight.trafficViolationsExplanation
+            "
+          >
+            <v-col>
+              <v-textarea
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionEight
+                    .trafficViolationsExplanation
+                "
+                :readonly="readonly"
+                label="Traffic Violations Explanation"
+              >
+              </v-textarea>
+            </v-col>
+          </v-row>
+        </v-row>
+
+        <v-row align="center">
+          <v-col>
+            {{ $t('LEGACY-QUESTION-NINE') }}
+          </v-col>
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionNine.selected
+                "
+                :disabled="readonly"
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <LegacyQualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Nine'"
+              />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.legacyQualifyingQuestions
+                .questionNine.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionNine.explanation
+              "
+              :readonly="readonly"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col class="text-left">
+            {{ $t('LEGACY-QUESTION-TEN') }}
+          </v-col>
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionTen.selected
+                "
+                :disabled="readonly"
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <LegacyQualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Ten'"
+              />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.legacyQualifyingQuestions
+                .questionTen.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionTen.explanation
+              "
+              :readonly="readonly"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col class="text-left">
+            {{ $t('LEGACY-QUESTION-ELEVEN') }}
+          </v-col>
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionEleven.selected
+                "
+                :disabled="readonly"
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <LegacyQualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Eleven'"
+              />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.legacyQualifyingQuestions
+                .questionEleven.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionEleven.explanation
+              "
+              :readonly="readonly"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col class="text-left">
+            {{ $t('LEGACY-QUESTION-TWELVE') }}
+          </v-col>
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionTwelve.selected
+                "
+                :disabled="readonly"
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <LegacyQualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Twelve'"
+              />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.legacyQualifyingQuestions
+                .questionTwelve.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionTwelve.explanation
+              "
+              :readonly="readonly"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col class="text-left">
+            {{ $t('LEGACY-QUESTION-THIRTEEN') }}
+          </v-col>
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionThirteen.selected
+                "
+                :disabled="readonly"
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <LegacyQualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Thirteen'"
+              />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.legacyQualifyingQuestions
+                .questionThirteen.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionThirteen.explanation
+              "
+              :readonly="readonly"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col class="text-left">
+            {{ $t('LEGACY-QUESTION-FOURTEEN') }}
+          </v-col>
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionFourteen.selected
+                "
+                :disabled="readonly"
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <LegacyQualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Fourteen'"
+              />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.legacyQualifyingQuestions
+                .questionFourteen.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionFourteen.explanation
+              "
+              :readonly="readonly"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col class="text-left">
+            {{ $t('LEGACY-QUESTION-FIFTEEN') }}
+          </v-col>
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionFifteen.selected
+                "
+                :disabled="readonly"
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <LegacyQualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Fifteen'"
+              />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.legacyQualifyingQuestions
+                .questionFifteen.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionFifteen.explanation
+              "
+              :readonly="readonly"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col>
+            {{ $t('LEGACY-QUESTION-SIXTEEN') }}
+          </v-col>
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionSixteen.selected
+                "
+                :disabled="readonly"
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <LegacyQualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Sixteen'"
+              />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.legacyQualifyingQuestions
+                .questionSixteen.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionSixteen.explanation
+              "
+              :readonly="readonly"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col class="text-left">
+            {{ $t('LEGACY-QUESTION-SEVENTEEN') }}
+          </v-col>
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionSeventeen.selected
+                "
+                :disabled="readonly"
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <LegacyQualifyingQuestionStandardDialog
+                :readonly="readonly"
+                :question="'Seventeen'"
+              />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.legacyQualifyingQuestions
+                .questionSeventeen.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionSeventeen.explanation
+              "
+              :readonly="readonly"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
+      </v-card-text>
     </v-card>
   </div>
 </template>
 
 <script setup lang="ts">
+import LegacyQualifyingQuestionEightDialog from '@core-admin/components/dialogs/LegacyQualifyingQuestionEightDialog.vue'
+import LegacyQualifyingQuestionOneDialog from '@core-admin/components/dialogs/LegacyQualifyingQuestionOneDialog.vue'
+import LegacyQualifyingQuestionStandardDialog from '@core-admin/components/dialogs/LegacyQualifyingQuestionStandardDialog.vue'
+import LegacyQualifyingQuestionTwoDialog from '@core-admin/components/dialogs/LegacyQualifyingQuestionTwoDialog.vue'
 import QualifyingQuestionOneDialog from '@core-admin/components/dialogs/QualifyingQuestionOneDialog.vue'
 import QualifyingQuestionStandardDialog from '@core-admin/components/dialogs/QualifyingQuestionStandardDialog.vue'
 import QualifyingQuestionTwelveDialog from '@core-admin/components/dialogs/QualifyingQuestionTwelveDialog.vue'
