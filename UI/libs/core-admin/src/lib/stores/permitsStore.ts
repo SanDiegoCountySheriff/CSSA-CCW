@@ -416,27 +416,39 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     permitDetail.value.application.license.issueDate = issueDateISO
     permitDetail.value.application.license.expirationDate = expDateISO
 
-    const res = await axios({
-      url: `${Endpoints.GET_PRINT_OFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}&fileName=${fileName}`,
-      method: 'PUT',
-      responseType: 'blob',
-    })
+    try {
+      await axios.put(
+        Endpoints.PUT_UPDATE_AGENCY_PERMIT_ENDPOINT,
+        permitDetail.value
+      )
 
-    const uploadAdminDoc: UploadedDocType = {
-      documentType: 'Official_License',
-      name: `${permitDetail.value.application.personalInfo.lastName}_${
-        permitDetail.value.application.personalInfo.firstName
-      }_${'Official_License'}_${formattedDateTime}`,
-      uploadedBy: authStore.auth.userEmail,
-      uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
+      const res = await axios({
+        url: `${Endpoints.GET_PRINT_OFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}&fileName=${fileName}`,
+        method: 'PUT',
+        responseType: 'blob',
+      })
+
+      const uploadAdminDoc: UploadedDocType = {
+        documentType: 'Official_License',
+        name: `${permitDetail.value.application.personalInfo.lastName}_${
+          permitDetail.value.application.personalInfo.firstName
+        }_${'Official_License'}_${formattedDateTime}`,
+        uploadedBy: authStore.auth.userEmail,
+        uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
+      }
+
+      permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
+
+      const historyMessage = `Uploaded new ${uploadAdminDoc.documentType}`
+
+      await updatePermitDetailApi(historyMessage)
+
+      return res || {}
+    } catch (error) {
+      console.error('Error occurred:', error)
+
+      return {}
     }
-
-    const historyMessage = `Uploaded new ${uploadAdminDoc.documentType}`
-
-    permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
-    updatePermitDetailApi(historyMessage)
-
-    return res || {}
   }
 
   async function printUnofficialLicenseApi() {
