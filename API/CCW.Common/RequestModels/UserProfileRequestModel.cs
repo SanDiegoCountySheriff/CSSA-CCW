@@ -5,7 +5,8 @@ namespace CCW.Common.RequestModels;
 
 public class UserProfileRequestModel
 {
-
+    [JsonProperty("id")]
+    public string Id { get; set; }
     [JsonProperty("firstName")]
     public string FirstName { get; set; }
     [JsonProperty("lastName")]

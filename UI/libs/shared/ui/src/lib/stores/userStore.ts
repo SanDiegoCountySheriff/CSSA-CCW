@@ -44,6 +44,19 @@ export const useUserStore = defineStore('UserStore', () => {
     return res?.data || {}
   }
 
+  async function updateUserProfileAdmin(user: UserType) {
+    const res = await axios.post(
+      Endpoints.UPDATE_USER_PROFILE_ADMIN_ENDPOINT,
+      user
+    )
+
+    if (res?.data) {
+      setUser(res.data)
+    }
+
+    return res?.data || {}
+  }
+
   async function getUnmatchedUsers() {
     const res = await axios.get(Endpoints.GET_UNMATCHED_USERS_ENDPOINT)
 
@@ -63,5 +76,6 @@ export const useUserStore = defineStore('UserStore', () => {
     putCreateUser,
     getUnmatchedUsers,
     updateUserProfile,
+    updateUserProfileAdmin,
   }
 })

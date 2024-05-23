@@ -357,6 +357,12 @@ export default class Endpoints {
     }/userprofile/v1/userprofile/updateUserProfile`
   }
 
+  static get UPDATE_USER_PROFILE_ADMIN_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.userProfileApiBaseUrl
+    }/userprofile/v1/userprofile/updateUserProfileAdmin`
+  }
+
   static get GET_USER_ENDPOINT() {
     return `${
       useAppConfigStore().appConfig.userProfileApiBaseUrl
