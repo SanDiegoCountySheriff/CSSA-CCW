@@ -74,6 +74,17 @@
         color="primary"
         event-color="primary"
       >
+        <template #event="{ event }">
+          <span class="ml-1">
+            {{
+              new Date(event.start).toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+              })
+            }}
+          </span>
+          <span class="float-right mr-1">{{ event.name }}</span>
+        </template>
       </v-calendar>
     </v-card>
 
@@ -188,8 +199,23 @@ const { isLoading, refetch } = useQuery(
           const key = `${currentObj.start}-${currentObj.end}`
 
           if (!result.set.has(key)) {
+            currentObj.slots = 1
             result.set.add(key)
             result.array.push(currentObj)
+          } else {
+            const index = result.array.findIndex(
+              obj => obj.start === currentObj.start
+            )
+
+            if (index !== -1) {
+              const updatedObj = result.array[index]
+
+              if (updatedObj.slots) {
+                updatedObj.slots += 1
+              }
+
+              result.array[index] = updatedObj
+            }
           }
 
           return result
@@ -217,7 +243,10 @@ const { isLoading, refetch } = useQuery(
           end.setTime(end.getTime() - correctedOffset * 60 * 60 * 1000)
         }
 
-        event.name = 'Appt'
+        if (event.slots) {
+          event.name = `${event.slots} slot${event.slots > 1 ? 's' : ''} left`
+        }
+
         event.start = formatDate(start, start.getHours(), start.getMinutes())
         event.end = formatDate(end, end.getHours(), end.getMinutes())
       })
