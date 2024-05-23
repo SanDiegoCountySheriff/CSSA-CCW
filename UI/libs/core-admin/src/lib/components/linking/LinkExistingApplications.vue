@@ -19,14 +19,10 @@
 
         <v-spacer />
 
-        <v-btn
+        <ConfirmUserNoApplicationDialog
           :disabled="!customerSelectedOnly"
-          @click="handleCustomerNoApplications"
-          color="primary"
-          outlined
-        >
-          No Application Found
-        </v-btn>
+          @confirm="handleCustomerNoApplications"
+        />
       </v-card-title>
 
       <v-card-text>
@@ -245,6 +241,7 @@ import {
 } from '@shared-utils/types/defaultTypes'
 import { computed, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
+import ConfirmUserNoApplicationDialog from '../dialogs/ConfirmUserNoApplicationDialog.vue'
 
 const userStore = useUserStore()
 const permitStore = usePermitsStore()
