@@ -3,32 +3,32 @@
     v-model="dialog"
     max-width="600"
   >
-    <template #activator="{ attrs, on }">
+    <template #activator="{ on, attrs }">
       <v-btn
         v-on="on"
         v-bind="attrs"
         :disabled="disabled"
         color="primary"
-        outlined
       >
-        No Application Found
+        Match Applicant/Application
       </v-btn>
     </template>
 
     <v-card>
-      <v-card-title>Kick back to applicant</v-card-title>
+      <v-card-title>Confirm Match Application </v-card-title>
 
       <v-card-text>
-        Are you sure you wish to mark this applicant as 'No Applications Found'?
-        This will send it back to the applicant to apply again, or create a new
-        application.
+        Are you sure you want to match the applicant with name:
+        <p class="font-weight-bold">{{ applicantName }}</p>
+        To the application with name:
+        <p class="font-weight-bold">{{ applicationName }}</p>
       </v-card-text>
 
       <v-card-actions>
         <v-btn
-          @click="dialog = false"
-          color="error"
           text
+          color="error"
+          @click="dialog = false"
         >
           Cancel
         </v-btn>
@@ -36,9 +36,9 @@
         <v-spacer />
 
         <v-btn
-          @click="handleConfirm"
-          color="primary"
           text
+          color="primary"
+          @click="handleConfirm"
         >
           Confirm
         </v-btn>
@@ -52,6 +52,8 @@ import { ref } from 'vue'
 
 interface Props {
   disabled: boolean
+  applicantName?: string
+  applicationName?: string
 }
 
 const props = defineProps<Props>()

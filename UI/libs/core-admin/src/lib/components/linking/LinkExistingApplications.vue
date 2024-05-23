@@ -6,16 +6,14 @@
       flat
     >
       <v-card-title>
-        Link Existing Applications
+        <span class="mr-5"> Link Existing Applications </span>
 
-        <v-btn
+        <ConfirmMatchApplicationDialog
           :disabled="!readyToMatch"
-          @click="handleMatch"
-          color="primary"
-          class="ml-4"
-        >
-          Match Applicant/Application
-        </v-btn>
+          :applicant-name="`${selectedUser[0]?.firstName} ${selectedUser[0]?.lastName}`"
+          :application-name="selectedLegacyApplication[0]?.name"
+          @confirm="handleMatch"
+        />
 
         <v-spacer />
 
@@ -242,6 +240,7 @@ import {
 import { computed, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 import ConfirmUserNoApplicationDialog from '../dialogs/ConfirmUserNoApplicationDialog.vue'
+import ConfirmMatchApplicationDialog from '../dialogs/ConfirmMatchApplicationDialog.vue'
 
 const userStore = useUserStore()
 const permitStore = usePermitsStore()
