@@ -1,21 +1,26 @@
 <template>
   <div>
     <v-card
-      :loading="isMatchApplicationLoading"
+      :loading="isMatchApplicationLoading || isUpdateUserLoading"
       height="90vh"
       flat
     >
       <v-card-title>
-        Link Existing Applications
+        <span class="mr-5"> Link Existing Applications </span>
 
-        <v-btn
-          @click="handleMatch"
+        <ConfirmMatchApplicationDialog
           :disabled="!readyToMatch"
-          color="primary"
-          class="ml-4"
-        >
-          Match Applicant/Application
-        </v-btn>
+          :applicant-name="`${selectedUser[0]?.firstName} ${selectedUser[0]?.lastName}`"
+          :application-name="selectedLegacyApplication[0]?.name"
+          @confirm="handleMatch"
+        />
+
+        <v-spacer />
+
+        <ConfirmUserNoApplicationDialog
+          :disabled="!customerSelectedOnly"
+          @confirm="handleCustomerNoApplications"
+        />
       </v-card-title>
 
       <v-card-text>
@@ -234,6 +239,8 @@ import {
 } from '@shared-utils/types/defaultTypes'
 import { computed, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
+import ConfirmUserNoApplicationDialog from '../dialogs/ConfirmUserNoApplicationDialog.vue'
+import ConfirmMatchApplicationDialog from '../dialogs/ConfirmMatchApplicationDialog.vue'
 
 const userStore = useUserStore()
 const permitStore = usePermitsStore()
@@ -250,6 +257,13 @@ const applicantSearch = ref('')
 const readyToMatch = computed(() => {
   return (
     selectedUser.value.length > 0 && selectedLegacyApplication.value.length > 0
+  )
+})
+
+const customerSelectedOnly = computed(() => {
+  return (
+    selectedUser.value.length > 0 &&
+    selectedLegacyApplication.value.length === 0
   )
 })
 
@@ -334,6 +348,15 @@ const { mutate, isLoading: isMatchApplicationLoading } = useMutation({
   },
 })
 
+const { mutate: updateUser, isLoading: isUpdateUserLoading } = useMutation({
+  mutationFn: (user: UserType) => {
+    return userStore.updateUserProfileAdmin(user)
+  },
+  onSuccess: () => {
+    refetchUsers()
+  },
+})
+
 const headers = [
   {
     text: 'Name',
@@ -370,6 +393,13 @@ function handleMatch() {
       userId: selectedUser.value[0].id,
       applicationId: selectedLegacyApplication.value[0].id,
     })
+  }
+}
+
+function handleCustomerNoApplications() {
+  if (selectedUser.value[0].id) {
+    selectedUser.value[0].isPendingReview = false
+    updateUser(selectedUser.value[0])
   }
 }
 

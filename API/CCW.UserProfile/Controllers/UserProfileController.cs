@@ -136,6 +136,25 @@ public class UserProfileController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [Route("updateUserProfileAdmin")]
+    [HttpPost]
+    public async Task<IActionResult> UpdateUserProfileAdmin([FromBody] UserProfileRequestModel user)
+    {
+        try
+        {
+            await _cosmosDbService.UpdateUserAsync(_mapper.Map<User>(user), user.Id, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to create new user.");
+        }
+    }
+
     [Authorize(Policy = "B2CUsers")]
     [Route("getUserProfile")]
     [HttpGet]
