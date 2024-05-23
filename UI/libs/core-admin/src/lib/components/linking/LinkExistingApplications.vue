@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card
-      :loading="isMatchApplicationLoading"
+      :loading="isMatchApplicationLoading || isUpdateUserLoading"
       height="90vh"
       flat
     >
@@ -9,12 +9,23 @@
         Link Existing Applications
 
         <v-btn
-          @click="handleMatch"
           :disabled="!readyToMatch"
+          @click="handleMatch"
           color="primary"
           class="ml-4"
         >
           Match Applicant/Application
+        </v-btn>
+
+        <v-spacer />
+
+        <v-btn
+          :disabled="!customerSelectedOnly"
+          @click="handleCustomerNoApplications"
+          color="primary"
+          outlined
+        >
+          No Application Found
         </v-btn>
       </v-card-title>
 
@@ -253,6 +264,13 @@ const readyToMatch = computed(() => {
   )
 })
 
+const customerSelectedOnly = computed(() => {
+  return (
+    selectedUser.value.length > 0 &&
+    selectedLegacyApplication.value.length === 0
+  )
+})
+
 const options = ref<ApplicationTableOptionsType>({
   options: {
     page: 1,
@@ -334,6 +352,15 @@ const { mutate, isLoading: isMatchApplicationLoading } = useMutation({
   },
 })
 
+const { mutate: updateUser, isLoading: isUpdateUserLoading } = useMutation({
+  mutationFn: (user: UserType) => {
+    return userStore.updateUserProfileAdmin(user)
+  },
+  onSuccess: () => {
+    refetchUsers()
+  },
+})
+
 const headers = [
   {
     text: 'Name',
@@ -370,6 +397,13 @@ function handleMatch() {
       userId: selectedUser.value[0].id,
       applicationId: selectedLegacyApplication.value[0].id,
     })
+  }
+}
+
+function handleCustomerNoApplications() {
+  if (selectedUser.value[0].id) {
+    selectedUser.value[0].isPendingReview = false
+    updateUser(selectedUser.value[0])
   }
 }
 
