@@ -304,6 +304,38 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         return availableTimes;
     }
 
+    public async Task<List<AppointmentWindow>> GetBookedAppointmentsAsync(bool includePastAppointments, CancellationToken cancellationToken)
+    {
+        List<AppointmentWindow> availableTimes = new List<AppointmentWindow>();
+
+        string query = @"SELECT a.start, a[""end""]
+                FROM a
+                WHERE a.applicationId != null";
+
+        if (!includePastAppointments)
+        {
+            string utcNow = DateTimeOffset.UtcNow.ToString("o");
+            query += $" AND a.start >= '{utcNow}'";
+        }
+
+        QueryDefinition queryDefinition = new QueryDefinition(query);
+
+        using (FeedIterator<AppointmentWindow> feedIterator = _container.GetItemQueryIterator<AppointmentWindow>(
+                   queryDefinition,
+                   null))
+        {
+            while (feedIterator.HasMoreResults)
+            {
+                foreach (var item in await feedIterator.ReadNextAsync(cancellationToken))
+                {
+                    availableTimes.Add(item);
+                }
+            }
+        }
+
+        return availableTimes;
+    }
+
     public async Task<List<AppointmentWindow>> GetAllBookedAppointmentsAsync(CancellationToken cancellationToken)
     {
         List<AppointmentWindow> availableTimes = new List<AppointmentWindow>();

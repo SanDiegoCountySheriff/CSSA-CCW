@@ -9,6 +9,7 @@ public interface IAppointmentCosmosDbService
     Task<AppointmentWindow> GetAppointmentByIdAsync(string appointmentId, CancellationToken cancellationToken);
     Task<AppointmentWindow> GetAppointmentByUserIdAsync(string userId, CancellationToken cancellationToken);
     Task<List<AppointmentWindow>> GetAvailableTimesAsync(bool includePastAppointments, CancellationToken cancellationToken);
+    Task<List<AppointmentWindow>> GetBookedAppointmentsAsync(bool includePastAppointments, CancellationToken cancellationToken);
     Task<List<AppointmentWindow>> GetAvailableSlotByDateTime(DateTimeOffset startTime, CancellationToken cancellationToken);
     Task<List<AppointmentWindow>> GetAllBookedAppointmentsAsync(CancellationToken cancellationToken);
     Task<AppointmentWindow> AddAsync(AppointmentWindow appointment, CancellationToken cancellationToken);
