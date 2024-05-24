@@ -75,31 +75,6 @@
             >
               {{ getCalendarTitle }}
             </v-toolbar-title>
-            <!-- <v-spacer />
-            <v-menu>
-              <template #activator="{ on, attrs }">
-                <v-btn
-                  outlined
-                  color="white"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  {{ $t(state.type) }}
-                  <v-icon right> mdi-menu-down </v-icon>
-                </v-btn>
-              </template>
-              <v-list>
-                <v-list-item @click="state.type = 'day'">
-                  <v-list-item-title>{{ $t('Day') }}</v-list-item-title>
-                </v-list-item>
-                <v-list-item @click="state.type = 'week'">
-                  <v-list-item-title>{{ $t('Week') }}</v-list-item-title>
-                </v-list-item>
-                <v-list-item @click="state.type = 'month'">
-                  <v-list-item-title>{{ $t('Month') }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu> -->
           </v-toolbar>
 
           <template v-if="state.appointments.length > 0">
@@ -112,6 +87,7 @@
               @click:event="selectEvent($event)"
               event-color="primary"
               color="primary"
+              :event-more="false"
             >
               <template #event="{ event }">
                 <span class="ml-1">
@@ -126,7 +102,7 @@
               </template>
             </v-calendar>
 
-            <!-- <v-menu
+            <v-menu
               v-model="state.selectedOpen"
               :activator="state.selectedElement"
               min-width="250px"
@@ -157,7 +133,7 @@
                   </v-btn>
                 </v-card-text>
               </v-card>
-            </v-menu> -->
+            </v-menu>
           </template>
 
           <template
@@ -202,13 +178,13 @@
 
 <script setup lang="ts">
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
-import { useMutation, useQuery } from '@tanstack/vue-query'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
   AppointmentStatus,
   AppointmentType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, inject, reactive, ref } from 'vue'
+import { computed, inject, nextTick, reactive, ref } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const readonly = inject('readonly')
 
@@ -395,7 +371,9 @@ function handleConfirm() {
 }
 
 function openDialog() {
-  refetch()
+  nextTick(() => {
+    refetch()
+  })
 }
 
 function handleCalendarNext() {
