@@ -1,5 +1,4 @@
 import Endpoints from '@shared-ui/api/endpoints'
-import { LegacyPermitsType, PermitsType } from '@core-admin/types'
 import axios from 'axios'
 import { defaultPermitState } from '@shared-utils/lists/defaultConstants'
 import { defineStore } from 'pinia'
@@ -17,6 +16,7 @@ import {
   CompleteApplication,
   HistoryType,
 } from '@shared-utils/types/defaultTypes'
+import { LegacyPermitsType, PermitsType } from '@core-admin/types'
 import { computed, ref } from 'vue'
 import {
   formatDate,
@@ -80,9 +80,11 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
         initials: formatInitials(data.firstName, data.lastName),
         name: formatName(data),
         assignedTo: data.assignedTo,
-        appointmentDateTime: `${formatDate(
-          data.appointmentDateTime
-        )} at ${formatTime(data.appointmentDateTime)}`,
+        appointmentDateTime: data.appointmentDateTime
+          ? `${formatDate(data.appointmentDateTime)} at ${formatTime(
+              data.appointmentDateTime
+            )}`
+          : 'None',
         isComplete: data.isComplete,
         appointmentId: data.appointmentId,
       }
@@ -157,9 +159,11 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
         initials: formatInitials(data.firstName, data.lastName),
         name: formatName(data),
         assignedTo: data.assignedTo,
-        appointmentDateTime: `${formatDate(
-          data.appointmentDateTime
-        )} at ${formatTime(data.appointmentDateTime)}`,
+        appointmentDateTime: data.appointmentDateTime
+          ? `${formatDate(data.appointmentDateTime)} at ${formatTime(
+              data.appointmentDateTime
+            )}`
+          : 'None',
         isComplete: data.isComplete,
         appointmentId: data.appointmentId,
       }

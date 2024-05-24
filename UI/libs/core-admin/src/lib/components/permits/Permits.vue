@@ -219,7 +219,7 @@
       </template>
 
       <template #[`item.appointmentDateTime`]="props">
-        {{ props.item.appointmentDateTime ?? 'n/a' }}
+        {{ props.item.appointmentDateTime }}
       </template>
 
       <template #[`item.paymentStatus`]="{ item }">

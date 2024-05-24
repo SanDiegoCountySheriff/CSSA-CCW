@@ -208,6 +208,7 @@ const {
   ['getBookedAppointments', true],
   () => appointmentStore.getBookedAppointments(false),
   {
+    enabled: false,
     onSuccess: (data: Array<AppointmentType>) => {
       const currentOffset = new Date().getTimezoneOffset() / 60
 
