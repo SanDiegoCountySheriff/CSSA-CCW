@@ -97,9 +97,15 @@
       @click:event="selectEvent($event)"
     >
       <template #event="{ event }">
-        <div class="ml-2">
-          {{ `${event.start.split(' ')[1]} - ${event.end.split(' ')[1]}` }}
-        </div>
+        <span class="ml-1">
+          {{
+            new Date(event.start).toLocaleTimeString('en-US', {
+              hour: '2-digit',
+              minute: '2-digit',
+            })
+          }}
+        </span>
+        <span class="float-right mr-1">{{ event.name }}</span>
       </template>
     </v-calendar>
 
