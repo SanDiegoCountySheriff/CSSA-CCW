@@ -202,7 +202,7 @@ const getStart = computed(() => {
 })
 
 const {
-  isLoading: isBookedAppointmentsLoading,
+  isFetching: isBookedAppointmentsLoading,
   refetch: getBookedAppointments,
 } = useQuery(
   ['getBookedAppointments', true],
