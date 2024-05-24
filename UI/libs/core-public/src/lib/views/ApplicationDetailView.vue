@@ -361,7 +361,7 @@
             applicationStore.completeApplication.application.status !==
               ApplicationStatus['Permit Delivered']
           "
-          :loading="isLoading"
+          :loading="isUpdateApplicationLoading"
           outlined
           class="fill-height"
         >
@@ -552,6 +552,7 @@
 
           <v-card-title> </v-card-title>
         </v-card>
+
         <v-card
           v-else-if="isLicenseExpired"
           class="fill-height"
@@ -778,11 +779,9 @@
           </v-btn>
           <v-toolbar-title>Schedule Appointment</v-toolbar-title>
         </v-toolbar>
+
         <AppointmentContainer
-          v-if="
-            (isLoading && isError) ||
-            (state.appointmentsLoaded && state.appointments.length > 0)
-          "
+          v-if="state.appointmentsLoaded && state.appointments.length > 0"
           :events="state.appointments"
           :show-header="false"
           :rescheduling="state.rescheduling"
@@ -1231,65 +1230,93 @@ const { isLoading: isGetApplicationsLoading } = useQuery(
   }
 )
 
-const {
-  mutate: getAppointmentMutation,
-  isLoading,
-  isError,
-} = useMutation({
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  mutationFn: () => {
-    const appRes = appointmentStore.getAvailableAppointments(false)
+const { refetch } = useQuery(
+  ['getAppointments', true],
+  () => appointmentStore.getAvailableAppointments(true),
+  {
+    enabled: false,
+    onSuccess: (data: Array<AppointmentType>) => {
+      const currentOffset = new Date().getTimezoneOffset() / 60
 
-    appRes
-      .then((data: Array<AppointmentType>) => {
-        data = data.reduce(
-          (result, currentObj) => {
-            const key = `${currentObj.start}-${currentObj.end}`
+      const uniqueData = data.reduce(
+        (result, currentObj) => {
+          const key = `${currentObj.start}-${currentObj.end}`
 
-            if (!result.set.has(key)) {
-              result.set.add(key)
-              result.array.push(currentObj)
+          if (!result.set.has(key)) {
+            currentObj.slots = 1
+            result.set.add(key)
+            result.array.push(currentObj)
+          } else {
+            const index = result.array.findIndex(
+              obj => obj.start === currentObj.start
+            )
+
+            if (index !== -1) {
+              const updatedObj = result.array[index]
+
+              if (updatedObj.slots) {
+                updatedObj.slots += 1
+              }
+
+              result.array[index] = updatedObj
             }
-
-            return result
-          },
-          { set: new Set(), array: [] } as {
-            set: Set<string>
-            array: Array<AppointmentType>
           }
-        ).array
 
-        data.forEach(event => {
-          let start = new Date(event.start)
-          let end = new Date(event.end)
+          return result
+        },
+        { set: new Set(), array: [] } as {
+          set: Set<string>
+          array: Array<AppointmentType>
+        }
+      ).array
 
-          let formattedStart = `${start.getFullYear()}-${
-            start.getMonth() + 1
-          }-${start.getDate()} ${start.getHours()}:${start
-            .getMinutes()
-            .toString()
-            .padStart(2, '0')}`
+      uniqueData.forEach(event => {
+        const start = new Date(event.start)
 
-          let formattedEnd = `${end.getFullYear()}-${
-            end.getMonth() + 1
-          }-${end.getDate()} ${end.getHours()}:${end
-            .getMinutes()
-            .toString()
-            .padStart(2, '0')}`
+        if (currentOffset !== start.getTimezoneOffset() / 60) {
+          const correctedOffset = currentOffset - start.getTimezoneOffset() / 60
 
-          event.name = 'open'
-          event.start = formattedStart
-          event.end = formattedEnd
-        })
-        state.appointments = data
-        state.appointmentsLoaded = true
+          start.setTime(start.getTime() - correctedOffset * 60 * 60 * 1000)
+        }
+
+        const end = new Date(event.end)
+
+        if (currentOffset !== end.getTimezoneOffset() / 60) {
+          const correctedOffset = currentOffset - end.getTimezoneOffset() / 60
+
+          end.setTime(end.getTime() - correctedOffset * 60 * 60 * 1000)
+        }
+
+        if (event.slots) {
+          event.name = `${event.slots} slot${event.slots > 1 ? 's' : ''} left`
+        }
+
+        event.start = formatDate(start, start.getHours(), start.getMinutes())
+        event.end = formatDate(end, end.getHours(), end.getMinutes())
       })
-      .catch(() => {
-        state.appointmentsLoaded = true
-      })
-  },
-})
+
+      state.appointments = uniqueData
+      state.appointmentsLoaded = true
+    },
+  }
+)
+
+function formatDate(date: Date, hour: number, minute: number): string {
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+  let formattedHour = hour.toString().padStart(2, '0')
+  let formattedMinute = minute.toString().padStart(2, '0')
+
+  if (formattedMinute === '60') {
+    formattedHour = (hour + 1).toString().padStart(2, '0')
+    formattedMinute = '00'
+  }
+
+  return `${year}-${month.toString().padStart(2, '0')}-${day
+    .toString()
+    .padStart(2, '0')} ${formattedHour}:${formattedMinute}`
+}
 
 const enableEightHourSafetyCourseButton = computed(() => {
   return (
@@ -1993,12 +2020,12 @@ function handleConfirmCancelAppointment() {
 
 function handleShowAppointmentDialog() {
   state.rescheduling = true
-  getAppointmentMutation()
+  refetch()
   state.appointmentDialog = true
 }
 
 function handleShowAppointmentDialogSchedule() {
-  getAppointmentMutation()
+  refetch()
   state.appointmentDialog = true
 }
 

@@ -4,12 +4,13 @@
       v-model="state.dialog"
       fullscreen
     >
-      <template #activator="{ attrs }">
+      <template #activator="{ on, attrs }">
         <v-btn
+          v-on="on"
           :disabled="readonly"
+          @click="openDialog"
           color="primary"
           v-bind="attrs"
-          @click="openDialog"
           small
           block
         >
@@ -33,7 +34,7 @@
           <v-toolbar-title>Schedule Appointment</v-toolbar-title>
         </v-toolbar>
 
-        <v-container>
+        <v-container fluid>
           <v-toolbar
             flat
             color="primary"
@@ -74,63 +75,33 @@
             >
               {{ getCalendarTitle }}
             </v-toolbar-title>
-            <v-spacer />
-            <v-menu>
-              <template #activator="{ on, attrs }">
-                <v-btn
-                  outlined
-                  color="white"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  {{ $t(state.type) }}
-                  <v-icon right> mdi-menu-down </v-icon>
-                </v-btn>
-              </template>
-              <v-list>
-                <v-list-item @click="state.type = 'day'">
-                  <v-list-item-title>{{ $t('Day') }}</v-list-item-title>
-                </v-list-item>
-                <v-list-item @click="state.type = 'week'">
-                  <v-list-item-title>{{ $t('Week') }}</v-list-item-title>
-                </v-list-item>
-                <v-list-item @click="state.type = 'month'">
-                  <v-list-item-title>{{ $t('Month') }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
           </v-toolbar>
 
-          <template
-            v-if="
-              (isLoading && isError) ||
-              (state.appointmentsLoaded && state.appointments.length > 0)
-            "
-          >
+          <template v-if="state.appointments.length > 0">
             <v-calendar
               ref="calendar"
               v-model="state.focus"
-              color="primary"
-              first-time="8"
-              first-interval="8"
-              interval-width="80"
-              interval-count="16"
               :start="state.appointments[0].start"
-              :type="state.type"
               :events="state.appointments"
-              :event-overlap-mode="'column'"
-              event-color="primary"
               @click:date="viewDay($event)"
               @click:event="selectEvent($event)"
+              event-color="primary"
+              color="primary"
+              :event-more="false"
             >
               <template #event="{ event }">
-                <div class="ml-2">
+                <span class="ml-1">
                   {{
-                    `${event.start.split(' ')[1]} - ${event.end.split(' ')[1]}`
+                    new Date(event.start).toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })
                   }}
-                </div>
+                </span>
+                <span class="float-right mr-1">{{ event.name }}</span>
               </template>
             </v-calendar>
+
             <v-menu
               v-model="state.selectedOpen"
               :activator="state.selectedElement"
@@ -192,6 +163,7 @@
         )
       }}
     </v-snackbar>
+
     <v-snackbar
       color="primary"
       v-model="state.snackbarOk"
@@ -206,13 +178,13 @@
 
 <script setup lang="ts">
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
-import { useMutation } from '@tanstack/vue-query'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
   AppointmentStatus,
   AppointmentType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, inject, reactive, ref } from 'vue'
+import { computed, inject, nextTick, reactive, ref } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const readonly = inject('readonly')
 
@@ -239,68 +211,92 @@ const state = reactive({
   reschedule: false,
 })
 
-const {
-  mutate: getAppointmentMutation,
-  isLoading,
-  isError,
-} = useMutation({
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  mutationFn: () => {
-    const appRes = appointmentsStore.getAvailableAppointments(true)
+const { refetch } = useQuery(
+  ['getAppointments', true],
+  () => appointmentsStore.getAvailableAppointments(true),
+  {
+    enabled: false,
+    onSuccess: (data: Array<AppointmentType>) => {
+      const currentOffset = new Date().getTimezoneOffset() / 60
 
-    appRes
-      .then((data: Array<AppointmentType>) => {
-        data.forEach(event => {
-          data = data.reduce(
-            (result, currentObj) => {
-              const key = `${currentObj.start}-${currentObj.end}`
+      const uniqueData = data.reduce(
+        (result, currentObj) => {
+          const key = `${currentObj.start}-${currentObj.end}`
 
-              if (!result.set.has(key)) {
-                result.set.add(key)
-                result.array.push(currentObj)
+          if (!result.set.has(key)) {
+            currentObj.slots = 1
+            result.set.add(key)
+            result.array.push(currentObj)
+          } else {
+            const index = result.array.findIndex(
+              obj => obj.start === currentObj.start
+            )
+
+            if (index !== -1) {
+              const updatedObj = result.array[index]
+
+              if (updatedObj.slots) {
+                updatedObj.slots += 1
               }
 
-              return result
-            },
-            { set: new Set(), array: [] } as {
-              set: Set<string>
-              array: Array<AppointmentType>
+              result.array[index] = updatedObj
             }
-          ).array
+          }
 
-          let start = new Date(event.start)
-          let end = new Date(event.end)
+          return result
+        },
+        { set: new Set(), array: [] } as {
+          set: Set<string>
+          array: Array<AppointmentType>
+        }
+      ).array
 
-          let formatedStart = `${start.getFullYear()}-${
-            start.getMonth() + 1
-          }-${start.getDate()} ${start.getHours()}:${start
-            .getMinutes()
-            .toString()
-            .padStart(2, '0')}`
+      uniqueData.forEach(event => {
+        const start = new Date(event.start)
 
-          let formatedEnd = `${end.getFullYear()}-${
-            end.getMonth() + 1
-          }-${end.getDate()} ${end.getHours()}:${end
-            .getMinutes()
-            .toString()
-            .padStart(2, '0')}`
+        if (currentOffset !== start.getTimezoneOffset() / 60) {
+          const correctedOffset = currentOffset - start.getTimezoneOffset() / 60
 
-          event.name = 'open'
-          event.start = formatedStart
-          event.end = formatedEnd
-        })
-        state.appointments = data
-        state.appointmentsLoaded = true
+          start.setTime(start.getTime() - correctedOffset * 60 * 60 * 1000)
+        }
+
+        const end = new Date(event.end)
+
+        if (currentOffset !== end.getTimezoneOffset() / 60) {
+          const correctedOffset = currentOffset - end.getTimezoneOffset() / 60
+
+          end.setTime(end.getTime() - correctedOffset * 60 * 60 * 1000)
+        }
+
+        if (event.slots) {
+          event.name = `${event.slots} slot${event.slots > 1 ? 's' : ''} left`
+        }
+
+        event.start = formatDate(start, start.getHours(), start.getMinutes())
+        event.end = formatDate(end, end.getHours(), end.getMinutes())
       })
-      .catch(() => {
-        state.appointmentsLoaded = true
-      })
-  },
-  onSuccess: () => {
-    state.dialog = true
-  },
-})
+
+      state.appointments = uniqueData
+    },
+  }
+)
+
+function formatDate(date: Date, hour: number, minute: number): string {
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+  let formattedHour = hour.toString().padStart(2, '0')
+  let formattedMinute = minute.toString().padStart(2, '0')
+
+  if (formattedMinute === '60') {
+    formattedHour = (hour + 1).toString().padStart(2, '0')
+    formattedMinute = '00'
+  }
+
+  return `${year}-${month.toString().padStart(2, '0')}-${day
+    .toString()
+    .padStart(2, '0')} ${formattedHour}:${formattedMinute}`
+}
 
 const appointmentMutation = useMutation({
   mutationFn: () => {
@@ -375,7 +371,9 @@ function handleConfirm() {
 }
 
 function openDialog() {
-  getAppointmentMutation()
+  nextTick(() => {
+    refetch()
+  })
 }
 
 function handleCalendarNext() {

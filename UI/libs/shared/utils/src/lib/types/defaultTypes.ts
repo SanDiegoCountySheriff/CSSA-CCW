@@ -401,6 +401,7 @@ export type AppointmentType = {
   end: string
   isManuallyCreated: boolean
   userId: string
+  slots?: number | null
 }
 
 export type HolidayRequestModel = {

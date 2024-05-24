@@ -32,20 +32,7 @@
     </div>
 
     <div v-show="!isSubmitting && !appointmentsStore.schedulingAppointment">
-      <v-container
-        fluid
-        v-if="isLoading && !isError && !state.isLoading && !state.isError"
-      >
-        <v-skeleton-loader
-          fluid
-          class="fill-height"
-          type="list-item, divider, list-item-three-line,
-       actions"
-        >
-        </v-skeleton-loader>
-      </v-container>
-
-      <v-container v-else>
+      <v-container>
         <v-row
           v-if="isRenew"
           class="mb-5 mt-5 text-center"
@@ -151,21 +138,7 @@
         </template>
 
         <template
-          v-if="!state.appointmentsLoaded && !state.appointmentComplete"
-        >
-          <v-skeleton-loader
-            fluid
-            class="fill-height"
-            type="list-item, divider, list-item-three-line,
-       actions"
-          >
-          </v-skeleton-loader>
-        </template>
-        <template
-          v-if="
-            (isLoading && isError) ||
-            (state.appointmentsLoaded && state.appointments.length === 0)
-          "
+          v-if="state.appointmentsLoaded && state.appointments.length === 0"
         >
           <v-card>
             <v-alert
@@ -181,18 +154,21 @@
 
         <v-row class="mt-3 mb-3">
           <v-col>
-            <v-card
-              :loading="isUpdateLoading"
-              v-if="
-                (isLoading && isError) ||
-                (state.appointmentsLoaded &&
-                  state.appointments.length > 0 &&
-                  !state.appointmentComplete)
-              "
-              elevation="2"
-            >
+            <v-card v-if="isLoading || isFetching">
+              <v-card-title class="justify-center">
+                Loading Appointments
+              </v-card-title>
+
+              <v-skeleton-loader type="table"></v-skeleton-loader>
+            </v-card>
+
+            <v-card v-else>
               <AppointmentContainer
-                v-if="!isRenew"
+                v-if="
+                  !isRenew &&
+                  state.appointments.length > 0 &&
+                  !state.appointmentComplete
+                "
                 :show-header="true"
                 :events="state.appointments"
                 @toggle-appointment="toggleAppointmentComplete"
@@ -200,30 +176,28 @@
               />
             </v-card>
 
-            <template v-else>
-              <v-card
-                :loading="isUpdateLoading"
-                v-if="
-                  completeApplicationStore.completeApplication.application
-                    .appointmentDateTime
-                "
+            <v-card
+              :loading="isUpdateLoading"
+              v-if="
+                completeApplicationStore.completeApplication.application
+                  .appointmentDateTime
+              "
+            >
+              <v-alert
+                v-if="!isRenew"
+                color="primary"
+                outlined
+                type="info"
+                class="font-weight-bold"
               >
-                <v-alert
-                  v-if="!isRenew"
-                  color="primary"
-                  outlined
-                  type="info"
-                  class="font-weight-bold"
-                >
-                  {{ $t('Appointment has been set for ') }}
-                  {{
-                    new Date(
-                      completeApplicationStore.completeApplication.application.appointmentDateTime
-                    ).toLocaleString()
-                  }}
-                </v-alert>
-              </v-card>
-            </template>
+                {{ $t('Appointment has been set for ') }}
+                {{
+                  new Date(
+                    completeApplicationStore.completeApplication.application.appointmentDateTime
+                  ).toLocaleString()
+                }}
+              </v-alert>
+            </v-card>
           </v-col>
         </v-row>
       </v-container>
@@ -251,7 +225,6 @@ import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useMutation } from '@tanstack/vue-query'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
 import {
@@ -261,6 +234,7 @@ import {
   AppointmentType,
 } from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, provide, reactive } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 import { useRoute, useRouter } from 'vue-router/composables'
 
 const state = reactive({
@@ -378,65 +352,91 @@ const {
 provide('isInitialPaymentComplete', isInitialPaymentComplete)
 provide('isUpdatePaymentHistoryLoading', isUpdatePaymentHistoryLoading)
 
-const {
-  mutate: getAppointmentMutation,
-  isLoading,
-  isError,
-} = useMutation({
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  mutationFn: () => {
-    const appRes = appointmentsStore.getAvailableAppointments(false)
+const { isFetching, isLoading } = useQuery(
+  ['getAppointments', true],
+  () => appointmentsStore.getAvailableAppointments(true),
+  {
+    onSuccess: (data: Array<AppointmentType>) => {
+      const currentOffset = new Date().getTimezoneOffset() / 60
 
-    appRes
-      .then((data: Array<AppointmentType>) => {
-        data = data.reduce(
-          (result, currentObj) => {
-            const key = `${currentObj.start}-${currentObj.end}`
+      const uniqueData = data.reduce(
+        (result, currentObj) => {
+          const key = `${currentObj.start}-${currentObj.end}`
 
-            if (!result.set.has(key)) {
-              result.set.add(key)
-              result.array.push(currentObj)
+          if (!result.set.has(key)) {
+            currentObj.slots = 1
+            result.set.add(key)
+            result.array.push(currentObj)
+          } else {
+            const index = result.array.findIndex(
+              obj => obj.start === currentObj.start
+            )
+
+            if (index !== -1) {
+              const updatedObj = result.array[index]
+
+              if (updatedObj.slots) {
+                updatedObj.slots += 1
+              }
+
+              result.array[index] = updatedObj
             }
-
-            return result
-          },
-          { set: new Set(), array: [] } as {
-            set: Set<string>
-            array: Array<AppointmentType>
           }
-        ).array
 
-        data.forEach(event => {
-          let start = new Date(event.start)
-          let end = new Date(event.end)
+          return result
+        },
+        { set: new Set(), array: [] } as {
+          set: Set<string>
+          array: Array<AppointmentType>
+        }
+      ).array
 
-          let formatedStart = `${start.getFullYear()}-${
-            start.getMonth() + 1
-          }-${start.getDate()} ${start.getHours()}:${start
-            .getMinutes()
-            .toString()
-            .padStart(2, '0')}`
+      uniqueData.forEach(event => {
+        const start = new Date(event.start)
 
-          let formatedEnd = `${end.getFullYear()}-${
-            end.getMonth() + 1
-          }-${end.getDate()} ${end.getHours()}:${end
-            .getMinutes()
-            .toString()
-            .padStart(2, '0')}`
+        if (currentOffset !== start.getTimezoneOffset() / 60) {
+          const correctedOffset = currentOffset - start.getTimezoneOffset() / 60
 
-          event.name = 'open'
-          event.start = formatedStart
-          event.end = formatedEnd
-        })
-        state.appointments = data
-        state.appointmentsLoaded = true
+          start.setTime(start.getTime() - correctedOffset * 60 * 60 * 1000)
+        }
+
+        const end = new Date(event.end)
+
+        if (currentOffset !== end.getTimezoneOffset() / 60) {
+          const correctedOffset = currentOffset - end.getTimezoneOffset() / 60
+
+          end.setTime(end.getTime() - correctedOffset * 60 * 60 * 1000)
+        }
+
+        if (event.slots) {
+          event.name = `${event.slots} slot${event.slots > 1 ? 's' : ''} left`
+        }
+
+        event.start = formatDate(start, start.getHours(), start.getMinutes())
+        event.end = formatDate(end, end.getHours(), end.getMinutes())
       })
-      .catch(() => {
-        state.appointmentsLoaded = true
-      })
-  },
-})
+
+      state.appointments = uniqueData
+    },
+  }
+)
+
+function formatDate(date: Date, hour: number, minute: number): string {
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+  let formattedHour = hour.toString().padStart(2, '0')
+  let formattedMinute = minute.toString().padStart(2, '0')
+
+  if (formattedMinute === '60') {
+    formattedHour = (hour + 1).toString().padStart(2, '0')
+    formattedMinute = '00'
+  }
+
+  return `${year}-${month.toString().padStart(2, '0')}-${day
+    .toString()
+    .padStart(2, '0')} ${formattedHour}:${formattedMinute}`
+}
 
 onMounted(() => {
   const transactionId = route.query.transactionId
@@ -503,8 +503,6 @@ onMounted(() => {
   ) {
     state.appointmentComplete = true
   }
-
-  getAppointmentMutation()
 })
 
 const { isLoading: isUpdateLoading, mutate: updateMutation } = useMutation({

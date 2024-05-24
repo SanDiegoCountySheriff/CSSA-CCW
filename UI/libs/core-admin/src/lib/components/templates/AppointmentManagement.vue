@@ -1,7 +1,12 @@
 <template>
   <v-container fluid>
     <v-card
-      :loading="isLoading || isDeleteByDateLoading || isDeleteByTimeSlotLoading"
+      :loading="
+        isLoading ||
+        isDeleteByDateLoading ||
+        isDeleteByTimeSlotLoading ||
+        isBookedAppointmentsLoading
+      "
       flat
     >
       <v-card-title>
@@ -10,6 +15,15 @@
             'Right click date to remove entire days or on individual appointments'
           )
         }}
+
+        <v-switch
+          v-model="showBookedAppointments"
+          @change="handleChangeShowBookedAppointments"
+          class="ml-5"
+          color="primary"
+          label="Show booked appointments"
+        />
+
         <v-spacer></v-spacer>
 
         <v-text-field
@@ -25,7 +39,8 @@
       </v-card-title>
 
       <v-card-text>
-        There are currently {{ appointmentsLength }} open appointments in the
+        There are currently {{ appointmentsLength }}
+        {{ showBookedAppointments ? 'booked' : 'open' }} appointments in the
         database.
       </v-card-text>
 
@@ -74,6 +89,17 @@
         color="primary"
         event-color="primary"
       >
+        <template #event="{ event }">
+          <span class="ml-1">
+            {{
+              new Date(event.start).toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+              })
+            }}
+          </span>
+          <span class="float-right mr-1">{{ event.name }}</span>
+        </template>
       </v-calendar>
     </v-card>
 
@@ -161,6 +187,7 @@ const appointmentsLength = ref(0)
 const appointmentStore = useAppointmentsStore()
 const dayDialog = ref(false)
 const eventDialog = ref(false)
+const showBookedAppointments = ref(false)
 
 const getStart = computed(() => {
   if (manuallySelectedDate.value) {
@@ -174,9 +201,12 @@ const getStart = computed(() => {
   return new Date()
 })
 
-const { isLoading, refetch } = useQuery(
-  ['getAppointments', true],
-  () => appointmentStore.getAvailableAppointments(true),
+const {
+  isLoading: isBookedAppointmentsLoading,
+  refetch: getBookedAppointments,
+} = useQuery(
+  ['getBookedAppointments', true],
+  () => appointmentStore.getBookedAppointments(false),
   {
     onSuccess: (data: Array<AppointmentType>) => {
       const currentOffset = new Date().getTimezoneOffset() / 60
@@ -188,8 +218,23 @@ const { isLoading, refetch } = useQuery(
           const key = `${currentObj.start}-${currentObj.end}`
 
           if (!result.set.has(key)) {
+            currentObj.slots = 1
             result.set.add(key)
             result.array.push(currentObj)
+          } else {
+            const index = result.array.findIndex(
+              obj => obj.start === currentObj.start
+            )
+
+            if (index !== -1) {
+              const updatedObj = result.array[index]
+
+              if (updatedObj.slots) {
+                updatedObj.slots += 1
+              }
+
+              result.array[index] = updatedObj
+            }
           }
 
           return result
@@ -217,7 +262,81 @@ const { isLoading, refetch } = useQuery(
           end.setTime(end.getTime() - correctedOffset * 60 * 60 * 1000)
         }
 
-        event.name = 'Appt'
+        if (event.slots) {
+          event.name = `${event.slots} slot${event.slots > 1 ? 's' : ''} booked`
+        }
+
+        event.start = formatDate(start, start.getHours(), start.getMinutes())
+        event.end = formatDate(end, end.getHours(), end.getMinutes())
+      })
+
+      appointments.value = uniqueData
+    },
+  }
+)
+
+const { isLoading, refetch } = useQuery(
+  ['getAppointments', true],
+  () => appointmentStore.getAvailableAppointments(true),
+  {
+    onSuccess: (data: Array<AppointmentType>) => {
+      const currentOffset = new Date().getTimezoneOffset() / 60
+
+      appointmentsLength.value = data.length
+
+      const uniqueData = data.reduce(
+        (result, currentObj) => {
+          const key = `${currentObj.start}-${currentObj.end}`
+
+          if (!result.set.has(key)) {
+            currentObj.slots = 1
+            result.set.add(key)
+            result.array.push(currentObj)
+          } else {
+            const index = result.array.findIndex(
+              obj => obj.start === currentObj.start
+            )
+
+            if (index !== -1) {
+              const updatedObj = result.array[index]
+
+              if (updatedObj.slots) {
+                updatedObj.slots += 1
+              }
+
+              result.array[index] = updatedObj
+            }
+          }
+
+          return result
+        },
+        { set: new Set(), array: [] } as {
+          set: Set<string>
+          array: Array<AppointmentType>
+        }
+      ).array
+
+      uniqueData.forEach(event => {
+        const start = new Date(event.start)
+
+        if (currentOffset !== start.getTimezoneOffset() / 60) {
+          const correctedOffset = currentOffset - start.getTimezoneOffset() / 60
+
+          start.setTime(start.getTime() - correctedOffset * 60 * 60 * 1000)
+        }
+
+        const end = new Date(event.end)
+
+        if (currentOffset !== end.getTimezoneOffset() / 60) {
+          const correctedOffset = currentOffset - end.getTimezoneOffset() / 60
+
+          end.setTime(end.getTime() - correctedOffset * 60 * 60 * 1000)
+        }
+
+        if (event.slots) {
+          event.name = `${event.slots} slot${event.slots > 1 ? 's' : ''} left`
+        }
+
         event.start = formatDate(start, start.getHours(), start.getMinutes())
         event.end = formatDate(end, end.getHours(), end.getMinutes())
       })
@@ -280,6 +399,16 @@ function handleDeleteAppointmentsOnDay() {
 function handleDeleteEvents() {
   deleteAppointmentsByTimeSlot()
   eventDialog.value = false
+}
+
+function handleChangeShowBookedAppointments() {
+  appointments.value = []
+
+  if (showBookedAppointments.value) {
+    getBookedAppointments()
+  } else {
+    refetch()
+  }
 }
 
 function formatDate(date: Date, hour: number, minute: number): string {

@@ -94,6 +94,18 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
+  async function getBookedAppointments(includePastAppointments: boolean) {
+    const endpoint = `${Endpoints.GET_BOOKED_APPOINTMENTS_ENDPOINT}?includePastAppointments=${includePastAppointments}`
+
+    const res = await axios.get(endpoint).catch(err => {
+      console.warn(err)
+
+      return Promise.reject()
+    })
+
+    return res?.data
+  }
+
   async function setAppointmentPublic(body: AppointmentType) {
     const res = await axios
       .put(Endpoints.PUT_PUBLIC_APPOINTMENT_ENDPOINT, body)
@@ -391,5 +403,6 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     saveHolidays,
     getAppointmentManagementTemplate,
     getOrganizationHolidays,
+    getBookedAppointments,
   }
 })

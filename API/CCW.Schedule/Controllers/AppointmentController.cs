@@ -113,6 +113,27 @@ public class AppointmentController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
+    [HttpGet("getBookedAppointments")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetBookedAppointments(bool includePastAppointments = false)
+    {
+        try
+        {
+            var result = await _appointmentCosmosDbService.GetBookedAppointmentsAsync(includePastAppointments, cancellationToken: default);
+            var appointments = _mapper.Map<List<AppointmentWindowResponseModel>>(result);
+
+            return Ok(appointments);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to retrieve available appointments.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("getNumberOfNewAppointments")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
