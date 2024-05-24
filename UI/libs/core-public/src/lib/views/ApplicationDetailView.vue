@@ -1230,7 +1230,7 @@ const { isLoading: isGetApplicationsLoading } = useQuery(
   }
 )
 
-const { refetch, isFetching, isLoading } = useQuery(
+const { refetch } = useQuery(
   ['getAppointments', true],
   () => appointmentStore.getAvailableAppointments(true),
   {
@@ -1317,66 +1317,6 @@ function formatDate(date: Date, hour: number, minute: number): string {
     .toString()
     .padStart(2, '0')} ${formattedHour}:${formattedMinute}`
 }
-
-// const {
-//   mutate: getAppointmentMutation,
-//   isLoading,
-//   isError,
-// } = useMutation({
-//   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//   //@ts-ignore
-//   mutationFn: () => {
-//     const appRes = appointmentStore.getAvailableAppointments(false)
-
-//     appRes
-//       .then((data: Array<AppointmentType>) => {
-//         data = data.reduce(
-//           (result, currentObj) => {
-//             const key = `${currentObj.start}-${currentObj.end}`
-
-//             if (!result.set.has(key)) {
-//               result.set.add(key)
-//               result.array.push(currentObj)
-//             }
-
-//             return result
-//           },
-//           { set: new Set(), array: [] } as {
-//             set: Set<string>
-//             array: Array<AppointmentType>
-//           }
-//         ).array
-
-//         data.forEach(event => {
-//           let start = new Date(event.start)
-//           let end = new Date(event.end)
-
-//           let formattedStart = `${start.getFullYear()}-${
-//             start.getMonth() + 1
-//           }-${start.getDate()} ${start.getHours()}:${start
-//             .getMinutes()
-//             .toString()
-//             .padStart(2, '0')}`
-
-//           let formattedEnd = `${end.getFullYear()}-${
-//             end.getMonth() + 1
-//           }-${end.getDate()} ${end.getHours()}:${end
-//             .getMinutes()
-//             .toString()
-//             .padStart(2, '0')}`
-
-//           event.name = 'open'
-//           event.start = formattedStart
-//           event.end = formattedEnd
-//         })
-//         state.appointments = data
-//         state.appointmentsLoaded = true
-//       })
-//       .catch(() => {
-//         state.appointmentsLoaded = true
-//       })
-//   },
-// })
 
 const enableEightHourSafetyCourseButton = computed(() => {
   return (
