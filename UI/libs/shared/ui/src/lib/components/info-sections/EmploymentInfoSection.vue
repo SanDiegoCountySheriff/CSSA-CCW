@@ -131,7 +131,7 @@
               mdi-briefcase
             </v-icon>
             <strong>
-              {{ $t(' Emplorer City: ') }}
+              {{ $t(' Employer City: ') }}
             </strong>
             {{ props.workInformation.employerCity }}
           </v-banner>
@@ -152,7 +152,7 @@
               mdi-briefcase
             </v-icon>
             <strong>
-              {{ $t(' Emplorer State: ') }}
+              {{ $t(' Employer State: ') }}
             </strong>
             {{ props.workInformation.employerState }}
           </v-banner>
@@ -176,7 +176,7 @@
               mdi-briefcase
             </v-icon>
             <strong>
-              {{ $t(' Emplorer Zip: ') }}
+              {{ $t(' Employer Zip: ') }}
             </strong>
             {{ props.workInformation.employerZip }}
           </v-banner>

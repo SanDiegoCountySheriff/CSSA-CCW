@@ -390,7 +390,8 @@
                   !permitStore.getPermitDetail.application
                     .readyForInitialPayment &&
                   !isInitialPaymentComplete &&
-                  !isRenew
+                  !isRenew &&
+                  !isModify
                 "
                 cols="12"
                 xl="6"
@@ -412,6 +413,21 @@
               >
                 <ReadyForPaymentDialog
                   @on-ready-for-payment="handleReadyForRenewalPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForModificationPayment &&
+                  !isModificationPaymentComplete &&
+                  isModify
+                "
+                cols="12"
+                xl="6"
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForModificationPayment"
                 />
               </v-col>
 
@@ -1070,6 +1086,7 @@ import {
   ApplicationStatus,
   AppointmentStatus,
   AppointmentWindowCreateRequestModel,
+  PaymentType,
 } from '@shared-utils/types/defaultTypes'
 import {
   ApplicationType,
@@ -1159,10 +1176,31 @@ const isRenewalPaymentComplete = computed(() => {
   return (
     permitStore.permitDetail.paymentHistory.some(ph => {
       return (
-        (ph.paymentType === 8 ||
-          ph.paymentType === 9 ||
-          ph.paymentType === 10 ||
-          ph.paymentType === 11) &&
+        (ph.paymentType === PaymentType['CCW Application Renewal Payment'] ||
+          ph.paymentType ===
+            PaymentType['CCW Application Renewal Employment Payment'] ||
+          ph.paymentType ===
+            PaymentType['CCW Application Renewal Judicial Payment'] ||
+          ph.paymentType ===
+            PaymentType['CCW Application Renewal Reserve Payment']) &&
+        ph.successful === true
+      )
+    }) || permitStore.permitDetail.application.paymentStatus === 1
+  )
+})
+
+const isModificationPaymentComplete = computed(() => {
+  return (
+    permitStore.permitDetail.paymentHistory.some(ph => {
+      return (
+        (ph.paymentType ===
+          PaymentType['CCW Application Modification Payment'] ||
+          ph.paymentType ===
+            PaymentType['CCW Application Modification Employment Payment'] ||
+          ph.paymentType ===
+            PaymentType['CCW Application Modification Judicial Payment'] ||
+          ph.paymentType ===
+            PaymentType['CCW Application Modification Reserve Payment']) &&
         ph.successful === true
       )
     }) || permitStore.permitDetail.application.paymentStatus === 1
@@ -1856,6 +1894,12 @@ function handleReadyForInitialPayment() {
 function handleReadyForRenewalPayment() {
   changed.value = 'Marked ready for renewal payment'
   permitStore.getPermitDetail.application.readyForRenewalPayment = true
+  updatePermitDetails()
+}
+
+function handleReadyForModificationPayment() {
+  changed.value = 'Marked ready for modification payment'
+  permitStore.getPermitDetail.application.readyForModificationPayment = true
   updatePermitDetails()
 }
 </script>

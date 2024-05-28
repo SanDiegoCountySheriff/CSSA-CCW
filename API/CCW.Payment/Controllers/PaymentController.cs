@@ -185,6 +185,7 @@ public class PaymentController : ControllerBase
                 if (paymentType is Common.Enums.PaymentType.ModificationStandard or Common.Enums.PaymentType.ModificationJudicial or Common.Enums.PaymentType.ModificationReserve or Common.Enums.PaymentType.ModificationEmployment)
                 {
                     paymentHistory.ModificationNumber = application.Application.ModificationNumber;
+                    application.Application.ReadyForModificationPayment = false;
                 }
             }
             else
@@ -363,7 +364,7 @@ public class PaymentController : ControllerBase
         }
         else
         {
-            return "modifyfinalize";
+            return "application-details";
         }
     }
 

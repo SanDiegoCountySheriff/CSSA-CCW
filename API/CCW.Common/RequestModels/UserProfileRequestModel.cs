@@ -24,6 +24,8 @@ public class UserProfileRequestModel
     public string AppointmentTime { get; set; }
     [JsonProperty("uploadedDocuments")]
     public UploadedDocument[] UploadedDocuments { get; set; }
+    [JsonProperty("email")]
+    public string Email { get; set; }
     [JsonProperty("isPendingReview")]
-    public Boolean IsPendingReview { get; set; }
+    public bool IsPendingReview { get; set; }
 }

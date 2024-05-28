@@ -227,7 +227,7 @@ public class PermitApplicationController : ControllerBase
                 return Ok(responseModels);
             }
 
-            return NotFound("Application was not found");
+            return NoContent();
         }
         catch (Exception e)
         {
@@ -502,9 +502,7 @@ public class PermitApplicationController : ControllerBase
 
             var legacyApplication = await _applicationCosmosDbService.GetLegacyApplication(application.Id.ToString(), cancellationToken: default);
 
-            legacyApplication.UserId = null;
-            legacyApplication.Application.AppointmentId = null;
-            legacyApplication.Application.UserEmail = string.Empty;
+            legacyApplication.IsMatchUpdated = false;
 
             await _applicationCosmosDbService.UpdateLegacyApplication(legacyApplication, false, cancellationToken: default);
 
@@ -531,6 +529,10 @@ public class PermitApplicationController : ControllerBase
             await _userProfileCosmosDbService.UpdateUser(user, cancellationToken: default);
 
             var application = await _applicationCosmosDbService.GetLegacyApplication(data.ApplicationId, cancellationToken: default);
+
+            application.IsMatchUpdated = true;
+
+            await _applicationCosmosDbService.UpdateLegacyApplication(application, false, cancellationToken: default);  
 
             if (application.Application.AppointmentDateTime > DateTimeOffset.UtcNow && application.Application.AppointmentDateTime != null)
             {
@@ -572,6 +574,17 @@ public class PermitApplicationController : ControllerBase
             };
             application.Application.ReferenceNotes = string.Empty;
             application.IsMatchUpdated = false;
+            application.Application.ModifiedAddress = new Address()
+            {
+                StreetAddress = "",
+                State = "",
+                City = "",
+                County = "",
+                Country = "",
+                Zip = "",
+            };
+            application.Application.CurrentStep = 1;
+            application.PaymentHistory = new List<PaymentHistory>();
 
             if (application.Application.QualifyingQuestions.QuestionTwelve.Selected is not null or false)
             {

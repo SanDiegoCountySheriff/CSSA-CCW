@@ -11,171 +11,70 @@
         <v-container>
           <v-row justify="center">
             <v-alert
-              v-if="isPaymentComplete"
-              :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
-              color="primary"
               type="info"
               outlined
+              color="primary"
             >
-              <span
-                :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
-              >
-                Modification Payment is complete.
-              </span>
+              You will be asked to pay after a Licensing employee reviews your
+              modification application.
             </v-alert>
           </v-row>
-        </v-container>
+          <v-row justify="center">
+            <v-card-title>
+              {{ $t('Please Sign Here') }}
+            </v-card-title>
 
-        <template>
-          <v-container v-if="!isPaymentComplete">
-            <v-row justify="center">
-              <v-card-title>
-                Modification Payment of ${{ brandStore.brand.cost.modify }} is
-                required
-              </v-card-title>
-            </v-row>
-
-            <v-row
-              v-if="
-                brandStore.brand.cost.creditFee > 0 &&
-                !isUpdatePaymentHistoryLoading
-              "
-              justify="center"
-              class="text-center"
+            <v-col
+              cols="12"
+              class="d-flex align-center justify-center"
             >
-              <v-card-text>
-                In order to pay online with a credit card a convenience fee of
-                {{ brandStore.brand.cost.creditFee }}% will be added to the
-                transaction.
-              </v-card-text>
-            </v-row>
-
-            <v-row
-              v-if="isUpdatePaymentHistoryLoading"
-              class="justify-center"
-            >
-              <v-alert
+              <v-card
+                light
+                flat
                 :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
-                color="primary"
-                type="info"
+                height="100px"
                 outlined
+                style="border: solid 2px black"
               >
-                <span
-                  :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
-                >
-                  Processing your modification payment. Please do not close this
-                  window or click the back button.
-                </span>
-              </v-alert>
-            </v-row>
-
-            <v-row
-              v-if="isMakePaymentLoading"
-              class="justify-center"
-            >
-              <v-alert
-                :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
-                color="primary"
-                type="info"
-                outlined
-              >
-                <span
-                  :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
-                >
-                  Redirecting to the payment page. Please do not close this
-                  window or click the back button.
-                </span>
-              </v-alert>
-            </v-row>
-
-            <v-row justify="center">
-              <v-btn
-                color="primary"
-                :loading="isMakePaymentLoading || isUpdatePaymentHistoryLoading"
-                @click="makePayment"
-              >
-                Pay Now
-              </v-btn>
-            </v-row>
-          </v-container>
-
-          <v-container>
-            <v-row justify="center">
-              <v-card-title>
-                {{ $t('Please Sign Here') }}
-              </v-card-title>
-
-              <v-col
-                cols="12"
-                class="d-flex align-center justify-center"
-              >
-                <v-card
-                  light
-                  flat
+                <canvas
                   :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
                   height="100px"
-                  outlined
-                  style="border: solid 2px black"
-                >
-                  <canvas
-                    :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
-                    height="100px"
-                    id="signature"
-                    class="signature"
-                  ></canvas>
-                </v-card>
-              </v-col>
+                  id="signature"
+                  class="signature"
+                ></canvas>
+              </v-card>
+            </v-col>
 
-              <v-col
-                cols="12"
-                class="text-center"
-              >
-                <v-btn
-                  color="primary"
-                  text
-                  @click="handleClearSignature"
-                >
-                  {{ $t('Clear Signature') }}
-                </v-btn>
-              </v-col>
-            </v-row>
-
-            <v-row
-              justify="center"
-              class="mb-5"
+            <v-col
+              cols="12"
+              class="text-center"
             >
               <v-btn
-                :loading="
-                  isUpdateApplicationLoading ||
-                  isMakePaymentLoading ||
-                  uploading
-                "
-                :disabled="isSignaturePadEmpty || !isPaymentComplete"
-                @click="handleSubmit"
                 color="primary"
+                text
+                @click="handleClearSignature"
               >
-                Submit
+                {{ $t('Clear Signature') }}
               </v-btn>
-            </v-row>
-          </v-container>
-        </template>
+            </v-col>
+          </v-row>
+
+          <v-row
+            justify="center"
+            class="mb-5"
+          >
+            <v-btn
+              :loading="isUpdateApplicationLoading || uploading"
+              :disabled="isSignaturePadEmpty"
+              @click="handleSubmit"
+              color="primary"
+            >
+              Submit
+            </v-btn>
+          </v-row>
+        </v-container>
       </v-form>
     </v-card>
-
-    <v-snackbar
-      v-model="paymentSnackbar"
-      :timeout="-1"
-      color="primary"
-      persistent
-    >
-      {{ $t('There was a problem processing the payment, please try again.') }}
-      <v-btn
-        @click="paymentSnackbar = !paymentSnackbar"
-        icon
-      >
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </v-snackbar>
   </v-container>
 </template>
 
@@ -184,143 +83,30 @@ import Endpoints from '@shared-ui/api/endpoints'
 import Routes from '@core-public/router/routes'
 import SignaturePad from 'signature_pad'
 import axios from 'axios'
-import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
-import { usePaymentStore } from '@shared-ui/stores/paymentStore'
-import { useThemeStore } from '@shared-ui/stores/themeStore'
+import { useRouter } from 'vue-router/composables'
 import {
   ApplicationStatus,
   ApplicationType,
-  PaymentType,
   UploadedDocType,
 } from '@shared-utils/types/defaultTypes'
 import { computed, nextTick, onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router/composables'
 
 const isLoading = ref(false)
-const route = useRoute()
 const uploading = ref(false)
 const submitted = ref(false)
 const file = ref({})
 const router = useRouter()
 const applicationStore = useCompleteApplicationStore()
-const themeStore = useThemeStore()
-const paymentStore = usePaymentStore()
-const brandStore = useBrandStore()
 const form = ref()
 const valid = ref(false)
-const paymentSnackbar = ref(false)
 const signaturePad = ref<SignaturePad>()
 const isSignaturePadEmpty = computed(() => {
   return signaturePad.value?.isEmpty()
 })
 
-const isPaymentComplete = computed(() => {
-  return applicationStore.completeApplication.paymentHistory.some(ph => {
-    return (
-      (ph.paymentType === 4 ||
-        ph.paymentType === 5 ||
-        ph.paymentType === 6 ||
-        ph.paymentType === 7) &&
-      ph.successful === true &&
-      ph.modificationNumber ===
-        applicationStore.completeApplication.application.modificationNumber
-    )
-  })
-})
-
-const {
-  mutate: updatePaymentHistory,
-  isLoading: isUpdatePaymentHistoryLoading,
-} = useMutation({
-  mutationFn: ({
-    transactionId,
-    successful,
-    amount,
-    paymentType,
-    transactionDateTime,
-    hmac,
-    applicationId,
-  }: {
-    transactionId: string
-    successful: boolean
-    amount: number
-    paymentType: string
-    transactionDateTime: string
-    hmac: string
-    applicationId: string
-  }) => {
-    return paymentStore.updatePaymentHistory(
-      transactionId,
-      successful,
-      amount,
-      paymentType,
-      transactionDateTime,
-      hmac,
-      applicationId
-    )
-  },
-  onSuccess: () =>
-    applicationStore
-      .getCompleteApplicationFromApi(
-        applicationStore.completeApplication.id,
-        Boolean(route.query.isComplete)
-      )
-      .then(res => {
-        applicationStore.setCompleteApplication(res)
-      }),
-})
-
 onMounted(() => {
-  if (!applicationStore.completeApplication.application.orderId) {
-    isLoading.value = true
-    applicationStore
-      .getCompleteApplicationFromApi(
-        route.query.applicationId as string,
-        Boolean(route.query.isComplete)
-      )
-      .then(res => {
-        applicationStore.setCompleteApplication(res)
-        isLoading.value = false
-      })
-  } else {
-    isLoading.value = false
-  }
-
-  const transactionId = route.query.transactionId
-  const successful = route.query.successful
-  const amount = route.query.amount
-  const hmac = route.query.hmac
-  const paymentType = route.query.paymentType
-  const applicationId = route.query.applicationId
-  let transactionDateTime = route.query.transactionDateTime
-
-  if (typeof transactionDateTime === 'string') {
-    transactionDateTime = transactionDateTime.replace(':', '%3A')
-    transactionDateTime = transactionDateTime.replace(':', '%3A')
-  }
-
-  if (
-    typeof transactionId === 'string' &&
-    typeof successful === 'string' &&
-    typeof amount === 'string' &&
-    typeof paymentType === 'string' &&
-    typeof transactionDateTime === 'string' &&
-    typeof hmac === 'string' &&
-    typeof applicationId === 'string'
-  ) {
-    updatePaymentHistory({
-      transactionId,
-      successful: Boolean(successful),
-      amount: Number(amount),
-      paymentType,
-      transactionDateTime,
-      hmac,
-      applicationId,
-    })
-  }
-
   nextTick(() => {
     const canvas = document.getElementById('signature') as HTMLCanvasElement
 
@@ -371,49 +157,6 @@ const fileMutation = useMutation({
   onError: () => {
     uploading.value = false
     submitted.value = false
-  },
-})
-
-const { mutate: makePayment, isLoading: isMakePaymentLoading } = useMutation({
-  mutationFn: () => {
-    const cost = brandStore.brand.cost.modify
-    let paymentType: string
-
-    switch (applicationStore.completeApplication.application.applicationType) {
-      case ApplicationType['Modify Standard']:
-        paymentType =
-          PaymentType['CCW Application Modification Payment'].toString()
-        break
-      case ApplicationType['Modify Judicial']:
-        paymentType =
-          PaymentType[
-            'CCW Application Modification Judicial Payment'
-          ].toString()
-        break
-      case ApplicationType['Modify Reserve']:
-        paymentType =
-          PaymentType['CCW Application Modification Reserve Payment'].toString()
-        break
-      case ApplicationType['Modify Employment']:
-        paymentType =
-          PaymentType[
-            'CCW Application Modification Employment Payment'
-          ].toString()
-        break
-      default:
-        paymentType =
-          PaymentType['CCW Application Modification Payment'].toString()
-    }
-
-    return paymentStore.getPayment(
-      applicationStore.completeApplication.id,
-      cost,
-      applicationStore.completeApplication.application.orderId,
-      paymentType
-    )
-  },
-  onError: () => {
-    paymentSnackbar.value = true
   },
 })
 

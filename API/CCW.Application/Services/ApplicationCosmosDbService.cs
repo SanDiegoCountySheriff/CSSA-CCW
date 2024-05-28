@@ -48,7 +48,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         application.HistoricalDate = DateTimeOffset.UtcNow;
 
         application.History = existingApplication.History;
-        application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck; 
+        application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck;
         application.Application.Comments = existingApplication.Application.Comments;
         application.Application.ReferenceNotes = existingApplication.Application.ReferenceNotes;
 
@@ -204,7 +204,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         CancellationToken cancellationToken)
     {
         var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.IsMatchUpdated FROM applications a " +
-                          "WHERE a.userId = @userId and a.Application.UserEmail = @userEmail " +
+                          "WHERE a.userId = @userId " +
                           "Order by a.Application.OrderId DESC";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
@@ -774,7 +774,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         }
 
         var select = "SELECT a.Application.PersonalInfo.LastName as LastName, a.Application.PersonalInfo.FirstName as FirstName, a.Application.Status as Status, a.Application.AppointmentDateTime as AppointmentDateTime, a.Application.ApplicationType as ApplicationType, a.Application.OrderId as OrderId, a.Application.IdInfo.IdNumber as IdNumber, a.Application.DOB.BirthDate as BirthDate, a.Application.License.PermitNumber as PermitNumber, a.Application.UserEmail as Email, a.id FROM a ";
-        var where = "WHERE (a.Application.IsComplete = true OR a.Application.IsComplete = false) AND a.userId = null ";
+        var where = "WHERE (a.Application.IsComplete = true OR a.Application.IsComplete = false) AND a.IsMatchUpdated = false ";
         var order = "";
         var limit = "OFFSET @offset LIMIT @itemsPerPage";
 
@@ -907,6 +907,9 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         {
             await _container.CreateItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
         }
-        await _legacyContainer.UpsertItemAsync(application, new PartitionKey(application.Id.ToString()), null, cancellationToken);
+        else
+        {
+            await _legacyContainer.UpsertItemAsync(application, new PartitionKey(application.Id.ToString()), null, cancellationToken);
+        }
     }
 }

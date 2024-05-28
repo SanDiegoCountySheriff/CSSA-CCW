@@ -26,7 +26,7 @@ builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
-    .AddAuthentication("aad")
+    .AddAuthentication()
     .AddJwtBearer("aad", o =>
     {
         o.Authority = builder.Configuration.GetSection("JwtBearerAAD:Authority").Value;

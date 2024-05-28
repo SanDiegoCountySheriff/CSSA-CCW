@@ -29,11 +29,6 @@ builder.Services.AddSingleton<IAppointmentCosmosDbService>(
 builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<IDocumentAzureStorage, DocumentAzureStorage>();
 
-builder.Services.AddHeaderPropagation(o =>
-{
-    o.Headers.Add("Authorization");
-});
-
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
@@ -174,7 +169,6 @@ app.UseHealthChecks("/health");
 app.UseCors();
 
 app.UseAuthorization();
-app.UseHeaderPropagation();
 app.MapControllers();
 
 app.Run();

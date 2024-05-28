@@ -85,7 +85,7 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
 
     if (res?.data) setAllUserApplications(res.data)
 
-    return res?.data
+    return res
   }
 
   async function createApplication() {

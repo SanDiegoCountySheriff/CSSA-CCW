@@ -382,7 +382,6 @@
               v-model="model.application.contact.cellPhoneNumber"
               @input="formatPhone('contact', 'cellPhoneNumber')"
               :label="$t('Cell phone number')"
-              :rules="notRequiredPhoneRuleSet"
               :dense="isMobile"
               maxlength="14"
               outlined
@@ -399,7 +398,6 @@
               v-model="model.application.contact.workPhoneNumber"
               @input="formatPhone('contact', 'workPhoneNumber')"
               :label="$t('Work phone number')"
-              :rules="notRequiredPhoneRuleSet"
               :dense="isMobile"
               maxlength="14"
               outlined

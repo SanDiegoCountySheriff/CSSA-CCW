@@ -1,10 +1,5 @@
 <template>
-  <v-container v-if="isFetching || queryClient.isMutating()">
-    <Loader />
-  </v-container>
-
   <v-container
-    v-else
     :fill-height="doesAgencyHomePageImageExist"
     fluid
   >
@@ -49,7 +44,10 @@
           class="text-center"
         >
           <v-btn
-            v-if="authStore.getAuthState.isAuthenticated && data?.length > 0"
+            v-if="
+              authStore.getAuthState.isAuthenticated &&
+              completeApplicationStore.completeApplication.id
+            "
             @click="viewApplication"
             :color="$vuetify.theme.dark ? 'white' : 'primary'"
             text
@@ -75,7 +73,7 @@
           <v-btn
             v-else-if="
               authStore.getAuthState.isAuthenticated &&
-              (data?.length === 0 || data === undefined) &&
+              !completeApplicationStore.completeApplication.id &&
               !userStore.getUserState.isPendingReview
             "
             @click="showDialog = true"
@@ -357,9 +355,7 @@
 </template>
 
 <script setup lang="ts">
-import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import ContactDialog from '@core-public/components/dialogs/ContactDialog.vue'
-import Loader from '@core-public/views/Loader.vue'
 import { MsalBrowser } from '@shared-ui/api/auth/authentication'
 import PriceInfoDialog from '@core-public/components/dialogs/PriceInfoDialog.vue'
 import Routes from '@core-public/router/routes'
@@ -369,18 +365,13 @@ import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplicati
 import { useRouter } from 'vue-router/composables'
 import { useUserStore } from '@shared-ui/stores/userStore'
 import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
-import { useQuery, useQueryClient } from '@tanstack/vue-query'
 
 const brandStore = useBrandStore()
 const authStore = useAuthStore()
 const userStore = useUserStore()
 const router = useRouter()
-const queryClient = useQueryClient()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 const completeApplicationStore = useCompleteApplicationStore()
-const canGetAllUserApplications = computed(() => {
-  return authStore.getAuthState.isAuthenticated
-})
 const innerHeight = ref(0)
 const showDialog = ref(false)
 const showStatus = ref(false)
@@ -405,15 +396,6 @@ const doesAgencyHomePageImageExist = computed(() => {
   return Boolean(brandStore.getDocuments.agencyHomePageImage)
 })
 
-const { data, isFetching } = useQuery(
-  ['getApplicationsByUser'],
-  completeApplicationStore.getAllUserApplicationsApi,
-  {
-    refetchOnMount: 'always',
-    enabled: canGetAllUserApplications,
-  }
-)
-
 function handleLogIn() {
   msalInstance.value.logIn()
 }
@@ -433,10 +415,6 @@ function redirectToMoreInformation() {
 }
 
 function viewApplication() {
-  completeApplicationStore.setCompleteApplication(
-    data.value[0] as CompleteApplication
-  )
-
   router.push({
     path: Routes.APPLICATION_DETAIL_ROUTE,
     query: {
