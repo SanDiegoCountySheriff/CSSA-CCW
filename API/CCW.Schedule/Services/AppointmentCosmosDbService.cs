@@ -506,8 +506,6 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         {
             foreach (var dayOfTheWeek in appointmentManagement.DaysOfTheWeek)
             {
-                nextDay = nextDay.AddDays(7);
-
                 while (nextDay < appointmentManagement.StartDate)
                 {
                     nextDay = nextDay.AddDays(1);
@@ -569,6 +567,8 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
                     endTime = endTime.Add(new TimeSpan(0, appointmentManagement.AppointmentLength, 0));
                 }
             }
+
+            nextDay = nextDay.AddDays(1);
         }
 
         await Task.WhenAll(concurrentTasks);
