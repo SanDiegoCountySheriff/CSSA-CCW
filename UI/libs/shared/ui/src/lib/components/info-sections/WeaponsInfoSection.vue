@@ -14,9 +14,7 @@
           icon
           @click="handleEditRequest"
         >
-          <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
-            mdi-square-edit-outline
-          </v-icon>
+          <v-icon color="primary"> mdi-square-edit-outline </v-icon>
         </v-btn>
       </template>
     </v-banner>
