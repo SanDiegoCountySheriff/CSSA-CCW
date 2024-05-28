@@ -72,7 +72,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       multiSort: false,
       mustSort: false,
     },
-    statuses: [2],
+    statuses: [],
     search: '',
     paid: false,
     appointmentStatuses: [],
