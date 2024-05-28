@@ -1,5 +1,7 @@
 <template>
-  <v-container class="info-section-container rounded">
+  <v-container
+    fluid
+    class="info-section-container rounded">
     <v-banner class="sub-header font-weight-bold text-left my-5">
       {{ $t('Employment Information: ') }}
       <template #actions>
@@ -15,9 +17,7 @@
               v-bind="attrs"
               v-on="on"
             >
-              <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
-                mdi-square-edit-outline
-              </v-icon>
+              <v-icon color="primary"> mdi-square-edit-outline </v-icon>
             </v-btn>
           </template>
           {{ $t('Edit Section') }}
@@ -221,7 +221,7 @@ const router = useRouter()
 const applicationStore = useCompleteApplicationStore()
 
 function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 6
+  applicationStore.completeApplication.application.currentStep = 4
   router.push({
     path: '/form',
     query: {

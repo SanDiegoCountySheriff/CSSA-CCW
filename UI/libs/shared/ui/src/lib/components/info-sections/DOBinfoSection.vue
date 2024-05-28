@@ -1,5 +1,8 @@
 <template>
-  <v-container class="DOB-info-container rounded mt-5">
+  <v-container
+    fluid
+    class="DOB-info-container rounded mt-5"
+  >
     <v-banner
       as="h1"
       class="sub-header font-weight-bold text-left mb-5"
@@ -14,7 +17,7 @@
           icon
           @click="handleEditRequest"
         >
-          <v-icon color="info"> mdi-square-edit-outline </v-icon>
+          <v-icon color="primary"> mdi-square-edit-outline </v-icon>
         </v-btn>
       </template>
     </v-banner>
@@ -127,7 +130,7 @@ const applicationStore = useCompleteApplicationStore()
 const router = useRouter()
 
 function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 2
+  applicationStore.completeApplication.application.currentStep = 1
   router.push({
     path: '/form',
     query: {

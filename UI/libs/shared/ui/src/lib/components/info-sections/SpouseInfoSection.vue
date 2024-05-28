@@ -1,5 +1,8 @@
 <template>
-  <v-container class="info-section-container rounded mt-3">
+  <v-container
+    fluid
+    class="confirm-info-section rounded mt-5"
+  >
     <v-banner class="sub-header font-weight-bold text-left my-5 pl-0">
       {{ $t('Spouse Information: ') }}
       <template #actions>
@@ -11,9 +14,7 @@
           icon
           @click="handleEditRequest"
         >
-          <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
-            mdi-square-edit-outline
-          </v-icon>
+          <v-icon color="primary"> mdi-square-edit-outline </v-icon>
         </v-btn>
       </template>
     </v-banner>

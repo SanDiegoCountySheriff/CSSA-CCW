@@ -17,9 +17,7 @@
           icon
           @click="handleEditRequest"
         >
-          <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
-            mdi-square-edit-outline
-          </v-icon>
+          <v-icon color="primary"> mdi-square-edit-outline </v-icon>
         </v-btn>
       </template>
     </v-banner>
@@ -176,7 +174,7 @@ const router = useRouter()
 const applicationStore = useCompleteApplicationStore()
 
 function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 4
+  applicationStore.completeApplication.application.currentStep = 1
   router.push({
     path: '/form',
     query: {

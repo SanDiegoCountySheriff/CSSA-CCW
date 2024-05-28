@@ -1,5 +1,8 @@
 <template>
-  <v-container class="type-info-section rounded">
+   <v-container
+    fluid
+    class="confirm-info-section rounded mt-5"
+  >
     <v-banner class="sub-header font-weight-bold text-left my-5 pl-0">
       {{ $t(' Application Type') }}
       <template #actions>

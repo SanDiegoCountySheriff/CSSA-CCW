@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-banner class="sub-header font-weight-bold text-left my-5">
       {{ $t('Qualifying Questions: ') }}
       <template #actions>
@@ -205,7 +205,7 @@ const applicationStore = useCompleteApplicationStore()
 const router = useRouter()
 
 function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 9
+  applicationStore.completeApplication.application.currentStep = 7
   router.push({
     path: '/form',
     query: {

@@ -1,5 +1,8 @@
 <template>
-  <v-container class="info-section-container rounded">
+  <v-container
+    fluid
+    class="confirm-info-section rounded mt-5"
+  >
     <v-banner
       single-line
       class="sub-header font-weight-bold text-xl text-left my-5"
@@ -18,9 +21,7 @@
               v-bind="attrs"
               v-on="on"
             >
-              <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
-                mdi-square-edit-outline
-              </v-icon>
+              <v-icon color="primary"> mdi-square-edit-outline </v-icon>
             </v-btn>
           </template>
           {{ $t('Edit Section') }}
