@@ -304,10 +304,7 @@ import { PermitsType } from '@core-admin/types'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import {
-  ApplicationStatus,
-  ApplicationTableOptionsType,
-} from '@shared-utils/types/defaultTypes'
+import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import {
   ApplicationType,
   AppointmentStatus,
@@ -315,29 +312,8 @@ import {
 import { computed, reactive, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
-const { getAllPermitsSummary } = usePermitsStore()
+const { getAllPermitsSummary, options } = usePermitsStore()
 
-const options = ref<ApplicationTableOptionsType>({
-  options: {
-    page: 1,
-    itemsPerPage: 10,
-    sortBy: [],
-    sortDesc: [],
-    groupBy: [],
-    groupDesc: [],
-    multiSort: false,
-    mustSort: false,
-  },
-  statuses: [2],
-  search: '',
-  paid: false,
-  appointmentStatuses: [],
-  applicationTypes: [],
-  showingTodaysAppointments: false,
-  selectedDate: '',
-  applicationSearch: null,
-  matchedApplications: false,
-})
 const applicationStatusItems = [
   { text: 'Incomplete', value: 1 },
   { text: 'Submitted', value: 2 },
@@ -456,18 +432,18 @@ const { isLoading, isFetching, data, refetch } = useQuery(
       total: number
     } = { items: [], total: 0 }
 
-    if (options.value) {
-      response = await getAllPermitsSummary(options.value, signal)
+    if (options) {
+      response = await getAllPermitsSummary(signal)
 
       const totalPages = Math.ceil(
-        response.total / options.value.options.itemsPerPage
+        response.total / options.options.itemsPerPage
       )
 
-      let isBeyondLastPage = options.value.options.page > totalPages + 1
+      let isBeyondLastPage = options.options.page > totalPages + 1
 
-      while (isBeyondLastPage && options.value.options.page > 1) {
-        options.value.options.page -= 1
-        isBeyondLastPage = options.value.options.page > totalPages
+      while (isBeyondLastPage && options.options.page > 1) {
+        options.options.page -= 1
+        isBeyondLastPage = options.options.page > totalPages
       }
 
       return response
@@ -475,7 +451,7 @@ const { isLoading, isFetching, data, refetch } = useQuery(
 
     return response
   },
-  { enabled: Boolean(options.value), initialData: { items: [], total: 0 } }
+  { enabled: Boolean(options), initialData: { items: [], total: 0 } }
 )
 
 const { mutate: updateMultiplePermitDetailsApi } = useMutation({
@@ -506,12 +482,11 @@ async function handleAssignMultipleApplications() {
 }
 
 function handleToggleTodaysAppointments() {
-  options.value.showingTodaysAppointments =
-    !options.value.showingTodaysAppointments
+  options.showingTodaysAppointments = !options.showingTodaysAppointments
 }
 
 function clearDate() {
-  options.value.selectedDate = ''
+  options.selectedDate = ''
   menu.value = false
 }
 

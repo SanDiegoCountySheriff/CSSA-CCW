@@ -126,7 +126,7 @@
               :headers="applicationHeaders"
               :items="data.items"
               :server-items-length="data.total"
-              :options.sync="options.options"
+              :options.sync="permitStore.legacyOptions.options"
               :loading="
                 isLegacyApplicationLoading || isLegacyApplicationFetching
               "
@@ -148,7 +148,7 @@
                   <v-spacer />
 
                   <v-text-field
-                    v-model="options.applicationSearch"
+                    v-model="permitStore.legacyOptions.applicationSearch"
                     label="Search"
                     color="primary"
                     hide-details
@@ -233,10 +233,7 @@ import { LegacyPermitsType } from '@core-admin/types'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useUserStore } from '@shared-ui/stores/userStore'
-import {
-  ApplicationTableOptionsType,
-  UserType,
-} from '@shared-utils/types/defaultTypes'
+import { UserType } from '@shared-utils/types/defaultTypes'
 import { computed, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 import ConfirmUserNoApplicationDialog from '../dialogs/ConfirmUserNoApplicationDialog.vue'
@@ -267,28 +264,6 @@ const customerSelectedOnly = computed(() => {
   )
 })
 
-const options = ref<ApplicationTableOptionsType>({
-  options: {
-    page: 1,
-    itemsPerPage: 10,
-    sortBy: [],
-    sortDesc: [],
-    groupBy: [],
-    groupDesc: [],
-    multiSort: false,
-    mustSort: false,
-  },
-  statuses: [],
-  search: '',
-  paid: false,
-  appointmentStatuses: [],
-  applicationTypes: [],
-  showingTodaysAppointments: false,
-  selectedDate: '',
-  applicationSearch: '',
-  matchedApplications: false,
-})
-
 const {
   data: unmatchedUsers,
   isLoading,
@@ -309,21 +284,19 @@ const {
       total: number
     } = { items: [], total: 0 }
 
-    if (options.value) {
-      response = await permitStore.getAllLegacyApplications(
-        options.value,
-        signal
-      )
+    if (permitStore.legacyOptions) {
+      response = await permitStore.getAllLegacyApplications(signal)
 
       const totalPages = Math.ceil(
-        response.total / options.value.options.itemsPerPage
+        response.total / permitStore.legacyOptions.options.itemsPerPage
       )
 
-      let isBeyondLastPage = options.value.options.page > totalPages + 1
+      let isBeyondLastPage =
+        permitStore.legacyOptions.options.page > totalPages + 1
 
-      while (isBeyondLastPage && options.value.options.page > 1) {
-        options.value.options.page -= 1
-        isBeyondLastPage = options.value.options.page > totalPages
+      while (isBeyondLastPage && permitStore.legacyOptions.options.page > 1) {
+        permitStore.legacyOptions.options.page -= 1
+        isBeyondLastPage = permitStore.legacyOptions.options.page > totalPages
       }
 
       return response
@@ -331,7 +304,10 @@ const {
 
     return response
   },
-  { enabled: Boolean(options.value), initialData: { items: [], total: 0 } }
+  {
+    enabled: Boolean(permitStore.legacyOptions),
+    initialData: { items: [], total: 0 },
+  }
 )
 
 const { mutate, isLoading: isMatchApplicationLoading } = useMutation({
@@ -419,7 +395,7 @@ function handleItemExpanded({
       return d.documentType === 'CCWPermit'
     })
 
-    options.value.applicationSearch = item.lastName
+    permitStore.legacyOptions.applicationSearch = item.lastName
 
     if (idDocument) {
       openPdf(`${item.id}_${idDocument.name}`)
@@ -430,7 +406,7 @@ function handleItemExpanded({
     }
   } else {
     idImage.value = ''
-    options.value.applicationSearch = ''
+    permitStore.legacyOptions.applicationSearch = ''
   }
 }
 
@@ -464,12 +440,12 @@ async function openPdf(name: string) {
 }
 
 watch(
-  () => options.value.applicationSearch,
+  () => permitStore.legacyOptions.applicationSearch,
   () => refetchApplications()
 )
 
 watch(
-  options,
+  permitStore.legacyOptions,
   newVal => {
     if (newVal) {
       refetchApplications()

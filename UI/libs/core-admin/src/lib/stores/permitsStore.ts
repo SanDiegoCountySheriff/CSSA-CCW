@@ -40,6 +40,48 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   const getOpenPermits = computed(() => openPermits.value)
   const getPermitDetail = computed(() => permitDetail.value)
   const getHistory = computed(() => history.value)
+  const options = ref<ApplicationTableOptionsType>({
+    options: {
+      page: 1,
+      itemsPerPage: 10,
+      sortBy: [],
+      sortDesc: [],
+      groupBy: [],
+      groupDesc: [],
+      multiSort: false,
+      mustSort: false,
+    },
+    statuses: [2],
+    search: '',
+    paid: false,
+    appointmentStatuses: [],
+    applicationTypes: [],
+    showingTodaysAppointments: false,
+    selectedDate: '',
+    applicationSearch: null,
+    matchedApplications: false,
+  })
+  const legacyOptions = ref<ApplicationTableOptionsType>({
+    options: {
+      page: 1,
+      itemsPerPage: 10,
+      sortBy: [],
+      sortDesc: [],
+      groupBy: [],
+      groupDesc: [],
+      multiSort: false,
+      mustSort: false,
+    },
+    statuses: [2],
+    search: '',
+    paid: false,
+    appointmentStatuses: [],
+    applicationTypes: [],
+    showingTodaysAppointments: false,
+    selectedDate: '',
+    applicationSearch: null,
+    matchedApplications: false,
+  })
 
   const orderIds = new Map()
 
@@ -117,7 +159,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   }
 
   async function getAllPermitsSummary(
-    options: ApplicationTableOptionsType,
     signal: AbortSignal | undefined
   ): Promise<{
     items: Array<PermitsType>
@@ -126,21 +167,21 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     const res = await axios.get(Endpoints.GET_ALL_PERMITS_SUMMARY_ENDPOINT, {
       signal,
       params: {
-        page: options.options.page,
-        itemsPerPage: options.options.itemsPerPage,
-        sortBy: options.options.sortBy,
-        sortDesc: options.options.sortDesc,
-        groupBy: options.options.groupBy,
-        groupDesc: options.options.groupDesc,
-        statuses: options.statuses,
-        appointmentStatuses: options.appointmentStatuses,
-        applicationTypes: options.applicationTypes,
-        search: options.search,
-        showingTodaysAppointments: options.showingTodaysAppointments,
-        selectedDate: options.selectedDate
-          ? new Date(options.selectedDate).toISOString()
+        page: options.value.options.page,
+        itemsPerPage: options.value.options.itemsPerPage,
+        sortBy: options.value.options.sortBy,
+        sortDesc: options.value.options.sortDesc,
+        groupBy: options.value.options.groupBy,
+        groupDesc: options.value.options.groupDesc,
+        statuses: options.value.statuses,
+        appointmentStatuses: options.value.appointmentStatuses,
+        applicationTypes: options.value.applicationTypes,
+        search: options.value.search,
+        showingTodaysAppointments: options.value.showingTodaysAppointments,
+        selectedDate: options.value.selectedDate
+          ? new Date(options.value.selectedDate).toISOString()
           : '',
-        matchedApplications: options.matchedApplications,
+        matchedApplications: options.value.matchedApplications,
       },
       paramsSerializer: {
         indexes: null,
@@ -177,7 +218,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   }
 
   async function getAllLegacyApplications(
-    options: ApplicationTableOptionsType,
     signal: AbortSignal | undefined
   ): Promise<{
     items: Array<LegacyPermitsType>
@@ -188,20 +228,21 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       {
         signal,
         params: {
-          page: options.options.page,
-          itemsPerPage: options.options.itemsPerPage,
-          sortBy: options.options.sortBy,
-          sortDesc: options.options.sortDesc,
-          groupBy: options.options.groupBy,
-          groupDesc: options.options.groupDesc,
-          statuses: options.statuses,
-          appointmentStatuses: options.appointmentStatuses,
-          applicationTypes: options.applicationTypes,
-          search: options.search,
-          applicationSearch: options.applicationSearch,
-          showingTodaysAppointments: options.showingTodaysAppointments,
-          selectedDate: options.selectedDate
-            ? new Date(options.selectedDate).toISOString()
+          page: legacyOptions.value.options.page,
+          itemsPerPage: legacyOptions.value.options.itemsPerPage,
+          sortBy: legacyOptions.value.options.sortBy,
+          sortDesc: legacyOptions.value.options.sortDesc,
+          groupBy: legacyOptions.value.options.groupBy,
+          groupDesc: legacyOptions.value.options.groupDesc,
+          statuses: legacyOptions.value.statuses,
+          appointmentStatuses: legacyOptions.value.appointmentStatuses,
+          applicationTypes: legacyOptions.value.applicationTypes,
+          search: legacyOptions.value.search,
+          applicationSearch: legacyOptions.value.applicationSearch,
+          showingTodaysAppointments:
+            legacyOptions.value.showingTodaysAppointments,
+          selectedDate: legacyOptions.value.selectedDate
+            ? new Date(legacyOptions.value.selectedDate).toISOString()
             : '',
         },
         paramsSerializer: {
@@ -554,6 +595,8 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   }
 
   return {
+    options,
+    legacyOptions,
     permits,
     searchResults,
     openPermits,
