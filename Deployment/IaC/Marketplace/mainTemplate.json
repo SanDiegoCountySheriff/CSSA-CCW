@@ -46,7 +46,8 @@
       "type": "string"
     },
     "fw_public_ip_address": {
-      "type": "String"
+      "type": "String",
+      "defaultValue": ""
     },
     "asp_sku": {
       "type": "object",
@@ -151,7 +152,8 @@
       "type": "string"
     },
     "public_auth_workflow": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": ""
     },
     "enable_stop_debugger": {
       "type": "bool",
@@ -382,20 +384,27 @@
       "start_date": "[if(empty(parameters('start_date')), resourceGroup().tags.start_date, parameters('start_date')) ]"
     },
     "document_api_fbi_name_check_template_name": "BCIA_8020_rev_01_2014",
+    "document_good_moral_character_template_name": "GoodMoralCharacter",
     "document_api_certified_instructor_application_template_name": "BOF_1034_orig_01_2024",
     "document_api_annual_survey_template_name": "BOF_1027_rev_01_2024",
     "document_api_prohibiting_categories_template_name": "BOF_8018_rev_01_2024",
     "document_api_request_hearing_template_name": "BOF_1031_orig_01_2024",
     "document_api_amendment_template_name": "BOF_4502_rev_09_2011",
-    "document_api_revocation_template_name": "BOF_1032_rev_01_2024",
+    "document_revocation_template_name": "BOF_1032_rev_01_2024",
     "document_api_livescan_template_name": "BCIA_8016_rev_04_2020",
     "document_api_unofficial_license_template_name": "Unofficial_License",
     "document_api_official_license_template_name": "Official_License",
     "document_api_application_template_name": "BOF_4012_rev_01_2024",
     "document_api_admin_signature_file_name": "signature.png",
     "document_api_sheriff_signature_file_name": "agency_sheriff_signature_image",
+    "document_sheriff_logo_name": "agency_logo",
     "cdb_admin_container_name": "agency",
+    "cdb_appointment_container_name": "appointments",
     "cdb_admin_database_name": "settings-db",
+    "cdb_historical_container_name": "historical-applications",
+    "cdb_legacy_container_name": "legacy-applications",
+    "cdb_user_container_name": "users",
+    "cdb_appointment_database_name": "appointment-db",
     "cdb_user_profile_container_name": "admin-users",
     "cdb_user_profile_database_name": "user-db",
     "document_api_conditions_for_issuance_template_name": "Conditions_for_Issuance",
@@ -2323,20 +2332,44 @@
               "value": "1.0.0"
             },
             {
-              "name": "CosmosDb__ContainerName",
-              "value": "[variables('cdb_applications_container_name')]"
-            },
-            {
-              "name": "CosmosDb__DatabaseName",
-              "value": "[variables('cdb_users_db_name')]"
-            },
-            {
               "name": "CosmosDb__AdminContainerName",
               "value": "[variables('cdb_admin_container_name')]"
             },
             {
               "name": "CosmosDb__AdminDatabaseName",
               "value": "[variables('cdb_admin_database_name')]"
+            },
+            {
+              "name": "CosmosDb__AppointmentContainerName",
+              "value": "[variables('cdb_appointment_container_name')]"
+            },         
+            {
+              "name": "CosmosDb__AppointmentDatabaseName",
+              "value": "[variables('cdb_appointment_database_name')]"
+            },
+                        {
+              "name": "CosmosDb__AppointmentManagementContainerName",
+              "value": "[variables('cdb_appointment_container_name')]"
+            },  
+            {
+              "name": "CosmosDb__ContainerName",
+              "value": "[variables('cdb_appointment_management_container_name')]"
+            },
+            {
+              "name": "CosmosDb__DatabaseName",
+              "value": "[variables('cdb_users_db_name')]"
+            },
+            {
+              "name": "CosmosDb__HistoricalContainernName",
+              "value": "[variables('cdb_historical_container_name')]"
+            },
+            {
+              "name": "CosmosDb__LegacyContainernName",
+              "value": "[variables('cdb_legacy_container_name')]"
+            },
+            {
+              "name": "CosmosDb__UserContainernName",
+              "value": "[variables('cdb_user_container_name')]"
             },
             {
               "name": "CosmosDb__UserProfileContainernName",
@@ -2375,64 +2408,24 @@
               "value": "[parameters('public_auth_app_id')]"
             },
             {
-              "name": "DocumentApi__BaseUrl",
-              "value": "[concat('https://', variables('wa_document_name'), variables('wa_hostnamessl_ep_host'), '/')]"
-            },
-            {
-              "name": "DocumentApi__Timeout",
-              "value": "2000"
-            },
-            {
-              "name": "DocumentApi__SheriffSignature",
-              "value": "[variables('document_api_sheriff_signature_file_name')]"
-            },
-            {
               "name": "DocumentApi__AdminSignatureFileName",
               "value": "[variables('document_api_admin_signature_file_name')]"
-            },
-            {
-              "name": "DocumentApi__ApplicationTemplateName",
-              "value": "[variables('document_api_application_template_name')]"
-            },
-            {
-              "name": "DocumentApi__OfficialLicenseTemplateName",
-              "value": "[variables('document_api_official_license_template_name')]"
-            },
-            {
-              "name": "DocumentApi__UnofficalLicenseTemplateName",
-              "value": "[variables('document_api_unofficial_license_template_name')]"
-            },
-            {
-              "name": "DocumentApi__LiveScanTemplateName",
-              "value": "[variables('document_api_livescan_template_name')]"
-            },
-            {
-              "name": "DocumentApi__RevocationTemplateName",
-              "value": "[variables('document_api_revocation_template_name')]"
             },
             {
               "name": "DocumentApi__AmendmentTemplateName",
               "value": "[variables('document_api_amendment_template_name')]"
             },
             {
-              "name": "DocumentApi__RequestHearingTemplateName",
-              "value": "[variables('document_api_request_hearing_template_name')]"
-            },
-            {
-              "name": "DocumentApi__ProhibitingCategoriesTemplateName",
-              "value": "[variables('document_api_prohibiting_categories_template_name')]"
-            },
-            {
               "name": "DocumentApi__AnnualSurveyTemplateName",
               "value": "[variables('document_api_annual_survey_template_name')]"
             },
             {
-              "name": "DocumentApi__CertifiedInstructorApplicationTemplateName",
-              "value": "[variables('document_api_certified_instructor_application_template_name')]"
+              "name": "DocumentApi__ApplicationTemplateName",
+              "value": "[variables('document_api_application_template_name')]"
             },
             {
-              "name": "DocumentApi__FbiNameCheckTemplateName",
-              "value": "[variables('document_api_fbi_name_check_template_name')]"
+              "name": "DocumentApi__CertifiedInstructorApplicationTemplateName",
+              "value": "[variables('document_api_certified_instructor_application_template_name')]"
             },
             {
               "name": "DocumentApi__ConditionsForIssuanceTemplateName",
@@ -2443,20 +2436,60 @@
               "value": "[variables('document_api_false_info_template_name')]"
             },
             {
-              "name": "Storage__AgencyContainerName",
-              "value": "[variables('sa_ct_agency_name')]"
+              "name": "DocumentApi__FbiNameCheckTemplateName",
+              "value": "[variables('document_api_fbi_name_check_template_name')]"
+            },
+            {
+              "name": "DocumentApi__GoodMoralCharacterName",
+              "value": "[variables('document_good_moral_character_template_name')]"
+            },
+            {
+              "name": "DocumentApi__LiveScanTemplateName",
+              "value": "[variables('document_api_livescan_template_name')]"
+            },
+            {
+              "name": "DocumentApi__OfficialLicenseTemplateName",
+              "value": "[variables('document_api_official_license_template_name')]"
+            },
+            {
+              "name": "DocumentApi__ProhibitingCategoriesTemplateName",
+              "value": "[variables('document_api_prohibiting_categories_template_name')]"
+            },
+            {
+              "name": "DocumentApi__RequestHearingTemplateName",
+              "value": "[variables('document_api_request_hearing_template_name')]"
+            },
+            {
+              "name": "DocumentApi__RevocationTemplateName",
+              "value": "[variables('document_revocation_template_name')]"
+            },
+            {
+              "name": "DocumentApi__SheriffLogo",
+              "value": "[variables('document_sheriff_logo_name')]"
+            },
+            {
+              "name": "DocumentApi__SheriffSignature",
+              "value": "[variables('document_api_sheriff_signature_file_name')]"
+            },
+            {
+              "name": "DocumentApi__UnofficalLicenseTemplateName",
+              "value": "[variables('document_api_unofficial_license_template_name')]"
+            },
+            {
+              "name": "Storage__AdminApplicationContainerName",
+              "value": "[variables('sa_ct_admin_applications_name')]"
             },
             {
               "name": "Storage__AdminUserContainerName",
               "value": "[variables('sa_ct_admin_users_name')]"
             },
             {
-              "name": "Storage__PublicContainerName",
-              "value": "[variables('sa_ct_public_name')]"
+              "name": "Storage__AgencyContainerName",
+              "value": "[variables('sa_ct_agency_name')]"
             },
             {
-              "name": "Storage__AdminApplicationContainerName",
-              "value": "[variables('sa_ct_admin_applications_name')]"
+              "name": "Storage__PublicContainerName",
+              "value": "[variables('sa_ct_public_name')]"
             },
             {
               "name": "SnapshotDebugger_EXTENSION_VERSION",
