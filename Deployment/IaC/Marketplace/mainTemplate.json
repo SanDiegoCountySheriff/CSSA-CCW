@@ -251,6 +251,11 @@
     "keyvault_name": "[toLower(concat(variables('rn_keyvault'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), variables('instance_number')))]",
     "kv_user_role_id": "4633458b-17de-408a-b874-0445c86b69e6",
     "KeyVaultSecretsUser": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/', variables('kv_user_role_id'))]",
+    "keyvault_secret_heartland_username": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', variables('heartland_kv_username_name'),')')]",
+    "keyvault_secret_heartland_serviceurl": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', variables('heartland_kv_service_url_name'),')')]",
+    "keyvault_secret_heartland_hmac": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', variables('hmac-key-name'),')')]",
+    "keyvault_secret_heartland_merchantname": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', variables('heartland_kv_merchant_name_name'),')')]",
+    "keyvault_secret_heartland_password": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', variables('heartland_kv_password_name'),')')]",
 
     "cosmosdb_name": "[toLower(concat(variables('rn_cosmosDB'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), variables('instance_number')))]",
     "cdb_kv_connstring_primary_name": "cosmos-db-connection-primary",
@@ -265,11 +270,15 @@
     "cdb_settings_db_name": "settings-db",
     "cdb_appointments_db_name": "appointment-db",
     "cdb_users_db_name": "user-db",
+    "cdb_refund_request_container_name": "refund-requests",
     "cdb_agencies_container_name": "agency",
     "cdb_appointments_container_name": "appointments",
     "cdb_applications_container_name": "applications",
     "cdb_users_container_name": "users",
     "cdb_admin_users_container_name": "admin-users",
+    "heartland_endpoint_name": "#{HEARTLAND_ENDPOINT}#",
+    "heartland_redirect_endpoint_name": "#{HEARTLAND_REDIRECT_ENDPOINT}#",
+    "heartland_process_transaction_endpoint_name": "#{HEARTLAND_PROCESS_ENDPOINT}#",
 
     "logAnalytics_nsgfl_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-nsg-fl', variables('instance_number')))]",
     "logAnalytics_reslogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-resource-logs', variables('instance_number')))]",
@@ -3127,8 +3136,44 @@
               "value": "[variables('cdb_users_db_name')]"
             },
             {
+              "name": "CosmosDb__RefundRequestContainerName",
+              "value": "[variables('cdb_refund_request_container_name')]"
+            },
+            {
               "name": "DiagnosticServices_EXTENSION_VERSION",
               "value": "~3"
+            },
+            {
+              "name": "Heartland__HeartlandEndpoint",
+              "value": "[variables('heartland_endpoint_name')]"
+            },
+            {
+              "name": "Heartland__HmacKey",
+              "value": "[variables('keyvault_secret_heartland_hmac')]"
+            },
+            {
+              "name": "Heartland__MerchantName",
+              "value": "[variables('keyvault_secret_heartland_merchantname')]"
+            },
+            {
+              "name": "Heartland__Password",
+              "value": "[variables('keyvault_secret_heartland_password')]"
+            },
+            {
+              "name": "Heartland__ProcessTransactionEndpoint",
+              "value": "[variables('heartland_process_transaction_endpoint_name')]"
+            },
+            {
+              "name": "Heartland__RedirectEndpoint",
+              "value": "[variables('heartland_redirect_endpoint_name')]"
+            },
+            {
+              "name": "Heartland__ServiceUrl",
+              "value": "[variables('keyvault_secret_heartland_serviceurl')]"
+            },
+            {
+              "name": "Heartland__Username",
+              "value": "[variables('keyvault_secret_heartland_username')]"
             },
             {
               "name": "KeyVault__VaultUri",
