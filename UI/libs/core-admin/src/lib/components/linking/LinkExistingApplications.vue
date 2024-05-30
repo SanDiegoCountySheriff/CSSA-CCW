@@ -174,6 +174,10 @@
                 </router-link>
               </template>
 
+              <template #[`item.status`]="{ item }">
+                {{ ApplicationStatus[item.status] }}
+              </template>
+
               <template #expanded-item="{ item }">
                 <td :colspan="headers.length">
                   <v-container>
@@ -233,15 +237,15 @@
 </template>
 
 <script setup lang="ts">
+import ConfirmMatchApplicationDialog from '../dialogs/ConfirmMatchApplicationDialog.vue'
+import ConfirmUserNoApplicationDialog from '../dialogs/ConfirmUserNoApplicationDialog.vue'
 import { LegacyPermitsType } from '@core-admin/types'
+import { ApplicationStatus, UserType } from '@shared-utils/types/defaultTypes'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useUserStore } from '@shared-ui/stores/userStore'
-import { UserType } from '@shared-utils/types/defaultTypes'
 import { computed, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
-import ConfirmUserNoApplicationDialog from '../dialogs/ConfirmUserNoApplicationDialog.vue'
-import ConfirmMatchApplicationDialog from '../dialogs/ConfirmMatchApplicationDialog.vue'
 
 const userStore = useUserStore()
 const permitStore = usePermitsStore()
@@ -361,6 +365,7 @@ const applicationHeaders = [
   { text: 'Name', value: 'name' },
   { text: 'ID Number', value: 'idNumber' },
   { text: 'Email', value: 'email' },
+  { text: 'Status', value: 'status' },
   {
     text: 'Match',
     value: 'data-table-select',
