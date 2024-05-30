@@ -3501,6 +3501,14 @@
               "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))).vaultUri]"
             },
             {
+              "name": "CosmosDb__ApplicationContainerName",
+              "value": "[variables('cdb_applications_container_name')]"
+            },
+            {
+              "name": "CosmosDb__ApplicationDatabaseName",
+              "value": "[variables('cdb_application_db_name')]"
+            },
+            {
               "name": "CosmosDb__AppointmentContainerName",
               "value": "[variables('cdb_appointments_container_name')]"
             },
@@ -3509,20 +3517,20 @@
               "value": "[variables('cdb_appointments_db_name')]"
             },
             {
-              "name": "CosmosDb__HolidayContainerName",
-              "value": "[variables('cdb_holiday_container_name')]"
-            },
-            {
               "name": "CosmosDb__AppointmentManagementContainerName",
               "value": "[variables('cdb_appointment_management_container_name')]"
             },
             {
-              "name": "CosmosDb__ApplicationDatabaseName",
-              "value": "[variables('cdb_application_db_name')]"
+              "name": "CosmosDb__ContainerName",
+              "value": "[variables('cdb_appointments_container_name')]"
             },
             {
-              "name": "CosmosDb__ApplicationContainerName",
-              "value": "[variables('cdb_applications_container_name')]"
+              "name": "CosmosDb__DatabaseName",
+              "value": "[variables('cdb_appointments_db_name')]"
+            },
+            {
+              "name": "CosmosDb__HolidayContainerName",
+              "value": "[variables('cdb_holiday_container_name')]"
             },
             {
               "name": "InstrumentationEngine_EXTENSION_VERSION",
@@ -3846,16 +3854,20 @@
               "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))).vaultUri]"
             },
             {
-              "name": "CosmosDb__ContainerName",
-              "value": "[variables('cdb_users_container_name')]"
-            },
-            {
               "name": "CosmosDb__AdminUsersContainerName",
               "value": "[variables('cdb_admin_users_container_name')]"
             },
             {
+              "name": "CosmosDb__ContainerName",
+              "value": "[variables('cdb_users_container_name')]"
+            },
+            {
               "name": "CosmosDb__DatabaseName",
               "value": "[variables('cdb_users_db_name')]"
+            },
+            {
+              "name": "CosmosDb__UsersContainerName",
+              "value": "[variables('cdb_users_container_name')]"
             },
             {
               "name": "DiagnosticServices_EXTENSION_VERSION",
