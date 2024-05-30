@@ -12,8 +12,65 @@
           :disabled="!readyToMatch"
           :applicant-name="`${selectedUser[0]?.firstName} ${selectedUser[0]?.lastName}`"
           :application-name="selectedLegacyApplication[0]?.name"
+          :applicant-email="selectedUser[0]?.email"
+          :application-email="selectedLegacyApplication[0]?.email"
+          :applicant-id-number="selectedUser[0]?.driversLicenseNumber"
+          :application-id-number="selectedLegacyApplication[0]?.idNumber"
           @confirm="handleMatch"
         />
+
+        <v-menu
+          v-model="menu"
+          :close-on-content-click="false"
+          :return-value.sync="date"
+          ref="menuComponent"
+          transition="scale-transition"
+          min-width="auto"
+          offset-y
+        >
+          <template #activator="{ on, attrs }">
+            <v-btn
+              color="primary"
+              class="ml-3"
+              v-bind="attrs"
+              v-on="on"
+            >
+              Appointment Date {{ permitStore.legacyOptions.selectedDate }}
+            </v-btn>
+          </template>
+
+          <v-date-picker
+            v-model="permitStore.legacyOptions.selectedDate"
+            no-title
+            scrollable
+          >
+            <v-btn
+              @click="clearDate"
+              text
+              color="primary"
+            >
+              Clear
+            </v-btn>
+
+            <v-spacer />
+
+            <v-btn
+              @click="menu = false"
+              text
+              color="primary"
+            >
+              Cancel
+            </v-btn>
+
+            <v-btn
+              @click="menu = false"
+              text
+              color="primary"
+            >
+              OK
+            </v-btn>
+          </v-date-picker>
+        </v-menu>
 
         <v-spacer />
 
@@ -170,6 +227,10 @@
                 </router-link>
               </template>
 
+              <template #[`item.status`]="{ item }">
+                {{ ApplicationStatus[item.status] }}
+              </template>
+
               <template #expanded-item="{ item }">
                 <td :colspan="headers.length">
                   <v-container>
@@ -229,15 +290,15 @@
 </template>
 
 <script setup lang="ts">
+import ConfirmMatchApplicationDialog from '../dialogs/ConfirmMatchApplicationDialog.vue'
+import ConfirmUserNoApplicationDialog from '../dialogs/ConfirmUserNoApplicationDialog.vue'
 import { LegacyPermitsType } from '@core-admin/types'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useUserStore } from '@shared-ui/stores/userStore'
-import { UserType } from '@shared-utils/types/defaultTypes'
+import { ApplicationStatus, UserType } from '@shared-utils/types/defaultTypes'
 import { computed, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
-import ConfirmUserNoApplicationDialog from '../dialogs/ConfirmUserNoApplicationDialog.vue'
-import ConfirmMatchApplicationDialog from '../dialogs/ConfirmMatchApplicationDialog.vue'
 
 const userStore = useUserStore()
 const permitStore = usePermitsStore()
@@ -250,6 +311,8 @@ const licenseDialog = ref(false)
 const selectedLegacyApplication = ref<Array<LegacyPermitsType>>([])
 const selectedUser = ref<Array<UserType>>([])
 const applicantSearch = ref('')
+const menu = ref(false)
+const date = ref('')
 
 const readyToMatch = computed(() => {
   return (
@@ -357,11 +420,17 @@ const applicationHeaders = [
   { text: 'Name', value: 'name' },
   { text: 'ID Number', value: 'idNumber' },
   { text: 'Email', value: 'email' },
+  { text: 'Status', value: 'status' },
   {
     text: 'Match',
     value: 'data-table-select',
   },
 ]
+
+function clearDate() {
+  permitStore.legacyOptions.selectedDate = ''
+  menu.value = false
+}
 
 function handleMatch() {
   if (selectedUser.value[0].id && selectedLegacyApplication.value[0].id) {
