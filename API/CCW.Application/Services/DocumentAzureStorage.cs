@@ -19,6 +19,7 @@ public class DocumentAzureStorage : IDocumentAzureStorage
     private readonly string _sheriffSignature;
     private readonly string _sheriffLogo;
     private readonly string _applicationTemplate;
+    private readonly string _legacyApplicationTemplate;
     private readonly string _unofficialPermitTemplate;
     private readonly string _modificationTemplate;
     private readonly string _officialPermitTemplate;
@@ -32,6 +33,7 @@ public class DocumentAzureStorage : IDocumentAzureStorage
         _sheriffSignature = documentSettings.GetSection("SheriffSignature").Value;
         _sheriffLogo = documentSettings.GetSection("SheriffLogo").Value;
         _applicationTemplate = documentSettings.GetSection("ApplicationTemplateName").Value;
+        _legacyApplicationTemplate = documentSettings.GetSection("LegacyApplicationTemplateName").Value;
         _unofficialPermitTemplate = documentSettings.GetSection("UnofficalLicenseTemplateName").Value;
         _officialPermitTemplate = documentSettings.GetSection("OfficialLicenseTemplateName").Value;
         _liveScanTemplate = documentSettings.GetSection("LiveScanTemplateName").Value;
@@ -103,6 +105,18 @@ public class DocumentAzureStorage : IDocumentAzureStorage
         await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
 
         return await container.GetBlobClient(_applicationTemplate).OpenReadAsync(cancellationToken: cancellationToken);
+    }
+
+    public async Task<Stream> GetLegacyApplicationTemplateAsync(CancellationToken cancellationToken)
+    {
+#if DEBUG
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
+#else
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
+#endif
+        await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
+
+        return await container.GetBlobClient(_legacyApplicationTemplate).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<Stream> GetLiveScanTemplateAsync(CancellationToken cancellationToken)

@@ -606,6 +606,578 @@ public class PdfService : IPdfService
         return outStream;
     }
 
+    public async Task<MemoryStream> GetLegacyApplicationMemoryStream(PermitApplication userApplication, string licensingUserName, string fileName)
+    {
+        if (userApplication.Application.ApplicationType == default(ApplicationType))
+        {
+            throw new ArgumentNullException(nameof(userApplication.Application.ApplicationType));
+        }
+
+        var applicationTemplateStream = await _documentService.GetApplicationTemplateAsync(cancellationToken: default);
+        var adminUserProfile = await _userProfileCosmosDbService.GetAdminUserProfileAsync(licensingUserName, cancellationToken: default);
+
+        MemoryStream outStream = new MemoryStream();
+
+        PdfReader pdfReader = new PdfReader(applicationTemplateStream);
+        PdfWriter pdfWriter = new PdfWriter(outStream);
+        PdfDocument pdfDoc = new PdfDocument(pdfReader, pdfWriter);
+
+        Document mainDocument = new Document(pdfDoc);
+        pdfWriter.SetCloseStream(false);
+
+        PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
+        form.SetGenerateAppearance(true);
+        var issueDate = string.Empty;
+        var expDate = string.Empty;
+
+        await AddProcessorsSignatureImageForApplication(licensingUserName, mainDocument);
+        await AddApplicantSignatureImageForApplication(userApplication, mainDocument);
+
+        string applicantFullName = BuildApplicantFullName(userApplication);
+        string digitallySigned = $"DIGITALLY SIGNED BY: {applicantFullName}, ON {DateTime.Now.ToString("MM/dd/yyyy")}";
+        form.GetField("form1[0].#subform[16].SIGNATURE[0]").SetValue(digitallySigned, true);
+        form.GetField("form1[0].#subform[16].SIGNATURE[1]").SetValue(digitallySigned, true);
+        form.GetField("form1[0].#subform[16].WITNESS_SIGNATURE[0]").SetValue(digitallySigned, true);
+        form.GetField("form1[0].#subform[16].WITNESS_SIGNATURE[1]").SetValue(digitallySigned, true);
+
+        form.GetField("form1[0].#subform[16].BADGE_NUMBER[0]").SetValue(adminUserProfile.BadgeNumber, true);
+        form.GetField("form1[0].#subform[16].BADGE_NUMBER[1]").SetValue(adminUserProfile.BadgeNumber, true);
+
+        form.GetField("form1[0].#subform[16].DATE[6]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"), true);
+        form.GetField("form1[0].#subform[16].DATE[7]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"), true);
+        form.GetField("form1[0].#subform[16].DateTimeField1[0]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"), true);
+        form.GetField("form1[0].#subform[16].DateTimeField1[1]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"), true);
+
+        switch (userApplication.Application.ApplicationType)
+        {
+            case ApplicationType.Reserve:
+            case ApplicationType.RenewReserve:
+                form.GetField("form1[0].#subform[3].RESERVE_OFFICER[0]").SetValue("true", true);
+                break;
+            case ApplicationType.Judicial:
+            case ApplicationType.RenewJudicial:
+                form.GetField("form1[0].#subform[3].JUDGE[0]").SetValue("true", true);
+                break;
+            case ApplicationType.Employment:
+            case ApplicationType.RenewEmployment:
+                form.GetField("form1[0].#subform[3].EMPLOYMENT[0]").SetValue("true", true);
+                break;
+            default:
+                form.GetField("form1[0].#subform[3].STANDARD[0]").SetValue("true", true);
+                break;
+        }
+
+        switch (userApplication.Application.ApplicationType)
+        {
+            case ApplicationType.RenewReserve:
+            case ApplicationType.RenewJudicial:
+            case ApplicationType.RenewStandard:
+            case ApplicationType.RenewEmployment:
+                form.GetField("form1[0].#subform[3].RENEWAL_APP[0]").SetValue("true", true);
+                break;
+            default:
+                form.GetField("form1[0].#subform[3].INITIAL_APP[0]").SetValue("true", true);
+                break;
+        }
+
+        var personalInfo = userApplication.Application.PersonalInfo;
+        if (personalInfo == null)
+        {
+            throw new ArgumentNullException("PersonalInfo");
+        }
+
+        //Applicant Personal Information
+        form.GetField("form1[0].#subform[3].APP_LAST_NAME[0]").SetValue(personalInfo?.LastName ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_FIRST_NAME[0]").SetValue(personalInfo?.FirstName ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_MIDDLE_NAME[0]").SetValue(personalInfo?.MiddleName ?? "", true);
+
+        string currentState = userApplication.Application.CurrentAddress?.State?.Trim() ?? "";
+        string mailingState = userApplication.Application.MailingAddress?.State?.Trim() ?? "";
+        string spouseState = userApplication.Application.SpouseAddressInformation?.State?.Trim() ?? "";
+        string employerState = userApplication.Application.WorkInformation?.EmployerState?.Trim() ?? "";
+        string abbreviation;
+
+        string maidenAndAliases = string.Empty;
+        if (!string.IsNullOrWhiteSpace(personalInfo?.MaidenName))
+        {
+            maidenAndAliases += personalInfo?.MaidenName;
+        }
+
+        if (userApplication.Application.Aliases?.Length > 0)
+        {
+            var aliases = " Aliases: ";
+            foreach (var item in userApplication.Application.Aliases)
+            {
+                aliases += item.PrevLastName + " " + item.PrevFirstName + "; ";
+            }
+
+            maidenAndAliases += aliases;
+        }
+        form.GetField("form1[0].#subform[3].APP_MAIDEN_NAME[0]").SetValue(maidenAndAliases, true);
+
+        form.GetField("form1[0].#subform[3].CA_DRIVER_LICENSE_ID[0]").SetValue(userApplication.Application.IdInfo.IdNumber, true);
+        form.GetField("form1[0].#subform[3].CA_DRIVER_RESTRICTIONS[0]").SetValue(userApplication.Application.IdInfo.Restrictions ?? "", true);
+        if (userApplication.Application.Citizenship.Citizen)
+        {
+            form.GetField("form1[0].#subform[3].APP_CITIZENSHIP[0]").SetValue("United States", true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[3].APP_CITIZENSHIP[0]").SetValue(userApplication.Application.ImmigrantInformation.CountryOfCitizenship ?? "", true);
+        }
+
+        form.GetField("form1[0].#subform[3].RESIDENCE_Address[0]").SetValue(userApplication.Application.CurrentAddress?.StreetAddress ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_City[0]").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
+        if (Constants.StateAbbreviations.TryGetValue(currentState, out abbreviation))
+        {
+            form.GetField("form1[0].#subform[3].APP_State[0]").SetValue(abbreviation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[3].APP_State[0]").SetValue(currentState, true);
+        }
+        form.GetField("form1[0].#subform[3].APP_ZipCode[0]").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_DAY_PhoneNum[0]").SetValue(userApplication.Application.Contact.PrimaryPhoneNumber ?? "", true);
+
+        form.GetField("form1[0].#subform[3].APP_DOB[0]").SetValue(userApplication.Application.DOB?.BirthDate ?? "", true);
+
+        DateTimeOffset birthDate = DateTimeOffset.Parse(userApplication.Application.DOB.BirthDate);
+        int age = DateTime.Today.Year - birthDate.Year;
+        if (birthDate > DateTime.Today.AddYears(-age))
+        {
+            age--;
+        }
+        string ageString = age.ToString();
+
+        form.GetField("form1[0].#subform[3].AGE[0]").SetValue(ageString, true);
+
+        form.GetField("form1[0].#subform[3].APP_OCC[0]").SetValue(userApplication.Application.WorkInformation.Occupation ?? "", true);
+        form.GetField("form1[0].#subform[3].EMPOYER_NAME[0]").SetValue(userApplication.Application.WorkInformation.EmployerName ?? "", true);
+        form.GetField("form1[0].#subform[3].CURRENT_EMP_Address[0]").SetValue(userApplication.Application.WorkInformation.EmployerStreetAddress ?? "", true);
+        form.GetField("form1[0].#subform[3].CURRENT_EMP_City[0]").SetValue(userApplication.Application.WorkInformation.EmployerCity ?? "", true);
+        if (Constants.StateAbbreviations.TryGetValue(employerState, out abbreviation))
+        {
+            form.GetField("form1[0].#subform[3].CURRENT_EMPLOYER_State[0]").SetValue(abbreviation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[3].CURRENT_EMPLOYER_State[0]").SetValue(employerState, true);
+        }
+        form.GetField("form1[0].#subform[3].CURRENT_EMPLOYER_ZipCode[0]").SetValue(userApplication.Application.WorkInformation.EmployerZip ?? "", true);
+        form.GetField("form1[0].#subform[3].CURRENT_EMPLOYER_PhoneNum[0]").SetValue(userApplication.Application.WorkInformation.EmployerPhone ?? "", true);
+
+        var birthPlace = string.Empty;
+        if (!string.IsNullOrEmpty(userApplication.Application.DOB?.BirthCity))
+        {
+            birthPlace = userApplication.Application.DOB?.BirthCity + "  " +
+                         userApplication.Application.DOB?.BirthState + "  " +
+                         userApplication.Application.DOB?.BirthCountry;
+        }
+        form.GetField("form1[0].#subform[3].APP_BIRTH_PLACE[0]").SetValue(birthPlace, true);
+
+        string height = userApplication.Application.PhysicalAppearance?.HeightFeet + "ft" + " " +
+                        userApplication.Application.PhysicalAppearance?.HeightInch + "in";
+        form.GetField("form1[0].#subform[3].APP_HEIGHT[0]").SetValue(height, true);
+        form.GetField("form1[0].#subform[3].APP_LBS[0]").SetValue(userApplication.Application.PhysicalAppearance?.Weight + "lbs" ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_EYE_CLR[0]").SetValue(userApplication.Application.PhysicalAppearance?.EyeColor ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_HAIR_CLR[0]").SetValue(userApplication.Application.PhysicalAppearance?.HairColor ?? "", true);
+        string gender = userApplication.Application.PhysicalAppearance?.Gender.First().ToString().ToUpper() ?? "";
+
+        form.GetField("form1[0].#subform[3].APP_MAILINGAddress[0]").SetValue(userApplication.Application.MailingAddress?.StreetAddress ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_MAILING_City[0]").SetValue(userApplication.Application.MailingAddress?.City ?? "", true);
+        if (Constants.StateAbbreviations.TryGetValue(mailingState, out abbreviation))
+        {
+            form.GetField("form1[0].#subform[3].APP_MAILING_State[0]").SetValue(abbreviation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[3].APP_MAILING_State[0]").SetValue(mailingState, true);
+        }
+        form.GetField("form1[0].#subform[3].APP_MAILING_Zip[0]").SetValue(userApplication.Application.MailingAddress?.Zip ?? "", true);
+
+        form.GetField("form1[0].#subform[3].SPOUSE_LAST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.LastName ?? "", true);
+        form.GetField("form1[0].#subform[3].SPOUSE_FIRST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.FirstName ?? "", true);
+        form.GetField("form1[0].#subform[3].SPOUSE_MIDDLE_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.MiddleName ?? "", true);
+
+        form.GetField("form1[0].#subform[3].SPOUSE_physical_Address[0]").SetValue(userApplication.Application.SpouseAddressInformation?.StreetAddress ?? "", true);
+        form.GetField("form1[0].#subform[3].City[0]").SetValue(userApplication.Application.SpouseAddressInformation?.City ?? "", true);
+        if (Constants.StateAbbreviations.TryGetValue(spouseState, out abbreviation))
+        {
+            form.GetField("form1[0].#subform[3].State[0]").SetValue(abbreviation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[3].State[0]").SetValue(spouseState, true);
+        }
+        form.GetField("form1[0].#subform[3].Zip[0]").SetValue(userApplication.Application.SpouseAddressInformation?.Zip ?? "", true);
+        //Description of previous addresses
+        var previousAddresses = userApplication.Application.PreviousAddresses;
+
+        if (previousAddresses != null && previousAddresses?.Length > 0)
+        {
+            int totalAddresses = (previousAddresses.Length > 4) ? 4 : previousAddresses.Length;
+
+            for (int i = 0; i < totalAddresses; i++)
+            {
+                int index = i + 1;
+                string address = previousAddresses[i].StreetAddress;
+                string state = previousAddresses[i].State?.Trim() ?? "";
+                form.GetField("form1[0].#subform[3].APP_Address[" + (index - 1) + "]").SetValue(address, true);
+                form.GetField("form1[0].#subform[3].APP_City[" + index + "]").SetValue(previousAddresses[i].City, true);
+                if (Constants.StateAbbreviations.TryGetValue(state, out abbreviation))
+                {
+                    form.GetField("form1[0].#subform[3].APP_State[" + index + "]").SetValue(GetStateByName(abbreviation), true);
+                }
+                else
+                {
+                    form.GetField("form1[0].#subform[3].APP_State[" + index + "]").SetValue(GetStateByName(state), true);
+                }
+                form.GetField("form1[0].#subform[3].APP_ZipCode[" + index + "]").SetValue(previousAddresses[i].Zip, true);
+            }
+
+            // NOTE: LM: Add additional page(s) for extra addresses
+            if (previousAddresses.Length > 3)
+            {
+                StringBuilder addressesSb = new StringBuilder();
+                int currentSetCount = 0;
+                int currentAddressCounter = 3;
+                bool isContinuation = false;
+
+                totalAddresses = previousAddresses.Length;
+                while (currentAddressCounter < totalAddresses)
+                {
+                    var previousAddress = previousAddresses[currentAddressCounter++];
+
+                    string address = previousAddress.StreetAddress;
+                    addressesSb.AppendLine($"{address}, {previousAddress.City}, {previousAddress.State} {previousAddress.Zip}");
+
+                    currentSetCount++;
+                    if (currentSetCount >= 30)
+                    {
+                        currentSetCount = 0;
+                        string headerText = "Appendix C: Additional Previous Addresses" + (isContinuation ? " - Continued" : "");
+                        AddAppendixPage(headerText, addressesSb.ToString(), form, pdfDoc, true);
+                        isContinuation = true;
+                        addressesSb.Clear();
+                    }
+                }
+
+                if (addressesSb.Length > 0)
+                {
+                    string headerText = "Appendix C: Additional Previous Addresses" + (isContinuation ? " - Continued" : "");
+                    AddAppendixPage(headerText, addressesSb.ToString(), form, pdfDoc, true);
+                }
+            }
+        }
+
+#if DEBUG
+        foreach (var key in form.GetFormFields().Keys)
+        {
+            Console.WriteLine(key);
+        }
+#endif
+        var qualifyingQuestions = userApplication.Application.QualifyingQuestions;
+        if (qualifyingQuestions == null)
+        {
+            throw new ArgumentNullException("QualifyingQuestions");
+        }
+
+        string questionYesNo = (bool)qualifyingQuestions.QuestionOne.Selected ? "0" : "1";
+        if ((bool)qualifyingQuestions.QuestionOne.Selected)
+        {
+            form.GetField("form1[0].#subform[4].YES[0]").SetValue("0", true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[4].NO[0]").SetValue("1", true);
+        }
+
+        if ((bool)qualifyingQuestions.QuestionOne.Selected)
+        {
+            form.GetField("form1[0].#subform[4].ISSUING_AGENCY[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionOne.Agency, true);
+            form.GetField("form1[0].#subform[4].ISSUE_DATE[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionOne.IssueDate, true);
+            form.GetField("form1[0].#subform[4].CCW_NO[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionOne.Number, true);
+            form.GetField("form1[0].#subform[4].ISSUING_STATE[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionOne.IssuingState, true);
+        }
+
+        questionYesNo = (bool)qualifyingQuestions.QuestionTwo.Selected ? "0" : "1";
+        if ((bool)qualifyingQuestions.QuestionTwo.Selected)
+        {
+            form.GetField("form1[0].#subform[4].YES[1]").SetValue("0", true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[4].NO[1]").SetValue("1", true);
+        }
+        if (questionYesNo == "0")
+        {
+            form.GetField("form1[0].#subform[4].AGENCY_NAME[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionTwo.Agency, true);
+            form.GetField("form1[0].#subform[4].DATE[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionTwo.DenialDate, true);
+            form.GetField("form1[0].#subform[4].DENIAL_REASON[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionTwo.DenialReason, true);
+        }
+
+        if ((bool)qualifyingQuestions.QuestionThree.Selected)
+        {
+            form.GetField("form1[0].#subform[4].YES[2]").SetValue("0", true);
+            form.GetField("form1[0].#subform[4].US_CITIZENSHIP[1]").SetValue(qualifyingQuestions?.QuestionThree.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[4].NO[2]").SetValue("1", true);
+        }
+
+        if ((bool)qualifyingQuestions.QuestionFour.Selected)
+        {
+            form.GetField("form1[0].#subform[4].YES[3]").SetValue("0", true);
+            form.GetField("form1[0].#subform[4].CRIMINAL_OFFENSE_CIVORMILIARTY[0]").SetValue(qualifyingQuestions?.QuestionFour.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[4].NO[3]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionFive.Selected)
+        {
+            form.GetField("form1[0].#subform[4].YES[4]").SetValue("0", true);
+            form.GetField("form1[0].#subform[4].ARRESTED_IN_US[1]").SetValue(qualifyingQuestions?.QuestionFive.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[4].NO[4]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionSix.Selected)
+        {
+            form.GetField("form1[0].#subform[4].YES[5]").SetValue("0", true);
+            form.GetField("form1[0].#subform[4].PROBATION_OR_PAROLE[1]").SetValue(qualifyingQuestions?.QuestionSix.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[4].NO[5]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionSeven.Selected)
+        {
+            form.GetField("form1[0].#subform[4].YES[6]").SetValue("0", true);
+            form.GetField("form1[0].#subform[4].PARTY_TO_LAWSUIT[1]").SetValue(qualifyingQuestions?.QuestionSeven.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[4].NO[6]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionEight.Selected)
+        {
+            form.GetField("form1[0].#subform[5].YES[7]").SetValue("0", true);
+            form.GetField("form1[0].#subform[5].SERVED_ARMED_FORCES[1]").SetValue(qualifyingQuestions?.QuestionEight.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[5].NO[7]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionNine.Selected)
+        {
+            form.GetField("form1[0].#subform[5].YES[8]").SetValue("0", true);
+            form.GetField("form1[0].#subform[5].TRO[1]").SetValue(qualifyingQuestions?.QuestionNine.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[5].NO[8]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionTen.Selected)
+        {
+            form.GetField("form1[0].#subform[5].YES[9]").SetValue("0", true);
+            form.GetField("form1[0].#subform[5].TRO_DOMESTIC[0]").SetValue(qualifyingQuestions?.QuestionTen.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[5].NO[9]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionEleven.Selected)
+        {
+            form.GetField("form1[0].#subform[5].YES[10]").SetValue("0", true);
+            form.GetField("form1[0].#subform[5].TRO_DOMESTIC_COURT[0]").SetValue(qualifyingQuestions?.QuestionEleven.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[5].NO[10]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionTwelve.Selected)
+        {
+            for (int i = 0; i < qualifyingQuestions.QuestionTwelve.TrafficViolations.Count && i <= 4; i++)
+            {
+                form.GetField($"form1[0].#subform[5].DATE[{i + 1}]").SetValue(qualifyingQuestions.QuestionTwelve.TrafficViolations[i].Date, true);
+                form.GetField($"form1[0].#subform[5].VIOLATION[{i}]").SetValue(qualifyingQuestions.QuestionTwelve.TrafficViolations[i].Violation, true);
+                form.GetField($"form1[0].#subform[5].AGENCY[{i}]").SetValue(qualifyingQuestions.QuestionTwelve.TrafficViolations[i].Agency, true);
+                form.GetField($"form1[0].#subform[5].CITATION_NO[{i}]").SetValue(qualifyingQuestions.QuestionTwelve.TrafficViolations[i].CitationNumber, true);
+            }
+
+            if (qualifyingQuestions.QuestionTwelve.TrafficViolations.Count > 5)
+            {
+                StringBuilder stringBuilder = new();
+
+                for (int i = 5; i < qualifyingQuestions.QuestionTwelve.TrafficViolations.Count; i++)
+                {
+                    var violation = qualifyingQuestions.QuestionTwelve.TrafficViolations[i];
+                    stringBuilder.AppendLine($"{violation.Date}\t{violation.Violation}\t{violation.Agency}\t{violation.CitationNumber}");
+                }
+
+                AddAppendixPage("Appendix A: Additional Moving Violations", stringBuilder.ToString(), form, pdfDoc, true);
+            }
+        }
+        if ((bool)qualifyingQuestions.QuestionThirteen.Selected)
+        {
+            form.GetField("form1[0].#subform[6].YES[11]").SetValue("0", true);
+            form.GetField("form1[0].#subform[6].WIC_MENTAL[1]").SetValue(qualifyingQuestions?.QuestionThirteen.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[6].NO[11]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionFourteen.Selected)
+        {
+            form.GetField("form1[0].#subform[6].YES[12]").SetValue("0", true);
+            form.GetField("form1[0].#subform[6].MENTAL_FACILITY[1]").SetValue(qualifyingQuestions?.QuestionFourteen.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[6].NO[12]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionFifteen.Selected)
+        {
+            form.GetField("form1[0].#subform[6].YES[13]").SetValue("0", true);
+            form.GetField("form1[0].#subform[6].REASON_OF_INSANTITY[0]").SetValue(qualifyingQuestions?.QuestionFifteen.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[6].NO[13]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionSixteen.Selected)
+        {
+            form.GetField("form1[0].#subform[6].YES[14]").SetValue("0", true);
+            form.GetField("form1[0].#subform[6].ADDICTION[1]").SetValue(qualifyingQuestions?.QuestionSixteen.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[6].NO[14]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionSeventeen.Selected)
+        {
+            form.GetField("form1[0].#subform[6].YES[15]").SetValue("0", true);
+            form.GetField("form1[0].#subform[6].BRANDISHING_OF_FIREARM[1]").SetValue(qualifyingQuestions?.QuestionSeventeen.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[6].NO[15]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionEighteen.Selected)
+        {
+            form.GetField("form1[0].#subform[6].YES[16]").SetValue("0", true);
+            form.GetField("form1[0].#subform[6].FIREARMS_INCIDENT[1]").SetValue(qualifyingQuestions?.QuestionEighteen.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[6].NO[16]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionNineteen.Selected)
+        {
+            form.GetField("form1[0].#subform[6].YES[17]").SetValue("0", true);
+            form.GetField("form1[0].#subform[6].DV[1]").SetValue(qualifyingQuestions?.QuestionNineteen.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[6].NO[17]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionTwenty.Selected)
+        {
+            form.GetField("form1[0].#subform[7].YES[18]").SetValue("0", true);
+            form.GetField("form1[0].#subform[7].WITHHELD_FACTS[1]").SetValue(qualifyingQuestions?.QuestionTwenty.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[7].NO[18]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionTwentyOne.Selected)
+        {
+            form.GetField("form1[0].#subform[7].YES[19]").SetValue("0", true);
+            form.GetField("form1[0].#subform[7].FIREARM_STATEMENT[0]").SetValue(qualifyingQuestions?.QuestionTwentyOne.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[7].NO[19]").SetValue("1", true);
+        }
+
+        // Character References
+        var characterReferences = userApplication.Application.CharacterReferences;
+        if (null != characterReferences && characterReferences.Any())
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                form.GetField("form1[0].#subform[8].NAME[" + i + "]").SetValue(characterReferences[i].Name, true);
+                form.GetField("form1[0].#subform[8].RELATIONSHIP[" + i + "]").SetValue(characterReferences[i].Relationship, true);
+                form.GetField("form1[0].#subform[8].PHONE_NUMBER[" + i + "]").SetValue(characterReferences[i].PhoneNumber, true);
+            }
+        }
+
+        //Description of Weapons
+        var weapons = userApplication.Application.Weapons;
+        if (null != weapons && weapons.Length > 0)
+        {
+            int totalWeapons = (weapons.Length > 9) ? 9 : weapons.Length;
+
+            for (int i = 0; i < totalWeapons; i++)
+            {
+                form.GetField("form1[0].#subform[8].MAKE[" + i + "]").SetValue(weapons[i].Make, true);
+                form.GetField("form1[0].#subform[8].MODEL[" + i + "]").SetValue(weapons[i].Model, true);
+                form.GetField("form1[0].#subform[8].CALIBER[" + i + "]").SetValue(weapons[i].Caliber, true);
+                form.GetField("form1[0].#subform[8].SERIAL_NUMBER[" + i + "]").SetValue(weapons[i].SerialNumber, true);
+            }
+
+            // NOTE: LM: Add additional page(s) for extra weapons
+            if (weapons.Length > 9)
+            {
+                StringBuilder weaponsSb = new StringBuilder();
+                int currentSetCount = 0;
+                int currentWeaponCounter = 9;
+                bool isContinuation = false;
+
+                totalWeapons = weapons.Length;
+                while (currentWeaponCounter < totalWeapons)
+                {
+                    var weapon = weapons[currentWeaponCounter++];
+                    weaponsSb.AppendLine($"{weapon.Make}\t{weapon.Model}\t{weapon.Caliber}\t{weapon.SerialNumber}");
+                    currentSetCount++;
+
+                    if (currentSetCount >= 30)
+                    {
+                        currentSetCount = 0;
+                        string headerText = "Appendix B: Additional Weapons" + (isContinuation ? " - Continued" : "");
+                        AddAppendixPage(headerText, weaponsSb.ToString(), form, pdfDoc, true);
+                        isContinuation = true;
+                        weaponsSb.Clear();
+                    }
+                }
+
+                if (weaponsSb.Length > 0)
+                {
+                    string headerText = "Appendix B: Additional Weapons" + (isContinuation ? " - Continued" : "");
+                    AddAppendixPage(headerText, weaponsSb.ToString(), form, pdfDoc, true);
+                }
+            }
+        }
+
+        mainDocument.Flush();
+        form.FlattenFields();
+        mainDocument.Close();
+
+        FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
+        FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
+
+        await _documentService.SaveAdminApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
+
+        byte[] byteInfo = outStream.ToArray();
+        outStream.Write(byteInfo, 0, byteInfo.Length);
+        outStream.Position = 0;
+
+        return outStream;
+    }
+
     public async Task<MemoryStream> GetRevocationLetterMemoryStream(PermitApplication userApplication, string user, string licensingUserName, string reason, string date, string fileName, string licensingEmail)
     {
 

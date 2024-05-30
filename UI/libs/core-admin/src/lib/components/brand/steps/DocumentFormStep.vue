@@ -89,6 +89,11 @@ const documents = [
     text: 'BOF 4012 (rev. 01/2024) Standard initial and renewal application for license to carry a weapon capable of being concealed',
   },
   {
+    name: 'BOF_4012_rev_08_2022',
+    display: 'BOF 4012 (rev. 08/2022)',
+    text: 'BOF 4012 (rev. 08/2022) Standard initial and renewal application for license to carry a weapon capable of being concealed',
+  },
+  {
     name: 'BOF_4502_rev_09_2011',
     display: 'BOF 4502 (rev. 09/2011)',
     text: 'BOF 4502 (rev. 09/2011) Carry Concealed Weapon License Amendment',

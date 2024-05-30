@@ -96,6 +96,7 @@ export type LegacyPermitsType = {
 
 export type PdfValidationType = {
   BOF_4012_rev_01_2024: boolean
+  BOF_4012_rev_08_2022: boolean
   BOF_4502_rev_09_2011: boolean
   BOF_1032_rev_01_2024: boolean
   BOF_1031_orig_01_2024: boolean

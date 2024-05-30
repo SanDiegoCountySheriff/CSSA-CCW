@@ -3,6 +3,7 @@ namespace CCW.Application.Services.Contracts;
 public interface IDocumentAzureStorage
 {
     Task<Stream> GetApplicationTemplateAsync(CancellationToken cancellationToken);
+    Task<Stream> GetLegacyApplicationTemplateAsync(CancellationToken cancellationToken);
     Task<Stream> GetRevocationLetterTemplateAsync(CancellationToken cancellationToken);
     Task<Stream> GetOfficialLicenseTemplateAsync(CancellationToken cancellationToken);
     Task<Stream> GetUnofficialLicenseTemplateAsync(CancellationToken cancellationToken);
