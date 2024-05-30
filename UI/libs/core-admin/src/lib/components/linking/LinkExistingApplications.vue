@@ -19,6 +19,59 @@
           @confirm="handleMatch"
         />
 
+        <v-menu
+          v-model="menu"
+          :close-on-content-click="false"
+          :return-value.sync="date"
+          ref="menuComponent"
+          transition="scale-transition"
+          min-width="auto"
+          offset-y
+        >
+          <template #activator="{ on, attrs }">
+            <v-btn
+              color="primary"
+              class="ml-3"
+              v-bind="attrs"
+              v-on="on"
+            >
+              Appointment Date {{ permitStore.legacyOptions.selectedDate }}
+            </v-btn>
+          </template>
+
+          <v-date-picker
+            v-model="permitStore.legacyOptions.selectedDate"
+            no-title
+            scrollable
+          >
+            <v-btn
+              @click="clearDate"
+              text
+              color="primary"
+            >
+              Clear
+            </v-btn>
+
+            <v-spacer />
+
+            <v-btn
+              @click="menu = false"
+              text
+              color="primary"
+            >
+              Cancel
+            </v-btn>
+
+            <v-btn
+              @click="menu = false"
+              text
+              color="primary"
+            >
+              OK
+            </v-btn>
+          </v-date-picker>
+        </v-menu>
+
         <v-spacer />
 
         <ConfirmUserNoApplicationDialog
@@ -240,10 +293,10 @@
 import ConfirmMatchApplicationDialog from '../dialogs/ConfirmMatchApplicationDialog.vue'
 import ConfirmUserNoApplicationDialog from '../dialogs/ConfirmUserNoApplicationDialog.vue'
 import { LegacyPermitsType } from '@core-admin/types'
-import { ApplicationStatus, UserType } from '@shared-utils/types/defaultTypes'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useUserStore } from '@shared-ui/stores/userStore'
+import { ApplicationStatus, UserType } from '@shared-utils/types/defaultTypes'
 import { computed, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
@@ -258,6 +311,8 @@ const licenseDialog = ref(false)
 const selectedLegacyApplication = ref<Array<LegacyPermitsType>>([])
 const selectedUser = ref<Array<UserType>>([])
 const applicantSearch = ref('')
+const menu = ref(false)
+const date = ref('')
 
 const readyToMatch = computed(() => {
   return (
@@ -371,6 +426,11 @@ const applicationHeaders = [
     value: 'data-table-select',
   },
 ]
+
+function clearDate() {
+  permitStore.legacyOptions.selectedDate = ''
+  menu.value = false
+}
 
 function handleMatch() {
   if (selectedUser.value[0].id && selectedLegacyApplication.value[0].id) {
