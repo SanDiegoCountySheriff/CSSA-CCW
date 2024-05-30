@@ -12,6 +12,10 @@
           :disabled="!readyToMatch"
           :applicant-name="`${selectedUser[0]?.firstName} ${selectedUser[0]?.lastName}`"
           :application-name="selectedLegacyApplication[0]?.name"
+          :applicant-email="selectedUser[0]?.email"
+          :application-email="selectedLegacyApplication[0]?.email"
+          :applicant-id-number="selectedUser[0]?.driversLicenseNumber"
+          :application-id-number="selectedLegacyApplication[0]?.idNumber"
           @confirm="handleMatch"
         />
 

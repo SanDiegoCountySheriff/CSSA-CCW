@@ -15,13 +15,24 @@
     </template>
 
     <v-card>
-      <v-card-title>Confirm Match Application </v-card-title>
+      <v-card-title> Confirm Match Application </v-card-title>
 
       <v-card-text>
-        Are you sure you want to match the applicant with name:
-        <p class="font-weight-bold">{{ applicantName }}</p>
-        To the application with name:
-        <p class="font-weight-bold">{{ applicationName }}</p>
+        <v-row>
+          <v-col>
+            <p class="font-weight-bold">Applicant:</p>
+            <p>Name: {{ applicantName }}</p>
+            <p>Email: {{ applicantEmail }}</p>
+            <p>ID Number: {{ applicantIdNumber }}</p>
+          </v-col>
+
+          <v-col>
+            <p class="font-weight-bold">Application:</p>
+            <p>Name: {{ applicationName }}</p>
+            <p>Email: {{ applicationEmail }}</p>
+            <p>ID Number: {{ applicationIdNumber }}</p>
+          </v-col>
+        </v-row>
       </v-card-text>
 
       <v-card-actions>
@@ -54,6 +65,10 @@ interface Props {
   disabled: boolean
   applicantName?: string
   applicationName?: string
+  applicantEmail?: string
+  applicationEmail?: string
+  applicantIdNumber?: string
+  applicationIdNumber?: string
 }
 
 const props = defineProps<Props>()
