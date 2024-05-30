@@ -628,8 +628,8 @@ public class PdfService : IPdfService
         PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
         form.SetGenerateAppearance(true);
 
-        await AddProcessorsSignatureImageForApplication(licensingUserName, mainDocument);
-        await AddApplicantSignatureImageForApplication(userApplication, mainDocument);
+        await AddProcessorsSignatureImageForLegacyApplication(licensingUserName, mainDocument);
+        await AddApplicantSignatureImageForLegacyApplication(userApplication, mainDocument);
 
         string applicantFullName = BuildApplicantFullName(userApplication);
         string digitallySigned = $"DIGITALLY SIGNED BY: {applicantFullName}, ON {DateTime.Now.ToString("MM/dd/yyyy")}";
@@ -641,13 +641,13 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[7].BADGE_NUMBER[1]").SetValue(adminUserProfile.BadgeNumber, true);
         form.GetField("form1[0].#subform[10].BADGE_NUMBER[2]").SetValue(adminUserProfile.BadgeNumber, true);
 
-        form.GetField("form1[0].#subform[2].DATE[0]").SetValue(userApplication.Application.License.IssueDate.ToString() ?? "", true);
-        form.GetField("form1[0].#subform[7].DATE[7]").SetValue(userApplication.Application.License.IssueDate.ToString() ?? "", true);
-        form.GetField("form1[0].#subform[10].DATE[8]").SetValue(userApplication.Application.License.IssueDate.ToString() ?? "", true);
+        form.GetField("form1[0].#subform[2].DATE[0]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"));
+        form.GetField("form1[0].#subform[7].DATE[7]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"));
+        form.GetField("form1[0].#subform[10].DATE[8]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"));
 
-        form.GetField("form1[0].#subform[2].DateTimeField1[0]").SetValue(userApplication.Application.License.IssueDate.ToString() ?? "", true);
-        form.GetField("form1[0].#subform[7].DateTimeField1[1]").SetValue(userApplication.Application.License.IssueDate.ToString() ?? "", true);
-        form.GetField("form1[0].#subform[10].DateTimeField1[2]").SetValue(userApplication.Application.License.IssueDate.ToString() ?? "", true);
+        form.GetField("form1[0].#subform[2].DateTimeField1[0]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"));
+        form.GetField("form1[0].#subform[7].DateTimeField1[1]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"));
+        form.GetField("form1[0].#subform[10].DateTimeField1[2]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"));
 
         switch (userApplication.Application.ApplicationType)
         {
@@ -1837,6 +1837,51 @@ public class PdfService : IPdfService
         mainDocument.Add(pageSeventeenImageTwo);
     }
 
+    private async Task AddApplicantSignatureImageForLegacyApplication(PermitApplication userApplication, Document mainDocument)
+    {
+
+        var fullFileName = BuildApplicantDocumentName(userApplication, "Signature");
+        var imageBinaryData = await _documentService.GetApplicantImageAsync(fullFileName, cancellationToken: default);
+
+        var imageData = ImageDataFactory.Create(imageBinaryData);
+
+        var pageThreePosition = new ImagePosition()
+        {
+            Page = 3,
+            Width = 200,
+            Height = 22,
+            Left = 175,
+            Bottom = 590
+        };
+
+        var pageThreeImage = GetImageForImageData(imageData, pageThreePosition);
+        mainDocument.Add(pageThreeImage);
+
+        var pageEightPosition = new ImagePosition()
+        {
+            Page = 8,
+            Width = 200,
+            Height = 22,
+            Left = 175,
+            Bottom = 365
+        };
+
+        var pageEightImage = GetImageForImageData(imageData, pageEightPosition);
+        mainDocument.Add(pageEightImage);
+
+        var pageElevenPosition = new ImagePosition()
+        {
+            Page = 11,
+            Width = 200,
+            Height = 22,
+            Left = 175,
+            Bottom = 535
+        };
+
+        var pageElevenImage = GetImageForImageData(imageData, pageElevenPosition);
+        mainDocument.Add(pageElevenImage);
+    }
+
     private async Task AddProcessorsSignatureImageForApplication(string processorUserName, Document mainDocument)
     {
         var imageBinaryData = await _documentService.GetProcessorSignatureAsync(processorUserName, cancellationToken: default);
@@ -1866,6 +1911,49 @@ public class PdfService : IPdfService
 
         var pageSeventeenImageTwo = GetImageForImageData(imageData, pageSeventeenPositionTwo);
         mainDocument.Add(pageSeventeenImageTwo);
+    }
+
+    private async Task AddProcessorsSignatureImageForLegacyApplication(string processorUserName, Document mainDocument)
+    {
+        var imageBinaryData = await _documentService.GetProcessorSignatureAsync(processorUserName, cancellationToken: default);
+
+        var imageData = ImageDataFactory.Create(imageBinaryData);
+
+        var pageThreePosition = new ImagePosition()
+        {
+            Page = 3,
+            Width = 200,
+            Height = 22,
+            Left = 80,
+            Bottom = 555
+        };
+
+        var pageThreeImage = GetImageForImageData(imageData, pageThreePosition);
+        mainDocument.Add(pageThreeImage);
+
+        var pageEightPosition = new ImagePosition()
+        {
+            Page = 8,
+            Width = 200,
+            Height = 22,
+            Left = 80,
+            Bottom = 327
+        };
+
+        var pageEightImage = GetImageForImageData(imageData, pageEightPosition);
+        mainDocument.Add(pageEightImage);
+
+        var pageElevenPosition = new ImagePosition()
+        {
+            Page = 11,
+            Width = 200,
+            Height = 22,
+            Left = 80,
+            Bottom = 498
+        };
+
+        var pageElevenImage = GetImageForImageData(imageData, pageElevenPosition);
+        mainDocument.Add(pageElevenImage);
     }
 
     private iText.Layout.Element.Image GetImageForImageData(ImageData imageData, ImagePosition imagePosition)
