@@ -659,6 +659,10 @@ public class PdfService : IPdfService
             case ApplicationType.RenewJudicial:
                 form.GetField("form1[0].#subform[2].JUDGE[0]").SetValue("true", true);
                 break;
+            case ApplicationType.Employment:
+            case ApplicationType.RenewEmployment:
+                form.GetField("form1[0].#subform[2].NINETY_DAY[0]").SetValue("true", true);
+                break;
             default:
                 form.GetField("form1[0].#subform[2].STANDARD[0]").SetValue("true", true);
                 break;
@@ -668,6 +672,8 @@ public class PdfService : IPdfService
         {
             case ApplicationType.RenewReserve:
             case ApplicationType.RenewJudicial:
+            case ApplicationType.RenewStandard:
+            case ApplicationType.RenewEmployment:
                 form.GetField("form1[0].#subform[2].RENEWAL_APP[0]").SetValue("true", true);
                 break;
             default:
@@ -706,7 +712,7 @@ public class PdfService : IPdfService
 
         form.GetField("form1[0].#subform[2].APP_RESIDENT_CITY[0]").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
         form.GetField("form1[0].#subform[2].APP_RESIDENT_COUNTY[0]").SetValue(userApplication.Application.CurrentAddress?.County ?? "", true);
-        form.GetField("form1[0].#subform[2].APP_CITIZENSHIP[0]").SetValue(userApplication.Application.ImmigrantInformation?.CountryOfCitizenship ?? "", true);
+        form.GetField("form1[0].#subform[2].APP_CITIZENSHIP[0]").SetValue(userApplication.Application.CurrentAddress?.Country ?? "", true);
 
         form.GetField("form1[0].#subform[2].APP_DOB[0]").SetValue(userApplication.Application.DOB?.BirthDate ?? "", true);
 
@@ -1989,7 +1995,7 @@ public class PdfService : IPdfService
         Text paragraphText = new Text(content);
 
         // Pick any font from existing fields
-        var font = form.GetField("form1[0].#subform[5].VIOLATION[3]").GetFont();
+        var font = form.GetField("form1[0].#subform[3].VIOLATION[1]").GetFont();
 
         Paragraph paragraph = new Paragraph();
         paragraph.SetFont(font).SetFontSize(f).SetBorder(new SolidBorder(ColorConstants.BLUE, .2F));
