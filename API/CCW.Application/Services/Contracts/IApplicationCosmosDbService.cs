@@ -30,4 +30,5 @@ public interface IApplicationCosmosDbService
     Task<(IEnumerable<SummarizedLegacyApplication>, int)> GetAllLegacyApplicationsAsync(PermitsOptions options, CancellationToken cancellationToken);
     Task<PermitApplication> GetLegacyApplication(string applicationId, CancellationToken cancellationToken);
     Task UpdateLegacyApplication(PermitApplication application, bool createApplication, CancellationToken cancellationToken);
+    Task<List<string>> GetEmailsAsync(PermitsOptions options, CancellationToken cancellationToken);
 }

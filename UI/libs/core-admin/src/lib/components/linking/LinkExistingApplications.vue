@@ -202,6 +202,17 @@
                 <v-toolbar flat>
                   <v-toolbar-title> Legacy Applications </v-toolbar-title>
 
+                  <v-btn
+                    :disabled="!permitStore.legacyOptions.selectedDate"
+                    :loading="isGetEmailsFetching"
+                    @click="handleCopyEmails"
+                    color="primary"
+                    class="ml-3"
+                  >
+                    <v-icon left>mdi-content-copy</v-icon>
+                    Emails
+                  </v-btn>
+
                   <v-spacer />
 
                   <v-text-field
@@ -286,6 +297,27 @@
         contain
       ></v-img>
     </v-dialog>
+
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="10000"
+      color="primary"
+      centered
+      multi-line
+    >
+      Emails have been copied to your clipboard
+
+      <template #action="{ attrs }">
+        <v-btn
+          @click="snackbar = false"
+          v-bind="attrs"
+          color="white"
+          text
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -313,6 +345,7 @@ const selectedUser = ref<Array<UserType>>([])
 const applicantSearch = ref('')
 const menu = ref(false)
 const date = ref('')
+const snackbar = ref(false)
 
 const readyToMatch = computed(() => {
   return (
@@ -370,6 +403,27 @@ const {
   {
     enabled: Boolean(permitStore.legacyOptions),
     initialData: { items: [], total: 0 },
+  }
+)
+
+const { isFetching: isGetEmailsFetching, refetch } = useQuery(
+  ['getEmails'],
+  () => {
+    return permitStore.getEmails()
+  },
+  {
+    enabled: false,
+    onSuccess: async response => {
+      let emailString = ''
+
+      for (let email of response) {
+        emailString += `${email};`
+      }
+
+      await navigator.clipboard.writeText(emailString)
+
+      snackbar.value = true
+    },
   }
 )
 
@@ -446,6 +500,10 @@ function handleCustomerNoApplications() {
     selectedUser.value[0].isPendingReview = false
     updateUser(selectedUser.value[0])
   }
+}
+
+function handleCopyEmails() {
+  refetch()
 }
 
 function handleItemExpanded({

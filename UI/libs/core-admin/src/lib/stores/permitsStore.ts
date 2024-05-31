@@ -277,6 +277,38 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return res.data
   }
 
+  async function getEmails(): Promise<string[]> {
+    const res = await axios.get(Endpoints.GET_EMAILS_ENDPOINT, {
+      params: {
+        page: legacyOptions.value.options.page,
+        itemsPerPage: legacyOptions.value.options.itemsPerPage,
+        sortBy: legacyOptions.value.options.sortBy,
+        sortDesc: legacyOptions.value.options.sortDesc,
+        groupBy: legacyOptions.value.options.groupBy,
+        groupDesc: legacyOptions.value.options.groupDesc,
+        statuses: legacyOptions.value.statuses,
+        appointmentStatuses: legacyOptions.value.appointmentStatuses,
+        applicationTypes: legacyOptions.value.applicationTypes,
+        search: legacyOptions.value.search,
+        applicationSearch: legacyOptions.value.applicationSearch,
+        showingTodaysAppointments:
+          legacyOptions.value.showingTodaysAppointments,
+        selectedDate: legacyOptions.value.selectedDate
+          ? new Date(legacyOptions.value.selectedDate).toISOString()
+          : '',
+      },
+      paramsSerializer: {
+        indexes: null,
+      },
+    })
+
+    if (res?.data) {
+      return res.data
+    }
+
+    return []
+  }
+
   async function getPermitDetailApi(orderId: string, isLegacy = 'false') {
     const isComplete = true
 
@@ -632,5 +664,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getAllLegacyApplications,
     matchApplication,
     undoMatchApplication,
+    getEmails,
   }
 })
