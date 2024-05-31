@@ -65,7 +65,7 @@
           </v-list-item>
 
           <v-list-item
-            v-if="authStore.auth.roles.includes('CCW-SYSTEM-ADMINS-ROLE')"
+            v-if="authStore.auth.roles.includes('CCW-ADMIN-ROLE')"
             :to="Routes.APPOINTMENT_MANAGEMENT_ROUTE_PATH"
             link
           >
@@ -98,7 +98,6 @@
           </v-list-item>
 
           <v-list-item
-            v-if="authStore.auth.roles.includes('CCW-ADMIN-ROLE')"
             :to="Routes.EXISTING_APPLICANTS_PATH"
             link
           >
