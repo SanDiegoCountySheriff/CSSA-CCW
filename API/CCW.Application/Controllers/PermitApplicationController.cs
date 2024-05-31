@@ -348,6 +348,24 @@ public class PermitApplicationController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
+    [HttpGet("getEmails")]
+    public async Task<IActionResult> GetEmails([FromQuery] PermitsOptions options)
+    {
+        try
+        {
+            List<string> response = await _applicationCosmosDbService.GetEmailsAsync(options, cancellationToken: default);
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            var originalException = ex.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to retrieve emails");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("search")]
     public async Task<IActionResult> Search(string searchValue)
     {
