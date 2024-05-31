@@ -82,6 +82,27 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     applicationSearch: null,
     matchedApplications: false,
   })
+  const undoOptions = ref<ApplicationTableOptionsType>({
+    options: {
+      page: 1,
+      itemsPerPage: 10,
+      sortBy: [],
+      sortDesc: [],
+      groupBy: [],
+      groupDesc: [],
+      multiSort: false,
+      mustSort: false,
+    },
+    statuses: [],
+    search: '',
+    paid: false,
+    appointmentStatuses: [],
+    applicationTypes: [],
+    showingTodaysAppointments: false,
+    selectedDate: '',
+    applicationSearch: null,
+    matchedApplications: true,
+  })
 
   const orderIds = new Map()
 
@@ -182,6 +203,65 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
           ? new Date(options.value.selectedDate).toISOString()
           : '',
         matchedApplications: options.value.matchedApplications,
+      },
+      paramsSerializer: {
+        indexes: null,
+      },
+    })
+
+    const permitsData: Array<PermitsType> = res?.data?.items.map(data => {
+      const permitsType: PermitsType = {
+        id: data.id,
+        orderId: data.orderId,
+        status: ApplicationStatus[ApplicationStatus[data.status]],
+        applicationType: ApplicationType[ApplicationType[data.applicationType]],
+        appointmentStatus:
+          AppointmentStatus[AppointmentStatus[data.appointmentStatus]],
+        paid: data.paid,
+        initials: formatInitials(data.firstName, data.lastName),
+        name: formatName(data),
+        assignedTo: data.assignedTo,
+        appointmentDateTime: data.appointmentDateTime
+          ? `${formatDate(data.appointmentDateTime)} at ${formatTime(
+              data.appointmentDateTime
+            )}`
+          : 'None',
+        isComplete: data.isComplete,
+        appointmentId: data.appointmentId,
+      }
+
+      return permitsType
+    })
+
+    res.data.items = permitsData
+
+    return res.data
+  }
+
+  async function getUndoPermitsSummary(
+    signal: AbortSignal | undefined
+  ): Promise<{
+    items: Array<PermitsType>
+    total: number
+  }> {
+    const res = await axios.get(Endpoints.GET_ALL_PERMITS_SUMMARY_ENDPOINT, {
+      signal,
+      params: {
+        page: undoOptions.value.options.page,
+        itemsPerPage: undoOptions.value.options.itemsPerPage,
+        sortBy: undoOptions.value.options.sortBy,
+        sortDesc: undoOptions.value.options.sortDesc,
+        groupBy: undoOptions.value.options.groupBy,
+        groupDesc: undoOptions.value.options.groupDesc,
+        statuses: undoOptions.value.statuses,
+        appointmentStatuses: undoOptions.value.appointmentStatuses,
+        applicationTypes: undoOptions.value.applicationTypes,
+        search: undoOptions.value.search,
+        showingTodaysAppointments: undoOptions.value.showingTodaysAppointments,
+        selectedDate: undoOptions.value.selectedDate
+          ? new Date(undoOptions.value.selectedDate).toISOString()
+          : '',
+        matchedApplications: undoOptions.value.matchedApplications,
       },
       paramsSerializer: {
         indexes: null,
@@ -629,6 +709,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   return {
     options,
     legacyOptions,
+    undoOptions,
     permits,
     searchResults,
     openPermits,
@@ -662,6 +743,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getAssignedApplicationsSummary,
     addHistoricalApplication,
     getAllLegacyApplications,
+    getUndoPermitsSummary,
     matchApplication,
     undoMatchApplication,
     getEmails,
