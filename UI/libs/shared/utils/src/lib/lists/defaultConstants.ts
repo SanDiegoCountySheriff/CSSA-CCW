@@ -494,6 +494,7 @@ export const defaultPermitState: CompleteApplication = {
     modificationNumber: 1,
     renewalNumber: 0,
     readyForModificationPayment: false,
+    isRenewingWithLegacyQuestions: false,
   },
 
   history: [],

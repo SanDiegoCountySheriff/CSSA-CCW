@@ -58,7 +58,9 @@
                   null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -72,7 +74,9 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col v-if="isRenew">
+          <v-col
+            v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
+          >
             <v-btn
               color="primary"
               @click="toggleUpdateInformation('questionOne')"
@@ -100,7 +104,7 @@
               :rules="[v => !!v || $t('Field cannot be blank')]"
               :disabled="
                 !model.application.qualifyingQuestions.questionOne
-                  .updateInformation && isRenew
+                  .updateInformation && isRenew && !model.application.isRenewingWithLegacyQuestions
               "
               color="primary"
               maxlength="50"
@@ -126,7 +130,7 @@
               :rules="[v => !!v || $t('Field cannot be blank')]"
               :disabled="
                 !model.application.qualifyingQuestions.questionOne
-                  .updateInformation && isRenew
+                  .updateInformation && isRenew && !model.application.isRenewingWithLegacyQuestions
               "
             >
             </v-text-field>
@@ -155,7 +159,7 @@
                   :rules="[v => !!v || $t('Date is required')]"
                   :disabled="
                     !model.application.qualifyingQuestions.questionOne
-                      .updateInformation && isRenew
+                      .updateInformation && isRenew && !model.application.isRenewingWithLegacyQuestions
                   "
                   prepend-inner-icon="mdi-calendar"
                   v-bind="attrs"
@@ -181,7 +185,7 @@
               :rules="[v => !!v || $t('Field cannot be blank')]"
               :disabled="
                 !model.application.qualifyingQuestions.questionOne
-                  .updateInformation && isRenew
+                  .updateInformation && isRenew && !model.application.isRenewingWithLegacyQuestions
               "
               :label="$t('CCW number')"
               color="primary"
@@ -211,7 +215,9 @@
                   null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -227,7 +233,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionTwo')"
               :disabled="
@@ -259,7 +265,7 @@
               :rules="[v => !!v || $t('Field cannot be blank')]"
               :disabled="
                 !model.application.qualifyingQuestions.questionTwo
-                  .updateInformation && isRenew
+                  .updateInformation && isRenew && !model.application.isRenewingWithLegacyQuestions
               "
             >
             </v-text-field>
@@ -287,7 +293,7 @@
                   :rules="[v => !!v || $t('Date is required')]"
                   :disabled="
                     !model.application.qualifyingQuestions.questionTwo
-                      .updateInformation && isRenew
+                      .updateInformation && isRenew && !model.application.isRenewingWithLegacyQuestions
                   "
                   prepend-inner-icon="mdi-calendar"
                   v-bind="attrs"
@@ -320,7 +326,7 @@
               :rules="[v => !!v || $t('Field cannot be blank')]"
               :disabled="
                 !model.application.qualifyingQuestions.questionTwo
-                  .updateInformation && isRenew
+                  .updateInformation && isRenew && !model.application.isRenewingWithLegacyQuestions
               "
             >
             </v-text-field>
@@ -345,7 +351,9 @@
                   null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -361,7 +369,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionThree')"
               :disabled="
@@ -381,7 +389,8 @@
               v-if="
                 isRenew &&
                 model.application.qualifyingQuestions.questionThree
-                  .updateInformation
+                  .updateInformation &&
+                !model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -407,7 +416,9 @@
             <v-textarea
               v-if="
                 !isRenew ||
-                model.application.qualifyingQuestions.questionThree.explanation
+                model.application.qualifyingQuestions.questionThree
+                  .explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -423,10 +434,14 @@
                 model.application.qualifyingQuestions.questionThree.explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>
@@ -470,7 +485,9 @@
                   null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -486,7 +503,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionFour')"
               :disabled="
@@ -533,7 +550,9 @@
             <v-textarea
               v-if="
                 !isRenew ||
-                model.application.qualifyingQuestions.questionFour.explanation
+                model.application.qualifyingQuestions.questionFour
+                  .explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -549,10 +568,14 @@
                 model.application.qualifyingQuestions.questionFour.explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>
@@ -598,7 +621,9 @@
                   null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -614,7 +639,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionFive')"
               :disabled="
@@ -661,7 +686,9 @@
             <v-textarea
               v-if="
                 !isRenew ||
-                model.application.qualifyingQuestions.questionFive.explanation
+                model.application.qualifyingQuestions.questionFive
+                  .explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :maxlength="config.appConfig.questions.five"
@@ -677,10 +704,14 @@
                 model.application.qualifyingQuestions.questionFive.explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>
@@ -725,7 +756,9 @@
                   null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -741,7 +774,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionSix')"
               :disabled="
@@ -788,7 +821,8 @@
             <v-textarea
               v-if="
                 !isRenew ||
-                model.application.qualifyingQuestions.questionSix.explanation
+                model.application.qualifyingQuestions.questionSix.explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -804,10 +838,14 @@
                 model.application.qualifyingQuestions.questionSix.explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>
@@ -850,7 +888,9 @@
                   null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -866,7 +906,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionSeven')"
               :disabled="
@@ -913,7 +953,9 @@
             <v-textarea
               v-if="
                 !isRenew ||
-                model.application.qualifyingQuestions.questionSeven.explanation
+                model.application.qualifyingQuestions.questionSeven
+                  .explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -929,10 +971,14 @@
                 model.application.qualifyingQuestions.questionSeven.explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>
@@ -978,7 +1024,9 @@
                   null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -994,7 +1042,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionEight')"
               :disabled="
@@ -1041,7 +1089,9 @@
             <v-textarea
               v-if="
                 !isRenew ||
-                model.application.qualifyingQuestions.questionEight.explanation
+                model.application.qualifyingQuestions.questionEight
+                  .explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -1057,10 +1107,14 @@
                 model.application.qualifyingQuestions.questionEight.explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>
@@ -1105,7 +1159,9 @@
                   null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :label="$t('YES')"
@@ -1121,7 +1177,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionNine')"
               :disabled="
@@ -1168,7 +1224,9 @@
             <v-textarea
               v-if="
                 !isRenew ||
-                model.application.qualifyingQuestions.questionNine.explanation
+                model.application.qualifyingQuestions.questionNine
+                  .explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -1188,10 +1246,14 @@
                 model.application.qualifyingQuestions.questionNine.explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>
@@ -1236,7 +1298,9 @@
                   null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -1252,7 +1316,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionTen')"
               :disabled="
@@ -1299,7 +1363,8 @@
             <v-textarea
               v-if="
                 !isRenew ||
-                model.application.qualifyingQuestions.questionTen.explanation
+                model.application.qualifyingQuestions.questionTen.explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -1315,7 +1380,9 @@
                 model.application.qualifyingQuestions.questionTen.explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-alert
                 outlined
@@ -1336,7 +1403,9 @@
                 }}
               </v-alert>
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>
@@ -1363,7 +1432,9 @@
                   .selected !== null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -1379,7 +1450,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionEleven')"
               :disabled="
@@ -1427,7 +1498,9 @@
             <v-textarea
               v-if="
                 !isRenew ||
-                model.application.qualifyingQuestions.questionEleven.explanation
+                model.application.qualifyingQuestions.questionEleven
+                  .explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -1443,10 +1516,14 @@
                 model.application.qualifyingQuestions.questionEleven.explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>
@@ -1492,7 +1569,9 @@
               "
               @change="handleChangeQuestionTwelve"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -1508,7 +1587,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionTwelve')"
               :disabled="
@@ -1558,7 +1637,8 @@
                     :disabled="
                       isRenew &&
                       !model.application.qualifyingQuestions.questionTwelve
-                        .updateInformation
+                        .updateInformation &&
+                      !model.application.isRenewingWithLegacyQuestions
                     "
                   ></v-text-field>
                 </template>
@@ -1590,7 +1670,8 @@
                 :disabled="
                   isRenew &&
                   !model.application.qualifyingQuestions.questionTwelve
-                    .updateInformation
+                    .updateInformation &&
+                  !model.application.isRenewingWithLegacyQuestions
                 "
               ></v-text-field>
             </v-col>
@@ -1607,7 +1688,8 @@
                 :disabled="
                   isRenew &&
                   !model.application.qualifyingQuestions.questionTwelve
-                    .updateInformation
+                    .updateInformation &&
+                  !model.application.isRenewingWithLegacyQuestions
                 "
                 dense
                 outlined
@@ -1627,7 +1709,8 @@
                 :disabled="
                   isRenew &&
                   !model.application.qualifyingQuestions.questionTwelve
-                    .updateInformation
+                    .updateInformation &&
+                  !model.application.isRenewingWithLegacyQuestions
                 "
                 dense
                 outlined
@@ -1703,7 +1786,9 @@
                   .selected !== null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -1719,7 +1804,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionThirteen')"
               :disabled="
@@ -1767,7 +1852,8 @@
               v-if="
                 !isRenew ||
                 model.application.qualifyingQuestions.questionThirteen
-                  .explanation
+                  .explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -1784,10 +1870,14 @@
                   .explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>
@@ -1832,7 +1922,9 @@
                 model.application.qualifyingQuestions.questionFourteen
                   .selected !== null,
               ]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -1848,7 +1940,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionFourteen')"
               :disabled="
@@ -1896,7 +1988,8 @@
               v-if="
                 !isRenew ||
                 model.application.qualifyingQuestions.questionFourteen
-                  .explanation
+                  .explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -1913,10 +2006,14 @@
                   .explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>
@@ -1961,7 +2058,9 @@
                   .selected !== null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -1977,7 +2076,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionFifteen')"
               :disabled="
@@ -2026,7 +2125,8 @@
               v-if="
                 !isRenew ||
                 model.application.qualifyingQuestions.questionFifteen
-                  .explanation
+                  .explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -2047,10 +2147,14 @@
                   .explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>
@@ -2095,7 +2199,9 @@
                 model.application.qualifyingQuestions.questionSixteen.selected
               "
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -2111,7 +2217,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionSixteen')"
               :disabled="
@@ -2159,7 +2265,8 @@
               v-if="
                 !isRenew ||
                 model.application.qualifyingQuestions.questionSixteen
-                  .explanation
+                  .explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -2176,10 +2283,14 @@
                   .explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>
@@ -2224,7 +2335,9 @@
                   .selected !== null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :label="$t('YES')"
@@ -2240,7 +2353,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionSeventeen')"
               :disabled="
@@ -2291,7 +2404,8 @@
               v-if="
                 !isRenew ||
                 model.application.qualifyingQuestions.questionSeventeen
-                  .explanation
+                  .explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -2308,10 +2422,14 @@
                   .explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>
@@ -2355,7 +2473,9 @@
                   .selected !== null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :label="$t('YES')"
@@ -2371,7 +2491,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionEighteen')"
               :disabled="
@@ -2420,7 +2540,8 @@
               v-if="
                 !isRenew ||
                 model.application.qualifyingQuestions.questionEighteen
-                  .explanation
+                  .explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -2437,10 +2558,14 @@
                   .explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>
@@ -2484,7 +2609,9 @@
                   .selected !== null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRene && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :label="$t('YES')"
@@ -2500,7 +2627,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionNineteen')"
               :disabled="
@@ -2549,7 +2676,8 @@
               v-if="
                 !isRenew ||
                 model.application.qualifyingQuestions.questionNineteen
-                  .explanation
+                  .explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -2566,10 +2694,14 @@
                   .explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>
@@ -2613,7 +2745,9 @@
                   .selected !== null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :label="$t('YES')"
@@ -2629,7 +2763,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionTwenty')"
               :disabled="
@@ -2677,7 +2811,9 @@
             <v-textarea
               v-if="
                 !isRenew ||
-                model.application.qualifyingQuestions.questionTwenty.explanation
+                model.application.qualifyingQuestions.questionTwenty
+                  .explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -2693,10 +2829,14 @@
                 model.application.qualifyingQuestions.questionTwenty.explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>
@@ -2740,7 +2880,9 @@
                   .selected !== null,
               ]"
               row
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <v-radio
                 :label="$t('YES')"
@@ -2756,7 +2898,7 @@
           </v-col>
           <v-col>
             <v-btn
-              v-if="isRenew"
+              v-if="isRenew && !model.application.isRenewingWithLegacyQuestions"
               color="primary"
               @click="toggleUpdateInformation('questionTwentyOne')"
               :disabled="
@@ -2807,7 +2949,8 @@
               v-if="
                 !isRenew ||
                 model.application.qualifyingQuestions.questionTwentyOne
-                  .explanation
+                  .explanation ||
+                model.application.isRenewingWithLegacyQuestions
               "
               outlined
               :color="
@@ -2824,10 +2967,14 @@
                   .explanation
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
-              :disabled="isRenew"
+              :disabled="
+                isRenew && !model.application.isRenewingWithLegacyQuestions
+              "
             >
               <template
-                v-if="isRenew"
+                v-if="
+                  isRenew && !model.application.isRenewingWithLegacyQuestions
+                "
                 #prepend-inner
               >
                 <v-icon> mdi-lock </v-icon>

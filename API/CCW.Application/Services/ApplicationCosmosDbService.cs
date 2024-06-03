@@ -471,6 +471,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
                     QuestionTwenty = new QualifyingQuestionStandard(),
                     QuestionTwentyOne = new QualifyingQuestionStandard(),
                 };
+                application.Application.IsRenewingWithLegacyQuestions = true;
                 application.Application.LegacyQualifyingQuestions = null;
 
             }
