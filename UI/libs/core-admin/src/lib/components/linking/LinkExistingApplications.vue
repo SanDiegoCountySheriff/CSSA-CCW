@@ -2,7 +2,6 @@
   <div>
     <v-card
       :loading="isMatchApplicationLoading || isUpdateUserLoading"
-      height="90vh"
       flat
     >
       <v-card-title>
@@ -431,10 +430,12 @@ const { mutate, isLoading: isMatchApplicationLoading } = useMutation({
   mutationFn: ({
     userId,
     applicationId,
+    overrideEmail,
   }: {
     userId: string
     applicationId: string
-  }) => permitStore.matchApplication(userId, applicationId),
+    overrideEmail: boolean
+  }) => permitStore.matchApplication(userId, applicationId, overrideEmail),
   onSuccess: () => {
     refetchApplications()
     refetchUsers()
@@ -486,11 +487,12 @@ function clearDate() {
   menu.value = false
 }
 
-function handleMatch() {
+function handleMatch(overrideEmail: boolean) {
   if (selectedUser.value[0].id && selectedLegacyApplication.value[0].id) {
     mutate({
       userId: selectedUser.value[0].id,
       applicationId: selectedLegacyApplication.value[0].id,
+      overrideEmail,
     })
   }
 }
@@ -514,6 +516,9 @@ function handleItemExpanded({
   value: boolean
 }) {
   if (value) {
+    licenseImage.value = ''
+    idImage.value = ''
+
     const idDocument = item.uploadedDocuments.find(d => {
       return d.documentType === 'DriverLicense'
     })

@@ -536,21 +536,21 @@ public class PermitApplicationController : ControllerBase
 
     [Authorize(Policy = "AADUsers")]
     [HttpPost("matchApplication")]
-    public async Task<IActionResult> MatchApplication(MatchRequest data)
+    public async Task<IActionResult> MatchApplication(MatchRequest matchRequest)
     {
         try
         {
-            var user = await _userProfileCosmosDbService.GetUser(data.UserId, cancellationToken: default);
+            var user = await _userProfileCosmosDbService.GetUser(matchRequest.UserId, cancellationToken: default);
 
             user.IsPendingReview = false;
 
             await _userProfileCosmosDbService.UpdateUser(user, cancellationToken: default);
 
-            var application = await _applicationCosmosDbService.GetLegacyApplication(data.ApplicationId, cancellationToken: default);
+            var application = await _applicationCosmosDbService.GetLegacyApplication(matchRequest.ApplicationId, cancellationToken: default);
 
             application.IsMatchUpdated = true;
 
-            await _applicationCosmosDbService.UpdateLegacyApplication(application, false, cancellationToken: default);  
+            await _applicationCosmosDbService.UpdateLegacyApplication(application, false, cancellationToken: default);
 
             if (application.Application.AppointmentDateTime > DateTimeOffset.UtcNow && application.Application.AppointmentDateTime != null)
             {
@@ -576,8 +576,11 @@ public class PermitApplicationController : ControllerBase
                 application.Application.AppointmentStatus = AppointmentStatus.Scheduled;
             }
 
-            application.Application.UserEmail = user.Email;
-            application.UserId = data.UserId;
+            if (matchRequest.OverrideEmail)
+            {
+                application.Application.UserEmail = user.Email;
+            }
+            application.UserId = matchRequest.UserId;
             application.Application.UploadedDocuments = Array.Empty<UploadedDocument>();
             application.Application.AdminUploadedDocuments = Array.Empty<UploadedDocument>();
             application.Application.ModifyAddWeapons = Array.Empty<Weapon>();

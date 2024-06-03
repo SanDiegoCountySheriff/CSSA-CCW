@@ -846,6 +846,11 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             where += ") ";
         }
 
+        if (getEmails)
+        {
+            where += $"a.Application.Status = 2 ";
+        }
+
         if (options.AppointmentStatuses is not null)
         {
             where += "AND (";

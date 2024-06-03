@@ -6,7 +6,7 @@
         v-model="valid"
       >
         <v-card-title class="justify-center">
-          Please fill in this information to help us find your
+          Please fill in this information to help us match your
           application/permit.
         </v-card-title>
 
@@ -22,7 +22,6 @@
                 label="First Name"
                 color="primary"
                 outlined
-                dense
               />
             </v-col>
 
@@ -36,7 +35,6 @@
                 label="Last Name"
                 color="primary"
                 outlined
-                dense
               />
             </v-col>
           </v-row>
@@ -51,7 +49,6 @@
                 label="Middle Name"
                 color="primary"
                 outlined
-                dense
               />
             </v-col>
 
@@ -76,7 +73,7 @@
                     v-bind="attrs"
                     v-on="on"
                     outlined
-                    dense
+                    readonly
                   />
                 </template>
 
@@ -103,7 +100,6 @@
                 label="Drivers License Number"
                 color="primary"
                 outlined
-                dense
               />
             </v-col>
 
@@ -116,7 +112,6 @@
                 label="Optional Agency License Number"
                 color="primary"
                 outlined
-                dense
               />
             </v-col>
           </v-row>
@@ -161,6 +156,26 @@
           </v-row>
 
           <v-row>
+            <v-col>
+              <v-alert
+                outlined
+                type="info"
+                color="primary"
+              >
+                <span
+                  :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
+                >
+                  If you have an existing appointment and know your appointment
+                  date and time please fill out the information below. This
+                  information will only be used to assist licensing in matching
+                  your information and does not schedule an appointment that
+                  does not already exist.
+                </span>
+              </v-alert>
+            </v-col>
+          </v-row>
+
+          <v-row>
             <v-col
               cols="12"
               md="6"
@@ -181,7 +196,7 @@
                     v-bind="attrs"
                     v-on="on"
                     outlined
-                    dense
+                    readonly
                   />
                 </template>
 
@@ -206,16 +221,25 @@
                 color="primary"
                 clearable
                 outlined
-                dense
               />
             </v-col>
           </v-row>
-        </v-card-text>
 
-        <v-card-text>
-          Application lookup may take some time, please check back soon! We
-          highly recommend giving us information about your appointment date if
-          you have one so we can expedite the process for you.
+          <v-row>
+            <v-col>
+              <v-alert
+                outlined
+                type="info"
+                color="primary"
+              >
+                <span
+                  :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
+                >
+                  Application lookup may take some time, please check back soon!
+                </span>
+              </v-alert>
+            </v-col>
+          </v-row>
         </v-card-text>
 
         <v-card-actions>
@@ -251,10 +275,12 @@ import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { useMutation } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 import { useUserStore } from '@shared-ui/stores/userStore'
 import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 
 const userStore = useUserStore()
+const themeStore = useThemeStore()
 const router = useRouter()
 const user = computed(() => userStore.userProfile)
 const form = ref()
