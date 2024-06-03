@@ -517,6 +517,9 @@ function handleItemExpanded({
   value: boolean
 }) {
   if (value) {
+    licenseImage.value = ''
+    idImage.value = ''
+
     const idDocument = item.uploadedDocuments.find(d => {
       return d.documentType === 'DriverLicense'
     })
