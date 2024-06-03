@@ -215,13 +215,16 @@
                     >
                       mdi-account-plus
                     </v-icon>
-                    I have never applied for a CCW license before
+                    I have never filled out a CCW application
                   </v-card-title>
 
                   <v-card-text>
                     I am applying for a CCW license with
                     <b>{{ brandStore.getBrand.agencyName }}</b> for the first
-                    time.
+                    time. I have <b>never</b> filled out an application in any
+                    previous system for
+                    <b>{{ brandStore.getBrand.agencyName }}</b>
+                    .
                   </v-card-text>
                 </v-card>
               </v-sheet>
@@ -252,8 +255,9 @@
                   </v-card-title>
 
                   <v-card-text>
-                    I have previously applied for a CCW license, or hold a CCW
-                    license with
+                    I have filled out a CCW application in another system for
+                    <b>{{ brandStore.getBrand.agencyName }}</b
+                    >, or hold a CCW license with
                     <b>{{ brandStore.getBrand.agencyName }}</b> and would like
                     to link my existing application or license.
                   </v-card-text>
