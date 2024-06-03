@@ -5,14 +5,6 @@
   >
     <v-banner class="sub-header font-weight-bold text-xl text-left mb-5">
       {{ $t(' Alias Information: ') }}
-      <template #actions>
-        <v-btn
-          icon
-          @click="handleEditRequest"
-        >
-          <v-icon color="primary"> mdi-square-edit-outline </v-icon>
-        </v-btn>
-      </template>
     </v-banner>
     <v-row>
       <v-col>
@@ -29,29 +21,13 @@
 <script setup lang="ts">
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue'
 import { AliasType } from '@shared-utils/types/defaultTypes'
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
 
 interface IAliasInfoSectionProps {
   aliasInfo: Array<AliasType>
   color: string
 }
 
-const applicationStore = useCompleteApplicationStore()
-const router = useRouter()
 const props = defineProps<IAliasInfoSectionProps>()
-
-function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 1
-  router.push({
-    path: '/form',
-    query: {
-      applicationId: applicationStore.completeApplication.id,
-      isComplete:
-        applicationStore.completeApplication.application.isComplete.toString(),
-    },
-  })
-}
 </script>
 
 <style lang="scss">

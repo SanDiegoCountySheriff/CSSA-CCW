@@ -8,18 +8,6 @@
       class="sub-header font-weight-bold text-left mb-5"
     >
       {{ $t('Birth Information: ') }}
-      <template #actions>
-        <v-btn
-          v-if="
-            applicationStore.completeApplication.application.status ==
-            ApplicationStatus.Incomplete
-          "
-          icon
-          @click="handleEditRequest"
-        >
-          <v-icon color="primary"> mdi-square-edit-outline </v-icon>
-        </v-btn>
-      </template>
     </v-banner>
 
     <v-row>
@@ -115,31 +103,13 @@
 </template>
 
 <script setup lang="ts">
-import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { DOBType } from '@shared-utils/types/defaultTypes'
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
 
 interface IDOBInfoSectionProps {
   birthInfo: DOBType
 }
 
 const props = defineProps<IDOBInfoSectionProps>()
-
-const applicationStore = useCompleteApplicationStore()
-const router = useRouter()
-
-function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 1
-  router.push({
-    path: '/form',
-    query: {
-      applicationId: applicationStore.completeApplication.id,
-      isComplete:
-        applicationStore.completeApplication.application.isComplete.toString(),
-    },
-  })
-}
 </script>
 
 <style lang="scss" scoped>
