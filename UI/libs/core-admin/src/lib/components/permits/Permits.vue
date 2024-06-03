@@ -84,7 +84,10 @@
     >
       <template #top>
         <v-toolbar flat>
-          <v-menu offset-y>
+          <v-menu
+            offset-y
+            max-height="500"
+          >
             <template #activator="{ on }">
               <v-btn
                 v-on="on"
@@ -299,12 +302,12 @@
 </template>
 
 <script setup lang="ts">
+import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import AppointmentActionConfirmationDialog from '@core-admin/components/dialogs/AppointmentActionConfirmationDialog.vue'
 import { PermitsType } from '@core-admin/types'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import {
   ApplicationType,
   AppointmentStatus,
