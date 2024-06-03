@@ -333,7 +333,7 @@
                 >
                   Modify
                 </v-btn>
-              </v-col> 
+              </v-col>
             </v-row>
           </v-card-text>
 
