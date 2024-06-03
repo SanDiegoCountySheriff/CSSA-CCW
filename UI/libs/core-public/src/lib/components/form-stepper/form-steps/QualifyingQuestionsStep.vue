@@ -104,7 +104,9 @@
               :rules="[v => !!v || $t('Field cannot be blank')]"
               :disabled="
                 !model.application.qualifyingQuestions.questionOne
-                  .updateInformation && isRenew && !model.application.isRenewingWithLegacyQuestions
+                  .updateInformation &&
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions
               "
               color="primary"
               maxlength="50"
@@ -130,7 +132,9 @@
               :rules="[v => !!v || $t('Field cannot be blank')]"
               :disabled="
                 !model.application.qualifyingQuestions.questionOne
-                  .updateInformation && isRenew && !model.application.isRenewingWithLegacyQuestions
+                  .updateInformation &&
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions
               "
             >
             </v-text-field>
@@ -159,7 +163,9 @@
                   :rules="[v => !!v || $t('Date is required')]"
                   :disabled="
                     !model.application.qualifyingQuestions.questionOne
-                      .updateInformation && isRenew && !model.application.isRenewingWithLegacyQuestions
+                      .updateInformation &&
+                    isRenew &&
+                    !model.application.isRenewingWithLegacyQuestions
                   "
                   prepend-inner-icon="mdi-calendar"
                   v-bind="attrs"
@@ -185,7 +191,9 @@
               :rules="[v => !!v || $t('Field cannot be blank')]"
               :disabled="
                 !model.application.qualifyingQuestions.questionOne
-                  .updateInformation && isRenew && !model.application.isRenewingWithLegacyQuestions
+                  .updateInformation &&
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions
               "
               :label="$t('CCW number')"
               color="primary"
@@ -265,7 +273,9 @@
               :rules="[v => !!v || $t('Field cannot be blank')]"
               :disabled="
                 !model.application.qualifyingQuestions.questionTwo
-                  .updateInformation && isRenew && !model.application.isRenewingWithLegacyQuestions
+                  .updateInformation &&
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions
               "
             >
             </v-text-field>
@@ -293,7 +303,9 @@
                   :rules="[v => !!v || $t('Date is required')]"
                   :disabled="
                     !model.application.qualifyingQuestions.questionTwo
-                      .updateInformation && isRenew && !model.application.isRenewingWithLegacyQuestions
+                      .updateInformation &&
+                    isRenew &&
+                    !model.application.isRenewingWithLegacyQuestions
                   "
                   prepend-inner-icon="mdi-calendar"
                   v-bind="attrs"
@@ -326,7 +338,9 @@
               :rules="[v => !!v || $t('Field cannot be blank')]"
               :disabled="
                 !model.application.qualifyingQuestions.questionTwo
-                  .updateInformation && isRenew && !model.application.isRenewingWithLegacyQuestions
+                  .updateInformation &&
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions
               "
             >
             </v-text-field>
@@ -2610,7 +2624,7 @@
               ]"
               row
               :disabled="
-                isRene && !model.application.isRenewingWithLegacyQuestions
+                isRenew && !model.application.isRenewingWithLegacyQuestions
               "
             >
               <v-radio
