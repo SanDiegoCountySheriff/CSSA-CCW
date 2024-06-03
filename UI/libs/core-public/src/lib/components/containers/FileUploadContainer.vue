@@ -125,7 +125,9 @@
         outlined
         class="mt-3"
       >
-        Drop files here or click to upload
+        <span :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''">
+          Drop files here or click to upload
+        </span>
       </v-alert>
       <v-alert
         v-if="hasError && !unacceptedFileType"
@@ -146,6 +148,7 @@
 <script setup lang="ts">
 import Endpoints from '@shared-ui/api/endpoints'
 import axios from 'axios'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 import { computed, defineEmits, defineProps, ref } from 'vue'
 
 interface Props {
@@ -166,6 +169,7 @@ const emit = defineEmits([
   'file-opened',
 ])
 const files = ref<File[]>([])
+const themeStore = useThemeStore()
 const isDragging = ref(false)
 const deleteDialog = ref(false)
 const isFileLoading = ref(false)
