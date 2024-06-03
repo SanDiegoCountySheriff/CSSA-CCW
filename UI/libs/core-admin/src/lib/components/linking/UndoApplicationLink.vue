@@ -5,7 +5,7 @@
         <v-data-table
           :items="data.items"
           :server-items-length="data.total"
-          :options.sync="options.options"
+          :options.sync="permitStore.undoOptions.options"
           :loading="isLoading || isFetching || isUndoMatchLoading"
           :loading-text="$t('Loading permit applications...')"
           :headers="headers"
@@ -21,7 +21,7 @@
               <v-spacer />
 
               <v-text-field
-                v-model="options.search"
+                v-model="permitStore.undoOptions.search"
                 label="Search"
                 color="primary"
                 hide-details
@@ -92,13 +92,13 @@
           </template>
 
           <template #[`item.actions`]="item">
-            <v-btn
-              @click="handleUndo(item)"
-              color="primary"
-            >
-              <v-icon left>mdi-undo</v-icon>
-              Undo Match
-            </v-btn>
+            <ConfirmationDialog
+              @confirm="handleUndo(item)"
+              button-text="Undo Match"
+              title="Confirm Undo Match"
+              text="Are you sure you want to undo this applicant/application match?"
+              icon="mdi-undo"
+            />
           </template>
         </v-data-table>
       </v-card-text>
@@ -107,42 +107,18 @@
 </template>
 
 <script setup lang="ts">
+import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
+import ConfirmationDialog from '@core-admin/components/dialogs/ConfirmationDialog.vue'
 import { PermitsType } from '@core-admin/types'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import {
-  ApplicationStatus,
-  ApplicationTableOptionsType,
-} from '@shared-utils/types/defaultTypes'
+import { watch } from 'vue'
 import {
   ApplicationType,
   AppointmentStatus,
 } from '@shared-utils/types/defaultTypes'
-import { ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const permitStore = usePermitsStore()
-
-const options = ref<ApplicationTableOptionsType>({
-  options: {
-    page: 1,
-    itemsPerPage: 10,
-    sortBy: [],
-    sortDesc: [],
-    groupBy: [],
-    groupDesc: [],
-    multiSort: false,
-    mustSort: false,
-  },
-  statuses: [],
-  search: '',
-  paid: false,
-  appointmentStatuses: [],
-  applicationTypes: [],
-  showingTodaysAppointments: false,
-  selectedDate: '',
-  applicationSearch: null,
-  matchedApplications: true,
-})
 
 const headers = [
   {
@@ -167,18 +143,19 @@ const { isLoading, isFetching, data, refetch } = useQuery(
       total: number
     } = { items: [], total: 0 }
 
-    if (options.value) {
-      response = await permitStore.getAllPermitsSummary(options.value, signal)
+    if (permitStore.undoOptions) {
+      response = await permitStore.getUndoPermitsSummary(signal)
 
       const totalPages = Math.ceil(
-        response.total / options.value.options.itemsPerPage
+        response.total / permitStore.undoOptions.options.itemsPerPage
       )
 
-      let isBeyondLastPage = options.value.options.page > totalPages + 1
+      let isBeyondLastPage =
+        permitStore.undoOptions.options.page > totalPages + 1
 
-      while (isBeyondLastPage && options.value.options.page > 1) {
-        options.value.options.page -= 1
-        isBeyondLastPage = options.value.options.page > totalPages
+      while (isBeyondLastPage && permitStore.undoOptions.options.page > 1) {
+        permitStore.undoOptions.options.page -= 1
+        isBeyondLastPage = permitStore.undoOptions.options.page > totalPages
       }
 
       return response
@@ -188,7 +165,7 @@ const { isLoading, isFetching, data, refetch } = useQuery(
   },
   {
     refetchOnMount: 'always',
-    enabled: Boolean(options.value),
+    enabled: Boolean(permitStore.undoOptions),
     initialData: { items: [], total: 0 },
   }
 )
@@ -207,7 +184,7 @@ function handleUndo(item) {
 }
 
 watch(
-  options,
+  permitStore.undoOptions,
   newVal => {
     if (newVal) {
       refetch()

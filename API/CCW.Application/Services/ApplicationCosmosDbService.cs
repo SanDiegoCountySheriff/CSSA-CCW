@@ -339,6 +339,28 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return (results, count);
     }
 
+    public async Task<List<string>> GetEmailsAsync(PermitsOptions options, CancellationToken cancellationToken)
+    {
+        QueryDefinition query = GetLegacyQueryDefinition(options, false, true);
+
+        var results = new List<string>();
+
+        using (var appsIterator = _legacyContainer.GetItemQueryIterator<string>(query))
+        {
+            while (appsIterator.HasMoreResults)
+            {
+                FeedResponse<string> emails = await appsIterator.ReadNextAsync(cancellationToken);
+
+                foreach (var item in emails)
+                {
+                    results.Add(item);
+                }
+            }
+        }
+
+        return results;
+    }
+
     public async Task<(IEnumerable<SummarizedLegacyApplication>, int)> GetAllLegacyApplicationsAsync(PermitsOptions options, CancellationToken cancellationToken)
     {
         var count = await GetLegacyApplicationCount(options, cancellationToken);
@@ -764,7 +786,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return queryDefinition;
     }
 
-    private QueryDefinition GetLegacyQueryDefinition(PermitsOptions options, bool forCount = false)
+    private QueryDefinition GetLegacyQueryDefinition(PermitsOptions options, bool forCount = false, bool getEmails = false)
     {
         var offset = 0;
 
@@ -773,7 +795,16 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             offset = options.ItemsPerPage * (options.Page - 1);
         }
 
-        var select = "SELECT a.Application.PersonalInfo.LastName as LastName, a.Application.PersonalInfo.FirstName as FirstName, a.Application.Status as Status, a.Application.AppointmentDateTime as AppointmentDateTime, a.Application.ApplicationType as ApplicationType, a.Application.OrderId as OrderId, a.Application.IdInfo.IdNumber as IdNumber, a.Application.DOB.BirthDate as BirthDate, a.Application.License.PermitNumber as PermitNumber, a.Application.UserEmail as Email, a.id FROM a ";
+        string select = string.Empty;
+
+        if (!getEmails)
+        {
+            select = "SELECT a.Application.PersonalInfo.LastName as LastName, a.Application.PersonalInfo.FirstName as FirstName, a.Application.Status as Status, a.Application.AppointmentDateTime as AppointmentDateTime, a.Application.ApplicationType as ApplicationType, a.Application.OrderId as OrderId, a.Application.IdInfo.IdNumber as IdNumber, a.Application.DOB.BirthDate as BirthDate, a.Application.License.PermitNumber as PermitNumber, a.Application.UserEmail as Email, a.id FROM a ";
+        }
+        else if (getEmails)
+        {
+            select = "SELECT VALUE a.Application.UserEmail FROM a";
+        }
         var where = "WHERE (a.Application.IsComplete = true OR a.Application.IsComplete = false) AND a.IsMatchUpdated = false ";
         var order = "";
         var limit = "OFFSET @offset LIMIT @itemsPerPage";
@@ -813,6 +844,11 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             where = where.Remove(where.Length - 3);
 
             where += ") ";
+        }
+
+        if (getEmails)
+        {
+            where += $"a.Application.Status = 2 ";
         }
 
         if (options.AppointmentStatuses is not null)
@@ -865,7 +901,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             where += "AND SUBSTRING(a.Application.AppointmentDateTime, 0, 10) = @today";
         }
 
-        var limitString = forCount ? string.Empty : limit;
+        var limitString = forCount || getEmails ? string.Empty : limit;
         var selectString = forCount ? "SELECT VALUE Count(1) FROM a " : select;
         var orderString = forCount ? string.Empty : order;
 
@@ -873,7 +909,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
         var queryDefinition = new QueryDefinition(queryString);
 
-        if (!forCount)
+        if (!forCount && !getEmails)
         {
             queryDefinition.WithParameter("@offset", offset).WithParameter("@itemsPerPage", options.ItemsPerPage);
         }

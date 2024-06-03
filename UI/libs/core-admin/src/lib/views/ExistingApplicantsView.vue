@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-tabs v-model="tab">
       <v-tabs-slider color="primary"></v-tabs-slider>
 

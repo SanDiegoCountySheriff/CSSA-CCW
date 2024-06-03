@@ -107,6 +107,12 @@ export default class Endpoints {
     }/application/v1/permitapplication/getAllLegacyApplications`
   }
 
+  static get GET_EMAILS_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getEmails`
+  }
+
   static get PUT_UPDATE_PERMIT_ENDPOINT() {
     return `${
       useAppConfigStore().appConfig.applicationApiBaseUrl

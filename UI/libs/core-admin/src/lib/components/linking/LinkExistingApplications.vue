@@ -2,7 +2,6 @@
   <div>
     <v-card
       :loading="isMatchApplicationLoading || isUpdateUserLoading"
-      height="90vh"
       flat
     >
       <v-card-title>
@@ -202,6 +201,17 @@
                 <v-toolbar flat>
                   <v-toolbar-title> Legacy Applications </v-toolbar-title>
 
+                  <v-btn
+                    :disabled="!permitStore.legacyOptions.selectedDate"
+                    :loading="isGetEmailsFetching"
+                    @click="handleCopyEmails"
+                    color="primary"
+                    class="ml-3"
+                  >
+                    <v-icon left>mdi-content-copy</v-icon>
+                    Emails
+                  </v-btn>
+
                   <v-spacer />
 
                   <v-text-field
@@ -286,6 +296,27 @@
         contain
       ></v-img>
     </v-dialog>
+
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="10000"
+      color="primary"
+      centered
+      multi-line
+    >
+      Emails have been copied to your clipboard
+
+      <template #action="{ attrs }">
+        <v-btn
+          @click="snackbar = false"
+          v-bind="attrs"
+          color="white"
+          text
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -313,6 +344,7 @@ const selectedUser = ref<Array<UserType>>([])
 const applicantSearch = ref('')
 const menu = ref(false)
 const date = ref('')
+const snackbar = ref(false)
 
 const readyToMatch = computed(() => {
   return (
@@ -373,14 +405,37 @@ const {
   }
 )
 
+const { isFetching: isGetEmailsFetching, refetch } = useQuery(
+  ['getEmails'],
+  () => {
+    return permitStore.getEmails()
+  },
+  {
+    enabled: false,
+    onSuccess: async response => {
+      let emailString = ''
+
+      for (let email of response) {
+        emailString += `${email};`
+      }
+
+      await navigator.clipboard.writeText(emailString)
+
+      snackbar.value = true
+    },
+  }
+)
+
 const { mutate, isLoading: isMatchApplicationLoading } = useMutation({
   mutationFn: ({
     userId,
     applicationId,
+    overrideEmail,
   }: {
     userId: string
     applicationId: string
-  }) => permitStore.matchApplication(userId, applicationId),
+    overrideEmail: boolean
+  }) => permitStore.matchApplication(userId, applicationId, overrideEmail),
   onSuccess: () => {
     refetchApplications()
     refetchUsers()
@@ -432,11 +487,12 @@ function clearDate() {
   menu.value = false
 }
 
-function handleMatch() {
+function handleMatch(overrideEmail: boolean) {
   if (selectedUser.value[0].id && selectedLegacyApplication.value[0].id) {
     mutate({
       userId: selectedUser.value[0].id,
       applicationId: selectedLegacyApplication.value[0].id,
+      overrideEmail,
     })
   }
 }
@@ -448,6 +504,10 @@ function handleCustomerNoApplications() {
   }
 }
 
+function handleCopyEmails() {
+  refetch()
+}
+
 function handleItemExpanded({
   item,
   value,
@@ -456,6 +516,9 @@ function handleItemExpanded({
   value: boolean
 }) {
   if (value) {
+    licenseImage.value = ''
+    idImage.value = ''
+
     const idDocument = item.uploadedDocuments.find(d => {
       return d.documentType === 'DriverLicense'
     })
