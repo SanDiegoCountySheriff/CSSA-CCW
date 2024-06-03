@@ -2,7 +2,6 @@
   <div>
     <v-card
       :loading="isMatchApplicationLoading || isUpdateUserLoading"
-      height="90vh"
       flat
     >
       <v-card-title>
