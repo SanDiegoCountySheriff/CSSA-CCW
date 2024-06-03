@@ -381,15 +381,21 @@ const {
 
 function handleOpenDayMenu({ nativeEvent, date }) {
   nativeEvent.preventDefault()
-  selectedDate.value = date
-  dayDialog.value = true
+
+  if (!showBookedAppointments) {
+    selectedDate.value = date
+    dayDialog.value = true
+  }
 }
 
 function handleOpenEventMenu({ nativeEvent, event }) {
   nativeEvent.preventDefault()
-  selectedDate.value = event.start
-  selectedEvent.value = event
-  eventDialog.value = true
+
+  if (!showBookedAppointments) {
+    selectedDate.value = event.start
+    selectedEvent.value = event
+    eventDialog.value = true
+  }
 }
 
 function handleDeleteAppointmentsOnDay() {
