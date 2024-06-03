@@ -440,16 +440,20 @@ function handlePass(itemValue: string, itemLabel: string) {
 
   changed.value = itemLabel
 
+  let updatePermitDetailsCalled = false
+
   if (itemValue === 'ciiNumber' && !isPassed) {
     ciiDialog.value = true
-  } else {
+  } else if (!updatePermitDetailsCalled) {
     updatePermitDetails()
+    updatePermitDetailsCalled = true
   }
 
   if (itemValue === 'livescan' && !isPassed) {
     liveScanDialog.value = true
-  } else {
+  } else if (!updatePermitDetailsCalled) {
     updatePermitDetails()
+    updatePermitDetailsCalled = true
   }
 }
 
