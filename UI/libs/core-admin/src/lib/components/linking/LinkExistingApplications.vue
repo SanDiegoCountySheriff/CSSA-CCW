@@ -431,10 +431,12 @@ const { mutate, isLoading: isMatchApplicationLoading } = useMutation({
   mutationFn: ({
     userId,
     applicationId,
+    overrideEmail,
   }: {
     userId: string
     applicationId: string
-  }) => permitStore.matchApplication(userId, applicationId),
+    overrideEmail: boolean
+  }) => permitStore.matchApplication(userId, applicationId, overrideEmail),
   onSuccess: () => {
     refetchApplications()
     refetchUsers()
@@ -486,11 +488,12 @@ function clearDate() {
   menu.value = false
 }
 
-function handleMatch() {
+function handleMatch(overrideEmail: boolean) {
   if (selectedUser.value[0].id && selectedLegacyApplication.value[0].id) {
     mutate({
       userId: selectedUser.value[0].id,
       applicationId: selectedLegacyApplication.value[0].id,
+      overrideEmail,
     })
   }
 }
