@@ -92,13 +92,13 @@
           </template>
 
           <template #[`item.actions`]="item">
-            <v-btn
-              @click="handleUndo(item)"
-              color="primary"
-            >
-              <v-icon left>mdi-undo</v-icon>
-              Undo Match
-            </v-btn>
+            <ConfirmationDialog
+              @confirm="handleUndo(item)"
+              button-text="Undo Match"
+              title="Confirm Undo Match"
+              text="Are you sure you want to undo this applicant/application match?"
+              icon="mdi-undo"
+            />
           </template>
         </v-data-table>
       </v-card-text>
@@ -108,6 +108,7 @@
 
 <script setup lang="ts">
 import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
+import ConfirmationDialog from '@core-admin/components/dialogs/ConfirmationDialog.vue'
 import { PermitsType } from '@core-admin/types'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { watch } from 'vue'
