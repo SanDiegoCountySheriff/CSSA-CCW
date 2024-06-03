@@ -5,25 +5,6 @@
   >
     <v-banner class="sub-header font-weight-bold text-left my-5 pl-0">
       {{ $t('Contact Information: ') }}
-      <template #actions>
-        <v-tooltip bottom>
-          <template #activator="{ on, attrs }">
-            <v-btn
-              v-if="
-                applicationStore.completeApplication.application.status ==
-                ApplicationStatus.Incomplete
-              "
-              icon
-              @click="handleEditRequest"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon color="primary"> mdi-square-edit-outline </v-icon>
-            </v-btn>
-          </template>
-          {{ $t('Edit Section') }}
-        </v-tooltip>
-      </template>
     </v-banner>
     <v-row>
       <v-col
@@ -97,10 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { ContactInfoType } from '@shared-utils/types/defaultTypes'
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
 
 interface IContactInfoSectionProps {
   contactInfo: ContactInfoType
@@ -108,20 +86,6 @@ interface IContactInfoSectionProps {
 }
 
 const props = defineProps<IContactInfoSectionProps>()
-const router = useRouter()
-const applicationStore = useCompleteApplicationStore()
-
-function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 1
-  router.push({
-    path: '/form',
-    query: {
-      applicationId: applicationStore.completeApplication.id,
-      isComplete:
-        applicationStore.completeApplication.application.isComplete.toString(),
-    },
-  })
-}
 </script>
 
 <style lang="scss" scoped>

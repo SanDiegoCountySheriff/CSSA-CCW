@@ -1,28 +1,10 @@
 <template>
   <v-container
     fluid
-    class="info-section-container rounded">
+    class="info-section-container rounded"
+  >
     <v-banner class="sub-header font-weight-bold text-left my-5">
       {{ $t('Employment Information: ') }}
-      <template #actions>
-        <v-tooltip bottom>
-          <template #activator="{ on, attrs }">
-            <v-btn
-              v-if="
-                applicationStore.completeApplication.application.status ==
-                ApplicationStatus.Incomplete
-              "
-              icon
-              @click="handleEditRequest"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon color="primary"> mdi-square-edit-outline </v-icon>
-            </v-btn>
-          </template>
-          {{ $t('Edit Section') }}
-        </v-tooltip>
-      </template>
     </v-banner>
     <div v-if="props.employmentInfo == 'Unemployed'">
       <v-banner
@@ -206,10 +188,7 @@
 </template>
 
 <script setup lang="ts">
-import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { WorkInformationType } from '@shared-utils/types/defaultTypes'
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
 
 interface IEmploymentInfoSectionProps {
   employmentInfo: string
@@ -217,20 +196,6 @@ interface IEmploymentInfoSectionProps {
   color: string
 }
 const props = defineProps<IEmploymentInfoSectionProps>()
-const router = useRouter()
-const applicationStore = useCompleteApplicationStore()
-
-function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 4
-  router.push({
-    path: '/form',
-    query: {
-      applicationId: applicationStore.completeApplication.id,
-      isComplete:
-        applicationStore.completeApplication.application.isComplete.toString(),
-    },
-  })
-}
 </script>
 
 <style lang="scss" scoped>

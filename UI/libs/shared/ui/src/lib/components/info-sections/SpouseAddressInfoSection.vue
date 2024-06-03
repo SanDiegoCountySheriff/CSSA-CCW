@@ -5,25 +5,6 @@
   >
     <v-banner class="sub-header font-weight-bold text-xl text-left my-5 pl-0">
       {{ $t(props.title) }}
-      <template #actions>
-        <v-tooltip bottom>
-          <template #activator="{ on, attrs }">
-            <v-btn
-              v-if="
-                applicationStore.completeApplication.application.status ==
-                ApplicationStatus.Incomplete
-              "
-              icon
-              @click="handleEditRequest"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon color="info"> mdi-square-edit-outline </v-icon>
-            </v-btn>
-          </template>
-          {{ $t('Edit Section') }}
-        </v-tooltip>
-      </template>
     </v-banner>
 
     <v-row>
@@ -162,9 +143,6 @@
 
 <script setup lang="ts">
 import { AddressInfoType } from '@shared-utils/types/defaultTypes'
-import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
 
 interface ISpouseAddressProps {
   spouseAddress: AddressInfoType
@@ -173,20 +151,6 @@ interface ISpouseAddressProps {
 }
 
 const props = defineProps<ISpouseAddressProps>()
-const applicationStore = useCompleteApplicationStore()
-const router = useRouter()
-
-function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 3
-  router.push({
-    path: '/form',
-    query: {
-      applicationId: applicationStore.completeApplication.id,
-      isComplete:
-        applicationStore.completeApplication.application.isComplete.toString(),
-    },
-  })
-}
 </script>
 
 <style scoped lang="scss">

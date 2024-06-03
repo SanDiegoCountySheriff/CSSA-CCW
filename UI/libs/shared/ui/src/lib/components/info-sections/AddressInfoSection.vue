@@ -8,18 +8,6 @@
       class="sub-header font-weight-bold text-xl text-left my-5"
     >
       {{ $t(props.title) }}
-      <template #actions>
-        <v-btn
-          v-if="
-            applicationStore.completeApplication.application.status ==
-            ApplicationStatus.Incomplete
-          "
-          icon
-          @click="handleEditRequest"
-        >
-          <v-icon color="primary"> mdi-square-edit-outline </v-icon>
-        </v-btn>
-      </template>
     </v-banner>
 
     <v-row>
@@ -164,9 +152,6 @@
 
 <script setup lang="ts">
 import { AddressInfoType } from '@shared-utils/types/defaultTypes'
-import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
 
 interface IAddressInfoSectionProps {
   addressInfo: AddressInfoType
@@ -174,20 +159,6 @@ interface IAddressInfoSectionProps {
   color: string
 }
 const props = defineProps<IAddressInfoSectionProps>()
-const applicationStore = useCompleteApplicationStore()
-const router = useRouter()
-
-function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 3
-  router.push({
-    path: '/form',
-    query: {
-      applicationId: applicationStore.completeApplication.id,
-      isComplete:
-        applicationStore.completeApplication.application.isComplete.toString(),
-    },
-  })
-}
 </script>
 
 <style lang="scss" scoped>

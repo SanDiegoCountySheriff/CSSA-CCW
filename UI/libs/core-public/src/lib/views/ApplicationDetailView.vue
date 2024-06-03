@@ -299,7 +299,6 @@
                   Renew
                 </v-btn>
               </v-col>
-
               <v-col
                 v-if="canApplicationBeUpdated || canApplicationBeModified"
                 cols="12"
@@ -334,7 +333,7 @@
                 >
                   Modify
                 </v-btn>
-              </v-col>
+              </v-col> 
             </v-row>
           </v-card-text>
 
