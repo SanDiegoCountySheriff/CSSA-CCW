@@ -459,12 +459,19 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             ApplicationType.RenewEmployment
         )
         {
-            application.Application.BackgroundCheck.CIINumber = new BackgroundCheckItem();
-            application.Application.BackgroundCheck.DOJ = new BackgroundCheckItem();
-            application.Application.BackgroundCheck.FBI = new BackgroundCheckItem();
-            application.Application.BackgroundCheck.DOJApprovalLetter = new BackgroundCheckItem();
-            application.Application.BackgroundCheck.SidLettersReceived = new BackgroundCheckItem();
-            application.Application.BackgroundCheck.Probations = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.ProofOfID = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.ProofOfResidency = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.NCICWantsWarrants = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.Locals = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.DMVRecord = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.AKAsChecked = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.CrimeTracer = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.TrafficCourtPortal = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.Livescan = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.SR14 = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.Firearms = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.SafetyCertificate = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.Restrictions = new BackgroundCheckItem();
             application.Application.Comments = Array.Empty<Comment>();
 
             if (application.Application.LegacyQualifyingQuestions != null)
