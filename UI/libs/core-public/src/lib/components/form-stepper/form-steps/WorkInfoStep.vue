@@ -236,6 +236,7 @@
       <WeaponsTable
         :modifying="false"
         :readonly="false"
+        :edit-enable="allowWeaponEdit ? true : false"
         :weapons="model.application.weapons"
         @delete-weapon="handleDeleteWeapon"
         @handle-edit-weapon="handleEditWeapon"
@@ -304,6 +305,12 @@ const isRenew = computed(() => {
     applicationType === ApplicationType['Renew Reserve'] ||
     applicationType === ApplicationType['Renew Judicial'] ||
     applicationType === ApplicationType['Renew Employment']
+  )
+})
+
+const allowWeaponEdit = computed(() => {
+  return (
+    props.value.isMatchUpdated === true || props.value.isMatchUpdated === null
   )
 })
 
