@@ -179,19 +179,138 @@
 
         <v-dialog
           v-model="showDialog"
-          max-width="600px"
+          max-width="900px"
+          min-height="600px"
         >
           <v-card>
-            <v-card-title class="text-h4 justify-center">
-              Let's get started
+            <v-card-title class="text-h3 justify-center">
+              Let's find out more about you
             </v-card-title>
-            <v-card-title class="text-h5 justify-center">
+
+            <v-card-title class="text-h5">
+              {{ brandStore.getBrand.agencyName }} CCW records have moved to
+              this new program. Help us find your record by answering these
+              questions.
+            </v-card-title>
+
+            <v-card-text>
+              <ul>
+                <li>
+                  Have you ever attempted to get a Concealed Carry Weapon's
+                  license with {{ brandStore.getBrand.agencyName }}?
+                  <ul>
+                    <li>
+                      yes - did you obtain the license
+                      <ul>
+                        <li>yes - match</li>
+                        <li>
+                          no - do you have an upcoming appointment scheduled?
+                          <ul>
+                            <li>yes - match</li>
+                            <li>
+                              no - have you started the application process?
+                              <ul>
+                                <li>yes - match</li>
+                                <li>no - new (same 'new' admonishment)</li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      no - If you have previously scheduled an appointment it
+                      will be released and you will lose your spot. If you have
+                      previously applied with (SDSHERIFF) your application will
+                      be withdrawn.
+                      <ul>
+                        <li>Acknowledge - new</li>
+                        <li>Back - start over</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </v-card-text>
+
+            <!-- <v-card-title class="text-h5 justify-center">
               Let us know which applies to you
             </v-card-title>
+
             <v-container
               class="px-10"
               fluid
             >
+              <v-sheet
+                outlined
+                color="primary"
+                rounded
+                elevation="3"
+                class="mb-5"
+              >
+                <v-card
+                  hover
+                  rounded
+                  outlined
+                  @click="handleExistingApplication"
+                >
+                  <v-card-title
+                    :color="$vuetify.theme.dark ? 'white' : 'primary'"
+                  >
+                    <v-icon
+                      x-large
+                      class="mr-3"
+                      :color="$vuetify.theme.dark ? 'white' : 'primary'"
+                    >
+                      mdi-account-search
+                    </v-icon>
+                    Help me find my appointment
+                  </v-card-title>
+
+                  <v-card-text>
+                    I have an upcoming appointment with
+                    <b>{{ brandStore.getBrand.agencyName }}</b>
+                    Please help me find it.
+                  </v-card-text>
+                </v-card>
+              </v-sheet>
+
+              <v-sheet
+                outlined
+                color="primary"
+                rounded
+                elevation="3"
+                class="mb-5"
+              >
+                <v-card
+                  hover
+                  rounded
+                  outlined
+                  @click="handleExistingApplication"
+                >
+                  <v-card-title
+                    :color="$vuetify.theme.dark ? 'white' : 'primary'"
+                  >
+                    <v-icon
+                      x-large
+                      class="mr-3"
+                      :color="$vuetify.theme.dark ? 'white' : 'primary'"
+                    >
+                      mdi-account-search
+                    </v-icon>
+                    Help me find my license
+                  </v-card-title>
+
+                  <v-card-text>
+                    I have filled out a CCW application in another system for
+                    <b>{{ brandStore.getBrand.agencyName }}</b
+                    >, or hold a CCW license with
+                    <b>{{ brandStore.getBrand.agencyName }}</b> and would like
+                    to link my existing application or license.
+                  </v-card-text>
+                </v-card>
+              </v-sheet>
+
               <v-sheet
                 outlined
                 color="primary"
@@ -228,41 +347,6 @@
                   </v-card-text>
                 </v-card>
               </v-sheet>
-
-              <v-sheet
-                outlined
-                color="primary"
-                rounded
-                elevation="3"
-              >
-                <v-card
-                  hover
-                  rounded
-                  outlined
-                  @click="handleExistingApplication"
-                >
-                  <v-card-title
-                    :color="$vuetify.theme.dark ? 'white' : 'primary'"
-                  >
-                    <v-icon
-                      x-large
-                      class="mr-3"
-                      :color="$vuetify.theme.dark ? 'white' : 'primary'"
-                    >
-                      mdi-account-search
-                    </v-icon>
-                    I have applied for a CCW license before
-                  </v-card-title>
-
-                  <v-card-text>
-                    I have filled out a CCW application in another system for
-                    <b>{{ brandStore.getBrand.agencyName }}</b
-                    >, or hold a CCW license with
-                    <b>{{ brandStore.getBrand.agencyName }}</b> and would like
-                    to link my existing application or license.
-                  </v-card-text>
-                </v-card>
-              </v-sheet>
             </v-container>
 
             <v-card-actions class="d-flex flex-column align-center">
@@ -286,7 +370,7 @@
                   </v-col>
                 </v-row>
               </v-container>
-            </v-card-actions>
+            </v-card-actions> -->
           </v-card>
         </v-dialog>
 
