@@ -540,6 +540,8 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
+            GetAADUserName(out string userName);
+
             var user = await _userProfileCosmosDbService.GetUser(matchRequest.UserId, cancellationToken: default);
 
             user.IsPendingReview = false;
@@ -634,6 +636,17 @@ public class PermitApplicationController : ControllerBase
                     }
                 };
             }
+
+            History[] history = new[]{
+                new History
+                    {
+                        ChangeMadeBy =  userName,
+                        Change = "Matched application",
+                        ChangeDateTimeUtc = DateTime.UtcNow,
+                    }
+                };
+
+            application.History = history;
 
             await _applicationCosmosDbService.UpdateLegacyApplication(application, true, cancellationToken: default);
 
