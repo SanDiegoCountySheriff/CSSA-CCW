@@ -31,7 +31,7 @@
         >
           <div :class="$vuetify.breakpoint.lgAndUp ? 'text-h3' : 'text-h5'">
             <template color="primary">
-              {{ brandStore.getBrand.agencyName }} CCW System
+              {{ brandStore.getBrand.agencyName }} CCW Pro
             </template>
           </div>
         </v-col>
