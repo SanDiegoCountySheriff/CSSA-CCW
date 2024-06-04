@@ -180,197 +180,272 @@
         <v-dialog
           v-model="showDialog"
           max-width="900px"
-          min-height="600px"
         >
           <v-card>
-            <v-card-title class="text-h3 justify-center">
+            <v-card-title
+              v-if="!isMobile"
+              class="text-h3 justify-center"
+            >
               Let's find out more about you
             </v-card-title>
 
-            <v-card-title class="text-h5">
-              {{ brandStore.getBrand.agencyName }} CCW records have moved to
-              this new program. Help us find your record by answering these
-              questions.
-            </v-card-title>
-
-            <v-card-text>
-              <ul>
-                <li>
-                  Have you ever attempted to get a Concealed Carry Weapon's
-                  license with {{ brandStore.getBrand.agencyName }}?
-                  <ul>
-                    <li>
-                      yes - did you obtain the license
-                      <ul>
-                        <li>yes - match</li>
-                        <li>
-                          no - do you have an upcoming appointment scheduled?
-                          <ul>
-                            <li>yes - match</li>
-                            <li>
-                              no - have you started the application process?
-                              <ul>
-                                <li>yes - match</li>
-                                <li>no - new (same 'new' admonishment)</li>
-                              </ul>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </li>
-                    <li>
-                      no - If you have previously scheduled an appointment it
-                      will be released and you will lose your spot. If you have
-                      previously applied with (SDSHERIFF) your application will
-                      be withdrawn.
-                      <ul>
-                        <li>Acknowledge - new</li>
-                        <li>Back - start over</li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </v-card-text>
-
-            <!-- <v-card-title class="text-h5 justify-center">
-              Let us know which applies to you
-            </v-card-title>
-
-            <v-container
-              class="px-10"
-              fluid
+            <v-card-title
+              v-else
+              class="text-h5"
             >
-              <v-sheet
-                outlined
-                color="primary"
-                rounded
-                elevation="3"
-                class="mb-5"
-              >
-                <v-card
-                  hover
-                  rounded
-                  outlined
-                  @click="handleExistingApplication"
-                >
-                  <v-card-title
-                    :color="$vuetify.theme.dark ? 'white' : 'primary'"
-                  >
-                    <v-icon
-                      x-large
-                      class="mr-3"
-                      :color="$vuetify.theme.dark ? 'white' : 'primary'"
-                    >
-                      mdi-account-search
-                    </v-icon>
-                    Help me find my appointment
-                  </v-card-title>
+              Let's find out more about you
+            </v-card-title>
 
-                  <v-card-text>
-                    I have an upcoming appointment with
-                    <b>{{ brandStore.getBrand.agencyName }}</b>
-                    Please help me find it.
-                  </v-card-text>
-                </v-card>
-              </v-sheet>
+            <v-card-title :class="isMobile ? 'text-h6' : 'text-h5'">
+              <template v-if="step === 1">
+                <v-row class="mb-10">
+                  <v-col>
+                    {{ brandStore.getBrand.agencyName }} CCW records have moved
+                    to this new program. Help us find your record by answering
+                    these questions. It is very important to read the questions
+                    thoroughly before answering
+                  </v-col>
+                </v-row>
 
-              <v-sheet
-                outlined
-                color="primary"
-                rounded
-                elevation="3"
-                class="mb-5"
-              >
-                <v-card
-                  hover
-                  rounded
-                  outlined
-                  @click="handleExistingApplication"
-                >
-                  <v-card-title
-                    :color="$vuetify.theme.dark ? 'white' : 'primary'"
-                  >
-                    <v-icon
-                      x-large
-                      class="mr-3"
-                      :color="$vuetify.theme.dark ? 'white' : 'primary'"
-                    >
-                      mdi-account-search
-                    </v-icon>
-                    Help me find my license
-                  </v-card-title>
-
-                  <v-card-text>
-                    I have filled out a CCW application in another system for
-                    <b>{{ brandStore.getBrand.agencyName }}</b
-                    >, or hold a CCW license with
-                    <b>{{ brandStore.getBrand.agencyName }}</b> and would like
-                    to link my existing application or license.
-                  </v-card-text>
-                </v-card>
-              </v-sheet>
-
-              <v-sheet
-                outlined
-                color="primary"
-                rounded
-                elevation="3"
-                class="mb-5"
-              >
-                <v-card
-                  hover
-                  rounded
-                  outlined
-                  @click="redirectToAcknowledgements"
-                >
-                  <v-card-title
-                    :color="$vuetify.theme.dark ? 'white' : 'primary'"
-                  >
-                    <v-icon
-                      x-large
-                      class="mr-3"
-                      :color="$vuetify.theme.dark ? 'white' : 'primary'"
-                    >
-                      mdi-account-plus
-                    </v-icon>
-                    I have never filled out a CCW application
-                  </v-card-title>
-
-                  <v-card-text>
-                    I am applying for a CCW license with
-                    <b>{{ brandStore.getBrand.agencyName }}</b> for the first
-                    time. I have <b>never</b> filled out an application in any
-                    previous system for
-                    <b>{{ brandStore.getBrand.agencyName }}</b>
-                    .
-                  </v-card-text>
-                </v-card>
-              </v-sheet>
-            </v-container>
-
-            <v-card-actions class="d-flex flex-column align-center">
-              <v-container
-                class="px-0"
-                fluid
-              >
-                <v-row justify="center">
-                  <v-col
-                    cols="12"
-                    sm="8"
-                    md="6"
-                  >
+                <v-row class="text-center">
+                  <v-col>
                     <v-btn
+                      @click="step = 2"
                       color="primary"
-                      @click="showDialog = false"
-                      block
+                      x-large
+                      outlined
                     >
-                      Cancel
+                      Get Started
                     </v-btn>
                   </v-col>
                 </v-row>
-              </v-container>
-            </v-card-actions> -->
+              </template>
+
+              <template v-if="step === 2">
+                <v-row class="mb-10">
+                  <v-col>
+                    Have you ever attempted to get a Concealed Carry Weapon's
+                    license with {{ brandStore.getBrand.agencyName }}?
+                  </v-col>
+                </v-row>
+
+                <v-row class="text-center">
+                  <v-col>
+                    <v-btn
+                      @click="step = 3"
+                      color="primary"
+                      x-large
+                      outlined
+                    >
+                      Yes
+                    </v-btn>
+                  </v-col>
+
+                  <v-col>
+                    <v-btn
+                      @click="step = 4"
+                      color="primary"
+                      x-large
+                      outlined
+                    >
+                      No
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </template>
+
+              <template v-if="step === 3">
+                <v-row class="mb-10">
+                  <v-col>
+                    Did you obtain the Concealed Carry Weapon's license with
+                    {{ brandStore.getBrand.agencyName }}?
+                  </v-col>
+                </v-row>
+
+                <v-row class="text-center">
+                  <v-col>
+                    <v-btn
+                      @click="step = 5"
+                      color="primary"
+                      x-large
+                      outlined
+                    >
+                      Yes
+                    </v-btn>
+                  </v-col>
+
+                  <v-col>
+                    <v-btn
+                      @click="step = 6"
+                      color="primary"
+                      x-large
+                      outlined
+                    >
+                      No
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </template>
+
+              <template v-if="step === 6">
+                <v-row class="mb-10">
+                  <v-col>
+                    Do you have an upcoming appointment with
+                    {{ brandStore.getBrand.agencyName }}?
+                  </v-col>
+                </v-row>
+
+                <v-row class="text-center">
+                  <v-col>
+                    <v-btn
+                      @click="step = 7"
+                      color="primary"
+                      x-large
+                      outlined
+                    >
+                      Yes
+                    </v-btn>
+                  </v-col>
+
+                  <v-col>
+                    <v-btn
+                      @click="step = 8"
+                      color="primary"
+                      x-large
+                      outlined
+                    >
+                      No
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </template>
+
+              <template v-if="step === 8">
+                <v-row class="mb-10">
+                  <v-col>
+                    Have you started the Concealed Carry Weapon's license
+                    application with
+                    {{ brandStore.getBrand.agencyName }}?
+                  </v-col>
+                </v-row>
+
+                <v-row class="text-center">
+                  <v-col>
+                    <v-btn
+                      @click="step = 9"
+                      color="primary"
+                      x-large
+                      outlined
+                    >
+                      Yes
+                    </v-btn>
+                  </v-col>
+
+                  <v-col>
+                    <v-btn
+                      @click="step = 10"
+                      color="primary"
+                      x-large
+                      outlined
+                    >
+                      No
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </template>
+
+              <template v-if="step === 5 || step === 7 || step === 9">
+                <v-row>
+                  <v-col>
+                    According to these answers you have an existing CCW license,
+                    or an existing CCW license application with
+                    {{ brandStore.getBrand.agencyName }}. Acknowledging will
+                    lead you to the next step.
+                  </v-col>
+                </v-row>
+
+                <v-row class="mb-10">
+                  <v-col>
+                    On this next step you will be asked to enter information
+                    about yourself and a picture of your state-issued ID. If you
+                    have an existing CCW Permit you will be asked to upload
+                    information about that permit as well. Please only do this
+                    if you have an existing application or permit, otherwise
+                    your application process will be greatly delayed.
+                  </v-col>
+                </v-row>
+
+                <v-row class="text-center">
+                  <v-col>
+                    <v-btn
+                      @click="step = 1"
+                      color="primary"
+                      x-large
+                      outlined
+                    >
+                      Go Back
+                    </v-btn>
+                  </v-col>
+
+                  <v-col>
+                    <v-btn
+                      @click="handleExistingApplication"
+                      color="primary"
+                      x-large
+                      outlined
+                    >
+                      Acknowledge
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </template>
+
+              <template v-if="step === 10 || step === 4">
+                <v-row>
+                  <v-col>
+                    According to these answers you are required to start a new
+                    application. Only acknowledge this if you have never filled
+                    out an application with
+                    {{ brandStore.getBrand.agencyName }} before.
+                  </v-col>
+                </v-row>
+
+                <v-row class="mb-10">
+                  <v-col>
+                    If you have previously scheduled an appointment it will be
+                    released and you will lose your spot. If you have previously
+                    applied with {{ brandStore.getBrand.agencyName }} your
+                    application will be withdrawn.
+                  </v-col>
+                </v-row>
+
+                <v-row class="text-center">
+                  <v-col>
+                    <v-btn
+                      @click="step = 1"
+                      color="primary"
+                      x-large
+                      outlined
+                    >
+                      Go Back
+                    </v-btn>
+                  </v-col>
+
+                  <v-col>
+                    <v-btn
+                      @click="redirectToAcknowledgements"
+                      color="primary"
+                      x-large
+                      outlined
+                    >
+                      Acknowledge
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </template>
+            </v-card-title>
+
+            <v-card-text></v-card-text>
           </v-card>
         </v-dialog>
 
@@ -452,6 +527,7 @@ import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
 import { useUserStore } from '@shared-ui/stores/userStore'
+import { useVuetify } from '@shared-ui/composables/useVuetify'
 import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const brandStore = useBrandStore()
@@ -463,6 +539,11 @@ const completeApplicationStore = useCompleteApplicationStore()
 const innerHeight = ref(0)
 const showDialog = ref(false)
 const showStatus = ref(false)
+const step = ref(1)
+const vuetify = useVuetify()
+const isMobile = computed(
+  () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
+)
 
 onMounted(() => {
   calculateInnerHeight()
@@ -531,3 +612,13 @@ function handleExistingApplication() {
   })
 }
 </script>
+
+<style>
+[class*='text'] {
+  white-space: normal;
+}
+
+.v-card__title {
+  word-break: normal;
+}
+</style>
