@@ -168,9 +168,9 @@
             <ModifyAddressStep
               v-model="modifyingAddress"
               :application="applicationStore.completeApplication"
+              @update-step-one-valid="handleUpdateStepOneValid"
               @handle-save="handleSaveAddress"
               @handle-continue="handleContinueAddress"
-              @previous-step="handlePreviousStep"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -184,9 +184,10 @@
             <ModifyNameStep
               v-model="modifyingName"
               :application="applicationStore.completeApplication"
-              @handle-save="handleSaveName"
-              @handle-continue="handleContinueName"
               @update-step-two-valid="handleUpdateStepTwoValid"
+              @handle-save="handleSaveName"
+              @previous-step="handlePreviousStep"
+              @handle-continue="handleContinueName"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -198,6 +199,7 @@
 
           <v-expansion-panel-content eager>
             <ModifyWeaponStep
+              @update-step-three-valid="handleUpdateStepThreeValid"
               @handle-save="handleSaveWeapon"
               @handle-continue="handleContinueWeapon"
               @handle-add-weapon="handleAddWeapon"
@@ -222,6 +224,7 @@
               :modifying-name="modifyingName"
               :modifying-address="modifyingAddress"
               :modifying-weapons="modifyingWeapons"
+              @update-step-four-valid="handleUpdateStepFourValid"
               @handle-continue="handleContinueFile"
               @handle-save="handleSaveFile"
               @previous-step="handlePreviousStep"
