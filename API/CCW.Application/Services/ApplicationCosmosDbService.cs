@@ -466,6 +466,37 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             application.Application.BackgroundCheck.SidLettersReceived = new BackgroundCheckItem();
             application.Application.BackgroundCheck.Probations = new BackgroundCheckItem();
             application.Application.Comments = Array.Empty<Comment>();
+
+            if (application.Application.LegacyQualifyingQuestions != null)
+            {
+                application.Application.QualifyingQuestions = new QualifyingQuestions
+                {
+                    QuestionOne = new QualifyingQuestionOne(),
+                    QuestionTwo = new QualifyingQuestionTwo(),
+                    QuestionThree = new QualifyingQuestionStandard(),
+                    QuestionFour = new QualifyingQuestionStandard(),
+                    QuestionFive = new QualifyingQuestionStandard(),
+                    QuestionSix = new QualifyingQuestionStandard(),
+                    QuestionSeven = new QualifyingQuestionStandard(),
+                    QuestionEight = new QualifyingQuestionStandard(),
+                    QuestionNine = new QualifyingQuestionStandard(),
+                    QuestionTen = new QualifyingQuestionStandard(),
+                    QuestionEleven = new QualifyingQuestionStandard(),
+                    QuestionTwelve = new QualifyingQuestionTwelve(),
+                    QuestionThirteen = new QualifyingQuestionStandard(),
+                    QuestionFourteen = new QualifyingQuestionStandard(),
+                    QuestionFifteen = new QualifyingQuestionStandard(),
+                    QuestionSixteen = new QualifyingQuestionStandard(),
+                    QuestionSeventeen = new QualifyingQuestionStandard(),
+                    QuestionEighteen = new QualifyingQuestionStandard(),
+                    QuestionNineteen = new QualifyingQuestionStandard(),
+                    QuestionTwenty = new QualifyingQuestionStandard(),
+                    QuestionTwentyOne = new QualifyingQuestionStandard(),
+                };
+                application.Application.IsRenewingWithLegacyQuestions = true;
+                application.Application.LegacyQualifyingQuestions = null;
+
+            }
         }
 
         if (existingApplication.Application.ApplicationType != application.Application.ApplicationType &&

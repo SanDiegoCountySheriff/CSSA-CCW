@@ -638,7 +638,11 @@
                 "
               />
               <CharacterReferenceInfoSection
-                v-if="!isRenew"
+                v-if="
+                  !isRenew &&
+                  !applicationStore.completeApplication.application
+                    .legacyQualifyingQuestions
+                "
                 :color="'primary'"
                 :character-references="
                   applicationStore.completeApplication.application
@@ -1068,7 +1072,7 @@ import {
   PaymentType,
 } from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, reactive, ref } from 'vue'
-import { useMutation, useQuery } from '@tanstack/vue-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { useRoute, useRouter } from 'vue-router/composables'
 
 interface IFileSubmission {
@@ -1091,6 +1095,7 @@ const fileUploadLoading = ref(false)
 const appointmentTime = ref('')
 const isRenewLoading = ref(false)
 const paymentSnackbar = ref(false)
+const queryClient = useQueryClient()
 
 const state = reactive({
   snackbar: false,
@@ -1657,7 +1662,8 @@ const { isLoading: isRefundRequestLoading, mutateAsync: requestRefund } =
 
 const renewMutation = useMutation({
   mutationFn: applicationStore.updateApplication,
-  onSuccess: () => {
+  onSuccess: async () => {
+    await queryClient.invalidateQueries(['getApplicationsByUser'])
     isRenewLoading.value = false
     router.push({
       path: Routes.FORM_ROUTE_PATH,

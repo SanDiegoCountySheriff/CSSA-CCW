@@ -985,7 +985,8 @@ const showCharacterReferences = computed(() => {
     applicationType === ApplicationType['Renew Reserve'] ||
     applicationType === ApplicationType['Renew Judicial'] ||
     applicationType === ApplicationType['Renew Employment'] ||
-    applicationStatus === ApplicationStatus['Permit Delivered']
+    applicationStatus === ApplicationStatus['Permit Delivered'] ||
+    model.value.application.legacyQualifyingQuestions
   )
 })
 

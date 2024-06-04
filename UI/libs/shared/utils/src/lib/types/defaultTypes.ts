@@ -709,6 +709,7 @@ export type CompleteApplication = {
     readyForModificationPayment: boolean
     modificationNumber: number
     renewalNumber: number
+    isRenewingWithLegacyQuestions: boolean
   }
   history: Array<HistoryType>
   paymentHistory: Array<PaymentHistoryType>

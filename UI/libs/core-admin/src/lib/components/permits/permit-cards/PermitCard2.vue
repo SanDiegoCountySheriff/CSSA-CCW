@@ -1395,6 +1395,11 @@ function handleFinishRenewal() {
 
   changed.value = 'Renewal - Permit Delivered'
 
+  if (app.isRenewingWithLegacyQuestions) {
+    permitStore.getPermitDetail.application.isRenewingWithLegacyQuestions =
+      false
+  }
+
   updatePermitDetails()
 }
 
