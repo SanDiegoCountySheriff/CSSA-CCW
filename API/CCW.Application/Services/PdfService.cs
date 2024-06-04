@@ -746,7 +746,6 @@ public class PdfService : IPdfService
             throw new ArgumentNullException("QualifyingQuestions");
         }
 
-        string questionYesNo = (bool)qualifyingQuestions.QuestionOne.Selected ? "0" : "1";
         if ((bool)qualifyingQuestions.QuestionOne.Selected)
         {
             form.GetField("form1[0].#subform[2].CURRENT_CCW[1]").SetValue("0", true);
@@ -763,7 +762,7 @@ public class PdfService : IPdfService
             form.GetField("form1[0].#subform[2].CCW_NO[0]").SetValue(userApplication.Application.LegacyQualifyingQuestions.QuestionOne.Number, true);
         }
 
-        questionYesNo = (bool)qualifyingQuestions.QuestionTwo.Selected ? "0" : "1";
+        string questionYesNo = (bool)qualifyingQuestions.QuestionTwo.Selected ? "0" : "1";
         form.GetField("form1[0].#subform[2].CCW_DENIAL[1]").SetValue(questionYesNo, true);
         if (questionYesNo == "0")
         {
@@ -801,9 +800,9 @@ public class PdfService : IPdfService
         }
 
         questionYesNo = (bool)qualifyingQuestions.QuestionSeven.Selected ? "0" : "1";
+        form.GetField("form1[0].#subform[3].PROBATION[1]").SetValue(questionYesNo, true);
         if ((bool)qualifyingQuestions.QuestionSeven.Selected)
         {
-            form.GetField("form1[0].#subform[3].PROBATION[1]").SetValue("0", true);
             form.GetField("form1[0].#subform[3].PROBATION[2]").SetValue(qualifyingQuestions?.QuestionSeven.Explanation, true);
         }
         else
@@ -912,8 +911,7 @@ public class PdfService : IPdfService
 
         form.GetField("form1[0].#subform[8].APP_SSN[0]").SetValue(FormatSSN(userApplication.Application.PersonalInfo?.Ssn) ?? "", true);
         form.GetField("form1[0].#subform[8].APP_CDL[0]").SetValue(userApplication.Application.IdInfo?.IdNumber ?? "", true);
-        form.GetField("form1[0].#subform[8].APP_CDL_RESTRICTIONS[0]").SetValue(userApplication.Application.LegacyQualifyingQuestions?.QuestionSixteen.Explanation, true);
-
+        form.GetField("form1[0].#subform[8].APP_CDL_RESTRICTIONS[0]").SetValue(userApplication.Application.LegacyQualifyingQuestions?.QuestionSixteen.Explanation ?? "", true);
         string residenceAddress = userApplication.Application.CurrentAddress?.StreetAddress;
         form.GetField("form1[0].#subform[8].APP_Address[0]").SetValue(residenceAddress ?? "", true);
         form.GetField("form1[0].#subform[8].APP_City[0]").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);

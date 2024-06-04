@@ -639,7 +639,11 @@
                 "
               />
               <CharacterReferenceInfoSection
-                v-if="!isRenew"
+                v-if="
+                  !isRenew &&
+                  !applicationStore.completeApplication.application
+                    .legacyQualifyingQuestions
+                "
                 :color="'primary'"
                 :character-references="
                   applicationStore.completeApplication.application
