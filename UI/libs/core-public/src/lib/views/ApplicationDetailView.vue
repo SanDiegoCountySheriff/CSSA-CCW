@@ -1956,8 +1956,6 @@ async function handleRenewApplication() {
 
   applicationStore.completeApplication.application.appointmentStatus = 1
 
-  applicationStore.completeApplication.application.ciiNumber = ''
-
   resetDocuments()
   resetAgreements()
   renewMutation.mutate()
