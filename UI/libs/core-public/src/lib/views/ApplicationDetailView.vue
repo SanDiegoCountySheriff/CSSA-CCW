@@ -1943,6 +1943,10 @@ async function handleRenewApplication() {
     modify: brandStore.brand.cost.modify,
     creditFee: brandStore.brand.cost.creditFee,
     convenienceFee: brandStore.brand.cost.convenienceFee,
+    standardLivescanFee: brandStore.brand.cost.standardLivescanFee,
+    judicialLivescanFee: brandStore.brand.cost.judicialLivescanFee,
+    reserveLivescanFee: brandStore.brand.cost.reserveLivescanFee,
+    employmentLivescanFee: brandStore.brand.cost.employmentLivescanFee,
   }
 
   applicationStore.completeApplication.application.isUpdatingApplication = false

@@ -49,7 +49,10 @@
         </v-row>
 
         <v-row>
-          <v-col>
+          <v-col
+            cols="12"
+            md="6"
+          >
             <v-text-field
               v-model="brandStore.getBrand.cost.new.reserve"
               :label="$t('New Reserve Cost')"
@@ -62,10 +65,10 @@
             />
           </v-col>
 
-          <v-col>
+          <v-col v-if="brandStore.getBrand.employmentLicense">
             <v-text-field
-              v-model="brandStore.getBrand.cost.renew.standard"
-              :label="$t('Renew Standard Cost')"
+              v-model="brandStore.getBrand.cost.new.employment"
+              :label="$t('New Employment Cost')"
               :rules="feeRules"
               type="number"
               color="primary"
@@ -79,6 +82,19 @@
         <v-row>
           <v-col>
             <v-text-field
+              v-model="brandStore.getBrand.cost.renew.standard"
+              :label="$t('Renew Standard Cost')"
+              :rules="feeRules"
+              type="number"
+              color="primary"
+              prefix="$"
+              required
+              outlined
+            />
+          </v-col>
+
+          <v-col>
+            <v-text-field
               v-model="brandStore.getBrand.cost.renew.judicial"
               :label="$t('Renew Judicial Cost')"
               :rules="feeRules"
@@ -89,7 +105,9 @@
               outlined
             />
           </v-col>
+        </v-row>
 
+        <v-row>
           <v-col
             cols="12"
             md="6"
@@ -105,13 +123,30 @@
               outlined
             />
           </v-col>
+
+          <v-col
+            v-if="brandStore.getBrand.employmentLicense"
+            cols="12"
+            md="6"
+          >
+            <v-text-field
+              v-model="brandStore.getBrand.cost.renew.employment"
+              :label="$t('Renew Employment Cost')"
+              :rules="feeRules"
+              type="number"
+              color="primary"
+              prefix="$"
+              required
+              outlined
+            />
+          </v-col>
         </v-row>
 
-        <v-row v-if="brandStore.getBrand.employmentLicense">
+        <v-row>
           <v-col>
             <v-text-field
-              v-model="brandStore.getBrand.cost.new.employment"
-              :label="$t('New Employment Cost')"
+              v-model="brandStore.getBrand.cost.modify"
+              :label="$t('Modify Fee')"
               :rules="feeRules"
               type="number"
               color="primary"
@@ -121,13 +156,10 @@
             />
           </v-col>
 
-          <v-col
-            cols="12"
-            md="6"
-          >
+          <v-col>
             <v-text-field
-              v-model="brandStore.getBrand.cost.renew.employment"
-              :label="$t('Renew Employment Cost')"
+              v-model="brandStore.getBrand.cost.issuance"
+              :label="$t('Issuance Fee')"
               :rules="feeRules"
               type="number"
               color="primary"
@@ -156,8 +188,38 @@
         <v-row>
           <v-col>
             <v-text-field
-              v-model="brandStore.getBrand.cost.modify"
-              :label="$t('Modify Fee')"
+              v-model="brandStore.getBrand.cost.standardLivescanFee"
+              :label="$t('Standard Livescan Fee')"
+              :rules="feeRules"
+              type="number"
+              color="primary"
+              prefix="$"
+              required
+              outlined
+            />
+          </v-col>
+          <v-col>
+            <v-text-field
+              v-model="brandStore.getBrand.cost.judicialLivescanFee"
+              :label="$t('Judicial Livescan Fee')"
+              :rules="feeRules"
+              type="number"
+              color="primary"
+              prefix="$"
+              required
+              outlined
+            />
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            cols="12"
+            md="6"
+          >
+            <v-text-field
+              v-model="brandStore.getBrand.cost.reserveLivescanFee"
+              :label="$t('Reserve Livescan Fee')"
               :rules="feeRules"
               type="number"
               color="primary"
@@ -167,10 +229,10 @@
             />
           </v-col>
 
-          <v-col>
+          <v-col v-if="brandStore.getBrand.employmentLicense">
             <v-text-field
-              v-model="brandStore.getBrand.cost.issuance"
-              :label="$t('Issuance Fee')"
+              v-model="brandStore.getBrand.cost.employmentLivescanFee"
+              :label="$t('Employment Livescan Fee')"
               :rules="feeRules"
               type="number"
               color="primary"

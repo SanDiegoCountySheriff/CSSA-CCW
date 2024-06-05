@@ -3,6 +3,7 @@ import axios from 'axios'
 import { defaultPermitState } from '@shared-utils/lists/defaultConstants'
 import { defineStore } from 'pinia'
 import { useAuthStore } from '@shared-ui/stores/auth'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import {
   ApplicationStatus,
   ApplicationTableOptionsType,
@@ -34,6 +35,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   const permitDetail = ref<CompleteApplication>(defaultPermitState)
   const history = ref(defaultPermitState.history)
   const searchResults = ref([])
+  const brandStore = useBrandStore()
 
   const getPermits = computed(() => permits.value)
   const getSearchResults = computed(() => searchResults.value)
@@ -671,6 +673,26 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   }
 
   async function updatePermitDetailApi(item: string) {
+    if (permitDetail.value.application.cost.standardLivescanFee === null) {
+      permitDetail.value.application.cost.standardLivescanFee =
+        brandStore.brand.cost.standardLivescanFee
+    }
+
+    if (permitDetail.value.application.cost.judicialLivescanFee === null) {
+      permitDetail.value.application.cost.judicialLivescanFee =
+        brandStore.brand.cost.judicialLivescanFee
+    }
+
+    if (permitDetail.value.application.cost.reserveLivescanFee === null) {
+      permitDetail.value.application.cost.reserveLivescanFee =
+        brandStore.brand.cost.reserveLivescanFee
+    }
+
+    if (permitDetail.value.application.cost.employmentLivescanFee === null) {
+      permitDetail.value.application.cost.employmentLivescanFee =
+        brandStore.brand.cost.employmentLivescanFee
+    }
+
     const res = await axios.put(
       Endpoints.PUT_UPDATE_AGENCY_PERMIT_ENDPOINT,
       permitDetail.value,

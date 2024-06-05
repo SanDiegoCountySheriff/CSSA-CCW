@@ -148,6 +148,10 @@ export type CostType = {
   modify: number
   creditFee: number
   convenienceFee: number
+  standardLivescanFee?: number | null
+  reserveLivescanFee?: number | null
+  judicialLivescanFee?: number | null
+  employmentLivescanFee?: number | null
 }
 
 export type DenialInfoType = {
@@ -559,6 +563,10 @@ export enum PaymentType {
   'CCW Application Renewal Reserve Payment',
   'CCW Application Renewal Employment Payment',
   'CCW Application Issuance Payment',
+  'CCW Application Standard Livescan Payment',
+  'CCW Application Judicial Livescan Payment',
+  'CCW Application Reserve Livescan Payment',
+  'CCW Application Employment Livescan Payment',
 }
 
 export enum ApplicationType {

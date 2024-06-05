@@ -14,4 +14,12 @@ public class Cost
     public float Modify { get; set; }
     [JsonProperty("creditFee")]
     public float CreditFee { get; set; }
+    [JsonProperty("standardLivescanFee")]
+    public float? StandardLivescanFee { get; set; }
+    [JsonProperty("judicialLivescanFee")]
+    public float? JudicialLivescanFee { get; set; }
+    [JsonProperty("reserveLivescanFee")]
+    public float? ReserveLivescanFee { get; set; }
+    [JsonProperty("employmentLivescanFee")]
+    public float? EmploymentLivescanFee { get; set; }
 }
