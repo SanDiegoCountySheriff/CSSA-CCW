@@ -23,21 +23,26 @@
             cols="12"
             lg="4"
           >
-            <v-select
-              ref="select"
-              :items="appType"
-              :readonly="readonly"
-              label="Application Type"
-              item-text="text"
-              item-value="value"
-              v-model="permitStore.getPermitDetail.application.applicationType"
-              @change="updateApplicationType($event)"
-              dense
-              outlined
-              :menu-props="{
-                offsetY: true,
-              }"
-            ></v-select>
+            <v-tooltip bottom>
+              <template #activator="{ on, attrs }">
+                <v-btn
+                  @click="dialog = true"
+                  v-on="on"
+                  v-bind="attrs"
+                  outlined
+                  color="primary"
+                >
+                  <v-icon left>mdi-tag-edit-outline</v-icon>
+                  Application Type:
+                  {{
+                    ApplicationType[
+                      permitStore.getPermitDetail.application.applicationType
+                    ]
+                  }}
+                </v-btn>
+              </template>
+              <span>Edit Application Type</span>
+            </v-tooltip>
           </v-col>
 
           <v-col
@@ -89,6 +94,51 @@
         />
       </template>
     </v-card>
+
+    <v-dialog
+      v-model="dialog"
+      max-width="600"
+    >
+      <v-card :loading="isFetching">
+        <v-card-title>
+          Are you sure you want to change the application type?
+        </v-card-title>
+
+        <v-card-text>
+          It is very rare that you should change this, only in the case of a
+          customer making a mistake. Never change this for a customer unless
+          they have made a mistake.
+        </v-card-text>
+
+        <v-card-text>
+          <v-select
+            ref="select"
+            :items="appType"
+            :readonly="readonly"
+            label="Application Type"
+            item-text="text"
+            item-value="value"
+            v-model="permitStore.getPermitDetail.application.applicationType"
+            @change="updateApplicationType($event)"
+            dense
+            outlined
+            :menu-props="{
+              offsetY: true,
+            }"
+          ></v-select>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn
+            @click="dialog = false"
+            text
+            color="primary"
+          >
+            Cancel
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -104,11 +154,12 @@ import {
   ApplicationType,
   AppointmentStatus,
 } from '@shared-utils/types/defaultTypes'
-import { computed, inject, reactive } from 'vue'
+import { computed, inject, reactive, ref } from 'vue'
 
 const permitStore = usePermitsStore()
 const appointmentStore = useAppointmentsStore()
 const readonly = inject('readonly')
+const dialog = ref(false)
 
 const state = reactive({
   update: '',
@@ -275,10 +326,13 @@ const appType = [
   },
 ]
 
-const { refetch: updatePermitDetails } = useQuery(
+const { isFetching, refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
   () => permitStore.updatePermitDetailApi(state.update),
   {
+    onSuccess: () => {
+      dialog.value = false
+    },
     enabled: false,
   }
 )
