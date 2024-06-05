@@ -129,9 +129,7 @@
                         <td>
                           {{
                             item.appointmentDate
-                              ? new Date(
-                                  item.appointmentDate
-                                ).toLocaleDateString()
+                              ? formatDateString(item.appointmentDate)
                               : 'User did not enter'
                           }}
                         </td>
@@ -485,6 +483,12 @@ const applicationHeaders = [
 function clearDate() {
   permitStore.legacyOptions.selectedDate = ''
   menu.value = false
+}
+
+function formatDateString(dateString) {
+  const [year, month, day] = dateString.split('T')[0].split('-')
+
+  return `${parseInt(month)}/${parseInt(day)}/${year}`
 }
 
 function handleMatch(overrideEmail: boolean) {
