@@ -111,6 +111,11 @@ const paymentOptions = [
   { text: 'CCW Application Renewal Judicial Payment', value: 9 },
   { text: 'CCW Application Renewal Reserve Payment', value: 10 },
   { text: 'CCW Application Renewal Employment Payment', value: 11 },
+  { text: 'CCW Application Issuance Payment', value: 12 },
+  { text: 'CCW Application Standard Livescan Payment', value: 13 },
+  { text: 'CCW Application Judicial Livescan Payment', value: 14 },
+  { text: 'CCW Application Reserve Livescan Payment', value: 15 },
+  { text: 'CCW Application Employment Livescan Payment', value: 16 },
 ]
 
 const state = reactive({

@@ -30,4 +30,13 @@ public enum PaymentType
     RenewalEmployment,
     [Description("CCW Application Issuance Payment")]
     Issuance,
+    [Description("CCW Application Standard Livescan Payment")]
+    StandardLivescan,
+    [Description("CCW Application Judicial Livescan Payment")]
+    JudicialLivescan,
+    [Description("CCW Application Reserve Livescan Payment")]
+    ReserveLivescan,
+    [Description("CCW Application Employment Livescan Payment")]
+    EmploymentLivescan,
+
 }
