@@ -148,6 +148,10 @@ export type CostType = {
   modify: number
   creditFee: number
   convenienceFee: number
+  standardLivescanFee: number
+  reserveLivescanFee: number
+  judicialLivescanFee: number
+  employmentLivescanFee: number
 }
 
 export type DenialInfoType = {
