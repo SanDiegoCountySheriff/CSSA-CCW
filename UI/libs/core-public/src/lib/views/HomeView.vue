@@ -215,7 +215,13 @@
                       x-large
                       outlined
                     >
-                      Get Started
+                      <span
+                        :class="
+                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                        "
+                      >
+                        Get Started
+                      </span>
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -237,7 +243,13 @@
                       x-large
                       outlined
                     >
-                      Yes
+                      <span
+                        :class="
+                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                        "
+                      >
+                        Yes
+                      </span>
                     </v-btn>
                   </v-col>
 
@@ -248,7 +260,13 @@
                       x-large
                       outlined
                     >
-                      No
+                      <span
+                        :class="
+                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                        "
+                      >
+                        No
+                      </span>
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -270,7 +288,13 @@
                       x-large
                       outlined
                     >
-                      Yes
+                      <span
+                        :class="
+                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                        "
+                      >
+                        Yes
+                      </span>
                     </v-btn>
                   </v-col>
 
@@ -281,7 +305,13 @@
                       x-large
                       outlined
                     >
-                      No
+                      <span
+                        :class="
+                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                        "
+                      >
+                        No
+                      </span>
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -303,7 +333,13 @@
                       x-large
                       outlined
                     >
-                      Yes
+                      <span
+                        :class="
+                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                        "
+                      >
+                        Yes
+                      </span>
                     </v-btn>
                   </v-col>
 
@@ -314,7 +350,13 @@
                       x-large
                       outlined
                     >
-                      No
+                      <span
+                        :class="
+                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                        "
+                      >
+                        No
+                      </span>
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -337,7 +379,13 @@
                       x-large
                       outlined
                     >
-                      Yes
+                      <span
+                        :class="
+                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                        "
+                      >
+                        Yes
+                      </span>
                     </v-btn>
                   </v-col>
 
@@ -348,7 +396,13 @@
                       x-large
                       outlined
                     >
-                      No
+                      <span
+                        :class="
+                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                        "
+                      >
+                        No
+                      </span>
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -383,7 +437,13 @@
                       x-large
                       outlined
                     >
-                      Go Back
+                      <span
+                        :class="
+                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                        "
+                      >
+                        Go Back
+                      </span>
                     </v-btn>
                   </v-col>
 
@@ -394,7 +454,13 @@
                       x-large
                       outlined
                     >
-                      Acknowledge
+                      <span
+                        :class="
+                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                        "
+                      >
+                        Acknowledge
+                      </span>
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -427,7 +493,13 @@
                       x-large
                       outlined
                     >
-                      Go Back
+                      <span
+                        :class="
+                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                        "
+                      >
+                        Go Back
+                      </span>
                     </v-btn>
                   </v-col>
 
@@ -438,7 +510,13 @@
                       x-large
                       outlined
                     >
-                      Acknowledge
+                      <span
+                        :class="
+                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                        "
+                      >
+                        Acknowledge
+                      </span>
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -526,6 +604,7 @@ import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 import { useUserStore } from '@shared-ui/stores/userStore'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
 import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
@@ -533,6 +612,7 @@ import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
 const brandStore = useBrandStore()
 const authStore = useAuthStore()
 const userStore = useUserStore()
+const themeStore = useThemeStore()
 const router = useRouter()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 const completeApplicationStore = useCompleteApplicationStore()

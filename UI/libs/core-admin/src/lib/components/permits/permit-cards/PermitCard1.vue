@@ -32,13 +32,26 @@
                   outlined
                   color="primary"
                 >
-                  <v-icon left>mdi-tag-edit-outline</v-icon>
-                  Application Type:
-                  {{
-                    ApplicationType[
-                      permitStore.getPermitDetail.application.applicationType
-                    ]
-                  }}
+                  <v-icon
+                    left
+                    :class="
+                      themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                    "
+                  >
+                    mdi-tag-edit-outline
+                  </v-icon>
+                  <span
+                    :class="
+                      themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                    "
+                  >
+                    Application Type:
+                    {{
+                      ApplicationType[
+                        permitStore.getPermitDetail.application.applicationType
+                      ]
+                    }}
+                  </span>
                 </v-btn>
               </template>
               <span>Edit Application Type</span>
@@ -149,6 +162,7 @@ import RevocationDialog from '@core-admin/components/dialogs/RevocationDialog.vu
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 import {
   ApplicationStatus,
   ApplicationType,
@@ -157,6 +171,7 @@ import {
 import { computed, inject, reactive, ref } from 'vue'
 
 const permitStore = usePermitsStore()
+const themeStore = useThemeStore()
 const appointmentStore = useAppointmentsStore()
 const readonly = inject('readonly')
 const dialog = ref(false)
