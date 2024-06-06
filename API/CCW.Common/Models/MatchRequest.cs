@@ -4,5 +4,4 @@ public class MatchRequest
 {
     public string UserId { get; set; }
     public string ApplicationId { get; set; }
-    public bool OverrideEmail { get; set; }
 }

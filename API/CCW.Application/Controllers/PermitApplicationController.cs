@@ -577,11 +577,9 @@ public class PermitApplicationController : ControllerBase
                 application.Application.AppointmentId = appointment.Id.ToString();
                 application.Application.AppointmentStatus = AppointmentStatus.Scheduled;
             }
-
-            if (matchRequest.OverrideEmail)
-            {
-                application.Application.UserEmail = user.Email;
-            }
+            
+            application.Application.UserEmail = user.Email;
+            
             application.UserId = matchRequest.UserId;
             application.Application.UploadedDocuments = Array.Empty<UploadedDocument>();
             application.Application.AdminUploadedDocuments = Array.Empty<UploadedDocument>();

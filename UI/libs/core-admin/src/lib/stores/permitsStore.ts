@@ -422,12 +422,10 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   async function matchApplication(
     userId: string,
     applicationId: string,
-    overrideEmail: boolean
   ) {
     await axios.post(Endpoints.MATCH_APPLICATION_ENDPOINT, {
       userId,
       applicationId,
-      overrideEmail,
     })
   }
 

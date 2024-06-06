@@ -35,15 +35,17 @@
         </v-row>
       </v-card-text>
 
-      <v-card-text>
-        <v-checkbox
-          v-model="overrideEmail"
-          label="Would you like to override the existing email address on the right with the new email on the left?"
-        ></v-checkbox>
-
-        <p v-if="overrideEmail">Email will be overwritten</p>
-
-        <p v-else>Email will NOT be overwritten</p>
+      <v-card-text v-if="applicantEmail !== applicationEmail">
+        <v-alert
+          color="orange"
+          elevation="8"
+          outlined
+          prominent
+          type="warning"
+        >
+          WARNING: Confirming will override legacy email with existing applicant
+          email.
+        </v-alert>
       </v-card-text>
 
       <v-card-actions>
@@ -72,8 +74,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const overrideEmail = ref(true)
-
 interface Props {
   disabled: boolean
   applicantName?: string
@@ -91,7 +91,7 @@ const emit = defineEmits(['confirm'])
 const dialog = ref(false)
 
 function handleConfirm() {
-  emit('confirm', overrideEmail.value)
+  emit('confirm')
   dialog.value = false
 }
 </script>
