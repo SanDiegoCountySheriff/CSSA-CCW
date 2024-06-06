@@ -428,12 +428,10 @@ const { mutate, isLoading: isMatchApplicationLoading } = useMutation({
   mutationFn: ({
     userId,
     applicationId,
-    overrideEmail,
   }: {
     userId: string
     applicationId: string
-    overrideEmail: boolean
-  }) => permitStore.matchApplication(userId, applicationId, overrideEmail),
+  }) => permitStore.matchApplication(userId, applicationId),
   onSuccess: () => {
     refetchApplications()
     refetchUsers()
@@ -491,12 +489,11 @@ function formatDateString(dateString) {
   return `${parseInt(month)}/${parseInt(day)}/${year}`
 }
 
-function handleMatch(overrideEmail: boolean) {
+function handleMatch() {
   if (selectedUser.value[0].id && selectedLegacyApplication.value[0].id) {
     mutate({
       userId: selectedUser.value[0].id,
       applicationId: selectedLegacyApplication.value[0].id,
-      overrideEmail,
     })
   }
 }
