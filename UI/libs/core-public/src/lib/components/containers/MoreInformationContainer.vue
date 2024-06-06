@@ -669,6 +669,7 @@ import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
+import { useUserStore } from '@shared-ui/stores/userStore'
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router/composables'
 
@@ -684,6 +685,7 @@ const snackbar = ref(true)
 const signaturePad = ref<SignaturePad>()
 const brandStore = useBrandStore()
 const authStore = useAuthStore()
+const userStore = useUserStore()
 const completeApplicationStore = useCompleteApplicationStore()
 const router = useRouter()
 const route = useRoute()
@@ -692,6 +694,12 @@ const isSignaturePadEmpty = computed(() => {
 })
 
 onMounted(() => {
+  if (userStore.acknowledgementStep !== 1) {
+    router.push({
+      path: Routes.HOME_ROUTE_PATH,
+    })
+  }
+
   nextTick(() => {
     const canvas = document.getElementById('signature') as HTMLCanvasElement
 
