@@ -56,7 +56,7 @@
           @click="handleContinue"
           color="primary"
         >
-          {{ $t('Finalize Application') }}
+          {{ $t('Verify Information and Save') }}
         </v-btn>
 
         <!-- Save and Exit Update application -->
