@@ -35,7 +35,18 @@
         </v-row>
       </v-card-text>
 
-      <v-card-text> </v-card-text>
+      <v-card-text>
+        <v-alert
+          color="orange"
+          elevation="8"
+          outlined
+          prominent
+          type="warning"
+        >
+          WARNING: Confirming will override legacy email with existing applicant
+          email.
+        </v-alert>
+      </v-card-text>
 
       <v-card-actions>
         <v-btn
