@@ -1781,6 +1781,7 @@ function onFileChanged(e: File, target: string) {
       .then(() => {
         state.text = 'Successfully uploaded file.'
         state.snackbar = true
+        emit('refetch')
       })
       .catch(() => {
         state.text = 'An API error occurred.'
@@ -1790,8 +1791,6 @@ function onFileChanged(e: File, target: string) {
     state.text = 'Invalid file type provided.'
     state.snackbar = true
   }
-
-  emit('refetch')
 }
 
 function printPdf(type) {
