@@ -45,7 +45,7 @@
           color="primary"
         >
           <v-icon left>mdi-content-save</v-icon>
-          {{ $t('Save') }}
+          {{ $t('Verify Information and Save') }}
         </v-btn>
 
         <!-- Finalize Matched Submitted Without Appointment -->
@@ -56,7 +56,7 @@
           @click="handleContinue"
           color="primary"
         >
-          {{ $t('Verify Information and Save') }}
+          {{ $t('Finalize Application') }}
         </v-btn>
 
         <!-- Save and Exit Update application -->
