@@ -449,6 +449,12 @@ async function deleteFile(name) {
 }
 
 onMounted(() => {
+  if (userStore.acknowledgementStep !== 2) {
+    router.push({
+      path: Routes.HOME_ROUTE_PATH,
+    })
+  }
+
   state.driverLicense = ''
   state.CCWPermit = ''
 
