@@ -45,7 +45,7 @@
           color="primary"
         >
           <v-icon left>mdi-content-save</v-icon>
-          {{ $t('Save') }}
+          {{ $t('Verify Information and Save') }}
         </v-btn>
 
         <!-- Finalize Matched Submitted Without Appointment -->
