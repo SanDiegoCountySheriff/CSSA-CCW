@@ -35,7 +35,7 @@
         </v-row>
       </v-card-text>
 
-      <v-card-text>
+      <v-card-text v-if="applicantEmail !== applicationEmail">
         <v-alert
           color="orange"
           elevation="8"
