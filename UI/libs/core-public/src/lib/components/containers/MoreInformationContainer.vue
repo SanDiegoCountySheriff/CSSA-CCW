@@ -694,7 +694,7 @@ const isSignaturePadEmpty = computed(() => {
 })
 
 onMounted(() => {
-  if (userStore.acknowledgementStep !== 1) {
+  if (userStore.allowRoute !== true) {
     router.push({
       path: Routes.HOME_ROUTE_PATH,
     })

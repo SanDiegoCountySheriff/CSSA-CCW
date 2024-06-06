@@ -7,7 +7,7 @@ import { computed, ref } from 'vue'
 export const useUserStore = defineStore('UserStore', () => {
   const userProfile = ref<UserType>({} as UserType)
   const unmatchedUsersCount = ref(0)
-  const acknowledgementStep = ref(0)
+  const allowRoute = ref(false)
 
   const getUserState = computed(() => userProfile.value)
 
@@ -69,7 +69,7 @@ export const useUserStore = defineStore('UserStore', () => {
   }
 
   return {
-    acknowledgementStep,
+    allowRoute,
     userProfile,
     unmatchedUsersCount,
     setUser,

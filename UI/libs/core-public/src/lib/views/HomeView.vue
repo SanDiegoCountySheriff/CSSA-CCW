@@ -650,7 +650,7 @@ function handleLogIn() {
 }
 
 function redirectToAcknowledgements() {
-  userStore.acknowledgementStep = 1
+  userStore.allowRoute = true
   router.push({
     name: 'Application',
     params: { informationOnly: 'false' },
@@ -658,6 +658,7 @@ function redirectToAcknowledgements() {
 }
 
 function redirectToMoreInformation() {
+  userStore.allowRoute = true
   router.push({
     name: 'moreinformation',
     params: { informationOnly: 'true' },
@@ -688,7 +689,7 @@ function calculateInnerHeight() {
 }
 
 function handleExistingApplication() {
-  userStore.acknowledgementStep = 2
+  userStore.allowRoute = true
   router.push({
     path: Routes.EXISTING_APPLICATION_PATH,
   })
