@@ -2298,7 +2298,7 @@ public class PdfService : IPdfService
         var leftPosition = new ImagePosition()
         {
             Page = 1,
-            Width = 80,
+            Width = 75,
             Height = 20,
             Left = 2,
             Bottom = 17
@@ -2312,7 +2312,7 @@ public class PdfService : IPdfService
             Page = 3,
             Width = 100,
             Height = 20,
-            Left = 125,
+            Left = 120,
             Bottom = 485
         };
 
@@ -2322,7 +2322,7 @@ public class PdfService : IPdfService
         var addendumPosition= new ImagePosition()
         {
             Page = 4,
-            Width = 80,
+            Width = 75,
             Height = 20,
             Left = 2,
             Bottom = 17
@@ -2388,10 +2388,10 @@ public class PdfService : IPdfService
         var leftPosition = new ImagePosition()
         {
             Page = 1,
-            Width = 60,
-            Height = 85,
+            Width = 55,
+            Height = 80,
             Left = 7,
-            Bottom = 40
+            Bottom = 34
         };
 
         var leftImage = GetImageForImageData(imageData, leftPosition);
@@ -2401,9 +2401,9 @@ public class PdfService : IPdfService
         {
             Page = 3,
             Width = 100,
-            Height = 120,
+            Height = 115,
             Left = 115,
-            Bottom = 510
+            Bottom = 505
         };
 
         var rightImage = GetImageForImageData(imageData, rightPosition);
@@ -2412,10 +2412,10 @@ public class PdfService : IPdfService
         var addendumPosition = new ImagePosition()
         {
             Page = 4,
-            Width = 60,
-            Height = 85,
+            Width = 55,
+            Height = 80,
             Left = 7,
-            Bottom = 40
+            Bottom = 34
         };
 
         var addendumImage = GetImageForImageData(imageData, addendumPosition);
