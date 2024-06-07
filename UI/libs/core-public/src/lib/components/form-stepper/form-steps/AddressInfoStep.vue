@@ -43,6 +43,19 @@
       </v-card-subtitle>
 
       <v-card-text>
+        <v-row v-if="model.isMatchUpdated === false">
+          <v-col>
+            <v-alert
+              color="warning"
+              type="info"
+              outlined
+            >
+              If you need to change your address you will be able to at a later
+              time via the modification process.
+            </v-alert>
+          </v-col>
+        </v-row>
+
         <v-row>
           <v-col
             md="6"
@@ -54,6 +67,7 @@
               :rules="[v => !!v || $t('Street address cannot be blank')]"
               :label="$t('Street Address')"
               :dense="isMobile"
+              :readonly="model.isMatchUpdated === false"
               maxlength="150"
               outlined
             >
@@ -70,6 +84,7 @@
               :rules="[v => !!v || $t('City cannot be blank')]"
               :label="$t('City')"
               :dense="isMobile"
+              :readonly="model.isMatchUpdated === false"
               maxlength="100"
               outlined
             >
@@ -111,6 +126,7 @@
               :dense="isMobile"
               :items="states"
               :hint="militaryOutOfStateHint"
+              :readonly="model.isMatchUpdated === false"
               persistent-hint
               auto-select-first
               maxlength="100"
@@ -126,6 +142,7 @@
               :rules="[v => !!v || $t('Region cannot be blank')]"
               :label="$t('Region')"
               :dense="isMobile"
+              :readonly="model.isMatchUpdated === false"
               maxlength="100"
               outlined
             >
@@ -145,6 +162,7 @@
               :hint="$t('If not applicable enter N/A ')"
               :label="$t('County')"
               :dense="isMobile"
+              :readonly="model.isMatchUpdated === false"
               persistent-hint
               maxlength="100"
               outlined
@@ -161,6 +179,7 @@
               :rules="zipRuleSet"
               :dense="isMobile"
               :label="$t('Zip')"
+              :readonly="model.isMatchUpdated === false"
               persistent-hint
               maxlength="10"
               outlined

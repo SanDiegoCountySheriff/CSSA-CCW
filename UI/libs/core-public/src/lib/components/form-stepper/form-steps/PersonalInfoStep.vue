@@ -44,6 +44,19 @@
       </v-card-subtitle>
 
       <v-card-text>
+        <v-row v-if="model.isMatchUpdated === false">
+          <v-col>
+            <v-alert
+              color="warning"
+              type="info"
+              outlined
+            >
+              If you need to change your name you will be able to at a later
+              time via the modification process.
+            </v-alert>
+          </v-col>
+        </v-row>
+
         <v-row>
           <v-col
             md="4"
@@ -55,6 +68,7 @@
               :label="$t('First name')"
               :rules="requireNameRuleSet"
               :dense="isMobile"
+              :readonly="model.isMatchUpdated === false"
               maxlength="50"
               outlined
             >
@@ -70,6 +84,7 @@
               :label="$t('Middle name')"
               :rules="notRequiredNameRuleSet"
               :dense="isMobile"
+              :readonly="model.isMatchUpdated === false"
               maxlength="50"
               outlined
             />
@@ -84,6 +99,7 @@
               :label="$t('Last name')"
               :rules="requireNameRuleSet"
               :dense="isMobile"
+              :readonly="model.isMatchUpdated === false"
               maxlength="50"
               outlined
             >
@@ -101,6 +117,7 @@
               v-model.trim="model.application.personalInfo.suffix"
               :label="$t('Suffix')"
               :dense="isMobile"
+              :readonly="model.isMatchUpdated === false"
               maxlength="10"
               outlined
             />
@@ -115,6 +132,7 @@
               :label="$t('Maiden name')"
               :rules="notRequiredNameRuleSet"
               :dense="isMobile"
+              :readonly="model.isMatchUpdated === false"
               maxlength="50"
               outlined
             />
@@ -753,15 +771,15 @@
 <script setup lang="ts">
 import AliasDialog from '@shared-ui/components/dialogs/AliasDialog.vue'
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue'
-import {
-  ApplicationStatus,
-  CompleteApplication,
-} from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { TranslateResult } from 'vue-i18n'
 import { i18n } from '@core-public/plugins'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
+import {
+  ApplicationStatus,
+  CompleteApplication,
+} from '@shared-utils/types/defaultTypes'
 import {
   ApplicationType,
   CharacterReferenceType,
@@ -770,7 +788,6 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
 import {
   notRequiredNameRuleSet,
-  notRequiredPhoneRuleSet,
   phoneRuleSet,
   requireNameRuleSet,
 } from '@shared-ui/rule-sets/ruleSets'
