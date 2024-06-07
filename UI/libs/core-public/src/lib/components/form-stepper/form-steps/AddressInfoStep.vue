@@ -51,9 +51,11 @@
           >
             <v-text-field
               v-model="model.application.currentAddress.streetAddress"
+              :readonly="isFieldReadOnly('streetAddress')"
               :rules="[v => !!v || $t('Street address cannot be blank')]"
               :label="$t('Street Address')"
               :dense="isMobile"
+              ref="streetAddress"
               maxlength="150"
               outlined
             >
@@ -67,9 +69,11 @@
           >
             <v-text-field
               v-model="model.application.currentAddress.city"
+              :readonly="isFieldReadOnly('city')"
               :rules="[v => !!v || $t('City cannot be blank')]"
               :label="$t('City')"
               :dense="isMobile"
+              ref="city"
               maxlength="100"
               outlined
             >
@@ -106,11 +110,13 @@
                 model.application.currentAddress.country === 'United States'
               "
               v-model="model.application.currentAddress.state"
+              :readonly="isFieldReadOnly('state')"
               :rules="[v => !!v || $t('State cannot be blank')]"
               :label="$t('State')"
               :dense="isMobile"
               :items="states"
               :hint="militaryOutOfStateHint"
+              ref="state"
               persistent-hint
               auto-select-first
               maxlength="100"
@@ -141,10 +147,12 @@
           >
             <v-text-field
               v-model="model.application.currentAddress.county"
+              :readonly="isFieldReadOnly('county')"
               :rules="[v => !!v || $t('County cannot be blank')]"
               :hint="$t('If not applicable enter N/A ')"
               :label="$t('County')"
               :dense="isMobile"
+              ref="county"
               persistent-hint
               maxlength="100"
               outlined
@@ -157,10 +165,12 @@
           >
             <v-text-field
               v-model="model.application.currentAddress.zip"
+              :readonly="isFieldReadOnly('zip')"
               :hint="$t('If not applicable enter N/A ')"
               :rules="zipRuleSet"
               :dense="isMobile"
               :label="$t('Zip')"
+              ref="zip"
               persistent-hint
               maxlength="10"
               outlined
@@ -185,6 +195,8 @@
           {{ $t('Mailing Address') }}
         </v-card-subtitle>
 
+        <pre> {{ invalidFields }}</pre>
+
         <v-card-text>
           <v-row>
             <v-col
@@ -194,9 +206,11 @@
             >
               <v-text-field
                 v-model="model.application.mailingAddress.streetAddress"
+                :readonly="isFieldReadOnly('mailingStreetAddress')"
                 :rules="[v => !!v || $t('Street address cannot be blank')]"
                 :label="$t('Street Address')"
                 :dense="isMobile"
+                ref="mailingStreetAddress"
                 maxlength="150"
                 outlined
               >
@@ -210,9 +224,11 @@
             >
               <v-text-field
                 v-model="model.application.mailingAddress.city"
+                :readonly="isFieldReadOnly('mailingCity')"
                 :rules="[v => !!v || $t('City cannot be blank')]"
                 :label="$t('City')"
                 :dense="isMobile"
+                ref="mailingCity"
                 maxlength="100"
                 outlined
               >
@@ -228,10 +244,12 @@
             >
               <v-combobox
                 v-model="model.application.mailingAddress.country"
+                :readonly="isFieldReadOnly('mailingCountry')"
                 :rules="[v => !!v || $t('Country cannot be blank')]"
                 :label="$t('Country')"
                 :items="countries"
                 :dense="isMobile"
+                ref="mailingCountry"
                 auto-select-first
                 outlined
               >
@@ -584,6 +602,8 @@ const isRenew = computed(() => {
 })
 
 const isFieldReadOnly = (refName: string): boolean => {
+  window.console.log('test')
+
   return (
     model.value.isMatchUpdated === false &&
     !invalidFields.value.includes(refName)
@@ -646,16 +666,33 @@ function validateFields() {
     return
   }
 
+  window.console.log('test')
+
   const refs = instance.proxy.$refs as { [key: string] }
 
   invalidFields.value = []
 
   const fieldsToValidate = [
-    'idNumber',
-    'issuingState',
-    'citizenship',
-    'citizenshipCountry',
-    'citizenshipBirth',
+    'streetAddress',
+    'city',
+    'country',
+    'state',
+    'county',
+    'zip',
+    'mailingStreetAddress',
+    'mailingCity',
+    'mailingCountry',
+    'mailingState',
+    'mailingCountry',
+    'mailingZip',
+    'spouseStreetAddress',
+    'spouseCity',
+    'spouseCountry',
+    'spouseState',
+    'spouseCounty',
+    'spouseZip',
+    'spouseReason',
+    'previousAddresses',
   ]
 
   fieldsToValidate.forEach(fieldRef => {
