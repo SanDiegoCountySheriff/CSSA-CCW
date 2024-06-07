@@ -6,7 +6,7 @@
       :items="addresses"
       mobile-breakpoint="800"
     >
-      <template #[`item.actions`]="{ item }">
+      <template #[`item.actions`]="{ index }">
         <v-tooltip
           top
           open-delay="500"
@@ -15,7 +15,7 @@
             <v-icon
               v-if="enableDelete"
               v-bind="attrs"
-              @click="handleDelete(item)"
+              @click="handleDelete(index)"
               v-on="on"
             >
               mdi-delete
@@ -53,7 +53,7 @@ const headers = [
   { text: 'Actions', value: 'actions' },
 ]
 
-function handleDelete(index) {
+function handleDelete(index: number) {
   emit('delete', index)
 }
 </script>
