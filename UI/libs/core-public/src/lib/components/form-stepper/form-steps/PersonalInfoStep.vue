@@ -43,10 +43,6 @@
         {{ $t('Personal Information') }}
       </v-card-subtitle>
 
-      <pre>
-        {{ invalidFields }}
-      </pre>
-
       <v-card-text>
         <v-row>
           <v-col

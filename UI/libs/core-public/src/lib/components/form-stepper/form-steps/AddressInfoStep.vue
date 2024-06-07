@@ -536,7 +536,14 @@ import {
   AddressInfoType,
   ApplicationType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import {
+  computed,
+  getCurrentInstance,
+  nextTick,
+  onMounted,
+  ref,
+  watch,
+} from 'vue'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
 
 interface FormStepThreeProps {
@@ -558,6 +565,7 @@ const vuetify = useVuetify()
 const isMobile = computed(
   () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
 )
+const invalidFields = ref<string[]>([])
 
 const model = computed({
   get: () => props.value,
@@ -574,6 +582,13 @@ const isRenew = computed(() => {
     applicationType === ApplicationType['Renew Employment']
   )
 })
+
+const isFieldReadOnly = (refName: string): boolean => {
+  return (
+    model.value.isMatchUpdated === false &&
+    !invalidFields.value.includes(refName)
+  )
+}
 
 const militaryOutOfStateHint = computed(() => {
   const militaryStatus = model.value.application.citizenship.militaryStatus
@@ -610,6 +625,10 @@ onMounted(() => {
   if (model.value.application.previousAddresses.length > 0) {
     hasPreviousAddresses.value = true
   }
+
+  if (model.value.isMatchUpdated === false) {
+    validateFields()
+  }
 })
 
 function getPreviousAddressFromDialog(address: AddressInfoType) {
@@ -618,6 +637,38 @@ function getPreviousAddressFromDialog(address: AddressInfoType) {
 
 function deleteAddress(index) {
   model.value.application.previousAddresses.splice(index, 1)
+}
+
+function validateFields() {
+  const instance = getCurrentInstance()
+
+  if (!instance) {
+    return
+  }
+
+  const refs = instance.proxy.$refs as { [key: string] }
+
+  invalidFields.value = []
+
+  const fieldsToValidate = [
+    'idNumber',
+    'issuingState',
+    'citizenship',
+    'citizenshipCountry',
+    'citizenshipBirth',
+  ]
+
+  fieldsToValidate.forEach(fieldRef => {
+    const field = refs[fieldRef]
+
+    if (field) {
+      field.validate()
+
+      if (field.hasError) {
+        invalidFields.value.push(fieldRef)
+      }
+    }
+  })
 }
 
 function handleContinue() {
