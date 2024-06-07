@@ -50,12 +50,14 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
+              ref="idNumber"
               v-model="model.application.idInfo.idNumber"
               :label="$t('Driver\'s License Number')"
               :rules="[v => !!v || $t('Driver\'s License Number is required')]"
               :dense="isMobile"
               outlined
               maxlength="25"
+              :readonly="isFieldReadOnly('idNumber')"
             >
             </v-text-field>
           </v-col>
@@ -74,6 +76,7 @@
               persistent-hint
               :dense="isMobile"
               auto-select-first
+              :readonly="isFieldReadOnly('issuingState')"
             >
             </v-autocomplete>
           </v-col>
@@ -88,6 +91,8 @@
               :dense="isMobile"
               outlined
               maxlength="25"
+              ref="issuingState"
+              :readonly="model.isMatchUpdated === false"
             >
             </v-text-field>
           </v-col>
@@ -105,6 +110,8 @@
       <v-card-text>
         <v-radio-group
           v-model="model.application.citizenship.citizen"
+          :readonly="isFieldReadOnly('citizenship')"
+          ref="citizenship"
           label="Citizen"
           row
         >
@@ -131,10 +138,12 @@
                 v-model="
                   model.application.immigrantInformation.countryOfCitizenship
                 "
+                :readonly="isFieldReadOnly('citizenshipCountry')"
                 :items="countries"
                 :label="$t('Country of Citizenship')"
                 :rules="[v => !!v || $t('You must enter a country')]"
                 auto-select-first
+                ref="citizenshipCountry"
                 outlined
                 :dense="isMobile"
               >
@@ -147,10 +156,12 @@
             >
               <v-combobox
                 v-model="model.application.dob.birthCountry"
+                :readonly="isFieldReadOnly('citizenshipBirth')"
                 :items="countries"
                 :label="$t('Country of Birth')"
                 :rules="[v => !!v || $t('You must enter a country')]"
                 auto-select-first
+                ref="citizenshipBirth"
                 outlined
                 :dense="isMobile"
               >
@@ -237,7 +248,7 @@ import {
   ApplicationType,
   CompleteApplication,
 } from '@shared-utils/types/defaultTypes'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
 
 interface FormStepTwoProps {
@@ -262,6 +273,7 @@ const model = computed({
   get: () => props.value,
   set: (value: CompleteApplication) => emit('input', value),
 })
+const invalidFields = ref<string[]>([])
 
 const isRenew = computed(() => {
   const applicationType = model.value.application.applicationType
@@ -275,20 +287,30 @@ const isRenew = computed(() => {
 })
 
 const militaryOutOfStateHint = computed(() => {
-  const militaryStatus = model.value.application.citizenship.militaryStatus;
-  const driverLicenseState = model.value.application.idInfo.issuingState;
-
+  const militaryStatus = model.value.application.citizenship.militaryStatus
+  const driverLicenseState = model.value.application.idInfo.issuingState
 
   if (militaryStatus === 'Active' && driverLicenseState !== 'California') {
-    return 'You will need to upload your military orders in the required documents section.';
+    return 'You will need to upload your military orders in the required documents section.'
   }
 
   return ''
 })
 
+const isFieldReadOnly = (refName: string): boolean => {
+  return (
+    model.value.isMatchUpdated === false &&
+    !invalidFields.value.includes(refName)
+  )
+}
+
 onMounted(() => {
   if (form.value) {
     form.value.validate()
+  }
+
+  if (model.value.isMatchUpdated === false) {
+    validateFields()
   }
 })
 
@@ -310,5 +332,37 @@ function handleContinue() {
   }
 
   emit('handle-continue')
+}
+
+function validateFields() {
+  const instance = getCurrentInstance()
+
+  if (!instance) {
+    return
+  }
+
+  const refs = instance.proxy.$refs as { [key: string] }
+
+  invalidFields.value = []
+
+  const fieldsToValidate = [
+    'idNumber',
+    'issuingState',
+    'citizenship',
+    'citizenshipCountry',
+    'citizenshipBirth',
+  ]
+
+  fieldsToValidate.forEach(fieldRef => {
+    const field = refs[fieldRef]
+
+    if (field) {
+      field.validate()
+
+      if (field.hasError) {
+        invalidFields.value.push(fieldRef)
+      }
+    }
+  })
 }
 </script>

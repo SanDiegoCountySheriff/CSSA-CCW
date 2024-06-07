@@ -55,14 +55,14 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              ref="firstName"
               v-model.trim="model.application.personalInfo.firstName"
+              :readonly="isFieldReadOnly('firstName')"
               :label="$t('First name')"
               :rules="requireNameRuleSet"
               :dense="isMobile"
+              ref="firstName"
               maxlength="50"
               outlined
-              :readonly="isFieldReadOnly('firstName')"
             >
             </v-text-field>
           </v-col>
@@ -73,12 +73,12 @@
           >
             <v-text-field
               v-model.trim="model.application.personalInfo.middleName"
+              :readonly="model.isMatchUpdated === false"
               :label="$t('Middle name')"
               :rules="notRequiredNameRuleSet"
               :dense="isMobile"
               maxlength="50"
               outlined
-              :readonly="model.isMatchUpdated === false"
             />
           </v-col>
           <v-col
@@ -87,14 +87,14 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              ref="lastName"
               v-model.trim="model.application.personalInfo.lastName"
+              :readonly="isFieldReadOnly('lastName')"
               :label="$t('Last name')"
               :rules="requireNameRuleSet"
               :dense="isMobile"
+              ref="lastName"
               maxlength="50"
               outlined
-              :readonly="isFieldReadOnly('lastName')"
             >
             </v-text-field>
           </v-col>
@@ -108,11 +108,11 @@
           >
             <v-text-field
               v-model.trim="model.application.personalInfo.suffix"
+              :readonly="model.isMatchUpdated === false"
               :label="$t('Suffix')"
               :dense="isMobile"
               maxlength="10"
               outlined
-              :readonly="model.isMatchUpdated === false"
             />
           </v-col>
           <v-col
@@ -121,14 +121,14 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              ref="maidenName"
               v-model.trim="model.application.personalInfo.maidenName"
-              :label="$t('Maiden name')"
+              :readonly="model.isMatchUpdated === false"
               :rules="notRequiredNameRuleSet"
+              :label="$t('Maiden name')"
               :dense="isMobile"
+              ref="maidenName"
               maxlength="50"
               outlined
-              :readonly="model.isMatchUpdated === false"
             />
           </v-col>
         </v-row>
@@ -151,16 +151,16 @@
           >
             <v-menu
               v-model="menu"
+              :disabled="isFieldReadOnly('dateOfBirth')"
               :close-on-content-click="false"
               transition="scale-transition"
               offset-y
               min-width="auto"
-              :disabled="isFieldReadOnly('dateOfBirth')"
             >
               <template #activator="{ on, attrs }">
                 <v-text-field
-                  ref="dateOfBirth"
                   v-model="model.application.dob.birthDate"
+                  ref="dateOfBirth"
                   :label="$t('Date of Birth')"
                   :rules="[
                     validateDate,
@@ -192,14 +192,14 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              ref="birthCity"
               v-model="model.application.dob.birthCity"
-              :label="$t('Birth city')"
               :rules="[v => !!v || $t('Birth city cannot be blank')]"
-              outlined
-              :dense="isMobile"
-              maxlength="150"
               :readonly="isFieldReadOnly('birthCity')"
+              :label="$t('Birth city')"
+              :dense="isMobile"
+              ref="birthCity"
+              outlined
+              maxlength="150"
             >
             </v-text-field>
           </v-col>
@@ -211,14 +211,14 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-combobox
-              ref="birthCountry"
               v-model="model.application.dob.birthCountry"
+              :rules="[v => !!v || $t('Birth country cannot be blank')]"
+              :readonly="isFieldReadOnly('birthCountry')"
               :items="countries"
               :label="$t('Birth country')"
-              :rules="[v => !!v || $t('Birth country cannot be blank')]"
+              ref="birthCountry"
               outlined
               :dense="isMobile"
-              :readonly="isFieldReadOnly('birthCountry')"
             >
             </v-combobox>
           </v-col>
@@ -228,29 +228,29 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-autocomplete
-              ref="birthState"
               v-if="model.application.dob.birthCountry === 'United States'"
               v-model="model.application.dob.birthState"
+              :rules="[v => !!v || $t('Birth state cannot be blank')]"
+              :readonly="isFieldReadOnly('birthState')"
               :items="states"
               :label="$t('Birth state')"
-              :rules="[v => !!v || $t('Birth state cannot be blank')]"
-              outlined
               :dense="isMobile"
+              ref="birthState"
+              outlined
               maxlength="150"
               auto-select-first
-              :readonly="isFieldReadOnly('birthState')"
             >
             </v-autocomplete>
             <v-text-field
-              ref="birthState"
               v-if="model.application.dob.birthCountry !== 'United States'"
               v-model="model.application.dob.birthState"
-              :label="$t('Birth region')"
               :rules="[v => !!v || $t('Birth region cannot be blank')]"
-              outlined
-              :dense="isMobile"
-              maxlength="150"
               :readonly="isFieldReadOnly('birthState')"
+              :label="$t('Birth region')"
+              :dense="isMobile"
+              ref="birthState"
+              outlined
+              maxlength="150"
             >
             </v-text-field>
           </v-col>
@@ -273,14 +273,14 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              ref="heightFeet"
               v-model="model.application.physicalAppearance.heightFeet"
+              :readonly="isFieldReadOnly('heightFeet')"
               :label="$t('Height feet')"
               :rules="heightFeetRules"
               :dense="isMobile"
+              ref="heightFeet"
               type="number"
               outlined
-              :readonly="isFieldReadOnly('heightFeet')"
             >
             </v-text-field>
           </v-col>
@@ -290,14 +290,14 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              ref="heightInches"
               v-model="model.application.physicalAppearance.heightInch"
+              :readonly="isFieldReadOnly('heightInches')"
               :label="$t('Height inches')"
               :rules="heightInchesRules"
               :dense="isMobile"
+              ref="heightInches"
               type="number"
               outlined
-              :readonly="isFieldReadOnly('heightInches')"
             >
             </v-text-field>
           </v-col>
@@ -307,16 +307,16 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              ref="weight"
               v-model="model.application.physicalAppearance.weight"
+              :readonly="isFieldReadOnly('weight')"
               :hint="$t('Enter weight in pounds(lbs)')"
               :label="$t('Weight')"
               :rules="weightRules"
               :dense="isMobile"
+              ref="weight"
               persistent-hint
               type="number"
               outlined
-              :readonly="isFieldReadOnly('weight')"
             >
             </v-text-field>
           </v-col>
@@ -328,14 +328,14 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-select
-              ref="hairColor"
               v-model="model.application.physicalAppearance.hairColor"
+              :readonly="isFieldReadOnly('hairColor')"
               :label="$t('Hair Color')"
               :rules="hairColorRules"
               :items="hairColors"
               :dense="isMobile"
+              ref="hairColor"
               outlined
-              :readonly="isFieldReadOnly('hairColor')"
             >
             </v-select>
           </v-col>
@@ -345,14 +345,14 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-select
-              ref="eyeColor"
               v-model="model.application.physicalAppearance.eyeColor"
+              :readonly="isFieldReadOnly('eyeColor')"
               :label="$t('Eye Color')"
               :rules="eyeColorRules"
               :items="eyeColors"
               :dense="isMobile"
+              ref="eyeColor"
               outlined
-              :readonly="isFieldReadOnly('eyeColor')"
             >
             </v-select>
           </v-col>
@@ -362,12 +362,12 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-radio-group
-              ref="gender"
               v-model="model.application.physicalAppearance.gender"
+              :readonly="isFieldReadOnly('gender')"
               :rules="genderRules"
+              ref="gender"
               label="Gender"
               row
-              :readonly="isFieldReadOnly('gender')"
             >
               <v-radio
                 label="Male"
@@ -399,15 +399,15 @@
             cols="12"
           >
             <v-text-field
-              ref="primaryPhoneNumber"
               v-model="model.application.contact.primaryPhoneNumber"
               @input="formatPhone('contact', 'primaryPhoneNumber')"
+              :readonly="isFieldReadOnly('primaryPhoneNumber')"
               :label="$t('Primary phone number')"
+              ref="primaryPhoneNumber"
               :rules="phoneRuleSet"
               :dense="isMobile"
               maxlength="14"
               outlined
-              :readonly="isFieldReadOnly('primaryPhoneNumber')"
             />
           </v-col>
           <v-col
@@ -417,11 +417,11 @@
             <v-text-field
               v-model="model.application.contact.cellPhoneNumber"
               @input="formatPhone('contact', 'cellPhoneNumber')"
+              :readonly="model.isMatchUpdated === false"
               :label="$t('Cell phone number')"
               :dense="isMobile"
               maxlength="14"
               outlined
-              :readonly="model.isMatchUpdated === false"
             />
           </v-col>
         </v-row>
@@ -434,11 +434,11 @@
             <v-text-field
               v-model="model.application.contact.workPhoneNumber"
               @input="formatPhone('contact', 'workPhoneNumber')"
+              :readonly="model.isMatchUpdated === false"
               :label="$t('Work phone number')"
               :dense="isMobile"
               maxlength="14"
               outlined
-              :readonly="model.isMatchUpdated === false"
             />
           </v-col>
         </v-row>
@@ -460,14 +460,14 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              ref="ssn"
               v-model="formattedSSN"
+              @change="handleValidateForm"
+              :readonly="isFieldReadOnly('ssn')"
               :label="$t('Social Security Number')"
               :rules="ssnRules"
               :dense="isMobile"
-              @change="handleValidateForm"
+              ref="ssn"
               outlined
-              :readonly="isFieldReadOnly('ssn')"
             >
             </v-text-field>
           </v-col>
@@ -505,8 +505,8 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-select
-              ref="maritalStatus"
               v-model="model.application.personalInfo.maritalStatus"
+              :readonly="isFieldReadOnly('maritalStatus')"
               :label="'Marital status'"
               :hint="'Marital Status is required'"
               :rules="[v => !!v || $t('Marital status is required')]"
@@ -514,7 +514,7 @@
               :dense="isMobile"
               @change="handleValidateForm"
               outlined
-              :readonly="isFieldReadOnly('maritalStatus')"
+              ref="maritalStatus"
             >
             </v-select>
           </v-col>
@@ -537,14 +537,14 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              ref="spouseLastName"
               v-model="model.application.spouseInformation.lastName"
-              :label="$t('Last Name')"
+              :readonly="isFieldReadOnly('spouseLastName')"
               :rules="isMarried ? requireNameRuleSet : []"
+              :label="$t('Last Name')"
               :dense="isMobile"
+              ref="spouseLastName"
               maxlength="50"
               outlined
-              :readonly="isFieldReadOnly('spouseLastName')"
             >
             </v-text-field>
           </v-col>
@@ -554,14 +554,14 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              ref="spouseFirstName"
               v-model="model.application.spouseInformation.firstName"
+              :readonly="isFieldReadOnly('spouseFirstName')"
               :label="$t('First Name')"
               :rules="isMarried ? requireNameRuleSet : []"
               :dense="isMobile"
               maxlength="50"
               outlined
-              :readonly="isFieldReadOnly('spouseFirstName')"
+              ref="spouseFirstName"
             >
             </v-text-field>
           </v-col>
@@ -572,12 +572,12 @@
           >
             <v-text-field
               v-model="model.application.spouseInformation.middleName"
+              :readonly="model.isMatchUpdated === false"
               :label="$t('Middle Name')"
               :rules="notRequiredNameRuleSet"
               :dense="isMobile"
               maxlength="50"
               outlined
-              :readonly="model.isMatchUpdated === false"
             />
           </v-col>
         </v-row>
@@ -589,12 +589,12 @@
           >
             <v-text-field
               v-model="model.application.spouseInformation.maidenName"
+              :readonly="model.isMatchUpdated === false"
               :label="$t('Maiden Name')"
               :rules="notRequiredNameRuleSet"
               :dense="isMobile"
               maxlength="50"
               outlined
-              :readonly="model.isMatchUpdated === false"
             />
           </v-col>
           <v-col
@@ -603,15 +603,15 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              ref="spousePhoneNumber"
               v-model="model.application.spouseInformation.phoneNumber"
               @input="formatPhone('spouseInformation', 'phoneNumber')"
+              :readonly="isFieldReadOnly('spousePhoneNumber')"
               :label="$t('Phone number')"
               :rules="isMarried ? phoneRuleSet : []"
               :dense="isMobile"
               maxlength="14"
+              ref="spousePhoneNumber"
               outlined
-              :readonly="isFieldReadOnly('spousePhoneNumber')"
             >
             </v-text-field>
           </v-col>
@@ -634,15 +634,15 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-select
-              ref="militaryStatus"
               v-model="model.application.citizenship.militaryStatus"
+              @change="handleValidateForm"
+              :readonly="isFieldReadOnly('militaryStatus')"
               :items="items"
               :label="$t('Military Status')"
               :rules="[v => !!v || $t('Military Status is required')]"
-              outlined
               :dense="isMobile"
-              @change="handleValidateForm"
-              :readonly="isFieldReadOnly('militaryStatus')"
+              outlined
+              ref="militaryStatus"
             />
             <v-alert
               v-if="
@@ -670,8 +670,10 @@
       <v-card-text>
         <v-radio-group
           v-model="showAlias"
+          :readonly="isFieldReadOnly('aliases')"
           :label="$t('In the past have you ever gone by a different name?')"
           :row="!isMobile"
+          ref="aliases"
         >
           <v-radio
             color="primary"
@@ -686,12 +688,13 @@
         </v-radio-group>
         <AliasDialog
           v-if="showAlias"
+          :readonly="isFieldReadOnly('aliases') ? true : false"
           @save-alias="getAliasFromDialog"
         />
         <AliasTable
           v-if="showAlias"
           :aliases="model.application.aliases"
-          :enable-delete="true"
+          :enable-delete="isFieldReadOnly('aliases') ? true : false"
           @delete="deleteAlias"
         />
       </v-card-text>
@@ -1034,6 +1037,11 @@ function validateFields() {
     'spouseLastName',
     'spousePhoneNumber',
     'militaryStatus',
+    'aliases',
+    'referenceName',
+    'referenceRelationship',
+    'referencePhoneNumber',
+    'referenceEmail',
   ]
 
   fieldsToValidate.forEach(fieldRef => {
