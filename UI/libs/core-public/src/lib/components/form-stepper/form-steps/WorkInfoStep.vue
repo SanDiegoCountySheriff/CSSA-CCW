@@ -211,6 +211,19 @@
       </v-card-title>
 
       <v-card-text>
+        <v-row v-if="model.isMatchUpdated === false">
+          <v-col>
+            <v-alert
+              color="warning"
+              type="info"
+              outlined
+            >
+              If you need to change your weapons you will be able to at a later
+              time via the modification process.
+            </v-alert>
+          </v-col>
+        </v-row>
+
         <v-row>
           <v-col
             cols="12"

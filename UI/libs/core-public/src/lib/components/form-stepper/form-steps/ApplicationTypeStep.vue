@@ -22,40 +22,47 @@
           v-model="isJudgeConfirmed"
           label="Are you a Judge?"
           color="primary"
+          :readonly="model.isMatchUpdated === false"
         />
 
         <v-switch
           v-model="isReserveOfficerConfirmed"
           label="Are you a Reserve Law Enforcement Officer?"
           color="primary"
+          :readonly="model.isMatchUpdated === false"
         />
 
         <v-radio-group
           v-model="model.application.applicationType"
           :rules="applicationTypeRules"
+          :readonly="model.isMatchUpdated === false"
         >
           <v-radio
             color="primary"
             label="Standard"
             :value="ApplicationType.Standard"
+            :readonly="model.isMatchUpdated === false"
           />
           <v-radio
             v-if="isJudgeConfirmed"
             color="primary"
             label="Judicial"
             :value="ApplicationType.Judicial"
+            :readonly="model.isMatchUpdated === false"
           />
           <v-radio
             v-if="isReserveOfficerConfirmed"
             color="primary"
             label="Reserve"
             :value="ApplicationType.Reserve"
+            :readonly="model.isMatchUpdated === false"
           />
           <v-radio
             v-if="brandStore.brand.employmentLicense"
             color="warning"
             label="Employment"
             :value="ApplicationType.Employment"
+            :readonly="model.isMatchUpdated === false"
           />
         </v-radio-group>
 
@@ -97,23 +104,27 @@
         <v-radio-group
           v-model="model.application.applicationType"
           :rules="applicationTypeRules"
+          :readonly="model.isMatchUpdated === false"
         >
           <v-radio
             color="primary"
             label="Renew Standard"
             :value="ApplicationType['Renew Standard']"
+            :readonly="model.isMatchUpdated === false"
             disabled
           />
           <v-radio
             color="warning"
             label="Renew Judicial"
             :value="ApplicationType['Renew Judicial']"
+            :readonly="model.isMatchUpdated === false"
             disabled
           />
           <v-radio
             color="warning"
             label="Renew Reserve"
             :value="ApplicationType['Renew Reserve']"
+            :readonly="model.isMatchUpdated === false"
             disabled
           />
           <v-radio
@@ -121,6 +132,7 @@
             color="warning"
             label="Renew Employment"
             :value="ApplicationType['Renew Employment']"
+            :readonly="model.isMatchUpdated === false"
             disabled
           />
         </v-radio-group>
