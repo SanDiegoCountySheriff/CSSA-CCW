@@ -139,7 +139,7 @@ import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useRoute } from 'vue-router/composables'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
-import { computed, reactive, ref, provide } from 'vue'
+import { computed, provide, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const permitStore = usePermitsStore()

@@ -419,10 +419,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return res?.data || {}
   }
 
-  async function matchApplication(
-    userId: string,
-    applicationId: string,
-  ) {
+  async function matchApplication(userId: string, applicationId: string) {
     await axios.post(Endpoints.MATCH_APPLICATION_ENDPOINT, {
       userId,
       applicationId,
@@ -671,22 +668,22 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   }
 
   async function updatePermitDetailApi(item: string) {
-    if (permitDetail.value.application.cost.standardLivescanFee === null) {
+    if (permitDetail.value.application.cost?.standardLivescanFee === null) {
       permitDetail.value.application.cost.standardLivescanFee =
         brandStore.brand.cost.standardLivescanFee
     }
 
-    if (permitDetail.value.application.cost.judicialLivescanFee === null) {
+    if (permitDetail.value.application.cost?.judicialLivescanFee === null) {
       permitDetail.value.application.cost.judicialLivescanFee =
         brandStore.brand.cost.judicialLivescanFee
     }
 
-    if (permitDetail.value.application.cost.reserveLivescanFee === null) {
+    if (permitDetail.value.application.cost?.reserveLivescanFee === null) {
       permitDetail.value.application.cost.reserveLivescanFee =
         brandStore.brand.cost.reserveLivescanFee
     }
 
-    if (permitDetail.value.application.cost.employmentLivescanFee === null) {
+    if (permitDetail.value.application.cost?.employmentLivescanFee === null) {
       permitDetail.value.application.cost.employmentLivescanFee =
         brandStore.brand.cost.employmentLivescanFee
     }
