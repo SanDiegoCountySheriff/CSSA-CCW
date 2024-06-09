@@ -668,6 +668,10 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   }
 
   async function updatePermitDetailApi(item: string) {
+    if (permitDetail.value.application.cost === null) {
+      permitDetail.value.application.cost = brandStore.brand.cost
+    }
+
     if (permitDetail.value.application.cost?.standardLivescanFee === null) {
       permitDetail.value.application.cost.standardLivescanFee =
         brandStore.brand.cost.standardLivescanFee

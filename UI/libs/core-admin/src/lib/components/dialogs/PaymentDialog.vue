@@ -59,6 +59,7 @@
               "
               @refund="handleRefund"
               @delete-transaction="handleDeleteTransaction"
+              @verify-transaction="handleVerifyTransaction"
             />
           </v-col>
 
@@ -144,5 +145,9 @@ function handleDeleteTransaction(paymentHistory: PaymentHistoryType) {
     })
 
   updateApplication('Delete Transaction')
+}
+
+function handleVerifyTransaction() {
+  updateApplication('Verified Payment History')
 }
 </script>

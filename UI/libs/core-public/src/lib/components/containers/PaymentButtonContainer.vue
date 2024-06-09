@@ -66,6 +66,7 @@
 </template>
 
 <script setup lang="ts">
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
@@ -81,6 +82,7 @@ defineProps<IPaymentButtonContainerProps>()
 const emit = defineEmits(['cash-payment'])
 const applicationStore = useCompleteApplicationStore()
 const paymentStore = usePaymentStore()
+const brandStore = useBrandStore()
 const showInfo = ref(false)
 const isInitialPaymentComplete = inject('isInitialPaymentComplete')
 const isUpdatePaymentHistoryLoading = inject('isUpdatePaymentHistoryLoading')
@@ -95,23 +97,34 @@ const { mutate: makePayment, isLoading } = useMutation({
   mutationFn: () => {
     let cost: number
     let paymentType: string
+    let livescanAmount: number | null | undefined
 
     switch (applicationStore.completeApplication.application.applicationType) {
       case ApplicationType.Standard:
         cost =
           applicationStore.completeApplication.application.cost.new.standard
+        livescanAmount = brandStore.brand.cost.standardLivescanFee
         paymentType = PaymentType['CCW Application Initial Payment'].toString()
         break
       case ApplicationType.Judicial:
         cost =
           applicationStore.completeApplication.application.cost.new.judicial
+        livescanAmount = brandStore.brand.cost.judicialLivescanFee
         paymentType =
           PaymentType['CCW Application Initial Judicial Payment'].toString()
         break
       case ApplicationType.Reserve:
         cost = applicationStore.completeApplication.application.cost.new.reserve
+        livescanAmount = brandStore.brand.cost.reserveLivescanFee
         paymentType =
           PaymentType['CCW Application Initial Reserve Payment'].toString()
+        break
+      case ApplicationType.Employment:
+        cost =
+          applicationStore.completeApplication.application.cost.new.employment
+        livescanAmount = brandStore.brand.cost.employmentLivescanFee
+        paymentType =
+          PaymentType['CCW Application Initial Employment Payment'].toString()
         break
       case ApplicationType['Renew Standard']:
         cost =
@@ -145,6 +158,7 @@ const { mutate: makePayment, isLoading } = useMutation({
     return paymentStore.getPayment(
       applicationStore.completeApplication.id,
       cost,
+      livescanAmount,
       applicationStore.completeApplication.application.orderId,
       paymentType
     )

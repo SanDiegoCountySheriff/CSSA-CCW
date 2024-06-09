@@ -422,11 +422,6 @@ public class PermitApplicationController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-
-            if (e.Message.Contains("Permit application"))
-            {
-                return NotFound(e.Message);
-            }
             return NotFound("An error occur while trying to update permit application.");
         }
     }
@@ -605,7 +600,11 @@ public class PermitApplicationController : ControllerBase
                 Zip = "",
             };
             application.Application.CurrentStep = 1;
-            application.PaymentHistory = new List<PaymentHistory>();
+            
+            if (application.PaymentHistory == null)
+            {
+                application.PaymentHistory = new List<PaymentHistory>();
+            }
 
             if (application.Application.QualifyingQuestions?.QuestionTwelve.Selected is not null or false)
             {

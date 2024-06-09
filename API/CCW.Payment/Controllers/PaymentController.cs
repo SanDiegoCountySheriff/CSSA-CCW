@@ -1,14 +1,10 @@
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using CCW.Common.Enums;
 using CCW.Common.Models;
 using CCW.Payment.Services;
 using GlobalPayments.Api;
-using GlobalPayments.Api.Builders;
 using GlobalPayments.Api.Entities;
 using GlobalPayments.Api.Entities.Billing;
 using GlobalPayments.Api.Entities.Enums;
-using GlobalPayments.Api.PaymentMethods;
 using GlobalPayments.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -149,10 +145,9 @@ public class PaymentController : ControllerBase
             var paymentHistory = new PaymentHistory();
 
             var failedPaymentHistory = application.PaymentHistory.Where(ph => ph.Successful == false && ph.PaymentType == paymentType).FirstOrDefault();
-            var duplicateModificationPaymentHistory = application.PaymentHistory.Where(ph => ph.PaymentType == paymentType && ph.ModificationNumber == application.Application.ModificationNumber).FirstOrDefault();
             var duplicatePaymentHistory = application.PaymentHistory.Where(ph => ph.PaymentType == paymentType && ph.TransactionId == transactionId).FirstOrDefault();
 
-            if (duplicateModificationPaymentHistory != null || duplicatePaymentHistory != null)
+            if (duplicatePaymentHistory != null)
             {
                 return new UnprocessableEntityResult();
             }
@@ -162,48 +157,111 @@ public class PaymentController : ControllerBase
                 application.PaymentHistory.Remove(failedPaymentHistory);
             }
 
-            if (successful)
+            if (paymentType is Common.Enums.PaymentType.InitialStandard or Common.Enums.PaymentType.InitialJudicial or Common.Enums.PaymentType.InitialReserve or Common.Enums.PaymentType.InitialEmployment)
             {
-                paymentHistory.TransactionId = transactionId;
-                paymentHistory.PaymentDateTimeUtc = DateTime.Parse(transactionDateTime).ToUniversalTime();
-                paymentHistory.Amount = amount;
-                paymentHistory.VendorInfo = "Credit Card";
-                paymentHistory.PaymentType = paymentType;
-                paymentHistory.Successful = true;
-                paymentHistory.PaymentStatus = PaymentStatus.OnlineSubmitted;
-
-                if (paymentType is Common.Enums.PaymentType.InitialStandard or Common.Enums.PaymentType.InitialJudicial or Common.Enums.PaymentType.InitialReserve or Common.Enums.PaymentType.InitialEmployment)
+                var initialAmount = paymentType switch
                 {
-                    application.Application.ReadyForInitialPayment = false;
-                }
+                    Common.Enums.PaymentType.InitialStandard => decimal.Parse(application.Application.Cost.New.Standard.ToString()),
+                    Common.Enums.PaymentType.InitialJudicial => decimal.Parse(application.Application.Cost.New.Judicial.ToString()),
+                    Common.Enums.PaymentType.InitialReserve => decimal.Parse(application.Application.Cost.New.Reserve.ToString()),
+                    Common.Enums.PaymentType.InitialEmployment => decimal.Parse(application.Application.Cost.New.Employment.ToString()),
+                    _ => decimal.Parse(application.Application.Cost.New.Standard.ToString())
+                };
 
-                if (paymentType is Common.Enums.PaymentType.RenewalStandard or Common.Enums.PaymentType.RenewalJudicial or Common.Enums.PaymentType.RenewalReserve or Common.Enums.PaymentType.RenewalEmployment)
+                var livescanAmount = paymentType switch
                 {
-                    application.Application.ReadyForRenewalPayment = false;
-                }
+                    Common.Enums.PaymentType.InitialStandard => decimal.Parse(application.Application.Cost.StandardLivescanFee.ToString()),
+                    Common.Enums.PaymentType.InitialJudicial => decimal.Parse(application.Application.Cost.JudicialLivescanFee.ToString()),
+                    Common.Enums.PaymentType.InitialReserve => decimal.Parse(application.Application.Cost.ReserveLivescanFee.ToString()),
+                    Common.Enums.PaymentType.InitialEmployment => decimal.Parse(application.Application.Cost.EmploymentLivescanFee.ToString()),
+                    _ => decimal.Parse(application.Application.Cost.StandardLivescanFee.ToString())
+                };
 
-                if (paymentType is Common.Enums.PaymentType.ModificationStandard or Common.Enums.PaymentType.ModificationJudicial or Common.Enums.PaymentType.ModificationReserve or Common.Enums.PaymentType.ModificationEmployment)
+                var livescanPaymentType = paymentType switch
                 {
-                    paymentHistory.ModificationNumber = application.Application.ModificationNumber;
-                    application.Application.ReadyForModificationPayment = false;
-                }
+                    Common.Enums.PaymentType.InitialStandard => Common.Enums.PaymentType.StandardLivescan,
+                    Common.Enums.PaymentType.InitialJudicial => Common.Enums.PaymentType.JudicialLivescan,
+                    Common.Enums.PaymentType.InitialReserve => Common.Enums.PaymentType.ReserveLivescan,
+                    Common.Enums.PaymentType.InitialEmployment => Common.Enums.PaymentType.EmploymentLivescan,
+                    _ => Common.Enums.PaymentType.StandardLivescan
+                };
+
+                var initialPaymentHistory = application.PaymentHistory.Where(ph =>
+                {
+                    return ph.PaymentType == paymentType && ph.Amount == initialAmount;
+                }).FirstOrDefault();
+
+                application.PaymentHistory.Remove(initialPaymentHistory);
+
+                var livescanPaymentHistory = application.PaymentHistory.Where(ph =>
+                {
+                    return ph.PaymentType == livescanPaymentType && ph.Amount == livescanAmount;
+                }).FirstOrDefault();
+
+                application.PaymentHistory.Remove(livescanPaymentHistory);
+
+                initialPaymentHistory.Verified = true;
+                initialPaymentHistory.TransactionId = transactionId;
+                initialPaymentHistory.Successful = successful;
+                initialPaymentHistory.PaymentDateTimeUtc = DateTimeOffset.Parse(transactionDateTime).ToUniversalTime();
+
+                livescanPaymentHistory.Verified = true;
+                livescanPaymentHistory.TransactionId = transactionId;
+                livescanPaymentHistory.Successful = successful;
+                livescanPaymentHistory.PaymentDateTimeUtc = DateTimeOffset.Parse(transactionDateTime).ToUniversalTime();
+
+                application.PaymentHistory.Add(initialPaymentHistory);
+                application.PaymentHistory.Add(livescanPaymentHistory);
+                application.Application.ReadyForInitialPayment = !successful;
             }
-            else
+            else if (paymentType is Common.Enums.PaymentType.RenewalStandard or Common.Enums.PaymentType.RenewalJudicial or Common.Enums.PaymentType.RenewalReserve or Common.Enums.PaymentType.RenewalEmployment)
             {
-                paymentHistory.TransactionId = transactionId;
-                paymentHistory.PaymentDateTimeUtc = DateTime.Parse(transactionDateTime).ToUniversalTime();
-                paymentHistory.Amount = amount;
-                paymentHistory.VendorInfo = "Credit Card";
-                paymentHistory.PaymentType = paymentType;
-                paymentHistory.Successful = false;
-                paymentHistory.PaymentStatus = PaymentStatus.OnlineSubmitted;
+                var renewalAmount = paymentType switch
+                {
+                    Common.Enums.PaymentType.RenewalStandard => decimal.Parse(application.Application.Cost.Renew.Standard.ToString()),
+                    Common.Enums.PaymentType.RenewalJudicial => decimal.Parse(application.Application.Cost.Renew.Judicial.ToString()),
+                    Common.Enums.PaymentType.RenewalReserve => decimal.Parse(application.Application.Cost.Renew.Reserve.ToString()),
+                    Common.Enums.PaymentType.RenewalEmployment => decimal.Parse(application.Application.Cost.Renew.Employment.ToString()),
+                    _ => decimal.Parse(application.Application.Cost.New.Standard.ToString())
+                };
+
+                var existingPaymentHistory = application.PaymentHistory.Where(ph =>
+                {
+                    return ph.PaymentType == paymentType && ph.Amount == renewalAmount;
+                }).FirstOrDefault();
+
+                application.PaymentHistory.Remove(existingPaymentHistory);
+
+                existingPaymentHistory.Verified = true;
+                existingPaymentHistory.TransactionId = transactionId;
+                existingPaymentHistory.Successful = successful;
+                existingPaymentHistory.PaymentDateTimeUtc = DateTimeOffset.Parse(transactionDateTime).ToUniversalTime();
+
+                application.PaymentHistory.Add(existingPaymentHistory);
+                application.Application.ReadyForRenewalPayment = !successful;
+            }
+            else if (paymentType is Common.Enums.PaymentType.ModificationStandard or Common.Enums.PaymentType.ModificationJudicial or Common.Enums.PaymentType.ModificationReserve or Common.Enums.PaymentType.ModificationEmployment)
+            {
+                var existingPaymentHistory = application.PaymentHistory.Where(ph =>
+                {
+                    return ph.PaymentType == paymentType && ph.Amount == decimal.Parse(application.Application.Cost.Modify.ToString()) && ph.ModificationNumber == application.Application.ModificationNumber;
+                }).FirstOrDefault();
+
+                application.PaymentHistory.Remove(existingPaymentHistory);
+
+                existingPaymentHistory.Verified = true;
+                existingPaymentHistory.TransactionId = transactionId;
+                existingPaymentHistory.Successful = successful;
+                existingPaymentHistory.PaymentDateTimeUtc = DateTimeOffset.Parse(transactionDateTime).ToUniversalTime();
+
+                application.PaymentHistory.Add(existingPaymentHistory);
+                application.Application.ReadyForModificationPayment = !successful;
             }
 
-            application.PaymentHistory.Add(paymentHistory);
             application.Application.PaymentStatus = PaymentStatus.OnlineSubmitted;
             await _cosmosDbService.UpdateApplication(application);
 
-            return new OkObjectResult(true);
+            return new OkObjectResult(successful);
         }
         catch (Exception ex)
         {
@@ -215,16 +273,26 @@ public class PaymentController : ControllerBase
     [Authorize(Policy = "B2CUsers")]
     [Route("makePayment")]
     [HttpGet]
-    public async Task<IActionResult> MakePayment(string applicationId, decimal amount, string orderId, Common.Enums.PaymentType paymentType)
+    public async Task<IActionResult> MakePayment(string applicationId, decimal amount, decimal livescanAmount, string orderId, Common.Enums.PaymentType paymentType)
     {
         try
         {
             GetUserId(out string userId);
+            var application = await _cosmosDbService.GetApplication(applicationId, userId);
+
+            application.PaymentHistory ??= new List<PaymentHistory>();
+
             var paymentTypeDescription = GetEnumDescription(paymentType);
+            var total = amount;
+
+            if (livescanAmount > 0)
+            {
+                total += livescanAmount;
+            }
 
             var bill = new Bill()
             {
-                Amount = amount,
+                Amount = total,
                 BillType = paymentTypeDescription,
                 Identifier1 = orderId,
                 // first name
@@ -246,6 +314,51 @@ public class PaymentController : ControllerBase
                 MerchantResponseUrl = $"{_processTransactionEndpoint}?applicationId={applicationId}&paymentType={paymentType}",
                 CustomerIsEditable = true,
             };
+
+            var paymentHistory = new PaymentHistory()
+            {
+                PaymentDateTimeUtc = DateTimeOffset.UtcNow,
+                Amount = amount,
+                VendorInfo = "Credit Card",
+                PaymentType = paymentType,
+                PaymentStatus = PaymentStatus.OnlineSubmitted,
+                Verified = false,
+                Successful = true
+            };
+
+            if (paymentType is Common.Enums.PaymentType.ModificationStandard or Common.Enums.PaymentType.ModificationJudicial or Common.Enums.PaymentType.ModificationReserve or Common.Enums.PaymentType.ModificationEmployment)
+            {
+                paymentHistory.ModificationNumber = application.Application.ModificationNumber;
+            }
+
+            application.PaymentHistory.Add(paymentHistory);
+
+            if (livescanAmount > 0)
+            {
+                var livescanPaymentType = paymentType switch
+                {
+                    Common.Enums.PaymentType.InitialStandard => Common.Enums.PaymentType.StandardLivescan,
+                    Common.Enums.PaymentType.InitialJudicial => Common.Enums.PaymentType.JudicialLivescan,
+                    Common.Enums.PaymentType.InitialReserve => Common.Enums.PaymentType.ReserveLivescan,
+                    Common.Enums.PaymentType.InitialEmployment => Common.Enums.PaymentType.EmploymentLivescan,
+                    _ => Common.Enums.PaymentType.StandardLivescan
+                };
+
+                var livescanPaymentHistory = new PaymentHistory()
+                {
+                    PaymentDateTimeUtc = DateTimeOffset.UtcNow,
+                    Amount = livescanAmount,
+                    VendorInfo = "Credit Card",
+                    PaymentType = livescanPaymentType,
+                    PaymentStatus = PaymentStatus.OnlineSubmitted,
+                    Verified = false,
+                    Successful = true
+                };
+
+                application.PaymentHistory.Add(livescanPaymentHistory);
+            }
+
+            await _cosmosDbService.UpdateApplication(application);
 
             var response = _billPayService.LoadHostedPayment(hostedPaymentData);
 

@@ -352,6 +352,7 @@ export type PaymentHistoryType = {
   successful: boolean
   paymentStatus: PaymentStatus
   modificationNumber: number | null
+  verified: boolean | null
 }
 
 export type WeaponInfoType = {
