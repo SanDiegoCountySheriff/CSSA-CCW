@@ -34,6 +34,13 @@
           Payment Type: {{ PaymentType[item.paymentType] }}
           <br />
           Submitted: {{ paymentStatuses[item.paymentStatus].name }}
+          <br />
+          Verified:
+          {{
+            item.verified
+              ? 'Transaction ID is verified with vendor'
+              : 'Payment status is not verified, look up on vendor website to verify'
+          }}
 
           <v-card-actions>
             <RefundDialog
@@ -45,6 +52,11 @@
               :payment="item"
               :loading="loading"
               v-on="$listeners"
+            />
+
+            <VerifyTransactionDialog
+              v-if="!item.verified"
+              @confirm="handleConfirm(item, $event)"
             />
 
             <v-spacer />
@@ -164,6 +176,7 @@
 import { ApplicationType } from '@shared-utils/types/defaultTypes'
 import Receipt from '@core-admin/components/receipt/Receipt.vue'
 import RefundDialog from '@core-admin/components/dialogs/RefundDialog.vue'
+import VerifyTransactionDialog from '@core-admin/components/dialogs/VerifyTransactionDialog.vue'
 import VueHtml2pdf from 'vue-html2pdf'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
@@ -177,7 +190,7 @@ interface PaymentHistoryProps {
 }
 
 defineProps<PaymentHistoryProps>()
-const emit = defineEmits(['delete-transaction'])
+const emit = defineEmits(['delete-transaction', 'verify-transaction'])
 
 const permitStore = usePermitsStore()
 const html2Pdf = ref(null)
@@ -213,5 +226,15 @@ function reprintReceipt(item) {
 function handleDeleteTransaction(paymentHistory: PaymentHistoryType) {
   dialog.value = false
   emit('delete-transaction', paymentHistory)
+}
+
+function handleConfirm(
+  paymentHistory: PaymentHistoryType,
+  transactionId: string
+) {
+  paymentHistory.transactionId = transactionId
+  paymentHistory.verified = true
+
+  emit('verify-transaction')
 }
 </script>
