@@ -18,5 +18,9 @@ public class PaymentHistoryResponseModel
     [JsonProperty("transactionId")]
     public string TransactionId { get; set; }
     [JsonProperty("paymentStatus")]
-    public PaymentStatus PaymentStatus { get; set; }    
+    public PaymentStatus PaymentStatus { get; set; }
+    [JsonProperty("modificationNumber")]
+    public int? ModificationNumber { get; set; }
+    [JsonProperty("verified")]
+    public bool Verified { get; set; }
 }

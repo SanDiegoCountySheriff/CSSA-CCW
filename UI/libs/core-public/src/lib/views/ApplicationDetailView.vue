@@ -1679,28 +1679,33 @@ const { mutate: makePayment, isLoading: isMakePaymentLoading } = useMutation({
   mutationFn: () => {
     let cost: number
     let paymentType: string
+    let livescanAmount: number | null | undefined
 
     switch (applicationStore.completeApplication.application.applicationType) {
       case ApplicationType.Standard:
         paymentType = PaymentType['CCW Application Initial Payment'].toString()
+        livescanAmount = brandStore.brand.cost.standardLivescanFee
         cost = brandStore.brand.cost.new.standard
         break
 
       case ApplicationType.Judicial:
         paymentType =
           PaymentType['CCW Application Initial Judicial Payment'].toString()
+        livescanAmount = brandStore.brand.cost.judicialLivescanFee
         cost = brandStore.brand.cost.new.judicial
         break
 
       case ApplicationType.Reserve:
         paymentType =
           PaymentType['CCW Application Initial Reserve Payment'].toString()
+        livescanAmount = brandStore.brand.cost.reserveLivescanFee
         cost = brandStore.brand.cost.new.reserve
         break
 
       case ApplicationType.Employment:
         paymentType =
           PaymentType['CCW Application Initial Employment Payment'].toString()
+        livescanAmount = brandStore.brand.cost.employmentLivescanFee
         cost = brandStore.brand.cost.new.employment
         break
 
@@ -1763,6 +1768,7 @@ const { mutate: makePayment, isLoading: isMakePaymentLoading } = useMutation({
     return paymentStore.getPayment(
       applicationStore.completeApplication.id,
       cost,
+      livescanAmount,
       applicationStore.completeApplication.application.orderId,
       paymentType
     )
