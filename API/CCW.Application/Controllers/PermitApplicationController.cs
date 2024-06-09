@@ -422,11 +422,6 @@ public class PermitApplicationController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-
-            if (e.Message.Contains("Permit application"))
-            {
-                return NotFound(e.Message);
-            }
             return NotFound("An error occur while trying to update permit application.");
         }
     }
