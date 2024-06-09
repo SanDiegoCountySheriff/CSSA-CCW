@@ -576,6 +576,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
                     Successful = modelPayment.Successful,
                     PaymentStatus = modelPayment.PaymentStatus,
                     ModificationNumber = modelPayment.ModificationNumber,
+                    Verified = modelPayment.Verified,
                 };
 
                 paymentHistories[i] = paymentHistory;
