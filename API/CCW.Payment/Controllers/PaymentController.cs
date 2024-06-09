@@ -145,10 +145,9 @@ public class PaymentController : ControllerBase
             var paymentHistory = new PaymentHistory();
 
             var failedPaymentHistory = application.PaymentHistory.Where(ph => ph.Successful == false && ph.PaymentType == paymentType).FirstOrDefault();
-            var duplicateModificationPaymentHistory = application.PaymentHistory.Where(ph => ph.PaymentType == paymentType && ph.ModificationNumber == application.Application.ModificationNumber).FirstOrDefault();
             var duplicatePaymentHistory = application.PaymentHistory.Where(ph => ph.PaymentType == paymentType && ph.TransactionId == transactionId).FirstOrDefault();
 
-            if (duplicateModificationPaymentHistory != null || duplicatePaymentHistory != null)
+            if (duplicatePaymentHistory != null)
             {
                 return new UnprocessableEntityResult();
             }

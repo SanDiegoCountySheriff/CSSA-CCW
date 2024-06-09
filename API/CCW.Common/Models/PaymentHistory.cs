@@ -26,7 +26,7 @@ public class PaymentHistory
     [JsonProperty("modificationNumber")]
     public int? ModificationNumber { get; set; }
     [JsonProperty("verified")]
-    public bool Verified { get; set; } = false;
+    public bool? Verified { get; set; }
 }
 
 public class PaymentHistoryResponse

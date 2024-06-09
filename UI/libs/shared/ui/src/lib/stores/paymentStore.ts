@@ -30,7 +30,11 @@ export const usePaymentStore = defineStore('paymentStore', () => {
   ) {
     await axios
       .get(
-        `${Endpoints.GET_PAYMENT_ENDPOINT}?applicationId=${applicationId}&amount=${amount}&livescanAmount=${liveScanAmount}&orderId=${orderId}&paymentType=${paymentType}`
+        `${
+          Endpoints.GET_PAYMENT_ENDPOINT
+        }?applicationId=${applicationId}&amount=${amount}&livescanAmount=${
+          liveScanAmount ?? 0
+        }&orderId=${orderId}&paymentType=${paymentType}`
       )
       .then(response => {
         window.location.href = response.data

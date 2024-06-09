@@ -1193,14 +1193,22 @@ const isModificationPaymentComplete = computed(() => {
   return (
     permitStore.permitDetail.paymentHistory.some(ph => {
       return (
-        (ph.paymentType ===
-          PaymentType['CCW Application Modification Payment'] ||
-          ph.paymentType ===
-            PaymentType['CCW Application Modification Employment Payment'] ||
-          ph.paymentType ===
-            PaymentType['CCW Application Modification Judicial Payment'] ||
-          ph.paymentType ===
-            PaymentType['CCW Application Modification Reserve Payment']) &&
+        ((ph.paymentType ===
+          PaymentType['CCW Application Modification Payment'] &&
+          ph.modificationNumber ===
+            permitStore.permitDetail.application.modificationNumber) ||
+          (ph.paymentType ===
+            PaymentType['CCW Application Modification Employment Payment'] &&
+            ph.modificationNumber ===
+              permitStore.permitDetail.application.modificationNumber) ||
+          (ph.paymentType ===
+            PaymentType['CCW Application Modification Judicial Payment'] &&
+            ph.modificationNumber ===
+              permitStore.permitDetail.application.modificationNumber) ||
+          (ph.paymentType ===
+            PaymentType['CCW Application Modification Reserve Payment'] &&
+            ph.modificationNumber ===
+              permitStore.permitDetail.application.modificationNumber)) &&
         ph.successful === true
       )
     }) || permitStore.permitDetail.application.paymentStatus === 1
