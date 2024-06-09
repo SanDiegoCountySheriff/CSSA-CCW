@@ -600,7 +600,11 @@ public class PermitApplicationController : ControllerBase
                 Zip = "",
             };
             application.Application.CurrentStep = 1;
-            application.PaymentHistory = new List<PaymentHistory>();
+            
+            if (application.PaymentHistory == null)
+            {
+                application.PaymentHistory = new List<PaymentHistory>();
+            }
 
             if (application.Application.QualifyingQuestions?.QuestionTwelve.Selected is not null or false)
             {
