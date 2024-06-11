@@ -2,6 +2,34 @@
 <template>
   <v-container>
     <v-card>
+      <v-card-title>Privacy Policy</v-card-title>
+
+      <v-card-text>
+        We respect and are committed to protecting your privacy. We may collect
+        personally identifiable information when you visit our site. We also
+        automatically receive and record information on our server logs from
+        your browser including your IP address, cookie information and the
+        page(s) you visited. We will not sell your personally identifiable
+        information to anyone.
+      </v-card-text>
+
+      <v-card-title>Security Policy</v-card-title>
+
+      <v-card-text>
+        Your payment and personal information is always safe. Our Secure Sockets
+        Layer (SSL) software is the industry standard and among the best
+        software available today for secure commerce transactions. It encrypts
+        all of your personal information, including credit card number, name,
+        and address, so that it cannot be read over the internet.
+      </v-card-text>
+
+      <v-card-title>Refund Policy</v-card-title>
+
+      <v-card-text>
+        All refunds will be provided as a credit to the credit card used at the
+        time of purchase within five (5) business days.
+      </v-card-text>
+
       <v-card-title>
         {{ $t('Concealed Carry Weapon License Requirements:') }}
       </v-card-title>
@@ -553,13 +581,23 @@
           </v-card-title>
           <v-col
             cols="12"
-            class="text-center"
+            class="d-flex align-center justify-center"
           >
-            <canvas
+            <v-card
+              light
+              flat
               :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
-              id="signature"
-              class="signature"
-            ></canvas>
+              height="100px"
+              outlined
+              style="border: solid 2px black"
+            >
+              <canvas
+                :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
+                height="100px"
+                id="signature"
+                class="signature"
+              ></canvas>
+            </v-card>
           </v-col>
           <v-col
             cols="12"
@@ -685,11 +723,13 @@ function handleFinalAcceptAndCreate() {
       standard: brandStore.brand.cost.new.standard,
       judicial: brandStore.brand.cost.new.judicial,
       reserve: brandStore.brand.cost.new.reserve,
+      employment: brandStore.brand.cost.new.employment,
     },
     renew: {
       standard: brandStore.brand.cost.renew.standard,
       judicial: brandStore.brand.cost.renew.judicial,
       reserve: brandStore.brand.cost.renew.reserve,
+      employment: brandStore.brand.cost.renew.employment,
     },
     issuance: brandStore.brand.cost.issuance,
     modify: brandStore.brand.cost.modify,
@@ -708,10 +748,6 @@ function handleClearSignature() {
 </script>
 
 <style lang="scss" scoped>
-.signature {
-  border: 2px solid black;
-  border-radius: 5px;
-}
 ol {
   margin-left: 10px;
   padding-left: 1em;

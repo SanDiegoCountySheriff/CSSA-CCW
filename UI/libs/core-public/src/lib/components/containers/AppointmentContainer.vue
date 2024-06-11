@@ -7,26 +7,24 @@
   </v-container>
 
   <v-container v-else>
-    <v-subheader v-if="props.showHeader && !state.updatingAppointment">
+    <v-subheader
+      v-if="props.showHeader && !state.updatingAppointment"
+      class="d-flex justify-center align-center"
+    >
       <h2>
         {{ $t('Schedule Appointment') }}
       </h2>
+    </v-subheader>
+
+    <v-subheader class="d-flex justify-center align-center">
+      <h3>Click individual appointment slots to schedule.</h3>
     </v-subheader>
 
     <v-toolbar
       color="primary"
       flat
     >
-      <v-btn
-        outlined
-        :small="$vuetify.breakpoint.mdAndDown"
-        color="white"
-        @click="selectNextAvailable"
-      >
-        {{ $t('Next available') }}
-      </v-btn>
-
-      <template v-if="$vuetify.breakpoint.mdAndUp">
+      <template v-if="getCalendarType === 'month'">
         <v-btn
           fab
           text
@@ -48,22 +46,48 @@
         </v-btn>
       </template>
 
+      <template v-if="getCalendarType === 'day'">
+        <v-btn
+          v-if="getCalendarType === 'day'"
+          outlined
+          :small="$vuetify.breakpoint.mdAndDown"
+          color="white"
+          @click="selectPreviousAvailable"
+        >
+          <v-icon> mdi-chevron-left </v-icon>
+        </v-btn>
+
+        <v-spacer />
+      </template>
+
       <v-toolbar-title
         v-if="state.calendarLoading"
         :style="{
           color: 'white',
         }"
-        class="ml-5"
+        :class="getCalendarType === 'month' ? 'ml-5' : ''"
       >
         {{ getCalendarTitle }}
       </v-toolbar-title>
+
+      <v-spacer />
+
+      <v-btn
+        v-if="getCalendarType === 'day'"
+        outlined
+        :small="$vuetify.breakpoint.mdAndDown"
+        color="white"
+        @click="selectNextAvailable"
+      >
+        <v-icon> mdi-chevron-right </v-icon>
+      </v-btn>
     </v-toolbar>
 
     <v-calendar
       ref="calendar"
       v-model="state.focus"
       color="primary"
-      :start="props.events[0].start"
+      :start="start"
       :type="getCalendarType"
       :events="props.events"
       :first-interval="getFirstInterval"
@@ -73,9 +97,15 @@
       @click:event="selectEvent($event)"
     >
       <template #event="{ event }">
-        <div class="ml-2">
-          {{ `${event.start.split(' ')[1]} - ${event.end.split(' ')[1]}` }}
-        </div>
+        <span class="ml-1">
+          {{
+            new Date(event.start).toLocaleTimeString('en-US', {
+              hour: '2-digit',
+              minute: '2-digit',
+            })
+          }}
+        </span>
+        <span class="float-right mr-1">{{ event.name }}</span>
       </template>
     </v-calendar>
 
@@ -85,10 +115,22 @@
       :position-y="y"
       absolute
     >
-      <v-card flat>
-        <v-card-title>
-          {{ $t('Confirm Appointment Selection') }}
+      <v-card
+        outlined
+        flat
+      >
+        <v-card-title v-if="!props.rescheduling">
+          {{
+            $t(
+              'Would you like to select this appointment and submit your application?'
+            )
+          }}
         </v-card-title>
+
+        <v-card-title v-else>
+          {{ $t('Would you like to select this appointment?') }}
+        </v-card-title>
+
         <v-card-actions>
           <v-btn
             text
@@ -97,9 +139,12 @@
           >
             {{ $t('Cancel') }}
           </v-btn>
+
+          <v-spacer />
+
           <v-btn
             text
-            color="primary"
+            color="success"
             @click="handleConfirm"
           >
             {{ $t('Confirm') }}
@@ -152,6 +197,7 @@ const appointmentStore = useAppointmentsStore()
 const paymentStore = usePaymentStore()
 const paymentType = paymentStore.getPaymentType
 const calendar = ref<any>(null)
+const start = ref(props.events[0].start)
 const x = ref(0)
 const y = ref(0)
 const state = reactive({
@@ -179,13 +225,15 @@ const appointmentMutation = useMutation({
       userId: applicationStore.completeApplication.userId,
       applicationId: applicationStore.completeApplication.id,
       date: '',
-      end: new Date(state.selectedEvent.end).toISOString(),
+      end: new Date(state.selectedEvent.end.replace(/-/g, '/')).toISOString(),
       isManuallyCreated: false,
       id: state.selectedEvent.id,
       name: `${applicationStore.completeApplication.application.personalInfo.firstName} ${applicationStore.completeApplication.application.personalInfo.lastName} `,
       payment: paymentType,
       permit: applicationStore.completeApplication.application.orderId,
-      start: new Date(state.selectedEvent.start).toISOString(),
+      start: new Date(
+        state.selectedEvent.start.replace(/-/g, '/')
+      ).toISOString(),
       appointmentCreatedDate: new Date().toISOString(),
       status: AppointmentStatus.Scheduled,
       time: '',
@@ -222,11 +270,13 @@ const appointmentMutation = useMutation({
     }
 
     state.updatingAppointment = false
+    appointmentStore.schedulingAppointment = false
     state.selectedOpen = false
     emit('toggle-appointment', state.selectedEvent.start.split(' ')[1])
   },
   onError: () => {
     state.updatingAppointment = false
+    appointmentStore.schedulingAppointment = false
     state.snackbar = true
   },
 })
@@ -243,20 +293,64 @@ function selectEvent(event) {
 
 function handleConfirm() {
   state.updatingAppointment = true
+  appointmentStore.schedulingAppointment = true
   appointmentMutation.mutate()
 }
 
 function selectNextAvailable() {
-  state.focus = new Date(props.events[0].start).toLocaleDateString()
+  for (let event of props.events) {
+    const eventStart = new Date(event.start.replace(/-/g, '/'))
+    const currentStart = new Date(start.value.replace(/-/g, '/'))
+
+    if (
+      new Date(
+        eventStart.getFullYear(),
+        eventStart.getMonth(),
+        eventStart.getDate()
+      ) >
+      new Date(
+        currentStart.getFullYear(),
+        currentStart.getMonth(),
+        currentStart.getDate()
+      )
+    ) {
+      start.value = event.start
+      break
+    }
+  }
+}
+
+function selectPreviousAvailable() {
+  for (let event of props.events.slice().reverse()) {
+    const eventStart = new Date(event.start.replace(/-/g, '/'))
+    const currentStart = new Date(start.value.replace(/-/g, '/'))
+
+    if (
+      new Date(
+        eventStart.getFullYear(),
+        eventStart.getMonth(),
+        eventStart.getDate()
+      ) <
+      new Date(
+        currentStart.getFullYear(),
+        currentStart.getMonth(),
+        currentStart.getDate()
+      )
+    ) {
+      start.value = event.start
+      break
+    }
+  }
 }
 
 onMounted(() => {
   state.calendarLoading = true
+  state.focus = new Date(props.events[0].start).toLocaleDateString()
 })
 
 const appointmentLength = computed(() => {
-  const startTime = new Date(props.events[0].start)
-  const endTime = new Date(props.events[0].end)
+  const startTime = new Date(props.events[0].start.replace(/-/g, '/'))
+  const endTime = new Date(props.events[0].end.replace(/-/g, '/'))
   const difference = endTime.getTime() - startTime.getTime()
   const resultInMinutes = Math.round(difference / 60000)
 
@@ -268,7 +362,6 @@ const numberOfAppointments = computed(() => {
   const endTime = parseInt(
     props.events.slice(-1)[0].start.split(' ')[1].split(':')[0]
   )
-
   const totalMinutes = (endTime - startTime) * 60
   const intervals = Math.floor(totalMinutes / appointmentLength.value)
 
@@ -277,7 +370,6 @@ const numberOfAppointments = computed(() => {
 
 const getFirstInterval = computed(() => {
   const startTime = parseInt(props.events[0].start.split(' ')[1].split(':')[0])
-
   const firstInterval =
     startTime * Math.pow(2, Math.log2(60 / appointmentLength.value))
 

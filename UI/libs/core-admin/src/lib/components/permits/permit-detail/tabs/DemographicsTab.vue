@@ -4,7 +4,7 @@
       {{ $t('Demographic Information') }}
       <v-spacer></v-spacer>
       <SaveButton
-        :disabled="!valid"
+        :disabled="!valid || readonly"
         @on-save="handleSave"
       />
     </v-card-title>
@@ -17,6 +17,7 @@
                 permitStore.getPermitDetail.application.physicalAppearance
                   .gender
               "
+              :disabled="readonly"
               :label="$t('Gender:')"
               row
             >
@@ -52,6 +53,7 @@
                   .heightFeet
               "
               :label="$t('Height feet')"
+              :readonly="readonly"
               :rules="[
                 v =>
                   (v > 0 && v < 10) ||
@@ -82,6 +84,7 @@
                 permitStore.getPermitDetail.application.physicalAppearance
                   .heightInch
               "
+              :readonly="readonly"
               :label="$t('Height inches')"
               :rules="[
                 v => !!v || $t('Height inches is required'),
@@ -115,6 +118,7 @@
                 permitStore.getPermitDetail.application.physicalAppearance
                   .weight
               "
+              :readonly="readonly"
               :label="$t('Weight')"
               :rules="[
                 v => !!v || $t('Weight is required'),
@@ -149,6 +153,7 @@
               :items="hairColors"
               :label="$t('Hair Color')"
               :rules="[v => !!v || $t(' Hair color is required')]"
+              :readonly="readonly"
               outlined
               dense
               :menu-props="{ bottom: true, offsetY: true }"
@@ -173,6 +178,7 @@
                 permitStore.getPermitDetail.application.physicalAppearance
                   .eyeColor
               "
+              :readonly="readonly"
               :items="eyeColors"
               :label="$t('Eye Color')"
               :rules="[v => !!v || $t('Eye color is required')]"
@@ -202,13 +208,26 @@
 
 <script setup lang="ts">
 import SaveButton from './SaveButton.vue'
-import { ref } from 'vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { eyeColors, hairColors } from '@shared-utils/lists/defaultConstants'
+import { computed, inject, ref } from 'vue'
 
 const permitStore = usePermitsStore()
 const emit = defineEmits(['on-save'])
 const valid = ref(false)
+const readonly = inject<boolean>('readonly')
+
+const brandStore = useBrandStore()
+const hairColors = computed(() => {
+  return brandStore.brand.agencyHairColors.map(h => {
+    return h.name
+  })
+})
+const eyeColors = computed(() => {
+  return brandStore.brand.agencyEyeColors.map(e => {
+    return e.name
+  })
+})
 
 function handleSave() {
   emit('on-save', 'Demographics Information')

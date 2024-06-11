@@ -47,4 +47,15 @@ export default class Routes {
   static get RENEW_FORM_ROUTE_PATH() {
     return `/renewform`
   }
+
+  static get MODIFY_FORM_PATH() {
+    return `/modify`
+  }
+
+  static get MODIFY_FINALIZE_PATH() {
+    return `/modifyfinalize`
+  }
+  static get EXISTING_APPLICATION_PATH() {
+    return `/existingapplication`
+  }
 }

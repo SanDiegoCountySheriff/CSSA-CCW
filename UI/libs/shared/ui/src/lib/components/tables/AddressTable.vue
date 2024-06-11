@@ -6,7 +6,7 @@
       :items="addresses"
       mobile-breakpoint="800"
     >
-      <template #[`item.actions`]="{ item }">
+      <template #[`item.actions`]="{ index }">
         <v-tooltip
           top
           open-delay="500"
@@ -15,7 +15,7 @@
             <v-icon
               v-if="enableDelete"
               v-bind="attrs"
-              @click="handleDelete(item)"
+              @click="handleDelete(index)"
               v-on="on"
             >
               mdi-delete
@@ -44,8 +44,7 @@ const props = withDefaults(defineProps<AddressTableProps>(), {
 })
 
 const headers = [
-  { text: 'Address line 1', value: 'addressLine1' },
-  { text: 'Address line 2', value: 'addressLine2' },
+  { text: 'Street Address', value: 'streetAddress' },
   { text: 'City', value: 'city' },
   { text: 'State', value: 'state' },
   { text: 'County', value: 'county' },
@@ -54,7 +53,7 @@ const headers = [
   { text: 'Actions', value: 'actions' },
 ]
 
-function handleDelete(index) {
+function handleDelete(index: number) {
   emit('delete', index)
 }
 </script>

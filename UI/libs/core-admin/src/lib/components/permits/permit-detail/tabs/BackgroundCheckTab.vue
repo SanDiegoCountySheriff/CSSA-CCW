@@ -14,12 +14,13 @@
                   <v-tooltip bottom>
                     <template #activator="{ on, attrs }">
                       <v-btn
-                        icon
-                        small
+                        v-on="on"
+                        v-bind="attrs"
+                        :disabled="readonly"
                         :input-value="active"
                         @click="handlePass(item.value, item.label)"
-                        v-bind="attrs"
-                        v-on="on"
+                        icon
+                        small
                       >
                         <v-icon
                           v-if="
@@ -53,12 +54,13 @@
                   <v-tooltip bottom>
                     <template #activator="{ on, attrs }">
                       <v-btn
-                        icon
-                        small
+                        v-on="on"
+                        v-bind="attrs"
+                        :disabled="readonly"
                         :input-value="active"
                         @click="handleFail(item.value, item.label)"
-                        v-bind="attrs"
-                        v-on="on"
+                        icon
+                        small
                       >
                         <v-icon
                           v-if="
@@ -219,11 +221,87 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog
+      v-model="liveScanDialog"
+      persistent
+      max-width="400"
+    >
+      <v-card>
+        <v-card-title>Input Live Scan Info</v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="
+                  permitStore.getPermitDetail.application.liveScanInfo.atiNumber
+                "
+                label="ATI Number"
+                color="primary"
+                outlined
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-menu
+                v-model="state.menu"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
+                <template #activator="{ on }">
+                  <v-text-field
+                    v-model="
+                      permitStore.permitDetail.application.liveScanInfo.date
+                    "
+                    label="Date of Live Scan or Renewal"
+                    outlined
+                    append-icon="mdi-calendar"
+                    readonly
+                    required
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="
+                    permitStore.permitDetail.application.liveScanInfo.date
+                  "
+                  color="primary"
+                  no-title
+                  @input="state.menu = false"
+                  scrollable
+                  style="max-width: 290px"
+                  required
+                >
+                </v-date-picker>
+              </v-menu>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn
+            color="error"
+            text
+            @click="handleCancelLiveScan"
+          >
+            Cancel
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            text
+            @click="handleInputLiveScan"
+          >
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
@@ -232,6 +310,7 @@ import {
   formatInitials,
   formatTime,
 } from '@shared-utils/formatters/defaultFormatters'
+import { inject, reactive, ref } from 'vue'
 
 interface IBackgroundCheckTabProps {
   isLoading: boolean
@@ -241,19 +320,28 @@ const props = withDefaults(defineProps<IBackgroundCheckTabProps>(), {
   isLoading: false,
 })
 
+const readonly = inject('readonly')
+
 const permitStore = usePermitsStore()
 const authStore = useAuthStore()
 const changed = ref('')
 const ciiDialog = ref(false)
+const liveScanDialog = ref(false)
+
+const state = reactive({
+  menu: false,
+})
 
 const checklistItems = [
   {
     label: 'Proof of ID',
     value: 'proofOfID',
+    highlight: false,
   },
   {
     label: 'Residency',
     value: 'proofOfResidency',
+    highlight: false,
   },
   {
     label: 'NCIC Warrants',
@@ -300,12 +388,17 @@ const checklistItems = [
     value: 'fbi',
   },
   {
+    label: 'Livescan',
+    value: 'livescan',
+  },
+  {
     label: 'SR14',
     value: 'sR14',
   },
   {
     label: 'Firearms',
     value: 'firearms',
+    highlight: false,
   },
   {
     label: "SID LTR's Received",
@@ -347,10 +440,20 @@ function handlePass(itemValue: string, itemLabel: string) {
 
   changed.value = itemLabel
 
+  let updatePermitDetailsCalled = false
+
   if (itemValue === 'ciiNumber' && !isPassed) {
     ciiDialog.value = true
-  } else {
+  } else if (!updatePermitDetailsCalled) {
     updatePermitDetails()
+    updatePermitDetailsCalled = true
+  }
+
+  if (itemValue === 'livescan' && !isPassed) {
+    liveScanDialog.value = true
+  } else if (!updatePermitDetailsCalled) {
+    updatePermitDetails()
+    updatePermitDetailsCalled = true
   }
 }
 
@@ -384,5 +487,17 @@ function handleCancelCiiNumber() {
   permitStore.getPermitDetail.application.backgroundCheck.ciiNumber.value = null
   permitStore.getPermitDetail.application.ciiNumber = ''
   ciiDialog.value = false
+}
+
+function handleInputLiveScan() {
+  liveScanDialog.value = false
+  updatePermitDetails()
+}
+
+function handleCancelLiveScan() {
+  permitStore.getPermitDetail.application.backgroundCheck.livescan.value = null
+  permitStore.getPermitDetail.application.liveScanInfo.atiNumber = ''
+  permitStore.getPermitDetail.application.liveScanInfo.date = ''
+  liveScanDialog.value = false
 }
 </script>

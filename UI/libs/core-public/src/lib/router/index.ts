@@ -1,13 +1,14 @@
 import ApplicationDetailView from '@core-public/views/ApplicationDetailView.vue'
 import ApplicationView from '@core-public/views/ApplicationView.vue'
+import ExistingApplicationView from '@core-public/views/ExistingApplicationView.vue'
 import FinalizeView from '@core-public/views/FinalizeView.vue'
 import FormView from '@core-public/views/FormView.vue'
 import HomeView from '@core-public/views/HomeView.vue'
+import ModifyFinalizeView from '@core-public/views/ModifyFinalizeView.vue'
+import ModifyFormView from '@core-public/views/ModifyFormView.vue'
 import MoreInformationView from '@core-public/views/MoreInformationView.vue'
 import PenalView from '@core-public/views/PenalView.vue'
 import RecieptView from '@core-public/views/RecieptView.vue'
-import RenewApplicationView from '@core-public/views/RenewApplicationView.vue'
-import RenewFormView from '@core-public/views/RenewFormView.vue'
 import Routes from '@core-public/router/routes'
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
@@ -52,19 +53,24 @@ const routes: Array<RouteConfig> = [
     component: PenalView,
   },
   {
-    path: Routes.RENEW_APPLICATION_ROUTE_PATH,
-    name: 'RenewApplication',
-    component: RenewApplicationView,
-  },
-  {
     path: Routes.RECEIPT_PATH,
     name: 'Reciept',
     component: RecieptView,
   },
   {
-    path: Routes.RENEW_FORM_ROUTE_PATH,
-    name: 'RenewForm',
-    component: RenewFormView,
+    path: Routes.MODIFY_FORM_PATH,
+    name: 'ModifyForm',
+    component: ModifyFormView,
+  },
+  {
+    path: Routes.MODIFY_FINALIZE_PATH,
+    name: 'ModifyFinalize',
+    component: ModifyFinalizeView,
+  },
+  {
+    path: Routes.EXISTING_APPLICATION_PATH,
+    name: 'ExistingApplication',
+    component: ExistingApplicationView,
   },
   {
     // keep this at the very end

@@ -1,4 +1,5 @@
 import Endpoints from '@shared-ui/api/endpoints'
+import { PdfValidationType } from '@core-admin/types'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { defineStore } from 'pinia'
@@ -26,22 +27,9 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     return ''
   }
 
-  async function getApplicationDocumentApi(name: string) {
-    const userName = `${permitStore.permitDetail.application.personalInfo.lastName}_${permitStore.permitDetail.application.personalInfo.firstName}`
-    const res = await axios.get(
-      `${Endpoints.GET_DOCUMENT_AGENCY_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${userName}_${name}`
-    )
-
-    setDocuments(res?.data)
-
-    return res?.data || {}
-  }
-
   async function getUserPortrait() {
-    const userName = `${permitStore.permitDetail.application.personalInfo.lastName}_${permitStore.permitDetail.application.personalInfo.firstName}`
-
     const res = await axios.get(
-      `${Endpoints.GET_USER_PORTRAIT_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${userName}_portrait`
+      `${Endpoints.GET_USER_PORTRAIT_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_Portrait`
     )
 
     return res.data
@@ -57,9 +45,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   async function setUserApplicationFile(data, target) {
     const formData = new FormData()
 
-    const userName = `${permitStore.permitDetail.application.personalInfo.lastName}_${permitStore.permitDetail.application.personalInfo.firstName}`
-
-    const newFileName = `${permitStore.permitDetail.userId}_${userName}_${target}`
+    const newFileName = `${permitStore.permitDetail.userId}_${target}`
 
     formData.append('fileToUpload', data)
     const res = await axios.post(
@@ -70,7 +56,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     if (res) {
       const uploadDoc: UploadedDocType = {
         documentType: target,
-        name: `${userName}_${target}`,
+        name: target,
         uploadedBy: authStore.getAuthState.userEmail,
         uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
       }
@@ -100,7 +86,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   }
 
   async function deleteApplicationFile(name: string) {
-    const res = await axios.delete(
+    await axios.delete(
       `${Endpoints.DELETE_DOCUMENT_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${name}`
     )
   }
@@ -109,6 +95,20 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     const res = await axios
       .get(
         `${Endpoints.GET_DOCUMENT_AGENCY_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${name}`,
+        { responseType: 'blob' }
+      )
+
+      .catch(err => {
+        window.console.warn(err)
+      })
+
+    return res?.data || {}
+  }
+
+  async function getUnmatchedUserDocument(name) {
+    const res = await axios
+      .get(
+        `${Endpoints.GET_DOCUMENT_AGENCY_FILE_ENDPOINT}?applicantFileName=${name}`,
         { responseType: 'blob' }
       )
 
@@ -141,14 +141,30 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     }
   }
 
+  async function getPdfFormValidation(): Promise<PdfValidationType> {
+    const res = await axios.get(Endpoints.GET_PDF_VALIDATION_ENDPOINT)
+
+    return res.data as PdfValidationType
+  }
+
+  async function uploadAgencyFile(file: FormData, fileName: string) {
+    try {
+      await axios.post(
+        `${Endpoints.POST_DOCUMENT_AGENCY_FILE_ENDPOINT}?saveAsFileName=${fileName}`,
+        file
+      )
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return {
     documents,
     getDocuments,
-    setDocuments,
-    getApplicationDocumentApi,
     formatName,
     setUserApplicationFile,
     getUserDocument,
+    getUnmatchedUserDocument,
     getAdminApplicationFile,
     postUploadAdminUserFile,
     deleteAdminApplicationFile,
@@ -156,5 +172,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     editAdminApplicationFileName,
     editApplicationFileName,
     getUserPortrait,
+    getPdfFormValidation,
+    uploadAgencyFile,
   }
 })

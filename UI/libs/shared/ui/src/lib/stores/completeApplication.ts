@@ -24,6 +24,7 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     completeApplication.history = payload.history
     completeApplication.id = payload.id
     completeApplication.paymentHistory = payload.paymentHistory
+    completeApplication.isMatchUpdated = payload.isMatchUpdated
   }
 
   function setAllUserApplications(payload: Array<CompleteApplication>) {
@@ -52,6 +53,24 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     return res?.data || {}
   }
 
+  async function addHistoricalApplicationPublic(
+    application: CompleteApplication
+  ) {
+    await axios
+      .put(
+        Endpoints.PUT_ADD_HISTORICAL_APPLICATION_PUBLIC_ENDPOINT,
+        application
+      )
+      .then(res => {
+        return res.data
+      })
+      .catch(err => {
+        window.console.log(err)
+
+        return Promise.reject()
+      })
+  }
+
   /**
    * Get all applications by the user
    * @param userEmail
@@ -66,7 +85,7 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
 
     if (res?.data) setAllUserApplications(res.data)
 
-    return res?.data
+    return res
   }
 
   async function createApplication() {
@@ -82,10 +101,10 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
       })
   }
 
-  async function getAgreementPdf(agreement) {
+  async function getAgreementPdf(fileName: string) {
     try {
       const response = await axios.get(
-        `${Endpoints.GET_AGREEMENT_PDF_ENDPOINT}?agreement=${agreement}`,
+        `${Endpoints.GET_AGREEMENT_PDF_ENDPOINT}?fileName=${fileName}`,
         {
           responseType: 'arraybuffer',
         }
@@ -113,27 +132,8 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     return res?.data
   }
 
-  async function deleteApplication(applicationId: string) {
-    const res = await axios
-      .put(
-        Endpoints.DELETE_PERMIT_ENDPOINT,
-        {},
-        {
-          params: {
-            applicationId,
-          },
-        }
-      )
-      .catch(err => {
-        console.warn(err)
-
-        return Promise.reject()
-      })
-
-    return res?.data
-  }
-
   return {
+    addHistoricalApplicationPublic,
     allUserApplications,
     completeApplication,
     createApplication,
@@ -144,7 +144,6 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     getCompleteApplicationFromApi,
     getAllUserApplicationsApi,
     updateApplication,
-    deleteApplication,
     getAgreementPdf,
   }
 })

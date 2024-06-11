@@ -17,11 +17,6 @@ const routes: Array<RouteConfig> = [
     component: () => import('@core-admin/views/BrandView.vue'),
   },
   {
-    path: Routes.RECEIPT_ROUTE_PATH,
-    name: 'Receipt',
-    component: () => import('@core-admin/views/ReceiptView.vue'),
-  },
-  {
     path: Routes.APPOINTMENTS_ROUTE_PATH,
     name: 'Appointments',
     component: () => import('@core-admin/views/AppointmentView.vue'),
@@ -40,6 +35,16 @@ const routes: Array<RouteConfig> = [
     path: `${Routes.PERMITS_ROUTE_PATH}/:orderId`,
     name: 'PermitDetail',
     component: () => import('@core-admin/views/PermitDetailView.vue'),
+  },
+  {
+    path: Routes.REFUND_REQUESTS_PATH,
+    name: 'RefundRequests',
+    component: () => import('@core-admin/views/RefundRequestsView.vue'),
+  },
+  {
+    path: Routes.EXISTING_APPLICANTS_PATH,
+    name: 'ExistingApplicants',
+    component: () => import('@core-admin/views/ExistingApplicantsView.vue'),
   },
   {
     // keep this at the very end

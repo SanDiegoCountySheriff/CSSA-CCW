@@ -35,4 +35,12 @@ export default class Routes {
   static get SETTINGS_ROUTE_PATH() {
     return `/settings`
   }
+
+  static get REFUND_REQUESTS_PATH() {
+    return `/refunds`
+  }
+
+  static get EXISTING_APPLICANTS_PATH() {
+    return `/existing-applicants`
+  }
 }

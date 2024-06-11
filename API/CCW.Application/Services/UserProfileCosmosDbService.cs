@@ -7,13 +7,16 @@ namespace CCW.Application.Services;
 public class UserProfileCosmosDbService : IUserProfileCosmosDbService
 {
     private readonly Container _container;
+    private readonly Container _userContainer;
 
     public UserProfileCosmosDbService(
         CosmosClient cosmosDbClient,
         string databaseName,
-        string containerName)
+        string containerName,
+        string userContainerName)
     {
         _container = cosmosDbClient.GetContainer(databaseName, containerName);
+        _userContainer = cosmosDbClient.GetContainer(databaseName, userContainerName);
     }
 
     public async Task<AdminUser> GetAdminUserProfileAsync(string licensingUserName, CancellationToken cancellationToken)
@@ -36,5 +39,15 @@ public class UserProfileCosmosDbService : IUserProfileCosmosDbService
         }
 
         return null!;
+    }
+
+    public async Task<Common.Models.User> GetUser(string id, CancellationToken cancellationToken)
+    {
+        return await _userContainer.ReadItemAsync<Common.Models.User>(id, new PartitionKey(id), null, cancellationToken);
+    }
+
+    public async Task UpdateUser(Common.Models.User user, CancellationToken cancellationToken)
+    {
+        await _userContainer.UpsertItemAsync(user, new PartitionKey(user.Id), null, cancellationToken);
     }
 }

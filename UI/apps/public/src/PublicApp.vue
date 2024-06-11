@@ -6,9 +6,9 @@
         v-if="
           isAgencyLogoLoading ||
           isBrandSettingLoading ||
-          isAgencyHomePageImageLoading ||
-          isLandingPageImageLoading ||
-          authStore.auth.handlingRedirectPromise
+          isUserFetching ||
+          authStore.auth.handlingRedirectPromise ||
+          isFetching
         "
       >
         <Loader />
@@ -48,6 +48,8 @@
 </template>
 
 <script setup lang="ts">
+import { ApplicationInsights } from '@microsoft/applicationinsights-web'
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import Footer from '@shared-ui/components/footer/Footer.vue'
 import Loader from '@core-public/views/Loader.vue'
 import NavBar from '@core-public/components/navbar/NavBar.vue'
@@ -55,25 +57,69 @@ import Vue from 'vue'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
-import { useQuery } from '@tanstack/vue-query'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
+import { useUserStore } from '@shared-ui/stores/userStore'
 import {
   MsalBrowser,
   getMsalInstance,
 } from '@shared-ui/api/auth/authentication'
 import { computed, getCurrentInstance, onBeforeMount, provide, ref } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const prompt = ref(false)
 const app = getCurrentInstance()
 const authStore = useAuthStore()
-const themeStore = useThemeStore()
+const completeApplicationStore = useCompleteApplicationStore()
 const configStore = useAppConfigStore()
+const themeStore = useThemeStore()
 const brandStore = useBrandStore()
 const msalInstance = ref<MsalBrowser>()
+const userStore = useUserStore()
+const canFetch = computed(() => authStore.getAuthState.isAuthenticated)
 
 provide(
   'msalInstance',
   computed(() => msalInstance.value)
+)
+
+const { mutate: createUser } = useMutation(
+  ['createUserProfile'],
+  () => userStore.putCreateUser(),
+  {
+    onSuccess: res => {
+      userStore.setUser(res)
+    },
+  }
+)
+
+const { isFetching: isUserFetching } = useQuery(
+  ['getUserProfile'],
+  userStore.getUser,
+  {
+    enabled: canFetch,
+    onSuccess: response => {
+      if (response.status === 204) {
+        createUser()
+      }
+    },
+  }
+)
+
+const { isFetching } = useQuery(
+  ['getApplicationsByUser'],
+  completeApplicationStore.getAllUserApplicationsApi,
+  {
+    refetchOnMount: 'always',
+    onSuccess: response => {
+      if (response.status !== 204 && response.data) {
+        completeApplicationStore.setCompleteApplication(
+          response.data[0] as CompleteApplication
+        )
+      }
+    },
+    enabled: canFetch,
+  }
 )
 
 const validApiUrl = computed(
@@ -96,22 +142,6 @@ const { isLoading: isAgencyLogoLoading } = useQuery(
   }
 )
 
-const { isLoading: isAgencyHomePageImageLoading } = useQuery(
-  ['homePageImage'],
-  brandStore.getAgencyHomePageImageApi,
-  {
-    enabled: validApiUrl,
-  }
-)
-
-const { isLoading: isLandingPageImageLoading } = useQuery(
-  ['landingPageImage'],
-  brandStore.getAgencyLandingPageImageApi,
-  {
-    enabled: validApiUrl,
-  }
-)
-
 onBeforeMount(async () => {
   Vue.prototype.$workbox.addEventListener('waiting', () => {
     prompt.value = true
@@ -119,9 +149,24 @@ onBeforeMount(async () => {
 
   msalInstance.value = await getMsalInstance()
 
-  if (app) {
-    app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark
+  const darkMode = localStorage.getItem('dark-mode')
+
+  if (app && darkMode) {
+    app.proxy.$vuetify.theme.dark = darkMode === 'true'
+    themeStore.getThemeConfig.isDark = darkMode === 'true'
   }
+
+  const appInsights = new ApplicationInsights({
+    config: {
+      connectionString:
+        configStore.appConfig.applicationInsightsConnectionString,
+    },
+  })
+
+  const referrer = document.referrer
+
+  appInsights.loadAppInsights()
+  appInsights.trackPageView({ properties: { referrer } })
 })
 
 async function update() {

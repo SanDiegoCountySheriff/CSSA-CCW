@@ -31,11 +31,7 @@
               <br />{{ $t('Try going back to home page') }}
               <v-container>
                 <router-link :to="{ path: '/' }">
-                  <Button
-                    color="primary"
-                    text="Home"
-                  >
-                  </Button>
+                  <v-btn color="primary">Home</v-btn>
                 </router-link>
               </v-container>
             </div>
@@ -45,10 +41,6 @@
     </v-container>
   </div>
 </template>
-
-<script setup lang="ts">
-import Button from '@shared-ui/components/Button.vue'
-</script>
 
 <style lang="scss" scoped>
 .paragraph-text {

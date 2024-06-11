@@ -1,26 +1,7 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-banner class="sub-header font-weight-bold text-left my-5">
       {{ $t('Qualifying Questions: ') }}
-      <template #actions>
-        <v-tooltip bottom>
-          <template #activator="{ on, attrs }">
-            <v-btn
-              v-if="
-                applicationStore.completeApplication.application.status ==
-                ApplicationStatus.Incomplete
-              "
-              icon
-              @click="handleEditRequest"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon color="primary"> mdi-square-edit-outline </v-icon>
-            </v-btn>
-          </template>
-          {{ $t('Edit Section') }}
-        </v-tooltip>
-      </template>
     </v-banner>
 
     <v-row
@@ -190,11 +171,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
-import { QualifyingQuestions } from '@shared-utils/types/defaultTypes'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
 import {
   QualifyingQuestionOne,
   QualifyingQuestionStandard,
@@ -202,26 +180,7 @@ import {
   QualifyingQuestionTwo,
 } from '@shared-utils/types/defaultTypes'
 
-interface IQualifyingQuestionsProps {
-  qualifyingQuestionsInfo: QualifyingQuestions
-  color: string
-}
-
 const applicationStore = useCompleteApplicationStore()
-const props = defineProps<IQualifyingQuestionsProps>()
-const router = useRouter()
-
-function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 9
-  router.push({
-    path: '/form',
-    query: {
-      applicationId: applicationStore.completeApplication.id,
-      isComplete:
-        applicationStore.completeApplication.application.isComplete.toString(),
-    },
-  })
-}
 
 function castToQualifyingQuestionStandardType(item) {
   return item as QualifyingQuestionStandard

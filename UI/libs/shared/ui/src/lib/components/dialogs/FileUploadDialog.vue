@@ -94,7 +94,7 @@ const state = reactive({
 
 onMounted(() => {
   if (props.eightHourSafetyInput) {
-    state.fileType = 'eightHourSafetyCourse'
+    state.fileType = 'EightHourSafetyCourse'
   }
 })
 

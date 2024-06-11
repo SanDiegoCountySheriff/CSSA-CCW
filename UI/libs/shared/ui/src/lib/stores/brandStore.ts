@@ -11,6 +11,22 @@ import { computed, getCurrentInstance, ref } from 'vue'
 
 export const useBrandStore = defineStore('BrandStore', () => {
   const app = getCurrentInstance()
+  const defaultEyeColors = [
+    { name: 'Black' },
+    { name: 'Brown' },
+    { name: 'Blue' },
+    { name: 'Green' },
+    { name: 'Multicolor' },
+  ]
+  const defaultHairColors = [
+    { name: 'Black' },
+    { name: 'Brown' },
+    { name: 'Blonde' },
+    { name: 'Grey' },
+    { name: 'Red' },
+    { name: 'Bald' },
+    { name: 'Multicolor' },
+  ]
 
   const brand = ref<BrandType>({
     id: '00000000-0000-0000-0000-000000000000',
@@ -43,11 +59,13 @@ export const useBrandStore = defineStore('BrandStore', () => {
         standard: 20,
         judicial: 20,
         reserve: 20,
+        employment: 20,
       },
       renew: {
         standard: 77,
         judicial: 99,
         reserve: 121,
+        employment: 55,
       },
       issuance: 1,
       modify: 10,
@@ -58,16 +76,20 @@ export const useBrandStore = defineStore('BrandStore', () => {
     refreshTokenTime: 30,
     ori: '',
     courthouse: '',
+    employmentLicense: false,
     localAgencyNumber: '',
     expiredApplicationRenewalPeriod: 0,
     archivedApplicationRetentionPeriod: 0,
+    agencyHairColors: [],
+    agencyEyeColors: [],
+    daysBeforeActiveRenewal: 0,
+    numberOfModificationsBetweenRenewals: 2,
   })
 
   const documents = ref<AgencyDocumentsType>({
     agencyLogo: undefined,
     agencyLandingPageImage: undefined,
     agencySheriffSignatureImage: undefined,
-    agencyGoodMoralPDF: undefined,
     agencyConditionsForIssuancePDF: undefined,
     agencyFalseInfoPDF: undefined,
     agencyHomePageImage: undefined,
@@ -78,18 +100,24 @@ export const useBrandStore = defineStore('BrandStore', () => {
 
   function setBrand(payload: BrandType) {
     brand.value = payload
+
+    if (
+      brand.value.agencyEyeColors?.length === 0 ||
+      !brand.value.agencyEyeColors
+    ) {
+      brand.value.agencyEyeColors = defaultEyeColors
+    }
+
+    if (
+      brand.value.agencyHairColors?.length === 0 ||
+      !brand.value.agencyHairColors
+    ) {
+      brand.value.agencyHairColors = defaultHairColors
+    }
   }
 
   function setAgencyLogo(payload) {
     documents.value.agencyLogo = payload
-  }
-
-  function setAgencyHomePageImage(payload) {
-    documents.value.agencyHomePageImage = payload
-  }
-
-  function setAgencyLandingPageImage(payload) {
-    documents.value.agencyLandingPageImage = payload
   }
 
   function setAgencySheriffSignatureImage(payload) {
@@ -97,9 +125,10 @@ export const useBrandStore = defineStore('BrandStore', () => {
   }
 
   async function getBrandSettingApi() {
-    const res = await axios
-      .get(Endpoints.GET_SETTINGS_ENDPOINT)
-      .catch(err => window.console.log(err))
+    const res = await axios.get(Endpoints.GET_SETTINGS_ENDPOINT).catch(() => {
+      brand.value.agencyEyeColors = defaultEyeColors
+      brand.value.agencyHairColors = defaultHairColors
+    })
 
     if (res?.data) {
       setBrand(res.data)
@@ -133,58 +162,11 @@ export const useBrandStore = defineStore('BrandStore', () => {
     return res?.data
   }
 
-  async function getAgencyHomePageImageApi() {
-    const res = await axios
-      .get(`${Endpoints.GET_DOCUMENT_AGENCY_HOME_PAGE_IMAGE_ENDPOINT}`)
-      .catch(err => window.console.log(err))
-
-    if (res?.data) setAgencyHomePageImage(res.data)
-
-    return res?.data
-  }
-
-  async function setAgencyLogoDocumentsApi() {
-    const formData = new FormData()
-
-    formData.append('fileToUpload', getDocuments.value.agencyLogo)
+  async function setAgencyDocument(document: FormData, documentName: string) {
     await axios
       .post(
-        `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_logo`,
-        formData
-      )
-      .catch(err => window.console.log(err))
-  }
-
-  async function getAgencyLandingPageImageApi() {
-    const res = await axios
-      .get(`${Endpoints.GET_DOCUMENT_AGENCY_LANDING_PAGE_IMAGE_ENDPOINT}`)
-      .catch(err => window.console.log(err))
-
-    if (res?.data) setAgencyLandingPageImage(res.data)
-
-    return res?.data
-  }
-
-  async function setAgencyLandingPageImageApi() {
-    const formData = new FormData()
-
-    formData.append('fileToUpload', getDocuments.value.agencyLandingPageImage)
-    await axios
-      .post(
-        `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_landing_page_image`,
-        formData
-      )
-      .catch(err => window.console.log(err))
-  }
-
-  async function setAgencyHomePageImageApi() {
-    const formData = new FormData()
-
-    formData.append('fileToUpload', getDocuments.value.agencyHomePageImage)
-    await axios
-      .post(
-        `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_home_page_image`,
-        formData
+        `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=${documentName}`,
+        document
       )
       .catch(err => window.console.log(err))
   }
@@ -199,21 +181,6 @@ export const useBrandStore = defineStore('BrandStore', () => {
     return res?.data
   }
 
-  async function setAgencySheriffSignatureImageApi() {
-    const formData = new FormData()
-
-    formData.append(
-      'fileToUpload',
-      getDocuments.value.agencySheriffSignatureImage
-    )
-    await axios
-      .post(
-        `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_sheriff_signature_image`,
-        formData
-      )
-      .catch(err => window.console.log(err))
-  }
-
   return {
     brand,
     documents,
@@ -223,13 +190,8 @@ export const useBrandStore = defineStore('BrandStore', () => {
     getBrandSettingApi,
     setBrandSettingApi,
     getAgencyLogoDocumentsApi,
-    setAgencyLogoDocumentsApi,
-    getAgencyLandingPageImageApi,
-    setAgencyLandingPageImageApi,
     getAgencySheriffSignatureImageApi,
-    setAgencySheriffSignatureImageApi,
-    setAgencyHomePageImageApi,
-    getAgencyHomePageImageApi,
     setBrand,
+    setAgencyDocument,
   }
 })

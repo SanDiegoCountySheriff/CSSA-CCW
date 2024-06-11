@@ -1,7 +1,9 @@
 using AutoMapper;
 using CCW.Application.Models;
 using CCW.Application.Services.Contracts;
+using CCW.Common.Enums;
 using CCW.Common.Models;
+using CCW.Common.ResponseModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +15,8 @@ public class PermitApplicationController : ControllerBase
 {
     private readonly IDocumentAzureStorage _documentService;
     private readonly IApplicationCosmosDbService _applicationCosmosDbService;
+    private readonly IUserProfileCosmosDbService _userProfileCosmosDbService;
+    private readonly IAppointmentCosmosDbService _appointmentCosmosDbService;
     private readonly IPdfService _pdfService;
     private readonly ILogger<PermitApplicationController> _logger;
     private readonly IMapper _mapper;
@@ -20,6 +24,8 @@ public class PermitApplicationController : ControllerBase
     public PermitApplicationController(
         IDocumentAzureStorage documentService,
         IApplicationCosmosDbService applicationCosmosDbService,
+        IUserProfileCosmosDbService userProfileCosmosDbService,
+        IAppointmentCosmosDbService appointmentCosmosDbService,
         IPdfService pdfService,
         ILogger<PermitApplicationController> logger,
         IMapper mapper
@@ -27,6 +33,8 @@ public class PermitApplicationController : ControllerBase
     {
         _documentService = documentService;
         _applicationCosmosDbService = applicationCosmosDbService;
+        _userProfileCosmosDbService = userProfileCosmosDbService;
+        _appointmentCosmosDbService = appointmentCosmosDbService;
         _pdfService = pdfService;
         _logger = logger;
         _mapper = mapper;
@@ -57,6 +65,50 @@ public class PermitApplicationController : ControllerBase
         {
             _logger.LogError(e.Message);
             return NotFound("An error occur while trying to create permit application.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("putAddHistoricalApplication")]
+    [HttpPut]
+    public async Task<IActionResult> PutAddHistoricalApplication([FromBody] PermitApplicationRequestModel permitApplication)
+    {
+        try
+        {
+            var result = await _applicationCosmosDbService.AddHistoricalApplicationAsync(_mapper.Map<PermitApplication>(permitApplication), cancellationToken: default);
+
+            return Ok(_mapper.Map<UserPermitApplicationResponseModel>(result));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return NotFound("An error occur while trying to create historical permit application.");
+        }
+    }
+
+    [Authorize(Policy = "B2CUsers")]
+    [Route("putAddHistoricalApplicationPublic")]
+    [HttpPut]
+    public async Task<IActionResult> PutAddHistoricalApplicationPublic([FromBody] PermitApplicationRequestModel permitApplication)
+    {
+
+        GetUserId(out string userId);
+        permitApplication.UserId = userId;
+
+        var existingApplication = await _applicationCosmosDbService.GetLastApplicationAsync(userId,
+              permitApplication.Id.ToString(),
+              cancellationToken: default);
+
+        try
+        {
+            var result = await _applicationCosmosDbService.AddHistoricalApplicationPublicAsync(_mapper.Map<PermitApplication>(permitApplication), existingApplication, cancellationToken: default);
+
+            return Ok(_mapper.Map<UserPermitApplicationResponseModel>(result));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return NotFound("An error occur while trying to create historical permit application.");
         }
     }
 
@@ -102,11 +154,11 @@ public class PermitApplicationController : ControllerBase
 
     [Authorize(Policy = "B2CUsers")]
     [HttpGet("getAgreementPdf")]
-    public async Task<IActionResult> GetAgreementPdf(string agreement)
+    public async Task<IActionResult> GetAgreementPdf(string fileName)
     {
         try
         {
-            var contentStream = await _documentService.GetAgreementPDF(agreement, cancellationToken: default);
+            var contentStream = await _documentService.GetAgreementPDF(fileName, cancellationToken: default);
 
             Response.Headers.Add("Content-Disposition", "inline; filename=agreement.pdf");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
@@ -142,11 +194,11 @@ public class PermitApplicationController : ControllerBase
 
     [Authorize(Policy = "AADUsers")]
     [HttpGet("getUserApplication")]
-    public async Task<IActionResult> GetUserApplication(string userEmailOrOrderId, bool isOrderId = false, bool isComplete = false)
+    public async Task<IActionResult> GetUserApplication(string userEmailOrOrderId, bool isOrderId = false, bool isComplete = false, bool isLegacy = false)
     {
         try
         {
-            var result = await _applicationCosmosDbService.GetUserLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, cancellationToken: default);
+            var result = await _applicationCosmosDbService.GetUserLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, isLegacy, cancellationToken: default);
 
             return (result != null) ? Ok(_mapper.Map<PermitApplicationResponseModel>(result)) : NotFound();
         }
@@ -166,21 +218,60 @@ public class PermitApplicationController : ControllerBase
 
         try
         {
-            var responseModels = new List<UserPermitApplicationResponseModel>();
             var result = await _applicationCosmosDbService.GetAllApplicationsAsync(userId, userEmail, cancellationToken: default);
 
             if (result.Any())
             {
-                responseModels = _mapper.Map<List<UserPermitApplicationResponseModel>>(result);
+                var responseModels = _mapper.Map<List<UserPermitApplicationResponseModel>>(result);
+
+                return Ok(responseModels);
             }
 
-            return Ok(responseModels);
+            return NoContent();
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
             return NotFound("An error occur while trying to retrieve user permit applications.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("getApplicationSummaryCount")]
+    public async Task<IActionResult> GetApplicationSummaryCount()
+    {
+        try
+        {
+            var result = await _applicationCosmosDbService.GetApplicationSummaryCount(cancellationToken: default);
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to get the application summary count");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("getAssignedApplicationsSummary")]
+    public async Task<IActionResult> GetAssignedApplicationsSummary()
+    {
+        try
+        {
+            GetAADName(out string name);
+
+            List<AssignedApplicationSummary> result = await _applicationCosmosDbService.GetAssignedApplicationsSummary(name, cancellationToken: default);
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to get the application summary count");
         }
     }
 
@@ -209,27 +300,68 @@ public class PermitApplicationController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
-    [HttpGet("getAll")]
-    public async Task<IActionResult> GetAll()
+    [HttpGet("getAllPermitsSummary")]
+    public async Task<IActionResult> GetAllPermitsSummary([FromQuery] PermitsOptions options)
     {
         try
         {
-            var responseModels = new List<SummarizedPermitApplicationResponseModel>();
+            var (result, count) = await _applicationCosmosDbService.GetAllInProgressApplicationsSummarizedAsync(options, cancellationToken: default);
 
-            var result = await _applicationCosmosDbService.GetAllInProgressApplicationsSummarizedAsync(cancellationToken: default);
-
-            if (result.Any())
+            var response = new SummaryResponse()
             {
-                responseModels = _mapper.Map<List<SummarizedPermitApplicationResponseModel>>(result);
-            }
+                Items = result.ToList(),
+                Total = count,
+            };
 
-            return Ok(responseModels);
+            return Ok(response);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            var originalException = e.GetBaseException();
+            var originalException = ex.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
             return NotFound("An error occur while trying to retrieve all permit applications.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("getAllLegacyApplications")]
+    public async Task<IActionResult> GetAllLegacyApplications([FromQuery] PermitsOptions options)
+    {
+        try
+        {
+            var (result, count) = await _applicationCosmosDbService.GetAllLegacyApplicationsAsync(options, cancellationToken: default);
+
+            var response = new LegacySummaryResponse()
+            {
+                Items = result.ToList(),
+                Total = count,
+            };
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            var originalException = ex.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to retrieve all permit applications.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("getEmails")]
+    public async Task<IActionResult> GetEmails([FromQuery] PermitsOptions options)
+    {
+        try
+        {
+            List<string> response = await _applicationCosmosDbService.GetEmailsAsync(options, cancellationToken: default);
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            var originalException = ex.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to retrieve emails");
         }
     }
 
@@ -290,11 +422,6 @@ public class PermitApplicationController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-
-            if (e.Message.Contains("Permit application"))
-            {
-                return NotFound(e.Message);
-            }
             return NotFound("An error occur while trying to update permit application.");
         }
     }
@@ -366,6 +493,171 @@ public class PermitApplicationController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
+    [HttpPost("undoMatchApplication")]
+    public async Task<IActionResult> UndoMatchApplication(string applicationId)
+    {
+        try
+        {
+            var application = await _applicationCosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+
+            var user = await _userProfileCosmosDbService.GetUser(application.UserId, cancellationToken: default);
+
+            user.IsPendingReview = true;
+
+            await _userProfileCosmosDbService.UpdateUser(user, cancellationToken: default);
+
+            if (!string.IsNullOrEmpty(application.Application.AppointmentId))
+            {
+                await _appointmentCosmosDbService.DeleteAppointment(application.Application.AppointmentId, cancellationToken: default);
+            }
+
+            await _applicationCosmosDbService.DeleteUserApplicationAsync(application.UserId, application.Id.ToString(), cancellationToken: default);
+
+            var legacyApplication = await _applicationCosmosDbService.GetLegacyApplication(application.Id.ToString(), cancellationToken: default);
+
+            legacyApplication.IsMatchUpdated = false;
+
+            await _applicationCosmosDbService.UpdateLegacyApplication(legacyApplication, false, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to undo match application");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpPost("matchApplication")]
+    public async Task<IActionResult> MatchApplication(MatchRequest matchRequest)
+    {
+        try
+        {
+            GetAADUserName(out string userName);
+
+            var user = await _userProfileCosmosDbService.GetUser(matchRequest.UserId, cancellationToken: default);
+
+            user.IsPendingReview = false;
+
+            await _userProfileCosmosDbService.UpdateUser(user, cancellationToken: default);
+
+            var application = await _applicationCosmosDbService.GetLegacyApplication(matchRequest.ApplicationId, cancellationToken: default);
+
+            application.IsMatchUpdated = true;
+
+            await _applicationCosmosDbService.UpdateLegacyApplication(application, false, cancellationToken: default);
+
+            if (application.Application.AppointmentDateTime > DateTimeOffset.UtcNow && application.Application.AppointmentDateTime != null)
+            {
+                var appointmentLength = await _appointmentCosmosDbService.GetAppointmentLength(cancellationToken: default);
+
+                var appointmentWindow = new AppointmentWindow()
+                {
+                    Id = Guid.NewGuid(),
+                    ApplicationId = application.Id.ToString(),
+                    Start = (DateTimeOffset)application.Application.AppointmentDateTime,
+                    End = ((DateTimeOffset)application.Application.AppointmentDateTime).AddMinutes(appointmentLength),
+                    AppointmentCreatedDate = DateTimeOffset.UtcNow,
+                    Status = AppointmentStatus.Scheduled,
+                    Name = user.FirstName + " " + user.LastName,
+                    Permit = application.Application.OrderId,
+                    IsManuallyCreated = true,
+                    UserId = user.Id,
+                };
+
+                var appointment = await _appointmentCosmosDbService.CreateAppointment(appointmentWindow, cancellationToken: default);
+
+                application.Application.AppointmentId = appointment.Id.ToString();
+                application.Application.AppointmentStatus = AppointmentStatus.Scheduled;
+            }
+            
+            application.Application.UserEmail = user.Email;
+            
+            application.UserId = matchRequest.UserId;
+            application.Application.UploadedDocuments = Array.Empty<UploadedDocument>();
+            application.Application.AdminUploadedDocuments = Array.Empty<UploadedDocument>();
+            application.Application.ModifyAddWeapons = Array.Empty<Weapon>();
+            application.Application.ModifyDeleteWeapons = Array.Empty<Weapon>();
+            application.History = Array.Empty<History>();
+            application.Application.Agreements = new Agreements()
+            {
+                ConditionsForIssuanceAgreed = false,
+                ConditionsForIssuanceAgreedDate = string.Empty,
+                FalseInfoAgreed = false,
+                FalseInfoAgreedDate = string.Empty,
+            };
+            application.Application.ReferenceNotes = string.Empty;
+            application.IsMatchUpdated = false;
+            application.Application.ModifiedAddress = new Address()
+            {
+                StreetAddress = "",
+                State = "",
+                City = "",
+                County = "",
+                Country = "",
+                Zip = "",
+            };
+            application.Application.CurrentStep = 1;
+            
+            if (application.PaymentHistory == null)
+            {
+                application.PaymentHistory = new List<PaymentHistory>();
+            }
+
+            if (application.Application.QualifyingQuestions?.QuestionTwelve.Selected is not null or false)
+            {
+                application.Application.QualifyingQuestions.QuestionTwelve.TrafficViolations = new List<TrafficViolation>()
+                {
+                    new TrafficViolation()
+                    {
+                        Date = "",
+                        Violation  = "",
+                        Agency  = "",
+                        CitationNumber = ""
+                    }
+                };
+            }
+
+            if (application.Application.LegacyQualifyingQuestions?.QuestionEight.Selected is not null or false)
+            {
+                application.Application.LegacyQualifyingQuestions.QuestionEight.TrafficViolations = new List<TrafficViolation>()
+                {
+                    new TrafficViolation()
+                    {
+                        Date = "",
+                        Violation  = "",
+                        Agency  = "",
+                        CitationNumber = ""
+                    }
+                };
+            }
+
+            History[] history = new[]{
+                new History
+                    {
+                        ChangeMadeBy =  userName,
+                        Change = "Matched application",
+                        ChangeDateTimeUtc = DateTime.UtcNow,
+                    }
+                };
+
+            application.History = history;
+
+            await _applicationCosmosDbService.UpdateLegacyApplication(application, true, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to match the application");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
     [Route("updateUserApplication")]
     [HttpPut]
     public async Task<IActionResult> UpdateUserApplication([FromBody] PermitApplicationRequestModel application, string updatedSection)
@@ -408,41 +700,6 @@ public class PermitApplicationController : ControllerBase
             return NotFound("An error occur while trying to update permit application.");
         }
     }
-
-    [Authorize(Policy = "B2CUsers")]
-    [Route("deleteApplication")]
-    [HttpPut]
-    public async Task<IActionResult> DeleteApplication(string applicationId)
-    {
-        GetUserId(out string userId);
-
-        try
-        {
-            var existingApp = await _applicationCosmosDbService.GetLastApplicationAsync(userId, applicationId, cancellationToken: default);
-
-            if (existingApp == null)
-            {
-                return NotFound("Permit application cannot be found or has been completed and no longer can be deleted.");
-            }
-
-            if (existingApp.Application.IsComplete)
-            {
-                return NotFound("Permit application submitted changes cannot be deleted.");
-            }
-
-            await _applicationCosmosDbService.DeleteApplicationAsync(userId, existingApp.Id.ToString(), cancellationToken: default);
-
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            var originalException = e.GetBaseException();
-            _logger.LogError(originalException, originalException.Message);
-
-            return NotFound("An error occur while trying to delete permit application.");
-        }
-    }
-
 
     [Authorize(Policy = "AADUsers")]
     [Route("deleteUserApplication")]
@@ -490,7 +747,7 @@ public class PermitApplicationController : ControllerBase
             Response.Headers.Append("Content-Disposition", "inline");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
-            var outStream = await _pdfService.GetRevocationLetterMemoryStream(userApplication, user, userName, reason, date, fileName);
+            var outStream = await _pdfService.GetRevocationLetterMemoryStream(userApplication, user, userId, reason, date, fileName, userName);
 
             FileStreamResult fileStreamResultDownload = new FileStreamResult(outStream, "application/pdf");
 
@@ -530,7 +787,55 @@ public class PermitApplicationController : ControllerBase
             Response.Headers.Append("Content-Disposition", "inline");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
-            var outStream = await _pdfService.GetApplicationMemoryStream(userApplication, userId, fileName);
+            MemoryStream outStream;
+
+            if (userApplication.Application.LegacyQualifyingQuestions == null)
+            {
+                outStream = await _pdfService.GetApplicationMemoryStream(userApplication, userId, fileName);
+            } 
+            else
+            {
+                outStream = await _pdfService.GetLegacyApplicationMemoryStream(userApplication, userId, fileName);
+            }
+
+            FileStreamResult fileStreamResultDownload = new FileStreamResult(outStream, "application/pdf");
+
+            if (shouldAddDownloadFilename)
+            {
+                fileStreamResultDownload.FileDownloadName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-") + fileName + ".pdf";
+            }
+
+            return fileStreamResultDownload;
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to print permit application.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("printModification")]
+    [HttpPut]
+    public async Task<IActionResult> PrintModification(string applicationId, string fileName, bool shouldAddDownloadFilename = true)
+    {
+        try
+        {
+            GetAADUserName(out string userName);
+            GetUserId(out string userId);
+
+            var userApplication = await _applicationCosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+
+            if (userApplication == null)
+            {
+                return NotFound("Permit application cannot be found.");
+            }
+
+            Response.Headers.Append("Content-Disposition", "inline");
+            Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+            var outStream = await _pdfService.GetModificationMemoryStream(userApplication, userId, fileName);
 
             FileStreamResult fileStreamResultDownload = new FileStreamResult(outStream, "application/pdf");
 
@@ -674,6 +979,17 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
+    private void GetAADName(out string name)
+    {
+        name = HttpContext.User.Claims
+            .Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Select(c => c.Value).FirstOrDefault();
+
+        if (name == null)
+        {
+            throw new ArgumentNullException("name", "Invalid token.");
+        }
+    }
+
     private void GetUserId(out string userId)
     {
         userId = HttpContext.User.Claims
@@ -684,5 +1000,35 @@ public class PermitApplicationController : ControllerBase
         {
             throw new ArgumentNullException("userId", "Invalid token.");
         }
+    }
+
+    public class SummaryResponse
+    {
+        public List<SummarizedPermitApplication> Items { get; set; }
+        public int Total { get; set; }
+    }
+
+    public class LegacySummaryResponse
+    {
+        public List<SummarizedLegacyApplication> Items { get; set; }
+        public int Total { get; set; }
+    }
+
+    public class PermitsOptions
+    {
+        public int Page { get; set; }
+        public int ItemsPerPage { get; set; }
+        public string[] SortBy { get; set; }
+        public bool[] SortDesc { get; set; }
+        public string[] GroupBy { get; set; }
+        public bool[] GroupDesc { get; set; }
+        public ApplicationStatus[] Statuses { get; set; }
+        public AppointmentStatus[] AppointmentStatuses { get; set; }
+        public ApplicationType[] ApplicationTypes { get; set; }
+        public string Search { get; set; }
+        public string ApplicationSearch { get; set; }
+        public bool ShowingTodaysAppointments { get; set; }
+        public DateTimeOffset? SelectedDate { get; set; }
+        public bool MatchedApplications { get; set; }
     }
 }

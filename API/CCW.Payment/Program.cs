@@ -24,7 +24,7 @@ builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
-    .AddAuthentication("aad")
+    .AddAuthentication()
     .AddJwtBearer("aad", o =>
     {
         o.Authority = builder.Configuration.GetSection("JwtBearerAAD:Authority").Value;
@@ -128,9 +128,11 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+var origins = builder.Configuration.GetSection("JwtBearerAAD:Origins").Value.Split(",");
+
 builder.Services.AddCors(policyBuilder =>
     policyBuilder.AddDefaultPolicy(policy =>
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
+        policy.WithOrigins(origins).AllowAnyMethod().AllowAnyHeader())
 );
 
 builder.Services.AddHealthChecks();
@@ -138,22 +140,20 @@ builder.Services.AddHealthChecks();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger(o =>
 {
-    app.UseSwagger(o =>
-    {
-        o.RouteTemplate = Constants.AppName + "/swagger/{documentname}/swagger.json";
-    });
+    o.RouteTemplate = Constants.AppName + "/swagger/{documentname}/swagger.json";
+});
 
 
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("v1/swagger.json", $"CCW {Constants.AppName} v1");
-        options.RoutePrefix = $"{Constants.AppName}/swagger";
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("v1/swagger.json", $"CCW {Constants.AppName} v1");
+    options.RoutePrefix = $"{Constants.AppName}/swagger";
 
-        options.EnableTryItOutByDefault();
-    });
-}
+    options.EnableTryItOutByDefault();
+});
+
 
 app.UseHealthChecks("/health");
 
@@ -170,6 +170,7 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
 {
     var databaseName = configurationSection["DatabaseName"];
     var containerName = configurationSection["ContainerName"];
+    var refundRequestContainerName = configurationSection["RefundRequestContainerName"];
     CosmosClientOptions clientOptions = new CosmosClientOptions();
 #if DEBUG
     var key = configurationSection["CosmosDbEmulatorConnectionString"];
@@ -183,7 +184,8 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     var client = new CosmosClient(key, clientOptions);
     var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
     await database.Database.CreateContainerIfNotExistsAsync(containerName, "/userId");
-    var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
+    await database.Database.CreateContainerIfNotExistsAsync(refundRequestContainerName, "/id");
+    var cosmosDbService = new CosmosDbService(client, databaseName, containerName, refundRequestContainerName);
     return cosmosDbService;
 }
 

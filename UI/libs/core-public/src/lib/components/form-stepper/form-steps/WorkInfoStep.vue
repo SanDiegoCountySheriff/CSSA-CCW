@@ -1,9 +1,40 @@
 <template>
   <div>
+    <FormButtonContainer
+      v-if="$vuetify.breakpoint.lgAndUp"
+      :valid="valid"
+      @continue="handleContinue"
+      @save="handleSave"
+      v-on="$listeners"
+    />
+
     <v-form
       ref="form"
       v-model="valid"
     >
+      <v-row
+        v-if="isRenew"
+        justify="center"
+        align="center"
+      >
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-alert
+            :class="{ 'mt-5': isMobile }"
+            type="info"
+            color="primary"
+            dark
+            outlined
+            elevation="2"
+          >
+            Please review your employment and weapon information and ensure
+            everything is up to date before proceeding
+          </v-alert>
+        </v-col>
+      </v-row>
+
       <v-card-title>
         {{ $t(' Employment Status') }}
       </v-card-title>
@@ -48,6 +79,7 @@
                 outlined
               />
             </v-col>
+
             <v-col
               cols="12"
               md="4"
@@ -62,14 +94,17 @@
                 outlined
               />
             </v-col>
+
             <v-col
               cols="12"
               md="4"
               :class="isMobile ? 'pb-0' : ''"
             >
               <v-text-field
-                v-model="model.application.workInformation.employerAddressLine1"
-                :label="$t('Employer Address Line 1')"
+                v-model="
+                  model.application.workInformation.employerStreetAddress
+                "
+                :label="$t('Employer Street Address')"
                 :rules="employerAddressRules"
                 :dense="isMobile"
                 maxlength="50"
@@ -81,20 +116,7 @@
           <v-row>
             <v-col
               cols="12"
-              md="4"
-              :class="isMobile ? 'pb-0' : ''"
-            >
-              <v-text-field
-                v-model="model.application.workInformation.employerAddressLine2"
-                :label="$t('Employer Address Line 2')"
-                :dense="isMobile"
-                maxlength="50"
-                outlined
-              />
-            </v-col>
-            <v-col
-              cols="12"
-              md="4"
+              md="6"
               :class="isMobile ? 'pb-0' : ''"
             >
               <v-combobox
@@ -107,9 +129,10 @@
                 outlined
               />
             </v-col>
+
             <v-col
               cols="12"
-              md="4"
+              md="6"
               :class="isMobile ? 'pb-0' : ''"
             >
               <v-text-field
@@ -149,6 +172,7 @@
                 outlined
               />
             </v-col>
+
             <v-col
               cols="12"
               md="4"
@@ -163,6 +187,7 @@
                 outlined
               />
             </v-col>
+
             <v-col
               cols="12"
               md="4"
@@ -180,7 +205,25 @@
           </v-row>
         </v-card-text>
       </template>
+
+      <v-card-title>
+        {{ $t('Weapons') }}
+      </v-card-title>
+
       <v-card-text>
+        <v-row v-if="model.isMatchUpdated === false">
+          <v-col>
+            <v-alert
+              color="warning"
+              type="info"
+              outlined
+            >
+              If you need to change your weapons you will be able to at a later
+              time via the modification process.
+            </v-alert>
+          </v-col>
+        </v-row>
+
         <v-row>
           <v-col
             cols="12"
@@ -203,34 +246,37 @@
     </v-form>
 
     <v-card-text>
-      <WeaponsDialog @save-weapon="getWeaponFromDialog" />
-
       <WeaponsTable
+        :modifying="false"
+        :readonly="false"
+        :edit-enable="allowWeaponEdit ? true : false"
         :weapons="model.application.weapons"
-        :delete-enabled="true"
-        @delete="deleteWeapon"
+        @delete-weapon="handleDeleteWeapon"
+        @handle-edit-weapon="handleEditWeapon"
+        @save-weapon="handleSaveWeapon"
       />
     </v-card-text>
 
     <FormButtonContainer
       :valid="valid"
-      @submit="handleSubmit"
+      @continue="handleContinue"
       @save="handleSave"
+      v-on="$listeners"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
-import WeaponsDialog from '@shared-ui/components/dialogs/WeaponsDialog.vue'
 import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue'
 import { i18n } from '@core-public/plugins'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
 import {
+  ApplicationType,
   CompleteApplication,
   WeaponInfoType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, set, watch } from 'vue'
 import {
   countries,
   defaultPermitState,
@@ -247,7 +293,8 @@ const props = defineProps<FormStepSixProps>()
 const emit = defineEmits([
   'input',
   'handle-save',
-  'handle-submit',
+  'handle-edit',
+  'handle-continue',
   'update-step-four-valid',
 ])
 
@@ -263,6 +310,23 @@ const isMobile = computed(
   () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
 )
 
+const isRenew = computed(() => {
+  const applicationType = props.value.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment']
+  )
+})
+
+const allowWeaponEdit = computed(() => {
+  return (
+    props.value.isMatchUpdated === true || props.value.isMatchUpdated === null
+  )
+})
+
 watch(valid, (newValue, oldValue) => {
   if (newValue !== oldValue) {
     emit('update-step-four-valid', newValue)
@@ -270,32 +334,35 @@ watch(valid, (newValue, oldValue) => {
 })
 
 onMounted(() => {
+  formatPhone('employerPhone')
+
   if (form.value) {
     form.value.validate()
   }
 })
 
 function formatPhone(modelName1) {
-  let validInput = model.value.application.workInformation[modelName1].replace(
-    /\D/g,
-    ''
-  )
-  const match = validInput.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
+  const phoneNumber = model.value.application.workInformation[modelName1]
 
-  if (match) {
-    model.value.application.workInformation[modelName1] = `(${match[1]})${
-      match[2] ? ' ' : ''
-    }${match[2]}${match[3] ? '-' : ''}${match[3]}`
+  if (phoneNumber) {
+    let validInput = phoneNumber.replace(/\D/g, '')
+    const match = validInput.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
+
+    if (match) {
+      model.value.application.workInformation[modelName1] = `(${match[1]})${
+        match[2] ? ' ' : ''
+      }${match[2]}${match[3] ? '-' : ''}${match[3]}`
+    }
   }
 }
 
-function handleSubmit() {
+function handleContinue() {
   if (model.value.application.employment !== 'Employed') {
     model.value.application.workInformation =
       defaultPermitState.application.workInformation
   }
 
-  emit('handle-submit')
+  emit('handle-continue')
 }
 
 function handleSave() {
@@ -310,12 +377,16 @@ function handleValidateForm() {
   }
 }
 
-function getWeaponFromDialog(weapon: WeaponInfoType) {
+function handleSaveWeapon(weapon: WeaponInfoType) {
   model.value.application.weapons.push(weapon)
 }
 
-function deleteWeapon(index: number) {
+function handleDeleteWeapon(index: number) {
   model.value.application.weapons.splice(index, 1)
+}
+
+function handleEditWeapon(data) {
+  set(model.value.application.weapons, data.index, { ...data.value })
 }
 
 const isUnitedStates = computed(() => {

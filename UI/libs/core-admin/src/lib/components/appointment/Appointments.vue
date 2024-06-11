@@ -100,6 +100,7 @@
           </v-col>
         </v-row>
       </v-card-title>
+
       <v-data-table
         :headers="state.headers"
         :items="appointments"

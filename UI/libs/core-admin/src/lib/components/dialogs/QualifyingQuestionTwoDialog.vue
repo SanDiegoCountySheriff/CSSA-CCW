@@ -7,16 +7,17 @@
       <v-btn
         v-bind="attrs"
         v-on="on"
+        :disabled="readonly"
         icon
       >
         <v-icon
           v-if="
             permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionTwo.temporaryAgency ||
+              ?.questionTwo.temporaryAgency ||
             permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionTwo.temporaryDenialDate ||
+              ?.questionTwo.temporaryDenialDate ||
             permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionTwo.temporaryDenialReason
+              ?.questionTwo.temporaryDenialReason
           "
           color="error"
         >
@@ -110,6 +111,10 @@ import {
   CommentType,
 } from '@shared-utils/types/defaultTypes'
 
+const props = withDefaults(defineProps<{ readonly: boolean }>(), {
+  readonly: false,
+})
+
 const permitStore = usePermitsStore()
 const authStore = useAuthStore()
 const dialog = ref(false)
@@ -124,12 +129,14 @@ const { mutate: updatePermitDetails } = useMutation({
 })
 
 function handleSaveQuestionTwoFlag() {
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryAgency =
-    temporaryAgency.value
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryDenialDate =
-    temporaryDenialDate.value
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryDenialReason =
-    temporaryDenialReason.value
+  if (permitStore.getPermitDetail.application.qualifyingQuestions) {
+    permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryAgency =
+      temporaryAgency.value
+    permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryDenialDate =
+      temporaryDenialDate.value
+    permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryDenialReason =
+      temporaryDenialReason.value
+  }
 
   const newComment: CommentType = {
     text: comment.value,

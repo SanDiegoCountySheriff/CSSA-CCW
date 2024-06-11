@@ -17,6 +17,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
   const appointments = ref<Array<AppointmentType>>([])
   const newAptCount = ref<number>(0)
   const newAppointmentsFile = ref<string | Blob>('')
+  const schedulingAppointment = ref(false)
 
   const getAppointments = computed(() => appointments.value)
   const getNewAptCount = computed(() => newAptCount.value)
@@ -81,14 +82,26 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
-  async function getAvailableAppointments() {
-    const res = await axios
-      .get(Endpoints.GET_AVAILABLE_APPOINTMENTS_ENDPOINT)
-      .catch(err => {
-        console.warn(err)
+  async function getAvailableAppointments(includePastAppointments: boolean) {
+    const endpoint = `${Endpoints.GET_AVAILABLE_APPOINTMENTS_ENDPOINT}?includePastAppointments=${includePastAppointments}`
 
-        return Promise.reject()
-      })
+    const res = await axios.get(endpoint).catch(err => {
+      console.warn(err)
+
+      return Promise.reject()
+    })
+
+    return res?.data
+  }
+
+  async function getBookedAppointments(includePastAppointments: boolean) {
+    const endpoint = `${Endpoints.GET_BOOKED_APPOINTMENTS_ENDPOINT}?includePastAppointments=${includePastAppointments}`
+
+    const res = await axios.get(endpoint).catch(err => {
+      console.warn(err)
+
+      return Promise.reject()
+    })
 
     return res?.data
   }
@@ -331,6 +344,28 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
+  async function getAppointmentManagementTemplate(): Promise<AppointmentManagement> {
+    const res = await axios
+      .get(`${Endpoints.GET_APPOINTMENT_MANAGEMENT_TEMPLATE_ENDPOINT}`)
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
+  async function getOrganizationHolidays() {
+    const res = await axios
+      .get(`${Endpoints.GET_ORGANIZATION_HOLIDAYS_ENDPOINT}`)
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
   return {
     appointments,
     currentAppointment,
@@ -339,6 +374,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     getAppointments,
     getNewAptCount,
     getNewAppointmentsFile,
+    schedulingAppointment,
     setAppointments,
     setAppointmentPublic,
     setCurrentAppointment,
@@ -365,5 +401,8 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     getNextAvailableAppointment,
     getHolidays,
     saveHolidays,
+    getAppointmentManagementTemplate,
+    getOrganizationHolidays,
+    getBookedAppointments,
   }
 })

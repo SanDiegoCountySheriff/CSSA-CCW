@@ -1,5 +1,3 @@
-<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
-<!-- eslint-disable vue/singleline-html-element-content-newline -->
 <template>
   <div>
     <v-navigation-drawer
@@ -15,12 +13,7 @@
           class="px-0"
         >
           <v-list-item-avatar class="mr-1">
-            <v-skeleton-loader
-              v-if="isLoading"
-              type="card-avatar"
-            />
             <v-img
-              v-else
               :src="brandStore.getDocuments.agencyLogo"
               alt="Image"
               contain
@@ -53,27 +46,26 @@
           </v-list-item>
 
           <v-list-item
-            :to="Routes.APPOINTMENTS_ROUTE_PATH"
+            :to="Routes.PERMITS_ROUTE_PATH"
             link
           >
             <v-list-item-icon>
-              <v-icon>mdi-calendar-blank</v-icon>
+              <v-icon>mdi-file-document</v-icon>
             </v-list-item-icon>
             <v-list-item-title class="text-left">
-              {{ $t('Appointments') }}
+              {{ $t('Applications') }}
               <v-chip
-                v-if="aptStore.getNewAptCount !== 0"
-                class="ml-5 font-weight-bold"
-                :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
+                class="float-right"
+                color="primary"
                 x-small
               >
-                {{ aptStore.getNewAptCount }}
+                {{ permitStore.summaryCount?.submittedStatus }}
               </v-chip>
             </v-list-item-title>
           </v-list-item>
 
           <v-list-item
-            v-if="authStore.auth.roles.includes('CCW-SYSTEM-ADMINS-ROLE')"
+            v-if="authStore.auth.roles.includes('CCW-ADMIN-ROLE')"
             :to="Routes.APPOINTMENT_MANAGEMENT_ROUTE_PATH"
             link
           >
@@ -86,21 +78,40 @@
           </v-list-item>
 
           <v-list-item
-            :to="Routes.PERMITS_ROUTE_PATH"
+            v-if="authStore.auth.roles.includes('CCW-ADMIN-ROLE')"
+            :to="Routes.REFUND_REQUESTS_PATH"
             link
           >
             <v-list-item-icon>
-              <v-icon>mdi-file-document</v-icon>
+              <v-icon>mdi-credit-card-refund</v-icon>
             </v-list-item-icon>
             <v-list-item-title class="text-left">
-              {{ $t('Applications') }}
+              {{ $t('Refund Requests') }}
               <v-chip
-                v-if="permitStore.getOpenPermits !== 0"
-                class="ml-8 font-weight-bold"
-                :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
+                class="float-right"
+                color="primary"
                 x-small
               >
-                {{ permitStore.getOpenPermits }}
+                {{ paymentStore.refundRequestCount }}
+              </v-chip>
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item
+            :to="Routes.EXISTING_APPLICANTS_PATH"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-account-star</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="text-left">
+              {{ $t('Existing Applicants') }}
+              <v-chip
+                class="float-right"
+                color="primary"
+                x-small
+              >
+                {{ userStore.unmatchedUsersCount }}
               </v-chip>
             </v-list-item-title>
           </v-list-item>
@@ -130,8 +141,15 @@
                 {{ mini ? 'mdi-menu-right-outline' : 'mdi-menu-left-outline' }}
               </v-icon>
             </v-list-item-icon>
+
             <v-list-item-title class="text-left">
               {{ $t('Collapse Menu') }}
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-title class="text-center">
+              {{ getVersion }}
             </v-list-item-title>
           </v-list-item>
         </v-list>
@@ -143,13 +161,14 @@
 <script setup lang="ts">
 import Routes from '@core-admin/router/routes'
 import SearchBar from '@core-admin/components/search/SearchBar.vue'
-import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
-import { useBrandStore } from '@shared-ui/stores/brandStore'
+import VERSION from '@shared-utils/version'
 import { useAuthStore } from '@shared-ui/stores/auth'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import useEnvName from '@shared-ui/composables/useEnvName'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { useQuery } from '@tanstack/vue-query'
-import { getCurrentInstance, ref, watch } from 'vue'
+import { useUserStore } from '@shared-ui/stores/userStore'
+import { computed, getCurrentInstance, ref, watch } from 'vue'
 
 interface ISideBarProps {
   expandMenu: boolean
@@ -164,15 +183,15 @@ const emit = defineEmits(['on-change-drawer'])
 const mini = ref(false)
 const wrapText = ref(true)
 const drawer = ref(true)
-const aptStore = useAppointmentsStore()
 const authStore = useAuthStore()
 const permitStore = usePermitsStore()
+const paymentStore = usePaymentStore()
 const brandStore = useBrandStore()
+const userStore = useUserStore()
 const app = getCurrentInstance()
 
-const { isLoading } = useQuery(['logo'])
-
 const getAppTitle = useEnvName()
+const getVersion = computed(() => VERSION)
 
 function onTransitionEnd() {
   mini.value ? (wrapText.value = false) : (wrapText.value = true)

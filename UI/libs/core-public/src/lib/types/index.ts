@@ -11,6 +11,7 @@ export type BrandType = {
   standardCost: number
   judicialCost: number
   reserveCost: number
+  employmentCost: number
   creditFee: number
   convenienceFee: number
   paymentURL: string
@@ -34,4 +35,5 @@ export type PublicAppConfigType = {
   environmentName: string
   loginType: string
   refreshTime: number
+  applicationInsightsConnectionString: string
 }

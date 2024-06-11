@@ -7,7 +7,7 @@ export default function useEnvName() {
   const brandStore = useBrandStore()
 
   const getAppTitle = computed(() => {
-    switch (appStore.getAppConfig.environmentName) {
+    switch (appStore.appConfig.environmentName) {
       case 'DEV':
         return { name: brandStore.getBrand.agencyName || 'CCW', env: '(DEV)' }
       case 'QA':

@@ -1,9 +1,40 @@
 <template>
   <div>
+    <FormButtonContainer
+      v-if="$vuetify.breakpoint.lgAndUp"
+      :is-first-step="true"
+      :valid="valid"
+      @continue="handleContinue"
+      @save="handleSave"
+      v-on="$listeners"
+    />
+
     <v-form
       ref="form"
       v-model="valid"
     >
+      <v-row
+        v-if="isRenew"
+        justify="center"
+        align="center"
+      >
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-alert
+            :class="{ 'mt-5': isMobile }"
+            type="info"
+            color="primary"
+            dark
+            outlined
+            elevation="2"
+          >
+            Please review your personal information and ensure everything is up
+            to date before proceeding
+          </v-alert>
+        </v-col>
+      </v-row>
       <v-card-title v-if="!isMobile">
         {{ $t('Personal Information') }}
       </v-card-title>
@@ -13,6 +44,19 @@
       </v-card-subtitle>
 
       <v-card-text>
+        <v-row v-if="model.isMatchUpdated === false">
+          <v-col>
+            <v-alert
+              color="warning"
+              type="info"
+              outlined
+            >
+              If you need to change your name you will be able to at a later
+              time via the modification process.
+            </v-alert>
+          </v-col>
+        </v-row>
+
         <v-row>
           <v-col
             md="4"
@@ -20,10 +64,11 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.personalInfo.firstName"
+              v-model.trim="model.application.personalInfo.firstName"
               :label="$t('First name')"
               :rules="requireNameRuleSet"
               :dense="isMobile"
+              :readonly="model.isMatchUpdated === false"
               maxlength="50"
               outlined
             >
@@ -35,10 +80,11 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.personalInfo.middleName"
+              v-model.trim="model.application.personalInfo.middleName"
               :label="$t('Middle name')"
               :rules="notRequiredNameRuleSet"
               :dense="isMobile"
+              :readonly="model.isMatchUpdated === false"
               maxlength="50"
               outlined
             />
@@ -49,10 +95,11 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.personalInfo.lastName"
+              v-model.trim="model.application.personalInfo.lastName"
               :label="$t('Last name')"
               :rules="requireNameRuleSet"
               :dense="isMobile"
+              :readonly="model.isMatchUpdated === false"
               maxlength="50"
               outlined
             >
@@ -67,9 +114,10 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.personalInfo.suffix"
+              v-model.trim="model.application.personalInfo.suffix"
               :label="$t('Suffix')"
               :dense="isMobile"
+              :readonly="model.isMatchUpdated === false"
               maxlength="10"
               outlined
             />
@@ -80,10 +128,11 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.personalInfo.maidenName"
+              v-model.trim="model.application.personalInfo.maidenName"
               :label="$t('Maiden name')"
               :rules="notRequiredNameRuleSet"
               :dense="isMobile"
+              :readonly="model.isMatchUpdated === false"
               maxlength="50"
               outlined
             />
@@ -131,6 +180,7 @@
                   readonly
                 ></v-text-field>
               </template>
+
               <v-date-picker
                 v-model="model.application.dob.birthDate"
                 color="primary"
@@ -350,7 +400,6 @@
               v-model="model.application.contact.cellPhoneNumber"
               @input="formatPhone('contact', 'cellPhoneNumber')"
               :label="$t('Cell phone number')"
-              :rules="notRequiredPhoneRuleSet"
               :dense="isMobile"
               maxlength="14"
               outlined
@@ -367,7 +416,6 @@
               v-model="model.application.contact.workPhoneNumber"
               @input="formatPhone('contact', 'workPhoneNumber')"
               :label="$t('Work phone number')"
-              :rules="notRequiredPhoneRuleSet"
               :dense="isMobile"
               maxlength="14"
               outlined
@@ -394,15 +442,7 @@
             <v-text-field
               v-model="formattedSSN"
               :label="$t('Social Security Number')"
-              :rules="[
-                v => !!v || $t('SSN cannot be blank'),
-                v =>
-                  /^[\d-]+$/.test(v) ||
-                  $t('SSN must contain only numbers and dashes'),
-                v =>
-                  (v.match(/\d/g) || []).length === 9 ||
-                  $t('SSN must be 9 characters in length'),
-              ]"
+              :rules="ssnRules"
               :dense="isMobile"
               @change="handleValidateForm"
               outlined
@@ -417,15 +457,7 @@
             <v-text-field
               v-model="formattedSSNConfirm"
               :label="$t('Confirm SSN')"
-              :rules="[
-                v => !!v || $t('SSN cannot be blank'),
-                v =>
-                  (v.match(/\d/g) || []).length === 9 ||
-                  $t('SSN must be 9 characters in length'),
-                v =>
-                  v.replace(/\D/g, '') === model.application.personalInfo.ssn ||
-                  $t('SSN does not match'),
-              ]"
+              :rules="ssnRules"
               :dense="isMobile"
               @change="handleValidateForm"
               outlined
@@ -630,15 +662,15 @@
         />
       </v-card-text>
 
-      <v-card-title v-if="!isMobile">
+      <v-card-title v-if="!isMobile && !showCharacterReferences">
         {{ $t('Character References') }}
       </v-card-title>
 
-      <v-card-subtitle v-if="isMobile">
+      <v-card-subtitle v-if="isMobile && !showCharacterReferences">
         {{ $t('Character References') }}
       </v-card-subtitle>
 
-      <v-card-text>
+      <v-card-text v-if="!showCharacterReferences">
         <v-alert
           outlined
           type="info"
@@ -726,9 +758,11 @@
       </v-card-text>
 
       <FormButtonContainer
+        :is-first-step="true"
         :valid="valid"
-        @submit="handleSubmit"
+        @continue="handleContinue"
         @save="handleSave"
+        v-on="$listeners"
       />
     </v-form>
   </div>
@@ -737,18 +771,23 @@
 <script setup lang="ts">
 import AliasDialog from '@shared-ui/components/dialogs/AliasDialog.vue'
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue'
-import { CharacterReferenceType } from '@shared-utils/types/defaultTypes'
-import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { TranslateResult } from 'vue-i18n'
 import { i18n } from '@core-public/plugins'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
+import {
+  ApplicationStatus,
+  CompleteApplication,
+} from '@shared-utils/types/defaultTypes'
+import {
+  ApplicationType,
+  CharacterReferenceType,
+} from '@shared-utils/types/defaultTypes'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
-import { eyeColors, hairColors } from '@shared-utils/lists/defaultConstants'
 import {
   notRequiredNameRuleSet,
-  notRequiredPhoneRuleSet,
   phoneRuleSet,
   requireNameRuleSet,
 } from '@shared-ui/rule-sets/ruleSets'
@@ -758,12 +797,23 @@ interface FormStepOneProps {
 }
 
 const props = defineProps<FormStepOneProps>()
+const brandStore = useBrandStore()
+const hairColors = computed(() => {
+  return brandStore.brand.agencyHairColors.map(h => {
+    return h.name
+  })
+})
+const eyeColors = computed(() => {
+  return brandStore.brand.agencyEyeColors.map(e => {
+    return e.name
+  })
+})
 
 const emit = defineEmits([
   'input',
   'update-step-one-valid',
   'handle-save',
-  'handle-submit',
+  'handle-continue',
 ])
 
 const model = computed({
@@ -811,7 +861,30 @@ const formattedSSNConfirm = computed({
   },
 })
 
+const ssnRules = computed(() => {
+  return [
+    v => {
+      return Boolean(v) || 'SSN cannot be blank'
+    },
+    v => {
+      return /^[\d-]+$/.test(v) || 'SSN must contain only numbers and dashes'
+    },
+    v =>
+      (Boolean(v) && (v.match(/\d/g) || []).length === 9) ||
+      'SSN must be 9 characters in length',
+  ]
+})
+
 onMounted(() => {
+  formatPhone('contact', 'primaryPhoneNumber')
+  formatPhone('contact', 'cellPhoneNumber')
+  formatPhone('contact', 'workPhoneNumber')
+  formatPhone('spouseInformation', 'phoneNumber')
+
+  for (const reference of model.value.application.characterReferences) {
+    formatReferencePhone(reference)
+  }
+
   if (model.value.application.personalInfo.ssn) {
     ssnConfirm.value = model.value.application.personalInfo.ssn
   }
@@ -843,7 +916,7 @@ function handleSave() {
   emit('handle-save')
 }
 
-async function handleSubmit() {
+function handleContinue() {
   if (
     model.value.application.personalInfo.maritalStatus.toLowerCase() ===
     'single'
@@ -855,7 +928,7 @@ async function handleSubmit() {
     model.value.application.spouseInformation.phoneNumber = ''
   }
 
-  emit('handle-submit')
+  emit('handle-continue')
 }
 
 function getAliasFromDialog(alias) {
@@ -875,16 +948,17 @@ function handleValidateForm() {
 }
 
 function formatPhone(modelName1, modelName2) {
-  let validInput = model.value.application[modelName1][modelName2].replace(
-    /\D/g,
-    ''
-  )
-  const match = validInput.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
+  const phoneNumber = model.value.application[modelName1][modelName2]
 
-  if (match) {
-    model.value.application[modelName1][modelName2] = `(${match[1]})${
-      match[2] ? ' ' : ''
-    }${match[2]}${match[3] ? '-' : ''}${match[3]}`
+  if (phoneNumber) {
+    let validInput = phoneNumber.replace(/\D/g, '')
+    const match = validInput.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
+
+    if (match) {
+      model.value.application[modelName1][modelName2] = `(${match[1]})${
+        match[2] ? ' ' : ''
+      }${match[2]}${match[3] ? '-' : ''}${match[3]}`
+    }
   }
 }
 
@@ -907,6 +981,31 @@ const items = ref([
   'Retired',
   'Never Served in the Military',
 ])
+
+const isRenew = computed(() => {
+  const applicationType = model.value.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment']
+  )
+})
+
+const showCharacterReferences = computed(() => {
+  const applicationType = model.value.application.applicationType
+  const applicationStatus = model.value.application.status
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment'] ||
+    applicationStatus === ApplicationStatus['Permit Delivered'] ||
+    model.value.application.legacyQualifyingQuestions
+  )
+})
 
 function checkFor21(input: string): boolean | TranslateResult {
   const userDate = input

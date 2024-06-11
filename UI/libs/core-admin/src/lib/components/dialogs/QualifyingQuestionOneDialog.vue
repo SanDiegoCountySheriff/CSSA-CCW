@@ -7,16 +7,17 @@
       <v-btn
         v-bind="attrs"
         v-on="on"
+        :disabled="readonly"
         icon
       >
         <v-icon
           v-if="
             permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionOne.temporaryAgency ||
+              ?.questionOne.temporaryAgency ||
             permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionOne.temporaryNumber ||
+              ?.questionOne.temporaryNumber ||
             permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionOne.temporaryIssueDate
+              ?.questionOne.temporaryIssueDate
           "
           color="error"
         >
@@ -121,6 +122,10 @@ import {
   CommentType,
 } from '@shared-utils/types/defaultTypes'
 
+const props = withDefaults(defineProps<{ readonly: boolean }>(), {
+  readonly: false,
+})
+
 const permitStore = usePermitsStore()
 const authStore = useAuthStore()
 const dialog = ref(false)
@@ -136,14 +141,16 @@ const { mutate: updatePermitDetails } = useMutation({
 })
 
 function handleSaveQuestionOneFlag() {
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionOne.temporaryAgency =
-    temporaryAgency.value
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionOne.temporaryIssueDate =
-    temporaryIssueDate.value
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionOne.temporaryNumber =
-    temporaryNumber.value
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionOne.temporaryIssuingState =
-    temporaryIssuingState.value
+  if (permitStore.getPermitDetail.application.qualifyingQuestions) {
+    permitStore.getPermitDetail.application.qualifyingQuestions.questionOne.temporaryAgency =
+      temporaryAgency.value
+    permitStore.getPermitDetail.application.qualifyingQuestions.questionOne.temporaryIssueDate =
+      temporaryIssueDate.value
+    permitStore.getPermitDetail.application.qualifyingQuestions.questionOne.temporaryNumber =
+      temporaryNumber.value
+    permitStore.getPermitDetail.application.qualifyingQuestions.questionOne.temporaryIssuingState =
+      temporaryIssuingState.value
+  }
 
   const newComment: CommentType = {
     text: comment.value,

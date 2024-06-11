@@ -1,28 +1,10 @@
 <template>
-  <v-container class="info-section-container rounded">
+  <v-container
+    fluid
+    class="info-section-container rounded"
+  >
     <v-banner class="sub-header font-weight-bold text-left my-5">
       {{ $t('Employment Information: ') }}
-      <template #actions>
-        <v-tooltip bottom>
-          <template #activator="{ on, attrs }">
-            <v-btn
-              v-if="
-                applicationStore.completeApplication.application.status ==
-                ApplicationStatus.Incomplete
-              "
-              icon
-              @click="handleEditRequest"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
-                mdi-square-edit-outline
-              </v-icon>
-            </v-btn>
-          </template>
-          {{ $t('Edit Section') }}
-        </v-tooltip>
-      </template>
     </v-banner>
     <div v-if="props.employmentInfo == 'Unemployed'">
       <v-banner
@@ -91,7 +73,7 @@
       <v-row>
         <v-col
           cols="12"
-          lg="6"
+          lg="12"
         >
           <v-banner
             rounded
@@ -105,30 +87,9 @@
               mdi-briefcase
             </v-icon>
             <strong>
-              {{ $t('Address Line 1: ') }}
+              {{ $t('Street Address: ') }}
             </strong>
-            {{ props.workInformation.employerAddressLine1 }}
-          </v-banner>
-        </v-col>
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-banner
-            rounded
-            single-line
-            class="text-left"
-          >
-            <v-icon
-              left
-              color="primary"
-            >
-              mdi-briefcase
-            </v-icon>
-            <strong>
-              {{ $t('Address Line 2: ') }}
-            </strong>
-            {{ props.workInformation.employerAddressLine2 }}
+            {{ props.workInformation.employerStreetAddress }}
           </v-banner>
         </v-col>
       </v-row>
@@ -150,7 +111,7 @@
               mdi-briefcase
             </v-icon>
             <strong>
-              {{ $t(' Emplorer City: ') }}
+              {{ $t(' Employer City: ') }}
             </strong>
             {{ props.workInformation.employerCity }}
           </v-banner>
@@ -171,7 +132,7 @@
               mdi-briefcase
             </v-icon>
             <strong>
-              {{ $t(' Emplorer State: ') }}
+              {{ $t(' Employer State: ') }}
             </strong>
             {{ props.workInformation.employerState }}
           </v-banner>
@@ -195,7 +156,7 @@
               mdi-briefcase
             </v-icon>
             <strong>
-              {{ $t(' Emplorer Zip: ') }}
+              {{ $t(' Employer Zip: ') }}
             </strong>
             {{ props.workInformation.employerZip }}
           </v-banner>
@@ -227,10 +188,7 @@
 </template>
 
 <script setup lang="ts">
-import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { WorkInformationType } from '@shared-utils/types/defaultTypes'
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
 
 interface IEmploymentInfoSectionProps {
   employmentInfo: string
@@ -238,20 +196,6 @@ interface IEmploymentInfoSectionProps {
   color: string
 }
 const props = defineProps<IEmploymentInfoSectionProps>()
-const router = useRouter()
-const applicationStore = useCompleteApplicationStore()
-
-function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 6
-  router.push({
-    path: '/form',
-    query: {
-      applicationId: applicationStore.completeApplication.id,
-      isComplete:
-        applicationStore.completeApplication.application.isComplete.toString(),
-    },
-  })
-}
 </script>
 
 <style lang="scss" scoped>

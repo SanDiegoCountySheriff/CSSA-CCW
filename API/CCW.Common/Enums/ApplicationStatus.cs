@@ -21,4 +21,6 @@ public enum ApplicationStatus
     ContingentlyDenied = 16,
     ReadyToIssue = 17,
     WaitingForCustomer = 18,
+    ModificationApproved = 19,
+    RenewalApproved = 20,
 }

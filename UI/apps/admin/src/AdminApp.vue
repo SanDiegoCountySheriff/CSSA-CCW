@@ -2,7 +2,12 @@
   <v-app>
     <v-container
       v-if="
-        (isPermitsLoading || isAdminUserLoading || isAllAdminUsersLoading) &&
+        (isPermitsLoading ||
+          isAdminUserLoading ||
+          isAllAdminUsersLoading ||
+          isRefundRequestLoading ||
+          isGetUnmatchedUsersCountLoading ||
+          isAssignedApplicationsLoading) &&
         isAuthenticated
       "
       fluid
@@ -42,6 +47,7 @@
 </template>
 
 <script setup lang="ts">
+import { ApplicationInsights } from '@microsoft/applicationinsights-web'
 import Loader from './Loader.vue'
 import PageTemplate from '@core-admin/components/templates/PageTemplate.vue'
 import Vue from 'vue'
@@ -49,9 +55,11 @@ import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
+import { useUserStore } from '@shared-ui/stores/userStore'
 import {
   MsalBrowser,
   getMsalInstance,
@@ -68,11 +76,13 @@ import {
 const prompt = ref(false)
 const app = getCurrentInstance()
 const authStore = useAuthStore()
+const paymentStore = usePaymentStore()
 const brandStore = useBrandStore()
-const themeStore = useThemeStore()
 const configStore = useAppConfigStore()
+const userStore = useUserStore()
 const permitsStore = usePermitsStore()
 const adminUserStore = useAdminUserStore()
+const themeStore = useThemeStore()
 const msalInstance = ref<MsalBrowser>()
 
 provide(
@@ -101,11 +111,23 @@ useQuery(['logo'], brandStore.getAgencyLogoDocumentsApi, {
   enabled: validApiUrl,
 })
 
-useQuery(['landingPageImage'], brandStore.getAgencyLandingPageImageApi, {
-  enabled: validApiUrl,
-})
+const { isLoading: isRefundRequestLoading } = useQuery(
+  ['getAllRefundRequests'],
+  paymentStore.getAllRefundRequests,
+  {
+    enabled: validApiUrl,
+  }
+)
 
-const { isLoading: isAllAdminUsersLoading } = useQuery(
+const { isLoading: isGetUnmatchedUsersCountLoading } = useQuery(
+  ['getUnmatchedUsers'],
+  userStore.getUnmatchedUsers,
+  {
+    enabled: validApiUrl,
+  }
+)
+
+const { isFetching: isAllAdminUsersLoading } = useQuery(
   ['getAllAdminUsers'],
   () => adminUserStore.getAllAdminUsers(),
   {
@@ -114,8 +136,16 @@ const { isLoading: isAllAdminUsersLoading } = useQuery(
 )
 
 const { isLoading: isPermitsLoading } = useQuery(
-  ['permits'],
-  () => permitsStore.getAllPermitsApi(),
+  ['applicationSummaryCount'],
+  () => permitsStore.getApplicationSummaryCount(),
+  {
+    enabled: enablePermitsEndpoints,
+  }
+)
+
+const { isLoading: isAssignedApplicationsLoading } = useQuery(
+  ['assignedApplications'],
+  () => permitsStore.getAssignedApplicationsSummary(),
   {
     enabled: enablePermitsEndpoints,
   }
@@ -136,9 +166,24 @@ onBeforeMount(async () => {
 
   msalInstance.value = await getMsalInstance()
 
-  if (app) {
-    app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark
+  const darkMode = localStorage.getItem('dark-mode')
+
+  if (app && darkMode) {
+    app.proxy.$vuetify.theme.dark = darkMode === 'true'
+    themeStore.getThemeConfig.isDark = darkMode === 'true'
   }
+
+  const appInsights = new ApplicationInsights({
+    config: {
+      connectionString:
+        configStore.appConfig.applicationInsightsConnectionString,
+    },
+  })
+
+  const referrer = document.referrer
+
+  appInsights.loadAppInsights()
+  appInsights.trackPageView({ properties: { referrer } })
 })
 
 watch(

@@ -1,3 +1,4 @@
+import { DataOptions } from 'vuetify'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 
 export type QuestionsConfig = {
@@ -25,8 +26,7 @@ export type QuestionsConfig = {
 }
 
 export type AddressInfoType = {
-  addressLine1: string
-  addressLine2: string
+  streetAddress: string
   city: string
   county: string
   state: string
@@ -58,9 +58,12 @@ export type AppConfigType = {
   clientId: string
   defaultCounty: string
   displayDebugger: boolean
+  isPaymentServiceAvailable: boolean
   environmentName: string
   refreshTime: number
   questions: QuestionsConfig
+  payBeforeSubmit: boolean
+  applicationInsightsConnectionString: string
 }
 
 export type AppearanceInfoType = {
@@ -85,6 +88,21 @@ export type AdminUserType = {
   name: string
   jobTitle: string
   uploadedDocuments: Array<UploadedDocType>
+}
+
+export type UserType = {
+  id: string
+  email: string
+  firstName: string
+  lastName: string
+  middleName: string
+  dateOfBirth: string
+  driversLicenseNumber: string
+  permitNumber: string
+  appointmentDate: string
+  appointmentTime: string
+  uploadedDocuments: Array<UploadedDocType>
+  isPendingReview: boolean
 }
 
 export type AuthType = {
@@ -118,16 +136,28 @@ export type CostType = {
     standard: number
     judicial: number
     reserve: number
+    employment: number
   }
   renew: {
     standard: number
     judicial: number
     reserve: number
+    employment: number
   }
   issuance: number
   modify: number
   creditFee: number
   convenienceFee: number
+  standardLivescanFee?: number | null
+  reserveLivescanFee?: number | null
+  judicialLivescanFee?: number | null
+  employmentLivescanFee?: number | null
+}
+
+export type DenialInfoType = {
+  reason: string
+  otherReason: string
+  date: string
 }
 
 export type DOBType = {
@@ -146,6 +176,7 @@ export type HistoryType = {
 export type IdType = {
   idNumber: string
   issuingState: string
+  restrictions: string
 }
 
 export type ImmigrantInformation = {
@@ -158,8 +189,8 @@ export type ImmigrantInformation = {
 export type LicenseType = {
   permitNumber: string
   issuingCounty: string
-  expirationDate: string
-  issueDate: string
+  expirationDate: string | null
+  issueDate: string | null
 }
 
 export type TrafficViolation = {
@@ -173,6 +204,8 @@ export type QualifyingQuestionStandard = {
   selected: boolean | null
   explanation: string
   temporaryExplanation: string
+  renewalExplanation: string
+  updateInformation: boolean | null
 }
 
 export type QualifyingQuestionOne = {
@@ -185,6 +218,7 @@ export type QualifyingQuestionOne = {
   temporaryNumber: string
   issuingState: string
   temporaryIssuingState: string
+  updateInformation: boolean | null
 }
 
 export type QualifyingQuestionTwo = {
@@ -195,12 +229,23 @@ export type QualifyingQuestionTwo = {
   temporaryDenialDate: string
   denialReason: string
   temporaryDenialReason: string
+  updateInformation: boolean | null
 }
 
 export type QualifyingQuestionTwelve = {
   selected: boolean | null
   trafficViolations: TrafficViolation[]
   temporaryTrafficViolations: TrafficViolation[]
+  trafficViolationsExplanation: string
+  updateInformation: boolean | null
+}
+
+export type QualifyingQuestionEight = {
+  selected: boolean | null
+  trafficViolations: TrafficViolation[]
+  temporaryTrafficViolations: TrafficViolation[]
+  trafficViolationsExplanation: string
+  updateInformation: boolean | null
 }
 
 export type QualifyingQuestions = {
@@ -227,11 +272,40 @@ export type QualifyingQuestions = {
   questionTwentyOne: QualifyingQuestionStandard
 }
 
+export type LegacyQualifyingQuestions = {
+  questionOne: QualifyingQuestionOne
+  questionTwo: QualifyingQuestionTwo
+  questionThree: QualifyingQuestionStandard
+  questionFour: QualifyingQuestionStandard
+  questionFive: QualifyingQuestionStandard
+  questionSix: QualifyingQuestionStandard
+  questionSeven: QualifyingQuestionStandard
+  questionEight: QualifyingQuestionEight
+  questionNine: QualifyingQuestionStandard
+  questionTen: QualifyingQuestionStandard
+  questionEleven: QualifyingQuestionStandard
+  questionTwelve: QualifyingQuestionStandard
+  questionThirteen: QualifyingQuestionStandard
+  questionFourteen: QualifyingQuestionStandard
+  questionFifteen: QualifyingQuestionStandard
+  questionSixteen: QualifyingQuestionStandard
+  questionSeventeen: QualifyingQuestionStandard
+}
+
 export type PaymentInfoType = {
   applicationCost: number
   convenienceFee: number
   creditFee: number
   totalCost: number
+}
+
+export type RefundRequest = {
+  id: string | null | undefined
+  orderId: string | null | undefined
+  transactionId: string
+  applicationId: string
+  refundAmount: number
+  reason: string | null | undefined
 }
 
 export type PersonalInfoType = {
@@ -245,6 +319,12 @@ export type PersonalInfoType = {
   maritalStatus: string
 }
 
+export type RevocationInfoType = {
+  reason: string
+  otherReason: string
+  date: string
+}
+
 export type SpouseInfoType = {
   lastName: string
   firstName: string
@@ -253,15 +333,26 @@ export type SpouseInfoType = {
   phoneNumber: string
 }
 
+export enum PaymentStatus {
+  'None',
+  'In Person',
+  'Online Submitted',
+  'Refunded',
+  'Partially Refunded',
+}
+
 export type PaymentHistoryType = {
   amount: string
+  refundAmount: string
   paymentDateTimeUtc: string
-  paymentType: string
+  paymentType: number
   recordedBy: string
   transactionId: string
   vendorInfo: string
   successful: boolean
-  paymentStatus: number
+  paymentStatus: PaymentStatus
+  modificationNumber: number | null
+  verified: boolean | null
 }
 
 export type WeaponInfoType = {
@@ -269,6 +360,8 @@ export type WeaponInfoType = {
   model: string
   caliber: string
   serialNumber: string
+  added?: boolean
+  deleted?: boolean
 }
 
 export type CharacterReferenceType = {
@@ -282,8 +375,7 @@ export type CharacterReferences = CharacterReferenceType[]
 
 export type WorkInformationType = {
   employerName: string
-  employerAddressLine1: string
-  employerAddressLine2: string
+  employerStreetAddress: string
   employerCity: string
   employerState: string
   employerZip: string
@@ -314,6 +406,7 @@ export type AppointmentType = {
   end: string
   isManuallyCreated: boolean
   userId: string
+  slots?: number | null
 }
 
 export type HolidayRequestModel = {
@@ -326,93 +419,98 @@ export type OrganizationalHolidaysRequestModel = {
 
 export type BackgroundCheckType = {
   proofOfID: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   proofOfResidency: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   ncicWantsWarrants: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   locals: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   probations: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   dmvRecord: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   akasChecked: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   crimeTracer: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   trafficCourtPortal: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   dojApprovalLetter: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   ciiNumber: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   doj: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   fbi: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
+    value: boolean | null
+  }
+  livescan: {
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   sR14: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   firearms: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   sidLettersReceived: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   safetyCertificate: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   restrictions: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
 }
@@ -421,6 +519,11 @@ export type CommentType = {
   text: string
   commentDateTimeUtc: string
   commentMadeBy: string
+}
+
+export type LiveScanInfoType = {
+  atiNumber: string
+  date: string
 }
 
 export enum ApplicationStatus {
@@ -443,24 +546,89 @@ export enum ApplicationStatus {
   'Contingently Denied',
   'Ready To Issue',
   'Waiting For Customer',
+  'Modification Approved',
+  'Renewal Approved',
 }
 
 export enum PaymentType {
   'CCW Application Initial Payment',
   'CCW Application Initial Judicial Payment',
   'CCW Application Initial Reserve Payment',
+  'CCW Application Initial Employment Payment',
   'CCW Application Modification Payment',
   'CCW Application Modification Judicial Payment',
   'CCW Application Modification Reserve Payment',
+  'CCW Application Modification Employment Payment',
   'CCW Application Renewal Payment',
   'CCW Application Renewal Judicial Payment',
   'CCW Application Renewal Reserve Payment',
+  'CCW Application Renewal Employment Payment',
+  'CCW Application Issuance Payment',
+  'CCW Application Standard Livescan Payment',
+  'CCW Application Judicial Livescan Payment',
+  'CCW Application Reserve Livescan Payment',
+  'CCW Application Employment Livescan Payment',
+}
+
+export enum ApplicationType {
+  'None',
+  'Standard',
+  'Reserve',
+  'Judicial',
+  'Employment',
+  'Renew Standard',
+  'Renew Reserve',
+  'Renew Judicial',
+  'Renew Employment',
+  'Modify Standard',
+  'Modify Reserve',
+  'Modify Judicial',
+  'Modify Employment',
+  'Duplicate Standard',
+  'Duplicate Reserve',
+  'Duplicate Judicial',
+  'Duplicate Employment',
+}
+
+export type AssignedApplicationSummary = {
+  orderId: string
+  name: string
+  status: ApplicationStatus
+  appointmentStatus: AppointmentStatus
+}
+
+export type ApplicationSummaryCount = {
+  standardType: number
+  reserveType: number
+  judicialType: number
+  employmentType: number
+  suspendedStatus: number
+  revokedStatus: number
+  deniedStatus: number
+  activeStandardStatus: number
+  activeReserveStatus: number
+  activeJudicialStatus: number
+  activeEmploymentStatus: number
+  submittedStatus: number
+}
+
+export type ApplicationTableOptionsType = {
+  options: DataOptions
+  search: string
+  applicationSearch: string | null
+  statuses: ApplicationStatus[]
+  paid: boolean
+  appointmentStatuses: AppointmentStatus[]
+  applicationTypes: ApplicationType[]
+  showingTodaysAppointments: boolean
+  selectedDate: string
+  matchedApplications: boolean
 }
 
 export type CompleteApplication = {
   application: {
     aliases: Array<AliasType>
-    applicationType: string
+    applicationType: ApplicationType
     citizenship: {
       citizen: boolean
       militaryStatus: string
@@ -469,6 +637,9 @@ export type CompleteApplication = {
     comments: Array<CommentType>
     contact: ContactInfoType
     currentAddress: AddressInfoType
+    modifiedAddress: AddressInfoType
+    modifiedAddressComplete: boolean | null
+    denialInfo: DenialInfoType
     differentMailing: boolean
     differentSpouseAddress: boolean
     dob: DOBType
@@ -476,26 +647,33 @@ export type CompleteApplication = {
     idInfo: IdType
     immigrantInformation: ImmigrantInformation
     isComplete: boolean
+    isUpdatingApplication: boolean
     license: LicenseType
+    liveScanInfo: LiveScanInfoType
     mailingAddress: AddressInfoType
     paymentStatus: number
     personalInfo: {
       lastName: string
       firstName: string
       middleName: string
+      modifiedFirstName: string
+      modifiedMiddleName: string
+      modifiedLastName: string
       noMiddleName: boolean
       maidenName: string
       suffix: string
       ssn: string
       maritalStatus: string
     }
+    modifiedNameComplete: boolean | null
     physicalAppearance: AppearanceInfoType
     previousAddresses: Array<AddressInfoType>
-    qualifyingQuestions: QualifyingQuestions
+    qualifyingQuestions?: QualifyingQuestions
+    legacyQualifyingQuestions?: LegacyQualifyingQuestions
     referenceNotes: string
+    revocationInfo: RevocationInfoType
     spouseAddressInformation: {
-      addressLine1: string
-      addressLine2: string
+      streetAddress: string
       city: string
       county: string
       state: string
@@ -506,10 +684,13 @@ export type CompleteApplication = {
     spouseInformation: SpouseInfoType
     userEmail: string
     weapons: Array<WeaponInfoType>
+    modifyDeleteWeapons: Array<WeaponInfoType>
+    modifyAddWeapons: Array<WeaponInfoType>
+    modifiedWeaponComplete: boolean | null
     workInformation: WorkInformationType
     currentStep: number
     status: ApplicationStatus
-    originalStatus: ApplicationStatus
+    originalStatus: ApplicationStatus | null
     appointmentStatus: AppointmentStatus | null
     appointmentDateTime: string | null
     appointmentId: string | null
@@ -527,18 +708,23 @@ export type CompleteApplication = {
     flaggedForCustomerReview: boolean | null
     flaggedForLicensingReview: boolean | null
     agreements: {
-      goodMoralCharacterAgreed: boolean
-      goodMoralCharacterAgreedDate: string | null
       conditionsForIssuanceAgreed: boolean
       conditionsForIssuanceAgreedDate: string | null
       falseInfoAgreed: boolean
       falseInfoAgreedDate: string | null
     }
+    readyForInitialPayment: boolean
+    readyForRenewalPayment: boolean
+    readyForModificationPayment: boolean
+    modificationNumber: number
+    renewalNumber: number
+    isRenewingWithLegacyQuestions: boolean
   }
   history: Array<HistoryType>
   paymentHistory: Array<PaymentHistoryType>
   userId: string
   id: string
+  isMatchUpdated: boolean | null
 }
 
 export type ThemeConfigType = {
@@ -547,6 +733,14 @@ export type ThemeConfigType = {
 
 export type StausType = {
   isOnline: boolean
+}
+
+export type HairColor = {
+  name: string
+}
+
+export type EyeColor = {
+  name: string
 }
 
 export type BrandType = {
@@ -562,12 +756,14 @@ export type BrandType = {
   standardCost: number
   judicialCost: number
   reserveCost: number
+  employmentCost: number
   creditFee: number
   convenienceFee: number
   paymentURL: string
   refreshTokenTime: number
   ori: string
   courthouse: string
+  employmentLicense: boolean
   localAgencyNumber: string
   cost: CostType
   agencyBillingNumber: string
@@ -588,13 +784,16 @@ export type BrandType = {
   agencyShippingCounty: string
   expiredApplicationRenewalPeriod: number
   archivedApplicationRetentionPeriod: number
+  agencyHairColors: HairColor[]
+  agencyEyeColors: EyeColor[]
+  daysBeforeActiveRenewal: number
+  numberOfModificationsBetweenRenewals: number
 }
 
 export type AgencyDocumentsType = {
   agencyLogo: string | undefined
   agencyLandingPageImage: string | undefined
   agencySheriffSignatureImage: string | undefined
-  agencyGoodMoralPDF: string | undefined
   agencyConditionsForIssuancePDF: string | undefined
   agencyFalseInfoPDF: string | undefined
   agencyHomePageImage: string | undefined

@@ -5,31 +5,12 @@
   >
     <v-banner class="sub-header font-weight-bold text-xl text-left my-5 pl-0">
       {{ $t(props.title) }}
-      <template #actions>
-        <v-tooltip bottom>
-          <template #activator="{ on, attrs }">
-            <v-btn
-              v-if="
-                applicationStore.completeApplication.application.status ==
-                ApplicationStatus.Incomplete
-              "
-              icon
-              @click="handleEditRequest"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon color="info"> mdi-square-edit-outline </v-icon>
-            </v-btn>
-          </template>
-          {{ $t('Edit Section') }}
-        </v-tooltip>
-      </template>
     </v-banner>
 
     <v-row>
       <v-col
         cols="12"
-        lg="6"
+        lg="12"
       >
         <v-banner
           single-line
@@ -42,29 +23,9 @@
             mdi-home
           </v-icon>
           <strong>
-            {{ $t('Address Line 1: ') }}
+            {{ $t('Street Address: ') }}
           </strong>
-          {{ props.spouseAddress.addressLine1 }}
-        </v-banner>
-      </v-col>
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-banner
-          single-line
-          class="text-left"
-        >
-          <v-icon
-            left
-            color="primary"
-          >
-            mdi-home
-          </v-icon>
-          <strong>
-            {{ $t('Address Line 2: ') }}
-          </strong>
-          {{ props.spouseAddress.addressLine2 }}
+          {{ props.spouseAddress.streetAddress }}
         </v-banner>
       </v-col>
     </v-row>
@@ -182,9 +143,6 @@
 
 <script setup lang="ts">
 import { AddressInfoType } from '@shared-utils/types/defaultTypes'
-import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
 
 interface ISpouseAddressProps {
   spouseAddress: AddressInfoType
@@ -193,20 +151,6 @@ interface ISpouseAddressProps {
 }
 
 const props = defineProps<ISpouseAddressProps>()
-const applicationStore = useCompleteApplicationStore()
-const router = useRouter()
-
-function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 3
-  router.push({
-    path: '/form',
-    query: {
-      applicationId: applicationStore.completeApplication.id,
-      isComplete:
-        applicationStore.completeApplication.application.isComplete.toString(),
-    },
-  })
-}
 </script>
 
 <style scoped lang="scss">

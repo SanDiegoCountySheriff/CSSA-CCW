@@ -8,26 +8,12 @@
       class="sub-header font-weight-bold text-xl text-left my-5"
     >
       {{ $t(props.title) }}
-      <template #actions>
-        <v-btn
-          v-if="
-            applicationStore.completeApplication.application.status ==
-            ApplicationStatus.Incomplete
-          "
-          icon
-          @click="handleEditRequest"
-        >
-          <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
-            mdi-square-edit-outline
-          </v-icon>
-        </v-btn>
-      </template>
     </v-banner>
 
     <v-row>
       <v-col
         cols="12"
-        lg="6"
+        lg="12"
       >
         <v-banner
           rounded
@@ -41,31 +27,9 @@
             mdi-home
           </v-icon>
           <strong>
-            {{ $t('Address Line 1: ') }}
+            {{ $t('Street Address: ') }}
           </strong>
-          {{ props.addressInfo.addressLine1 }}
-        </v-banner>
-      </v-col>
-
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-banner
-          rounded
-          single-line
-          class="text-left"
-        >
-          <v-icon
-            left
-            color="primary"
-          >
-            mdi-home
-          </v-icon>
-          <strong>
-            {{ $t('Address Line 2: ') }}
-          </strong>
-          {{ props.addressInfo.addressLine2 }}
+          {{ props.addressInfo.streetAddress }}
         </v-banner>
       </v-col>
     </v-row>
@@ -188,9 +152,6 @@
 
 <script setup lang="ts">
 import { AddressInfoType } from '@shared-utils/types/defaultTypes'
-import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
 
 interface IAddressInfoSectionProps {
   addressInfo: AddressInfoType
@@ -198,20 +159,6 @@ interface IAddressInfoSectionProps {
   color: string
 }
 const props = defineProps<IAddressInfoSectionProps>()
-const applicationStore = useCompleteApplicationStore()
-const router = useRouter()
-
-function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 3
-  router.push({
-    path: '/form',
-    query: {
-      applicationId: applicationStore.completeApplication.id,
-      isComplete:
-        applicationStore.completeApplication.application.isComplete.toString(),
-    },
-  })
-}
 </script>
 
 <style lang="scss" scoped>

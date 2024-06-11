@@ -26,7 +26,7 @@ builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
-    .AddAuthentication("aad")
+    .AddAuthentication()
     .AddJwtBearer("aad", o =>
     {
         o.Authority = builder.Configuration.GetSection("JwtBearerAAD:Authority").Value;
@@ -129,9 +129,11 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+var origins = builder.Configuration.GetSection("JwtBearerAAD:Origins").Value.Split(",");
+
 builder.Services.AddCors(policyBuilder =>
     policyBuilder.AddDefaultPolicy(policy =>
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
+        policy.WithOrigins(origins).AllowAnyMethod().AllowAnyHeader())
 );
 
 builder.Services.AddHealthChecks();

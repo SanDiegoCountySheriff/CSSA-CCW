@@ -373,3 +373,11 @@ API/.idea/.idea.CCW/.idea/indexLayout.xml
 API/.idea/.idea.CCW/.idea/vcs.xml
 API/.idea/.idea.CCW/.idea/projectSettingsUpdater.xml
 API/.idea/.idea.CCW/.idea/workspace.xml
+
+appsettings.Development.json
+API/CCW.Application/appsettings.Development.json
+API/CCW.Payment/appsettings.Development.json
+API/CCW.Schedule/appsettings.Development.json
+API/CCW.UserProfile/appsettings.Development.json
+API/CCW.Admin/appsettings.Development.json
+API/CCW.Document/appsettings.Development.json

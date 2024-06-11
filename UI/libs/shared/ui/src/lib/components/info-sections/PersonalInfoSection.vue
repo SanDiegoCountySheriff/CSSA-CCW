@@ -1,31 +1,13 @@
 <template>
-  <v-container class="info-section-container rounded">
+  <v-container
+    fluid
+    class="confirm-info-section rounded mt-5"
+  >
     <v-banner
       single-line
       class="sub-header font-weight-bold text-xl text-left my-5"
     >
       {{ $t('Personal Information: ') }}
-      <template #actions>
-        <v-tooltip bottom>
-          <template #activator="{ on, attrs }">
-            <v-btn
-              v-if="
-                completeApplicationStore.completeApplication.application
-                  .status == 1
-              "
-              icon
-              @click="handleEditRequest"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
-                mdi-square-edit-outline
-              </v-icon>
-            </v-btn>
-          </template>
-          {{ $t('Edit Section') }}
-        </v-tooltip>
-      </template>
     </v-banner>
     <v-row>
       <v-col
@@ -187,29 +169,13 @@
 
 <script setup lang="ts">
 import { PersonalInfoType } from '@shared-utils/types/defaultTypes'
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
 
 interface personalInfoSectionProps {
   personalInfo: PersonalInfoType
   color: string
 }
 
-const router = useRouter()
 const props = defineProps<personalInfoSectionProps>()
-const completeApplicationStore = useCompleteApplicationStore()
-
-function handleEditRequest() {
-  completeApplicationStore.completeApplication.application.currentStep = 1
-  router.push({
-    path: '/form',
-    query: {
-      applicationId: completeApplicationStore.completeApplication.id,
-      isComplete:
-        completeApplicationStore.completeApplication.application.isComplete.toString(),
-    },
-  })
-}
 </script>
 
 <style lang="scss" scoped>

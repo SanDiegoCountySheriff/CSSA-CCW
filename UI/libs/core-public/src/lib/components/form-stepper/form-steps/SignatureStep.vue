@@ -1,221 +1,133 @@
 <template>
   <div>
-    <v-row justify-content="center">
-      <v-container
-        class="mb-10"
-        style="max-width: 750px; padding-left: 55px"
+    <v-row justify="center">
+      <v-card-title>
+        {{ $t('Terms and Agreements') }}
+      </v-card-title>
+
+      <v-card-text
+        v-if="isMobile"
+        class="text-center"
       >
-        <div>
-          <v-card-title v-if="!isMobile">
-            {{ $t('Terms and Agreements') }}
-          </v-card-title>
-          <template v-else>
-            <v-card-title style="padding-bottom: 1px; padding-left: 20px">
-              {{ $t('Terms and Agreements') }}
-            </v-card-title>
-            <div style="font-size: 14px; padding-top: 0px; padding-left: 0px">
-              {{ $t('(Please read each document below and agree)') }}
-            </div>
-          </template>
-        </div>
-        <template>
-          <v-row class="ml-4">
-            <div style="display: flex; align-items: center">
-              <span>
-                <v-checkbox
-                  v-if="!isMobile"
-                  v-model="
-                    applicationStore.completeApplication.application.agreements
-                      .goodMoralCharacterAgreed
-                  "
-                  @click="setAgreedDate('goodMoralCharacterAgreedDate')"
-                  hide-details
-                  label="By checking this box, I agree to the "
-                ></v-checkbox>
-                <v-checkbox
-                  v-else
-                  v-model="
-                    applicationStore.completeApplication.application.agreements
-                      .goodMoralCharacterAgreed
-                  "
-                  @click="setAgreedDate('goodMoralCharacterAgreedDate')"
-                  hide-details
-                ></v-checkbox>
-              </span>
-              <template>
-                <a
-                  style="padding-top: 19px; padding-left: 10px"
-                  href="#"
-                  @click.prevent="
-                    handleAgreementLinkClick('GoodMoralCharacter')
-                  "
-                  @keydown.enter="handleEnterKeyPress('GoodMoralCharacter')"
-                  >Good Moral Character</a
-                >
-              </template>
-              <template>
-                <div
-                  v-if="!isMobile"
-                  style="padding-top: 19px; padding-left: 10px"
-                >
-                  {{
-                    applicationStore.completeApplication.application.agreements
-                      .goodMoralCharacterAgreedDate
-                      ? formatDate(
-                          applicationStore.completeApplication.application
-                            .agreements.goodMoralCharacterAgreedDate
-                        )
-                      : ''
-                  }}&nbsp;{{
-                    applicationStore.completeApplication.application.agreements
-                      .goodMoralCharacterAgreedDate
-                      ? formatTime(
-                          applicationStore.completeApplication.application
-                            .agreements.goodMoralCharacterAgreedDate
-                        )
-                      : ''
-                  }}
-                </div>
-              </template>
-            </div>
-          </v-row>
-          <v-row class="ml-4">
-            <div style="display: flex; align-items: center">
-              <span>
-                <v-checkbox
-                  v-if="!isMobile"
-                  v-model="
-                    applicationStore.completeApplication.application.agreements
-                      .conditionsForIssuanceAgreed
-                  "
-                  @click="setAgreedDate('conditionsForIssuanceAgreedDate')"
-                  hide-details
-                  label="By checking this box, I agree to the "
-                ></v-checkbox>
-                <v-checkbox
-                  v-else
-                  v-model="
-                    applicationStore.completeApplication.application.agreements
-                      .conditionsForIssuanceAgreed
-                  "
-                  @click="setAgreedDate('conditionsForIssuanceAgreedDate')"
-                  hide-details
-                ></v-checkbox>
-              </span>
-              <template>
-                <a
-                  style="padding-top: 19px; padding-left: 10px"
-                  href="#"
-                  @click.prevent="
-                    handleAgreementLinkClick('ConditionsForIssuance')
-                  "
-                  @keydown.enter="handleEnterKeyPress('ConditionsForIssuance')"
-                  >Conditions For Issuance</a
-                >
-              </template>
-              <template>
-                <div
-                  v-if="!isMobile"
-                  style="padding-top: 19px; padding-left: 10px"
-                >
-                  {{
-                    applicationStore.completeApplication.application.agreements
-                      .conditionsForIssuanceAgreedDate
-                      ? formatDate(
-                          applicationStore.completeApplication.application
-                            .agreements.conditionsForIssuanceAgreedDate
-                        )
-                      : ''
-                  }}&nbsp;{{
-                    applicationStore.completeApplication.application.agreements
-                      .conditionsForIssuanceAgreedDate
-                      ? formatTime(
-                          applicationStore.completeApplication.application
-                            .agreements.conditionsForIssuanceAgreedDate
-                        )
-                      : ''
-                  }}
-                </div>
-              </template>
-            </div>
-          </v-row>
-          <v-row class="ml-4">
-            <div style="display: flex; align-items: center">
-              <span>
-                <v-checkbox
-                  v-if="!isMobile"
-                  v-model="
-                    applicationStore.completeApplication.application.agreements
-                      .falseInfoAgreed
-                  "
-                  @click="setAgreedDate('falseInfoAgreedDate')"
-                  hide-details
-                  label="By checking this box, I agree to the "
-                ></v-checkbox>
-                <v-checkbox
-                  v-else
-                  v-model="
-                    applicationStore.completeApplication.application.agreements
-                      .falseInfoAgreed
-                  "
-                  @click="setAgreedDate('falseInfoAgreedDate')"
-                  hide-details
-                ></v-checkbox>
-              </span>
-              <template>
-                <a
-                  style="padding-top: 19px; padding-left: 10px"
-                  href="#"
-                  @click.prevent="handleAgreementLinkClick('FalseInfo')"
-                  @keydown.enter="handleEnterKeyPress('FalseInfo')"
-                  >False Info</a
-                >
-              </template>
-              <template>
-                <div
-                  v-if="!isMobile"
-                  style="padding-top: 19px; padding-left: 10px"
-                >
-                  {{
-                    applicationStore.completeApplication.application.agreements
-                      .falseInfoAgreedDate
-                      ? formatDate(
-                          applicationStore.completeApplication.application
-                            .agreements.falseInfoAgreedDate
-                        )
-                      : ''
-                  }}&nbsp;{{
-                    applicationStore.completeApplication.application.agreements
-                      .falseInfoAgreedDate
-                      ? formatTime(
-                          applicationStore.completeApplication.application
-                            .agreements.falseInfoAgreedDate
-                        )
-                      : ''
-                  }}
-                </div>
-              </template>
-            </div>
-          </v-row>
-        </template>
-      </v-container>
+        {{ $t('(Please read each document below and agree)') }}
+      </v-card-text>
     </v-row>
-    <v-container v-if="!state.previousSignature">
+
+    <v-container style="max-width: 750px">
       <v-row justify="center">
-        <v-card-title style="padding-bottom: 1px; padding-left: 20px">
-          {{ $t('Please Sign Here') }}
-        </v-card-title>
         <v-col
           cols="12"
-          class="text-center"
+          :class="isMobile ? 'd-flex justify-center' : ''"
         >
-          <canvas
-            :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
-            id="signature"
-            class="signature"
-            style="border: 2px solid"
-          ></canvas>
+          <v-checkbox
+            v-model="
+              applicationStore.completeApplication.application.agreements
+                .conditionsForIssuanceAgreed
+            "
+            @click="setAgreedDate('conditionsForIssuanceAgreedDate')"
+            hide-details
+          >
+            <template #label>
+              {{ !isMobile ? 'By checking this box, I agree to the ' : '' }}
+              <a
+                href="#"
+                @click.stop
+                @click.prevent="
+                  handleAgreementLinkClick('Conditions_for_Issuance')
+                "
+                @keydown.enter="handleEnterKeyPress('Conditions_for_Issuance')"
+                class="mx-2"
+              >
+                Conditions For Issuance
+              </a>
+
+              <template
+                v-if="
+                  !isMobile &&
+                  applicationStore.completeApplication.application.agreements
+                    .conditionsForIssuanceAgreedDate
+                "
+              >
+                {{
+                  new Date(
+                    applicationStore.completeApplication.application.agreements.conditionsForIssuanceAgreedDate
+                  ).toLocaleString()
+                }}
+              </template>
+            </template>
+          </v-checkbox>
         </v-col>
+
+        <v-col
+          cols="12"
+          :class="isMobile ? 'd-flex justify-center' : ''"
+        >
+          <v-checkbox
+            v-model="
+              applicationStore.completeApplication.application.agreements
+                .falseInfoAgreed
+            "
+            @click="setAgreedDate('falseInfoAgreedDate')"
+            hide-details
+          >
+            <template #label>
+              {{ !isMobile ? 'By checking this box, I agree to the ' : '' }}
+              <a
+                href="#"
+                @click.stop
+                @click.prevent="handleAgreementLinkClick('False_Info')"
+                @keydown.enter="handleEnterKeyPress('False_Info')"
+                class="mx-2"
+              >
+                False Info
+              </a>
+
+              <template
+                v-if="
+                  !isMobile &&
+                  applicationStore.completeApplication.application.agreements
+                    .falseInfoAgreedDate
+                "
+              >
+                {{
+                  new Date(
+                    applicationStore.completeApplication.application.agreements.falseInfoAgreedDate
+                  ).toLocaleString()
+                }}
+              </template>
+            </template>
+          </v-checkbox>
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <v-container v-if="!state.previousSignature">
+      <v-row justify="center">
+        <v-card-title>
+          {{ $t('Please Sign Here') }}
+        </v-card-title>
+
+        <v-col
+          cols="12"
+          class="d-flex align-center justify-center"
+        >
+          <v-card
+            light
+            flat
+            :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
+            height="100px"
+            outlined
+            style="border: solid 2px black"
+          >
+            <canvas
+              :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
+              height="100px"
+              id="signature"
+              class="signature"
+            ></canvas>
+          </v-card>
+        </v-col>
+
         <v-col
           cols="12"
           class="text-center"
@@ -230,28 +142,36 @@
         </v-col>
       </v-row>
 
-      <v-row justify="center">
-        <FormButtonContainer
-          :valid="!isSignaturePadEmpty"
-          :loading="state.uploading"
-          :all-steps-complete="props.allStepsComplete"
-          @submit="handleSubmit"
-          @save="handleSave"
-        />
-      </v-row>
+      <FormButtonContainer
+        :valid="!isSignaturePadEmpty"
+        :loading="state.uploading || isLoading || loading"
+        :all-steps-complete="props.allStepsComplete"
+        :is-final-step="true"
+        @continue="handleContinue"
+        @save="handleSave"
+        @save-match="handleSaveMatch"
+        v-on="$listeners"
+      />
     </v-container>
 
-    <v-container v-else>
-      <v-row justify="center">
+    <v-container>
+      <v-row
+        v-if="
+          !applicationStore.completeApplication.application
+            .isUpdatingApplication && !state.isMatching
+        "
+        justify="center"
+      >
         <v-alert
+          v-if="!isRenew"
+          color="primary"
+          type="info"
           outlined
-          type="success"
         >
-          {{
-            $t(
-              'Signature has already been submitted. Press continue to move forward.'
-            )
-          }}
+          <span :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''">
+            You must finalize your application and select an appointment date
+            and time in order to submit to Licensing.
+          </span>
         </v-alert>
       </v-row>
 
@@ -259,10 +179,12 @@
         <SignatureFormButtonContainer
           v-if="state.previousSignature"
           :valid="true"
-          :submitting="state.submitted"
+          :loading="state.uploading || isLoading || loading"
           :all-steps-complete="props.allStepsComplete"
-          @submit="handleSkipSubmit"
+          :is-final-step="true"
+          @continue="handleContinueWithoutUpload"
           @save="handleSave"
+          v-on="$listeners"
         />
       </v-row>
     </v-container>
@@ -270,9 +192,11 @@
 </template>
 
 <script setup lang="ts">
+import { ApplicationType } from '@shared-utils/types/defaultTypes'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import Endpoints from '@shared-ui/api/endpoints'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import Routes from '@core-public/router/routes'
 import SignatureFormButtonContainer from '@shared-ui/components/containers/SignatureFormButtonContainer.vue'
 import SignaturePad from 'signature_pad'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
@@ -280,29 +204,27 @@ import axios from 'axios'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
-import {
-  formatDate,
-  formatTime,
-} from '@shared-utils/formatters/defaultFormatters'
 
 interface ISecondFormStepFourProps {
-  routes: unknown
   value: CompleteApplication
   allStepsComplete: boolean
+  loading: boolean
 }
 
 const props = defineProps<ISecondFormStepFourProps>()
 const emit = defineEmits([
   'input',
-  'handle-submit',
+  'handle-continue',
   'handle-save',
   'update-step-eight-valid',
 ])
 
 const router = useRouter()
 const applicationStore = useCompleteApplicationStore()
+const themeStore = useThemeStore()
 const signaturePad = ref<SignaturePad>()
 const vuetify = useVuetify()
 const state = reactive({
@@ -311,6 +233,7 @@ const state = reactive({
   previousSignature: false,
   submitted: false,
   uploading: false,
+  isMatching: false,
 })
 
 const model = computed({
@@ -318,13 +241,13 @@ const model = computed({
   set: (value: CompleteApplication) => emit('input', value),
 })
 
-const isMobile = computed(
-  () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
-)
+const isMobile = computed(() => {
+  return vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
+})
 
 onMounted(() => {
   for (let item of model.value.application.uploadedDocuments) {
-    if (item.documentType === 'signature') {
+    if (item.documentType === 'Signature') {
       state.previousSignature = true
       emit('update-step-eight-valid', true)
     }
@@ -359,36 +282,46 @@ const isConditionsForIssuanceAgreed = computed(() => {
     .conditionsForIssuanceAgreed
 })
 
-const isGoodMoralCharacterAgreed = computed(() => {
-  return applicationStore.completeApplication.application.agreements
-    .goodMoralCharacterAgreed
+const isRenew = computed(() => {
+  const applicationType = model.value.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment']
+  )
 })
 
-const fileMutation = useMutation({
+const { mutate: fileMutation, isLoading } = useMutation({
   mutationFn: handleFileUpload,
   onSuccess: () => {
-    model.value.application.currentStep = 10
-    applicationStore.updateApplication()
-    router.push({
-      path: props.routes.FINALIZE_ROUTE_PATH,
-      query: {
-        applicationId: model.value.id,
-        isComplete: model.value.application.isComplete.toString(),
-      },
-    })
+    if (!state.isMatching) {
+      model.value.application.currentStep = 10
+      applicationStore.updateApplication()
+      router.push({
+        path: Routes.FINALIZE_ROUTE_PATH,
+        query: {
+          applicationId: model.value.id,
+          isComplete: model.value.application.isComplete.toString(),
+        },
+      })
+    } else if (state.isMatching) {
+      emit('handle-save', true)
+    }
   },
   onError: () => {
     state.submitted = false
   },
 })
 
-async function handleSubmit() {
+async function handleContinue() {
   state.submitted = true
   state.uploading = true
   const image = document.getElementById('signature')
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
+  // @ts-ignore
   image.toBlob(blob => {
     const file = new File([blob], 'signature.png', { type: 'image/png' })
     const form = new FormData()
@@ -397,10 +330,30 @@ async function handleSubmit() {
 
     state.file = form
 
-    fileMutation.mutate()
+    fileMutation()
   })
 
-  emit('handle-submit')
+  emit('handle-continue')
+}
+
+async function handleSaveMatch() {
+  state.submitted = true
+  state.uploading = true
+  state.isMatching = true
+  const image = document.getElementById('signature')
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  image.toBlob(blob => {
+    const file = new File([blob], 'signature.png', { type: 'image/png' })
+    const form = new FormData()
+
+    form.append('fileToUpload', file)
+
+    state.file = form
+
+    fileMutation()
+  })
 }
 
 function handleSave() {
@@ -408,18 +361,16 @@ function handleSave() {
 }
 
 async function handleFileUpload() {
-  const newFileName = `${applicationStore.completeApplication.application.personalInfo.lastName}_${applicationStore.completeApplication.application.personalInfo.firstName}_signature`
-
   const uploadDoc: UploadedDocType = {
-    documentType: 'signature',
-    name: newFileName,
+    documentType: 'Signature',
+    name: 'Signature',
     uploadedBy: applicationStore.completeApplication.application.userEmail,
     uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
   }
 
   await axios
     .post(
-      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${newFileName}`,
+      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${'Signature'}`,
       state.file
     )
     .then(() => {
@@ -436,19 +387,22 @@ async function handleFileUpload() {
     })
 }
 
-function handleEnterKeyPress(agreementType) {
-  applicationStore.getAgreementPdf(agreementType)
+async function handleEnterKeyPress(agreementType) {
+  await applicationStore.getAgreementPdf(agreementType)
 }
 
-function handleAgreementLinkClick(agreementType) {
-  applicationStore.getAgreementPdf(agreementType)
+async function handleAgreementLinkClick(agreementType) {
+  await applicationStore.getAgreementPdf(agreementType)
 }
 
 function setAgreedDate(agreedDateKey) {
   if (
     applicationStore.completeApplication.application.agreements[
       agreedDateKey
-    ] == null
+    ] === null ||
+    applicationStore.completeApplication.application.agreements[
+      agreedDateKey
+    ] === ''
   ) {
     applicationStore.completeApplication.application.agreements[agreedDateKey] =
       new Date().toLocaleString()
@@ -458,11 +412,11 @@ function setAgreedDate(agreedDateKey) {
   }
 }
 
-function handleSkipSubmit() {
+function handleContinueWithoutUpload() {
   applicationStore.completeApplication.application.currentStep = 8
   applicationStore.updateApplication()
   router.push({
-    path: props.routes.FINALIZE_ROUTE_PATH,
+    path: Routes.FINALIZE_ROUTE_PATH,
     query: {
       applicationId: applicationStore.completeApplication.id,
       isComplete:
@@ -472,12 +426,7 @@ function handleSkipSubmit() {
 }
 
 watch(
-  [
-    isSignaturePadEmpty,
-    isFalseInfoAgreed,
-    isConditionsForIssuanceAgreed,
-    isGoodMoralCharacterAgreed,
-  ],
+  [isSignaturePadEmpty, isFalseInfoAgreed, isConditionsForIssuanceAgreed],
   newValues => {
     const [isSigPadEmpty, ...otherValues] = newValues
     const allTrueExceptSigPad = otherValues.every(val => val)

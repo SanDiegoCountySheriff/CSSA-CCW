@@ -3,17 +3,6 @@
     v-model="dialog"
     max-width="800"
   >
-    <template #activator="{ on, attrs }">
-      <v-btn
-        small
-        color="primary"
-        v-bind="attrs"
-        v-on="on"
-      >
-        {{ $t('Add Weapon') }}
-      </v-btn>
-    </template>
-
     <v-card outlined>
       <v-card-title>{{ $t('Weapon Information') }}</v-card-title>
 
@@ -29,26 +18,28 @@
                 :items="weaponMake"
                 :label="$t('Make')"
                 :rules="[v => !!v || 'Make is required']"
-                v-model="state.weapon.make"
+                v-model="weapon.make"
                 outlined
                 dense
               >
               </v-combobox>
             </v-col>
           </v-row>
+
           <v-row>
             <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
               <v-text-field
                 max-length="25"
                 :label="$t('Model')"
                 :rules="[v => !!v || 'Model is required']"
-                v-model="state.weapon.model"
+                v-model="weapon.model"
                 outlined
                 dense
               >
               </v-text-field>
             </v-col>
           </v-row>
+
           <v-row>
             <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
               <v-combobox
@@ -56,19 +47,20 @@
                 :items="calibers"
                 :label="$t('Caliber')"
                 :rules="[v => !!v || 'Caliber is required']"
-                v-model="state.weapon.caliber"
+                v-model="weapon.caliber"
                 outlined
                 dense
               >
               </v-combobox>
             </v-col>
           </v-row>
+
           <v-row>
             <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
               <v-text-field
                 :label="$t('Serial number')"
                 :rules="[v => !!v || 'Serial number is required']"
-                v-model="state.weapon.serialNumber"
+                v-model="weapon.serialNumber"
                 outlined
                 dense
               >
@@ -86,7 +78,9 @@
         >
           {{ $t('Cancel') }}
         </v-btn>
+
         <v-spacer></v-spacer>
+
         <v-btn
           text
           color="primary"
@@ -103,18 +97,46 @@
 <script setup lang="ts">
 import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
 import { calibers, weaponMake } from '@shared-utils/lists/defaultConstants'
-import { reactive, ref } from 'vue'
+import { computed, ref } from 'vue'
 
-const emit = defineEmits(['save-weapon'])
+interface WeaponsDialogProps {
+  value: boolean
+  item: WeaponInfoType
+  editing: boolean
+}
+const props = defineProps<WeaponsDialogProps>()
+
+const emit = defineEmits([
+  'save-weapon',
+  'input',
+  'edit-weapon',
+  'update-weapon',
+])
 const valid = ref(false)
-const dialog = ref(false)
-const state = reactive({
-  weapon: {} as WeaponInfoType,
+const dialog = computed({
+  get() {
+    return props.value
+  },
+  set(value) {
+    emit('input', value)
+  },
+})
+
+const weapon = computed({
+  get() {
+    return props.item
+  },
+  set(value) {
+    emit('update-weapon', value)
+  },
 })
 
 function handleSubmit() {
-  emit('save-weapon', state.weapon)
-  state.weapon = {} as WeaponInfoType
-  dialog.value = false
+  if (!props.editing) {
+    emit('save-weapon', weapon.value)
+    dialog.value = false
+  } else {
+    emit('edit-weapon', weapon.value)
+  }
 }
 </script>

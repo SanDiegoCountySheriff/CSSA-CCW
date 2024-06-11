@@ -1,10 +1,10 @@
 <!-- eslint-disable vue/singleline-html-element-content-newline -->
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <PermitCard1 :is-loading="isLoading" />
+        <PermitCard1 />
       </v-col>
     </v-row>
     <v-row>
@@ -13,6 +13,11 @@
           :is-loading="isLoading"
           :user-photo="state.userPhoto"
           @refetch="refetch"
+          @on-check-name="handleCheckName"
+          @on-check-address="handleCheckAddress"
+          @on-check-weapons="handleCheckWeapons"
+          @on-check-documents="handleCheckDocuments"
+          @on-check-questions="handleCheckQuestions"
         />
       </v-col>
     </v-row>
@@ -134,7 +139,7 @@ import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useRoute } from 'vue-router/composables'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
-import { reactive, ref } from 'vue'
+import { computed, provide, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const permitStore = usePermitsStore()
@@ -143,7 +148,7 @@ const documentsStore = useDocumentsStore()
 const route = useRoute()
 
 const state = reactive({
-  tab: null,
+  tab: 0,
   items: [
     'Applicant Details',
     'Aliases',
@@ -179,9 +184,14 @@ const { refetch: getPortrait } = useQuery(
 
 const { isLoading, refetch } = useQuery(
   ['permitDetail'],
-  () => permitStore.getPermitDetailApi(route.params.orderId),
+  () =>
+    permitStore.getPermitDetailApi(route.params.orderId, route.params.isLegacy),
   { refetchOnMount: 'always', onSuccess: () => getPortrait() }
 )
+
+const readonly = computed(() => Boolean(route.params.isLegacy))
+
+provide('readonly', readonly)
 
 const stepIndex = ref(1)
 const reveal = ref(false)
@@ -223,6 +233,26 @@ const renderTabs = item => {
     default:
       return ApplicationInfoTab
   }
+}
+
+function handleCheckName() {
+  state.tab = 0
+}
+
+function handleCheckAddress() {
+  state.tab = 6
+}
+
+function handleCheckWeapons() {
+  state.tab = 8
+}
+
+function handleCheckDocuments() {
+  state.tab = 10
+}
+
+function handleCheckQuestions() {
+  state.tab = 9
 }
 </script>
 

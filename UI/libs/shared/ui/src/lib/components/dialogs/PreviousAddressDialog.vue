@@ -5,6 +5,7 @@
   >
     <template #activator="{ on, attrs }">
       <v-btn
+        :disabled="readonly"
         small
         color="primary"
         v-bind="attrs"
@@ -30,31 +31,14 @@
             >
               <v-text-field
                 maxlength="150"
-                v-model="state.address.addressLine1"
-                :label="$t('Address line 1')"
-                :rules="[v => !!v || 'Address line 1 cannot be blank']"
-                outlined
-                dense
-              >
-              </v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col
-              md="6"
-              cols="12"
-              :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
-            >
-              <v-text-field
-                maxlength="150"
-                :label="$t('Address line 2')"
-                v-model="state.address.addressLine2"
+                v-model="state.address.streetAddress"
+                :label="$t('Street Address')"
+                :rules="[v => !!v || 'Street address cannot be blank']"
                 outlined
                 dense
               />
             </v-col>
-          </v-row>
-          <v-row>
+
             <v-col
               md="6"
               cols="12"
@@ -67,9 +51,11 @@
                 :rules="[v => !!v || 'City cannot be blank']"
                 outlined
                 dense
-              >
-              </v-text-field>
+              />
             </v-col>
+          </v-row>
+
+          <v-row>
             <v-col
               md="6"
               cols="12"
@@ -84,8 +70,8 @@
                 :rules="[v => !!v || 'State cannot be blank']"
                 outlined
                 dense
-              >
-              </v-combobox>
+              />
+
               <v-text-field
                 v-if="state.address.country !== 'United States'"
                 :label="$t('State / Region')"
@@ -93,13 +79,11 @@
                 v-model="state.address.state"
                 outlined
                 dense
-              >
-              </v-text-field>
+              />
             </v-col>
-          </v-row>
-          <v-row>
+
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
             >
@@ -112,11 +96,13 @@
                 :rules="[v => !!v || 'County cannot be blank']"
                 outlined
                 dense
-              >
-              </v-text-field>
+              />
             </v-col>
+          </v-row>
+
+          <v-row>
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
             >
@@ -137,11 +123,11 @@
                 ]"
                 outlined
                 dense
-              >
-              </v-text-field>
+              />
             </v-col>
+
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
             >
@@ -152,12 +138,12 @@
                 :rules="[v => !!v || 'Country cannot be blank']"
                 outlined
                 dense
-              >
-              </v-combobox>
+              />
             </v-col>
           </v-row>
         </v-form>
       </v-card-text>
+
       <v-card-actions>
         <v-btn
           text
@@ -166,7 +152,9 @@
         >
           {{ $t('Cancel') }}
         </v-btn>
+
         <v-spacer></v-spacer>
+
         <v-btn
           text
           color="primary"
@@ -183,14 +171,15 @@
 <script setup lang="ts">
 import { AddressInfoType } from '@shared-utils/types/defaultTypes'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
-import { reactive, ref } from 'vue'
+import { inject, reactive, ref } from 'vue'
 
 const emit = defineEmits(['get-previous-address-from-dialog'])
 
+const readonly = inject<boolean>('readonly', false)
+
 const state = reactive({
   address: {
-    addressLine1: '',
-    addressLine2: '',
+    streetAddress: '',
     city: '',
     country: '',
     county: '',
@@ -206,8 +195,7 @@ function handleSubmit() {
   emit('get-previous-address-from-dialog', state.address)
 
   state.address = reactive({
-    addressLine1: '',
-    addressLine2: '',
+    streetAddress: '',
     city: '',
     country: '',
     county: '',

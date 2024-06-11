@@ -25,7 +25,7 @@ builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
-    .AddAuthentication("aad")
+    .AddAuthentication()
     .AddJwtBearer("aad", o =>
     {
         o.Authority = builder.Configuration.GetSection("JwtBearerAAD:Authority").Value;
@@ -78,12 +78,18 @@ builder.Services
             {
                 policy.RequireRole("CCW-ADMIN-ROLE");
                 policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
+                policy.RequireAuthenticatedUser();
+                policy.AddAuthenticationSchemes("aad");
+                policy.Build();
             });
 
         options.AddPolicy("RequireSystemAdminOnly", policy =>
         {
             policy.RequireRole("CCW-SYSTEM-ADMINS-ROLE");
             policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
+            policy.RequireAuthenticatedUser();
+            policy.AddAuthenticationSchemes("aad");
+            policy.Build();
         });
 
         options.AddPolicy("RequireAdminOrSystemAdminOnly",
@@ -92,19 +98,18 @@ builder.Services
                 policy.RequireRole(new string[] { "CCW-ADMIN-ROLE", "CCW-SYSTEM-ADMINS-ROLE" });
                 policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
                 policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
+                policy.RequireAuthenticatedUser();
+                policy.AddAuthenticationSchemes("aad");
+                policy.Build();
             });
-
 
         options.AddPolicy("RequireProcessorOnly", policy =>
         {
             policy.RequireRole("CCW-PROCESSORS-ROLE");
             policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
-        });
-
-        options.AddPolicy("PublicOnly", policy =>
-        {
-            policy.RequireRole("CCW-PROCESSORS-ROLE");
-            policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
+            policy.RequireAuthenticatedUser();
+            policy.AddAuthenticationSchemes("aad");
+            policy.Build();
         });
     });
 
@@ -144,9 +149,11 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+var origins = builder.Configuration.GetSection("JwtBearerAAD:Origins").Value.Split(",");
+
 builder.Services.AddCors(policyBuilder =>
     policyBuilder.AddDefaultPolicy(policy =>
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
+        policy.WithOrigins(origins).AllowAnyMethod().AllowAnyHeader())
 );
 
 builder.Services.AddHealthChecks();
@@ -170,7 +177,6 @@ app.UseHealthChecks("/health");
 
 app.UseCors();
 
-app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
@@ -181,8 +187,8 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     IConfigurationSection configurationSection, SecretClient secretClient)
 {
     var databaseName = configurationSection["DatabaseName"];
-    var containerName = configurationSection["ContainerName"];
     var adminUsersContainerName = configurationSection["AdminUsersContainerName"];
+    var usersContainerName = configurationSection["UsersContainerName"];
 #if DEBUG
     var key = configurationSection["CosmosDbEmulatorConnectionString"];
 #else
@@ -203,9 +209,9 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
         });
 
     var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
-    await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
     await database.Database.CreateContainerIfNotExistsAsync(adminUsersContainerName, "/id");
-    var cosmosDbService = new CosmosDbService(client, databaseName, containerName, adminUsersContainerName);
+    await database.Database.CreateContainerIfNotExistsAsync(usersContainerName, "/id");
+    var cosmosDbService = new CosmosDbService(client, databaseName, adminUsersContainerName, usersContainerName);
     return cosmosDbService;
 }
 

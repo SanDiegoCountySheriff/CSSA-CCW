@@ -21,11 +21,12 @@ public interface IAzureStorage
     Task DeleteAgencyLogoAsync(string agencyLogoName, CancellationToken cancellationToken);
 
     Task DeleteApplicantFileAsync(string applicantFileName, CancellationToken cancellationToken);
+    Task DeleteApplicantFilePublicAsync(string applicantFileName, CancellationToken cancellationToken);
     Task UploadAdminUserFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken);
     Task<BlobClient> DownloadAdminUserFileAsync(string adminUserFileName, CancellationToken cancellationToken);
     Task DeleteAdminApplicationFileAsync(string adminApplicationFileName, CancellationToken cancellationToken);
-    Task UploadAdminApplicationFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken);
     Task<BlobClient> DownloadAdminApplicationFileAsync(string adminApplicationFileName, CancellationToken cancellationToken);
     Task UpdateAdminApplicationFileNameAsync(string oldName, string newName, CancellationToken cancellationToken);
     Task UpdateApplicationFileNameAsync(string oldName, string newName, CancellationToken cancellationToken);
+    Task<bool> ValidateAgencyFileAsync(string agencyFileName, CancellationToken cancellationToken);
 }

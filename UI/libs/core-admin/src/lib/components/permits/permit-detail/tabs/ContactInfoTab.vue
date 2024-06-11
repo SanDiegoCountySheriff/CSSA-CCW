@@ -3,9 +3,11 @@
     <v-card elevation="0">
       <v-card-title>
         {{ $t('Telephone Numbers') }}
+
         <v-spacer></v-spacer>
+
         <SaveButton
-          :disabled="!valid"
+          :disabled="!valid || readonly"
           @on-save="handleSave"
         />
       </v-card-title>
@@ -19,6 +21,7 @@
                   permitStore.getPermitDetail.application.contact
                     .primaryPhoneNumber
                 "
+                :readonly="readonly"
                 :label="$t('Primary phone number')"
                 :rules="phoneRuleSet"
                 outlined
@@ -26,6 +29,7 @@
               >
                 <template #append>
                   <v-icon> mdi-phone </v-icon>
+
                   <v-icon
                     color="error"
                     medium
@@ -39,17 +43,19 @@
                 </template>
               </v-text-field>
             </v-col>
+
             <v-col>
               <v-text-field
                 v-model="
                   permitStore.getPermitDetail.application.contact
                     .cellPhoneNumber
                 "
+                :readonly="readonly"
                 :label="$t('Cell phone number')"
                 :hint="$t('Only numbers no spaces or dashes')"
                 :rules="[
                   v =>
-                    v.length === 10 ||
+                    (!!v && v.length === 10) ||
                     v === '' ||
                     $t('Cell phone number must be ten digits long'),
                 ]"
@@ -63,6 +69,7 @@
               </v-text-field>
             </v-col>
           </v-row>
+
           <v-row>
             <v-col>
               <v-text-field
@@ -70,11 +77,12 @@
                   permitStore.getPermitDetail.application.contact
                     .workPhoneNumber
                 "
+                :readonly="readonly"
                 :label="$t('Work phone number')"
                 :hint="$t('Only numbers no spaces or dashes')"
                 :rules="[
                   v =>
-                    v.length === 10 ||
+                    (!!v && v.length === 10) ||
                     v === '' ||
                     $t('Work phone number must be ten digits long'),
                 ]"
@@ -87,6 +95,7 @@
                 </template>
               </v-text-field>
             </v-col>
+
             <v-col>
               <v-text-field
                 v-model="permitStore.getPermitDetail.application.userEmail"
@@ -110,16 +119,18 @@
               </v-text-field>
             </v-col>
           </v-row>
+
           <v-row>
             <v-col>
               <v-text-field
-                counter
-                maxlength="25"
                 v-model="
                   permitStore.getPermitDetail.application.idInfo.idNumber
                 "
                 :label="$t('State-issued ID number')"
                 :rules="[v => !!v || $t('ID number is required')]"
+                :readonly="readonly"
+                maxlength="25"
+                counter
                 outlined
                 dense
               >
@@ -136,14 +147,16 @@
                 </template>
               </v-text-field>
             </v-col>
+
             <v-col>
               <v-autocomplete
-                :items="states"
-                :label="$t('ID Issuing State')"
-                :rules="[v => !!v || $t('Issuing state is required')]"
                 v-model="
                   permitStore.getPermitDetail.application.idInfo.issuingState
                 "
+                :items="states"
+                :label="$t('ID Issuing State')"
+                :rules="[v => !!v || $t('Issuing state is required')]"
+                :readonly="readonly"
                 outlined
                 dense
               >
@@ -160,6 +173,21 @@
                   </v-icon>
                 </template>
               </v-autocomplete>
+            </v-col>
+
+            <v-col>
+              <v-text-field
+                v-model="
+                  permitStore.getPermitDetail.application.idInfo.restrictions
+                "
+                :readonly="readonly"
+                :label="$t('Restrictions')"
+                maxlength="100"
+                counter
+                outlined
+                dense
+              >
+              </v-text-field>
             </v-col>
           </v-row>
         </v-form>
@@ -180,23 +208,23 @@
             >
               <v-text-field
                 v-model="reference.name"
-                dense
-                outlined
                 :label="
                   $t('Reference') + ' ' + (index + 1) + ' - ' + $t('Name')
                 "
                 :rules="[v => !!v || $t('Name cannot be blank')]"
+                :readonly="readonly"
+                dense
+                outlined
               >
               </v-text-field>
             </v-col>
+
             <v-col
               cols="12"
               md="3"
             >
               <v-text-field
                 v-model="reference.relationship"
-                dense
-                outlined
                 :label="
                   $t('Reference') +
                   ' ' +
@@ -204,19 +232,21 @@
                   ' - ' +
                   $t('Relationship')
                 "
+                :readonly="readonly"
                 :rules="[v => !!v || $t('Relationship cannot be blank')]"
+                dense
+                outlined
               >
               </v-text-field>
             </v-col>
+
             <v-col
               cols="12"
               md="3"
             >
               <v-text-field
-                @input="formatReferencePhone(reference)"
                 v-model="reference.phoneNumber"
-                dense
-                outlined
+                :readonly="readonly"
                 :label="
                   $t('Reference') +
                   ' ' +
@@ -225,17 +255,20 @@
                   $t('Phone Number')
                 "
                 :rules="phoneRuleSet"
+                @input="formatReferencePhone(reference)"
+                dense
+                outlined
               >
               </v-text-field>
             </v-col>
+
             <v-col
               cols="12"
               md="3"
             >
               <v-text-field
                 v-model="reference.email"
-                dense
-                outlined
+                :readonly="readonly"
                 :label="
                   $t('Reference') +
                   ' ' +
@@ -247,6 +280,8 @@
                   v => !!v || $t('Email address cannot be blank'),
                   v => /.+@.+\..+/.test(v) || $t('Email address must be valid'),
                 ]"
+                dense
+                outlined
               >
               </v-text-field>
             </v-col>
@@ -261,8 +296,9 @@
           <v-row>
             <v-col cols="12">
               <v-textarea
-                label="Character reference notes, not seen by applicant"
                 v-model="permitStore.getPermitDetail.application.referenceNotes"
+                :readonly="readonly"
+                label="Character reference notes, not seen by applicant"
                 color="primary"
                 outlined
               ></v-textarea>
@@ -278,14 +314,15 @@
 import { CharacterReferenceType } from '@shared-utils/types/defaultTypes'
 import SaveButton from './SaveButton.vue'
 import { phoneRuleSet } from '@shared-ui/rule-sets/ruleSets'
-import { ref } from 'vue'
 import { states } from '@shared-utils/lists/defaultConstants'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { inject, ref } from 'vue'
 
 const emit = defineEmits(['on-save'])
 
 const permitStore = usePermitsStore()
 const valid = ref(false)
+const readonly = inject<boolean>('readonly')
 
 function handleSave() {
   emit('on-save', 'Contact Details')

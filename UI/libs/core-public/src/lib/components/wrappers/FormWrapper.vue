@@ -144,7 +144,7 @@
               v-model="applicationStore.completeApplication"
               @update-step-one-valid="handleUpdateStepOneValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
             />
           </v-stepper-content>
           <v-stepper-content :step="2">
@@ -152,7 +152,8 @@
               v-model="applicationStore.completeApplication"
               @update-step-two-valid="handleUpdateStepTwoValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
+              @previous-step="handlePrevious"
             />
           </v-stepper-content>
           <v-stepper-content :step="3">
@@ -160,7 +161,8 @@
               v-model="applicationStore.completeApplication"
               @update-step-three-valid="handleUpdateStepThreeValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
+              @previous-step="handlePrevious"
             />
           </v-stepper-content>
           <v-stepper-content :step="4">
@@ -168,7 +170,8 @@
               v-model="applicationStore.completeApplication"
               @update-step-four-valid="handleUpdateStepFourValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
+              @previous-step="handlePrevious"
             />
           </v-stepper-content>
           <v-stepper-content :step="5">
@@ -176,7 +179,8 @@
               v-model="applicationStore.completeApplication"
               @update-step-five-valid="handleUpdateStepFiveValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
+              @previous-step="handlePrevious"
             />
           </v-stepper-content>
           <v-stepper-content :step="6">
@@ -184,24 +188,39 @@
               v-model="applicationStore.completeApplication"
               @update-step-six-valid="handleUpdateStepSixValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
+              @previous-step="handlePrevious"
             />
           </v-stepper-content>
           <v-stepper-content :step="7">
             <QualifyingQuestionsStep
+              v-if="
+                applicationStore.completeApplication.application
+                  .qualifyingQuestions
+              "
               v-model="applicationStore.completeApplication"
               @update-step-seven-valid="handleUpdateStepSevenValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
+              @previous-step="handlePrevious"
+            />
+            <LegacyQualifyingQuestionsStep
+              v-else
+              v-model="applicationStore.completeApplication"
+              @update-step-seven-valid="handleUpdateStepSevenValid"
+              @handle-save="handleSave"
+              @handle-continue="handleContinue"
+              @previous-step="handlePrevious"
             />
           </v-stepper-content>
           <v-stepper-content :step="8">
             <SignatureStep
               v-model="applicationStore.completeApplication"
-              :routes="routes"
               :all-steps-complete="allStepsComplete"
+              :loading="isSaveLoading"
               @update-step-eight-valid="handleUpdateStepEightValid"
               @handle-save="handleSave"
+              @previous-step="handlePrevious"
             />
           </v-stepper-content>
         </v-stepper-items>
@@ -218,113 +237,220 @@
         absolute
         class="progress-circular"
       ></v-progress-circular>
+
       <v-expansion-panels
         v-model="expansionStep"
         accordion
         @change="updateMutation"
       >
         <v-expansion-panel>
-          <v-expansion-panel-header @click.native="stepIndex.step = 1">
+          <v-expansion-panel-header
+            @click.native="stepIndex.step = 1"
+            :color="stepIndex.step === 1 ? 'primary' : ''"
+            :class="stepIndex.step === 1 ? 'white--text' : ''"
+          >
             {{ $t('Personal') }}
+            <template #actions>
+              <v-icon :color="stepIndex.step === 1 ? 'white' : ''">
+                $expand
+              </v-icon>
+            </template>
           </v-expansion-panel-header>
+
           <v-expansion-panel-content eager>
             <PersonalInfoStep
               v-model="applicationStore.completeApplication"
               @update-step-one-valid="handleUpdateStepOneValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
+
         <v-expansion-panel>
-          <v-expansion-panel-header @click.native="stepIndex.step = 2">
+          <v-expansion-panel-header
+            @click.native="stepIndex.step = 2"
+            :color="stepIndex.step === 2 ? 'primary' : ''"
+            :class="stepIndex.step === 2 ? 'white--text' : ''"
+          >
             {{ $t('ID Information') }}
+            <template #actions>
+              <v-icon :color="stepIndex.step === 2 ? 'white' : ''">
+                $expand
+              </v-icon>
+            </template>
           </v-expansion-panel-header>
+
           <v-expansion-panel-content eager>
             <IdBirthInfoStep
               v-model="applicationStore.completeApplication"
               @update-step-two-valid="handleUpdateStepTwoValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
+              @previous-step="handlePrevious"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
+
         <v-expansion-panel>
-          <v-expansion-panel-header @click.native="stepIndex.step = 3">
+          <v-expansion-panel-header
+            @click.native="stepIndex.step = 3"
+            :color="stepIndex.step === 3 ? 'primary' : ''"
+            :class="stepIndex.step === 3 ? 'white--text' : ''"
+          >
             {{ $t('Address') }}
+            <template #actions>
+              <v-icon :color="stepIndex.step === 3 ? 'white' : ''">
+                $expand
+              </v-icon>
+            </template>
           </v-expansion-panel-header>
+
           <v-expansion-panel-content eager>
             <AddressInfoStep
               v-model="applicationStore.completeApplication"
               @update-step-three-valid="handleUpdateStepThreeValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
+              @previous-step="handlePrevious"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
+
         <v-expansion-panel>
-          <v-expansion-panel-header @click.native="stepIndex.step = 4">
+          <v-expansion-panel-header
+            @click.native="stepIndex.step = 4"
+            :color="stepIndex.step === 4 ? 'primary' : ''"
+            :class="stepIndex.step === 4 ? 'white--text' : ''"
+          >
             {{ $t(' Employment & Weapons') }}
+            <template #actions>
+              <v-icon :color="stepIndex.step === 4 ? 'white' : ''">
+                $expand
+              </v-icon>
+            </template>
           </v-expansion-panel-header>
+
           <v-expansion-panel-content eager>
             <WorkInfoStep
               v-model="applicationStore.completeApplication"
               @update-step-four-valid="handleUpdateStepFourValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
+              @previous-step="handlePrevious"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
+
         <v-expansion-panel>
-          <v-expansion-panel-header @click.native="stepIndex.step = 5">
+          <v-expansion-panel-header
+            @click.native="stepIndex.step = 5"
+            :color="stepIndex.step === 5 ? 'primary' : ''"
+            :class="stepIndex.step === 5 ? 'white--text' : ''"
+          >
             {{ $t('Application Type') }}
+            <template #actions>
+              <v-icon :color="stepIndex.step === 5 ? 'white' : ''">
+                $expand
+              </v-icon>
+            </template>
           </v-expansion-panel-header>
+
           <v-expansion-panel-content eager>
             <ApplicationTypeStep
               v-model="applicationStore.completeApplication"
               @update-step-five-valid="handleUpdateStepFiveValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
+              @previous-step="handlePrevious"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
+
         <v-expansion-panel>
-          <v-expansion-panel-header @click.native="stepIndex.step = 6">
+          <v-expansion-panel-header
+            @click.native="stepIndex.step = 6"
+            :color="stepIndex.step === 6 ? 'primary' : ''"
+            :class="stepIndex.step === 6 ? 'white--text' : ''"
+          >
             {{ $t(' Upload Files') }}
+            <template #actions>
+              <v-icon :color="stepIndex.step === 6 ? 'white' : ''">
+                $expand
+              </v-icon>
+            </template>
           </v-expansion-panel-header>
+
           <v-expansion-panel-content eager>
             <FileUploadStep
               v-model="applicationStore.completeApplication"
               @update-step-six-valid="handleUpdateStepSixValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
+              @previous-step="handlePrevious"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
+
         <v-expansion-panel>
-          <v-expansion-panel-header @click.native="stepIndex.step = 7">
+          <v-expansion-panel-header
+            @click.native="stepIndex.step = 7"
+            :color="stepIndex.step === 7 ? 'primary' : ''"
+            :class="stepIndex.step === 7 ? 'white--text' : ''"
+          >
             {{ $t('Qualifying Questions') }}
+            <template #actions>
+              <v-icon :color="stepIndex.step === 7 ? 'white' : ''">
+                $expand
+              </v-icon>
+            </template>
           </v-expansion-panel-header>
+
           <v-expansion-panel-content eager>
             <QualifyingQuestionsStep
+              v-if="
+                applicationStore.completeApplication.application
+                  .qualifyingQuestions
+              "
               v-model="applicationStore.completeApplication"
               @update-step-seven-valid="handleUpdateStepSevenValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
+              @previous-step="handlePrevious"
+            />
+            <LegacyQualifyingQuestionsStep
+              v-else
+              v-model="applicationStore.completeApplication"
+              @update-step-seven-valid="handleUpdateStepSevenValid"
+              @handle-save="handleSave"
+              @handle-continue="handleContinue"
+              @previous-step="handlePrevious"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
+
         <v-expansion-panel>
-          <v-expansion-panel-header @click.native="stepIndex.step = 8">
+          <v-expansion-panel-header
+            @click.native="stepIndex.step = 8"
+            :color="stepIndex.step === 8 ? 'primary' : ''"
+            :class="stepIndex.step === 8 ? 'white--text' : ''"
+          >
             {{ $t('Signature') }}
+            <template #actions>
+              <v-icon :color="stepIndex.step === 8 ? 'white' : ''">
+                $expand
+              </v-icon>
+            </template>
           </v-expansion-panel-header>
+
           <v-expansion-panel-content eager>
             <SignatureStep
               v-model="applicationStore.completeApplication"
-              :routes="routes"
               :all-steps-complete="allStepsComplete"
+              :loading="isSaveLoading"
               @update-step-eight-valid="handleUpdateStepEightValid"
               @handle-save="handleSave"
+              @previous-step="handlePrevious"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -339,24 +465,17 @@ import ApplicationTypeStep from '@core-public/components/form-stepper/form-steps
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FileUploadStep from '@core-public/components/form-stepper/form-steps/FileUploadStep.vue'
 import IdBirthInfoStep from '@core-public/components/form-stepper/form-steps/IdBirthInfoStep.vue'
+import LegacyQualifyingQuestionsStep from '../form-stepper/form-steps/LegacyQualifyingQuestionsStep.vue'
 import PersonalInfoStep from '@core-public/components/form-stepper/form-steps/PersonalInfoStep.vue'
 import QualifyingQuestionsStep from '@core-public/components/form-stepper/form-steps/QualifyingQuestionsStep.vue'
 import SignatureStep from '@core-public/components/form-stepper/form-steps/SignatureStep.vue'
 import WorkInfoStep from '@core-public/components/form-stepper/form-steps/WorkInfoStep.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, provide, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
-interface IWrapperProps {
-  admin: boolean
-  routes: unknown
-}
-
-const props = defineProps<IWrapperProps>()
-
 const applicationStore = useCompleteApplicationStore()
-const router = useRouter()
 const stepOneValid = ref(false)
 const stepTwoValid = ref(false)
 const stepThreeValid = ref(false)
@@ -365,6 +484,7 @@ const stepFiveValid = ref(false)
 const stepSixValid = ref(false)
 const stepSevenValid = ref(false)
 const stepEightValid = ref(false)
+const router = useRouter()
 
 const stepIndex = reactive({
   step: 0,
@@ -377,7 +497,14 @@ const state = reactive({
   isApplicationValid: false,
 })
 
-const expansionStep = computed(() => stepIndex.step - 1)
+const expansionStep = computed({
+  get() {
+    return stepIndex.step - 1
+  },
+  set(value) {
+    stepIndex.step = value
+  },
+})
 
 const { isLoading, mutate: updateMutation } = useMutation({
   mutationFn: () => {
@@ -385,11 +512,28 @@ const { isLoading, mutate: updateMutation } = useMutation({
   },
 })
 
+const { refetch } = useQuery(
+  ['getApplicationsByUser'],
+  applicationStore.getAllUserApplicationsApi,
+  {
+    enabled: false,
+  }
+)
+
 const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
+  mutationKey: ['saveMutation'],
   mutationFn: () => {
+    if (
+      applicationStore.completeApplication.application.isUpdatingApplication
+    ) {
+      applicationStore.completeApplication.application.isUpdatingApplication =
+        false
+    }
+
     return applicationStore.updateApplication()
   },
   onSuccess: () => {
+    refetch()
     router.push('/')
   },
 })
@@ -416,11 +560,17 @@ const { isLoading: isGetApplicationsLoading } = useQuery(
   }
 )
 
-function handleSave() {
+function handleSave(isMatching = false) {
+  if (isMatching) {
+    applicationStore.completeApplication.isMatchUpdated = true
+    applicationStore.completeApplication.application.isComplete = true
+    applicationStore.completeApplication.application.currentStep = 1
+  }
+
   saveMutation()
 }
 
-function handleSubmit() {
+function handleContinue() {
   if (applicationStore.completeApplication.application.currentStep < 8) {
     applicationStore.completeApplication.application.currentStep =
       stepIndex.step + 1
@@ -430,6 +580,18 @@ function handleSubmit() {
   window.scrollTo(0, 0)
   stepIndex.previousStep = stepIndex.step
   stepIndex.step += 1
+}
+
+function handlePrevious() {
+  if (applicationStore.completeApplication.application.currentStep > 1) {
+    applicationStore.completeApplication.application.currentStep =
+      stepIndex.step - 1
+  }
+
+  updateMutation()
+  window.scrollTo(0, 0)
+  stepIndex.previousStep = stepIndex.step
+  stepIndex.step -= 1
 }
 
 function handleUpdateStepOneValid(value: boolean) {
@@ -476,6 +638,8 @@ const allStepsComplete = computed(() => {
     stepEightValid.value
   )
 })
+
+provide('allStepsComplete', allStepsComplete)
 </script>
 
 <style lang="scss">

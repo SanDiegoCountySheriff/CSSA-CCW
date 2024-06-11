@@ -1,6 +1,9 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-container class="px-0 py-0">
+  <v-container
+    class="px-0 py-0"
+    fluid
+  >
     <v-card
       class="pt-2 fill-height"
       outlined
@@ -20,20 +23,39 @@
             cols="12"
             lg="4"
           >
-            <v-select
-              ref="select"
-              :items="items"
-              label="Application Type"
-              item-text="name"
-              item-value="value"
-              v-model="permitStore.getPermitDetail.application.applicationType"
-              @change="updateApplicationType($event)"
-              dense
-              outlined
-              :menu-props="{
-                offsetY: true,
-              }"
-            ></v-select>
+            <v-tooltip bottom>
+              <template #activator="{ on, attrs }">
+                <v-btn
+                  @click="dialog = true"
+                  v-on="on"
+                  v-bind="attrs"
+                  outlined
+                  color="primary"
+                >
+                  <v-icon
+                    left
+                    :class="
+                      themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                    "
+                  >
+                    mdi-tag-edit-outline
+                  </v-icon>
+                  <span
+                    :class="
+                      themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                    "
+                  >
+                    Application Type:
+                    {{
+                      ApplicationType[
+                        permitStore.getPermitDetail.application.applicationType
+                      ]
+                    }}
+                  </span>
+                </v-btn>
+              </template>
+              <span>Edit Application Type</span>
+            </v-tooltip>
           </v-col>
 
           <v-col
@@ -43,6 +65,7 @@
             <v-select
               ref="select"
               :items="appStatus"
+              :readonly="readonly"
               label="Application Status"
               item-text="value"
               item-value="id"
@@ -72,49 +95,92 @@
       </template>
 
       <template v-if="state.showRevocationDialog">
-        <RevokeCancelDeniedDialog
+        <RevocationDialog
           :show-dialog="state.showRevocationDialog"
           @cancel="handleCancel"
         />
       </template>
+      <template v-if="state.showDenialDialog">
+        <DenialDialog
+          :show-dialog="state.showDenialDialog"
+          @cancel="handleCancel"
+        />
+      </template>
     </v-card>
+
+    <v-dialog
+      v-model="dialog"
+      max-width="600"
+    >
+      <v-card :loading="isFetching">
+        <v-card-title>
+          Are you sure you want to change the application type?
+        </v-card-title>
+
+        <v-card-text>
+          It is very rare that you should change this, only in the case of a
+          customer making a mistake. Never change this for a customer unless
+          they have made a mistake.
+        </v-card-text>
+
+        <v-card-text>
+          <v-select
+            ref="select"
+            :items="appType"
+            :readonly="readonly"
+            label="Application Type"
+            item-text="text"
+            item-value="value"
+            v-model="permitStore.getPermitDetail.application.applicationType"
+            @change="updateApplicationType($event)"
+            dense
+            outlined
+            :menu-props="{
+              offsetY: true,
+            }"
+          ></v-select>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn
+            @click="dialog = false"
+            text
+            color="primary"
+          >
+            Cancel
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script setup lang="ts">
 import ApprovedEmailApplicantDialog from '@core-admin/components/dialogs/ApprovedEmailApplicantDialog.vue'
-import RevokeCancelDeniedDialog from '@core-admin/components/dialogs/RevokeCancelDeniedDialog.vue'
+import DenialDialog from '@core-admin/components/dialogs/DenialDialog.vue'
+import RevocationDialog from '@core-admin/components/dialogs/RevocationDialog.vue'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 import {
   ApplicationStatus,
+  ApplicationType,
   AppointmentStatus,
 } from '@shared-utils/types/defaultTypes'
-import { computed, reactive } from 'vue'
+import { computed, inject, reactive, ref } from 'vue'
 
 const permitStore = usePermitsStore()
+const themeStore = useThemeStore()
 const appointmentStore = useAppointmentsStore()
-
-const items = [
-  { name: 'Standard', value: 'standard' },
-  { name: 'Reserve', value: 'reserve' },
-  { name: 'Judicial', value: 'judicial' },
-  { name: 'Renew Standard', value: 'renew-standard' },
-  { name: 'Renew Reserve', value: 'renew-reserve' },
-  { name: 'Renew Judicial', value: 'renew-judicial' },
-  { name: 'Modify Standard', value: 'modify-standard' },
-  { name: 'Modify Reserve', value: 'modify-reserve' },
-  { name: 'Modify Judicial', value: 'modify-judicial' },
-  { name: 'Duplicate Standard', value: 'duplicate-standard' },
-  { name: 'Duplicate Reserve', value: 'duplicate-reserve' },
-  { name: 'Duplicate Judicial', value: 'duplicate-judicial' },
-]
+const readonly = inject('readonly')
+const dialog = ref(false)
 
 const state = reactive({
   update: '',
   showApprovedEmailApplicantDialog: false,
   showRevocationDialog: false,
+  showDenialDialog: false,
 })
 
 const appStatus = [
@@ -194,27 +260,112 @@ const appStatus = [
     id: 17,
     value: 'Ready To Issue',
   },
+  {
+    id: 19,
+    value: 'Modification Approved',
+  },
+  {
+    id: 20,
+    value: 'Renewal Approved',
+  },
 ]
 
-const { refetch: updatePermitDetails } = useQuery(
+const appType = [
+  {
+    value: 0,
+    text: 'None',
+  },
+  {
+    value: 1,
+    text: 'Standard',
+  },
+  {
+    value: 2,
+    text: 'Reserve',
+  },
+  {
+    value: 3,
+    text: 'Judicial',
+  },
+  {
+    value: 4,
+    text: 'Employment',
+  },
+  {
+    value: 5,
+    text: 'Renew Standard',
+  },
+  {
+    value: 6,
+    text: 'Renew Reserve',
+  },
+  {
+    value: 7,
+    text: 'Renew Judicial',
+  },
+  {
+    value: 8,
+    text: 'Renew Employment',
+  },
+  {
+    value: 9,
+    text: 'Modify Standard',
+  },
+  {
+    value: 10,
+    text: 'Modify Reserve',
+  },
+  {
+    value: 11,
+    text: 'Modify Judicial',
+  },
+  {
+    value: 12,
+    text: 'Modify Employment',
+  },
+  {
+    value: 13,
+    text: 'Duplicate Standard',
+  },
+  {
+    value: 14,
+    text: 'Duplicate Reserve',
+  },
+  {
+    value: 15,
+    text: 'Duplicate Judicial',
+  },
+  {
+    value: 16,
+    text: 'Duplicate Employment',
+  },
+]
+
+const { isFetching, refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
   () => permitStore.updatePermitDetailApi(state.update),
   {
+    onSuccess: () => {
+      dialog.value = false
+    },
     enabled: false,
   }
 )
 
-const submittedDate = computed(
-  () =>
-    new Date(
+const submittedDate = computed(() => {
+  if (permitStore.getPermitDetail.application.submittedToLicensingDateTime) {
+    return new Date(
       permitStore.getPermitDetail.application
         .submittedToLicensingDateTime as string
     )?.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-    }) || ''
-)
+    })
+  }
+
+  return 'n/a'
+})
 
 function updateApplicationStatus(update: string) {
   state.update = `Changed application status to ${ApplicationStatus[update]}`
@@ -230,24 +381,23 @@ function updateApplicationStatus(update: string) {
       AppointmentStatus['Not Scheduled']
   } else if (ApplicationStatus[update] === 'Approved') {
     state.showApprovedEmailApplicantDialog = true
-  } else if (
-    ApplicationStatus[update] === 'Denied' ||
-    ApplicationStatus[update] === 'Canceled' ||
-    ApplicationStatus[update] === 'Revoked'
-  ) {
+  } else if (ApplicationStatus[update] === 'Revoked') {
     state.showRevocationDialog = true
+  } else if (ApplicationStatus[update] === 'Denied') {
+    state.showDenialDialog = true
   }
 
   updatePermitDetails()
 }
 
-function updateApplicationType(update: string) {
-  state.update = `Changed application status to ${update}`
+function updateApplicationType(update: ApplicationType) {
+  state.update = `Changed application type to ${ApplicationType[update]}`
   updatePermitDetails()
 }
 
 function handleCancel() {
   state.showApprovedEmailApplicantDialog = false
   state.showRevocationDialog = false
+  state.showDenialDialog = false
 }
 </script>

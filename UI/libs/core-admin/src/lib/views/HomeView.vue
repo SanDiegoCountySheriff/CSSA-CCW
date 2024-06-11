@@ -68,6 +68,11 @@
             <ActiveLicensesCard />
           </v-col>
         </v-row>
+        <v-row v-if="store.getBrand.employmentLicense">
+          <v-col cols="6">
+            <PendingEmploymentApplicationsCard />
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
 
@@ -88,6 +93,7 @@ import DeniedApplicationsCard from '@core-admin/components/cards/DeniedApplicati
 import { MsalBrowser } from '@shared-ui/api/auth/authentication'
 import NewAppointmentsCard from '@core-admin/components/cards/NewAppointmentsCard.vue'
 import NextAvailableAppointmentCard from '@core-admin/components/cards/NextAvailableAppointmentCard.vue'
+import PendingEmploymentApplicationsCard from '@core-admin/components/cards/PendingEmploymentApplicationsCard.vue'
 import PendingJudicalApplicationsCard from '@core-admin/components/cards/PendingJudicalApplicationsCard.vue'
 import PendingReserveApplicationsCard from '@core-admin/components/cards/PendingReserveApplicationsCard.vue'
 import PendingStandardApplicationsCard from '@core-admin/components/cards/PendingStandardApplicationsCard.vue'

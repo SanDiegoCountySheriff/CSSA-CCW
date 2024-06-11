@@ -1,5 +1,5 @@
 using CCW.Common.Enums;
-using CCW.Schedule.Entities;
+using CCW.Common.Models;
 using CCW.Schedule.Services.Contracts;
 using Microsoft.Azure.Cosmos;
 using PublicHoliday;
@@ -13,15 +13,18 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 {
     private readonly Container _container;
     private readonly Container _holidayContainer;
+    private readonly Container _appointmentManagementContainer;
 
     public AppointmentCosmosDbService(
         CosmosClient cosmosDbClient,
         string databaseName,
         string containerName,
-        string holidayContainerName)
+        string holidayContainerName,
+        string appointmentManagementContainerName)
     {
         _container = cosmosDbClient.GetContainer(databaseName, containerName);
         _holidayContainer = cosmosDbClient.GetContainer(databaseName, holidayContainerName);
+        _appointmentManagementContainer = cosmosDbClient.GetContainer(databaseName, appointmentManagementContainerName);
     }
 
     public async Task AddAvailableTimesAsync(List<AppointmentWindow> appointments, CancellationToken cancellationToken)
@@ -127,7 +130,7 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         await Task.WhenAll(concurrentTasks);
     }
 
-    public async Task<List<AppointmentWindow>> GetExistingAppointments(DateTime startDateTime, DateTime endDateTime, CancellationToken cancellationToken)
+    public async Task<List<AppointmentWindow>> GetExistingAppointments(DateTimeOffset startDateTime, DateTimeOffset endDateTime, CancellationToken cancellationToken)
     {
         List<AppointmentWindow> existingAppointments = new List<AppointmentWindow>();
 
@@ -235,13 +238,13 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         );
     }
 
-    public async Task<List<AppointmentWindow>> GetAvailableSlotByDateTime(DateTime startTime, CancellationToken cancellationToken)
+    public async Task<List<AppointmentWindow>> GetAvailableSlotByDateTime(DateTimeOffset startTime, CancellationToken cancellationToken)
     {
         List<AppointmentWindow> availableTimes = new List<AppointmentWindow>();
 
         string query = $@"SELECT * 
                         FROM appointments a
-                        WHERE a.start = '{startTime.ToString("yyyy-MM-ddTHH:mm:ssZ")}' 
+                        WHERE a.start = '{startTime.ToString("yyyy-MM-ddTHH:mm:sszzz")}' 
                             AND a.applicationId = null 
                             AND a.isManuallyCreated = false
                         ORDER BY a.start
@@ -267,14 +270,19 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         return availableTimes.OrderBy(i => i.Start).ToList();
     }
 
-    public async Task<List<AppointmentWindow>> GetAvailableTimesAsync(CancellationToken cancellationToken)
+    public async Task<List<AppointmentWindow>> GetAvailableTimesAsync(bool includePastAppointments, CancellationToken cancellationToken)
     {
         List<AppointmentWindow> availableTimes = new List<AppointmentWindow>();
 
         string query = @"SELECT a.start, a[""end""]
                 FROM a
-                WHERE a.applicationId = null AND a.isManuallyCreated = false
-                GROUP BY a.start, a[""end""]";
+                WHERE a.applicationId = null AND a.isManuallyCreated = false";
+
+        if (!includePastAppointments)
+        {
+            string utcNow = DateTimeOffset.UtcNow.ToString("o");
+            query += $" AND a.start >= '{utcNow}'";
+        }
 
         QueryDefinition queryDefinition = new QueryDefinition(query);
 
@@ -293,7 +301,39 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
             }
         }
 
-        return availableTimes.OrderBy(i => i.Start).ToList();
+        return availableTimes;
+    }
+
+    public async Task<List<AppointmentWindow>> GetBookedAppointmentsAsync(bool includePastAppointments, CancellationToken cancellationToken)
+    {
+        List<AppointmentWindow> availableTimes = new List<AppointmentWindow>();
+
+        string query = @"SELECT a.start, a[""end""]
+                FROM a
+                WHERE a.applicationId != null";
+
+        if (!includePastAppointments)
+        {
+            string utcNow = DateTimeOffset.UtcNow.ToString("o");
+            query += $" AND a.start >= '{utcNow}'";
+        }
+
+        QueryDefinition queryDefinition = new QueryDefinition(query);
+
+        using (FeedIterator<AppointmentWindow> feedIterator = _container.GetItemQueryIterator<AppointmentWindow>(
+                   queryDefinition,
+                   null))
+        {
+            while (feedIterator.HasMoreResults)
+            {
+                foreach (var item in await feedIterator.ReadNextAsync(cancellationToken))
+                {
+                    availableTimes.Add(item);
+                }
+            }
+        }
+
+        return availableTimes;
     }
 
     public async Task<List<AppointmentWindow>> GetAllBookedAppointmentsAsync(CancellationToken cancellationToken)
@@ -366,10 +406,10 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         await _container.DeleteItemAsync<AppointmentWindow>(appointmentId, new PartitionKey(appointmentId), cancellationToken: cancellationToken);
     }
 
-    public async Task<int> DeleteAllAppointmentsByDate(DateTime date, CancellationToken cancellationToken)
+    public async Task<int> DeleteAllAppointmentsByDate(DateTimeOffset date, CancellationToken cancellationToken)
     {
 
-        DateTime endDate = date.AddDays(1).AddTicks(1);
+        DateTimeOffset endDate = date.AddDays(1).AddTicks(1);
 
         var parameterizedQuery = new QueryDefinition(
         query: "SELECT * FROM c WHERE c.start >= @startDate AND c.start <= @endDate AND (NOT IS_DEFINED(c.applicationId) OR c.applicationId = null)"
@@ -404,7 +444,7 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         return deletedCount;
     }
 
-    public async Task<int> DeleteAppointmentsByTimeSlot(DateTime date, CancellationToken cancellationToken)
+    public async Task<int> DeleteAppointmentsByTimeSlot(DateTimeOffset date, CancellationToken cancellationToken)
     {
 
         var parameterizedQuery = new QueryDefinition(
@@ -441,11 +481,15 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 
     public async Task<(int, int)> CreateAppointmentsFromAppointmentManagementTemplate(AppointmentManagement appointmentManagement, CancellationToken cancellationToken)
     {
+        appointmentManagement.Id = "1";
+
+        await _appointmentManagementContainer.UpsertItemAsync<AppointmentManagement>(appointmentManagement, new PartitionKey(appointmentManagement.Id), cancellationToken: cancellationToken);
+
         var concurrentTasks = new List<Task>();
         var count = 0;
         var holidayCount = 0;
         var query = _container.GetItemQueryIterator<AppointmentWindow>("SELECT TOP 1 c.start FROM c ORDER BY c.start DESC");
-        var nextDay = DateTime.UtcNow;
+        var nextDay = new DateTimeOffset();
 
         while (query.HasMoreResults)
         {
@@ -453,7 +497,7 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 
             foreach (var item in response)
             {
-                DateTime startDate = item.Start;
+                DateTimeOffset startDate = item.Start;
                 nextDay = startDate.AddDays(1);
             }
         }
@@ -462,21 +506,19 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         {
             foreach (var dayOfTheWeek in appointmentManagement.DaysOfTheWeek)
             {
-                DateTime currentDate = nextDay.AddDays(i * 7);
-
-                while (currentDate < appointmentManagement.StartDate)
+                while (nextDay < appointmentManagement.StartDate)
                 {
-                    currentDate = currentDate.AddDays(1);
+                    nextDay = nextDay.AddDays(1);
                 }
 
-                while (currentDate.DayOfWeek != (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dayOfTheWeek))
+                while (nextDay.DayOfWeek != (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dayOfTheWeek))
                 {
-                    currentDate = currentDate.AddDays(1);
+                    nextDay = nextDay.AddDays(1);
                 }
 
-                var observedHolidays = await GetObservedOrganizationalHolidaysByYear(currentDate.Year);
+                var observedHolidays = await GetObservedOrganizationalHolidaysByYear(nextDay.Year);
 
-                if (observedHolidays.Contains(currentDate.Date))
+                if (observedHolidays.Contains(nextDay.Date))
                 {
                     holidayCount += 1;
                     continue;
@@ -505,11 +547,18 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
                         var appointment = new AppointmentWindow()
                         {
                             Id = Guid.NewGuid(),
-                            Start = currentDate.Date + startTime,
-                            End = currentDate.Date + endTime,
+                            Start = nextDay.Add(startTime.TimeOfDay),
+                            End = nextDay.Add(endTime.TimeOfDay)
                         };
 
                         concurrentTasks.Add(_container.CreateItemAsync(appointment, new PartitionKey(appointment.Id.ToString()), cancellationToken: cancellationToken));
+
+                        if (concurrentTasks.Count >= 100)
+                        {
+                            await Task.WhenAll(concurrentTasks);
+
+                            concurrentTasks = new List<Task>();
+                        }
 
                         count += 1;
                     }
@@ -518,6 +567,8 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
                     endTime = endTime.Add(new TimeSpan(0, appointmentManagement.AppointmentLength, 0));
                 }
             }
+
+            nextDay = nextDay.AddDays(1);
         }
 
         await Task.WhenAll(concurrentTasks);
@@ -525,16 +576,16 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         return (count, holidayCount);
     }
 
-    private bool WillAppointmentFallInBreakTime(AppointmentManagement appointmentManagement, TimeSpan startTime)
+    private bool WillAppointmentFallInBreakTime(AppointmentManagement appointmentManagement, DateTimeOffset startTime)
     {
-        TimeSpan breakEnd = appointmentManagement.BreakStartTime.Value.Add(TimeSpan.FromMinutes(appointmentManagement.BreakLength ?? appointmentManagement.AppointmentLength));
+        DateTimeOffset breakEnd = appointmentManagement.BreakStartTime.Value.Add(TimeSpan.FromMinutes(appointmentManagement.BreakLength ?? appointmentManagement.AppointmentLength));
 
         return startTime >= appointmentManagement.BreakStartTime && startTime < breakEnd;
     }
 
     public async Task<int> GetNumberOfNewAppointments(int numberOfDays, CancellationToken cancellationToken)
     {
-        var day = DateTime.UtcNow.AddDays(numberOfDays * -1).ToString("o", CultureInfo.InvariantCulture);
+        var day = DateTimeOffset.UtcNow.AddDays(numberOfDays * -1).ToString("o", CultureInfo.InvariantCulture);
 
         var parameterizedQuery = new QueryDefinition(
             query: "SELECT VALUE Count(c) FROM c WHERE c.appointmentCreatedDate > @day"
@@ -557,7 +608,7 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 
     public async Task<string> GetNextAvailableAppointment()
     {
-        var day = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
+        var day = DateTimeOffset.UtcNow.ToString("o", CultureInfo.InvariantCulture);
 
         var parameterizedQuery = new QueryDefinition(
             query: "SELECT TOP 1 VALUE c.start FROM c WHERE c.start > @day AND c.status = 0"
@@ -596,7 +647,12 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         return null!;
     }
 
-    private DateTime FixWeekendSaturdayBeforeSundayAfter(DateTime holiday)
+    public async Task<AppointmentManagement> GetAppointmentManagementTemplate()
+    {
+        return await _appointmentManagementContainer.ReadItemAsync<AppointmentManagement>("1", new PartitionKey("1"));
+    }
+
+    private DateTimeOffset FixWeekendSaturdayBeforeSundayAfter(DateTimeOffset holiday)
     {
         if (holiday.DayOfWeek == DayOfWeek.Sunday)
         {
@@ -610,9 +666,9 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         return holiday;
     }
 
-    private async Task<List<DateTime>> GetObservedOrganizationalHolidaysByYear(int year)
+    private async Task<List<DateTimeOffset>> GetObservedOrganizationalHolidaysByYear(int year)
     {
-        List<DateTime> observedHolidays = new();
+        List<DateTimeOffset> observedHolidays = new();
         var organizationHolidays = await GetOrganizationalHolidays();
         List<Holiday> holidays = new USAPublicHoliday().PublicHolidaysInformation(year).ToList();
 
@@ -628,9 +684,9 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
                         continue;
                     }
 
-                    if (organizationHoliday.Name == "CesarChavez")
+                    if (organizationHoliday.Name == "Cesar Chavez Day")
                     {
-                        observedHolidays.Add(FixWeekendSaturdayBeforeSundayAfter(new DateTime(year, organizationHoliday.Month, organizationHoliday.Day).Date));
+                        observedHolidays.Add(FixWeekendSaturdayBeforeSundayAfter(new DateTimeOffset(new DateTime(year, organizationHoliday.Month, organizationHoliday.Day).Date)));
                         continue;
                     }
                 }

@@ -22,18 +22,13 @@ builder.Services.AddSingleton<IAppointmentCosmosDbService>(
 
 builder.Services.AddSingleton<IApplicationCosmosDbService>(InitializeApplicationCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
 
-builder.Services.AddHeaderPropagation(o =>
-{
-    o.Headers.Add("Authorization");
-});
-
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
-    .AddAuthentication("aad")
+    .AddAuthentication()
     .AddJwtBearer("aad", o =>
     {
         o.Authority = builder.Configuration.GetSection("JwtBearerAAD:Authority").Value;
@@ -136,9 +131,11 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+var origins = builder.Configuration.GetSection("JwtBearerAAD:Origins").Value.Split(",");
+
 builder.Services.AddCors(policyBuilder =>
     policyBuilder.AddDefaultPolicy(policy =>
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
+        policy.WithOrigins(origins).AllowAnyMethod().AllowAnyHeader())
 );
 
 builder.Services.AddHealthChecks();
@@ -164,7 +161,6 @@ app.UseCors();
 
 
 app.UseAuthorization();
-app.UseHeaderPropagation();
 app.MapControllers();
 
 app.Run();
@@ -176,6 +172,7 @@ static async Task<AppointmentCosmosDbService> InitializeAppointmentCosmosClientI
     var appointmentDatabaseName = configurationSection["AppointmentDatabaseName"];
     var appointmentContainerName = configurationSection["AppointmentContainerName"];
     var holidayContainerName = configurationSection["HolidayContainerName"];
+    var appointmentManagementContainerName = configurationSection["AppointmentManagementContainerName"];
 #if DEBUG
     var key = configurationSection["CosmosDbEmulatorConnectionString"];
 #else
@@ -187,6 +184,8 @@ static async Task<AppointmentCosmosDbService> InitializeAppointmentCosmosClientI
         new CosmosClientOptions()
         {
             AllowBulkExecution = true,
+            MaxRetryAttemptsOnRateLimitedRequests = 100,
+            MaxRetryWaitTimeOnRateLimitedRequests = TimeSpan.FromMinutes(5),
 #if DEBUG
             WebProxy = new WebProxy()
             {
@@ -198,8 +197,9 @@ static async Task<AppointmentCosmosDbService> InitializeAppointmentCosmosClientI
     var appointmentDatabase = await client.CreateDatabaseIfNotExistsAsync(appointmentDatabaseName);
     await appointmentDatabase.Database.CreateContainerIfNotExistsAsync(appointmentContainerName, "/id");
     await appointmentDatabase.Database.CreateContainerIfNotExistsAsync(holidayContainerName, "/id");
+    await appointmentDatabase.Database.CreateContainerIfNotExistsAsync(appointmentManagementContainerName, "/id");
 
-    var appointmentCosmosDbService = new AppointmentCosmosDbService(client, appointmentDatabaseName, appointmentContainerName, holidayContainerName);
+    var appointmentCosmosDbService = new AppointmentCosmosDbService(client, appointmentDatabaseName, appointmentContainerName, holidayContainerName, appointmentManagementContainerName);
 
     return appointmentCosmosDbService;
 }

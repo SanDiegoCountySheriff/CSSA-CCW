@@ -1,29 +1,18 @@
 <template>
   <div>
+    <FormButtonContainer
+      v-if="$vuetify.breakpoint.lgAndUp"
+      :valid="valid"
+      @continue="handleContinue"
+      @save="handleSave"
+      v-on="$listeners"
+    />
+
     <DocumentInfoSection />
     <v-form
       ref="form"
       v-model="valid"
     >
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t('Currently uploaded files') }}
-      </v-subheader>
-
-      <v-row>
-        <v-chip-group
-          class="ml-5 mb-3"
-          column
-        >
-          <v-chip
-            v-for="(item, index) in completeApplication.uploadedDocuments"
-            color="info"
-            :key="index"
-          >
-            {{ item.documentType }}
-          </v-chip>
-        </v-chip-group>
-      </v-row>
-
       <v-divider />
 
       <v-subheader class="sub-header font-weight-bold">
@@ -33,310 +22,193 @@
       <v-row>
         <v-col
           cols="12"
-          lg="6"
+          lg="3"
+          class="mb-4"
         >
-          <v-file-input
-            :loading="isLoading"
-            outlined
-            dense
-            multiple
-            ref="driver-license"
-            show-size
-            small-chips
-            persistent-hint
-            accept="image/png, image/jpeg, .pdf"
+          <FileUploadContainer
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
+            :document-label="'Drivers License'"
+            :is-loading="loadingStates.DriverLicense"
+            @file-opening="loadingStates.DriverLicense = true"
+            @file-opened="loadingStates.DriverLicense = false"
             :rules="driverLicenseRules"
-            :label="$t('Driver License')"
-            :hint="
-              state.driverLicense
-                ? $t('Document has already been submitted')
-                : ''
-            "
-            @change="handleMultiInput($event, 'DriverLicense')"
-            @input="fileMutation()"
-            :prepend-icon="
-              state.driverLicense ? 'mdi-check-circle-outline' : 'mdi-paperclip'
-            "
+            :uploaded-documents="completeApplication.uploadedDocuments"
+            :filter-document-type="'DriverLicense'"
+            @upload-files="files => handleMultiInput(files, 'DriverLicense')"
+            @delete-file="name => deleteFile(name)"
           />
         </v-col>
 
         <v-col
           cols="12"
-          lg="6"
+          lg="3"
+          class="mb-4"
         >
-          <v-file-input
-            :loading="isLoading"
-            outlined
-            dense
-            multiple
-            show-size
-            small-chips
-            persistent-hint
+          <FileUploadContainer
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
+            :document-label="'Proof of Residency'"
+            :is-loading="loadingStates.ProofResidency"
+            @file-opening="loadingStates.ProofResidency = true"
+            @file-opened="loadingStates.ProofResidency = false"
             :rules="proofOfResidenceRules"
-            :hint="
-              state.proofResidence
-                ? $t('Document has already been submitted')
-                : ''
-            "
-            accept="image/png, image/jpeg, .pdf"
-            :label="$t('Proof of Residence 1')"
-            @change="handleMultiInput($event, 'ProofResidency')"
-            @input="fileMutation()"
-            :prepend-icon="
-              state.proofResidence
-                ? 'mdi-check-circle-outline'
-                : 'mdi-paperclip'
-            "
+            :uploaded-documents="completeApplication.uploadedDocuments"
+            :filter-document-type="'ProofResidency'"
+            @upload-files="files => handleMultiInput(files, 'ProofResidency')"
+            @delete-file="name => deleteFile(name)"
           />
         </v-col>
 
         <v-col
           cols="12"
-          lg="6"
+          lg="3"
+          class="mb-4"
         >
-          <v-file-input
-            :loading="isLoading"
-            outlined
-            show-size
-            dense
-            multiple
-            small-chips
-            persistent-hint
-            accept="image/png, image/jpeg, .pdf"
+          <FileUploadContainer
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
+            :document-label="'2nd Proof of Residency'"
+            :is-loading="loadingStates.ProofResidency2"
+            @file-opening="loadingStates.ProofResidency2 = true"
+            @file-opened="loadingStates.ProofResidency2 = false"
             :rules="proofOfResidence2Rules"
-            :label="$t('Proof of Residence 2')"
-            :hint="
-              state.proofResidence2
-                ? $t('Document has already been submitted')
-                : ''
-            "
-            @change="handleMultiInput($event, 'ProofResidency2')"
-            @input="fileMutation()"
-            :prepend-icon="
-              state.proofResidence2
-                ? 'mdi-check-circle-outline'
-                : 'mdi-paperclip'
-            "
-          >
-          </v-file-input>
+            :uploaded-documents="completeApplication.uploadedDocuments"
+            :filter-document-type="'ProofResidency2'"
+            @upload-files="files => handleMultiInput(files, 'ProofResidency2')"
+            @delete-file="name => deleteFile(name)"
+          />
+        </v-col>
+        <v-col
+          cols="12"
+          lg="3"
+          class="mb-4"
+        >
+          <FileUploadContainer
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
+            :document-label="'Military Documents'"
+            :is-loading="loadingStates.MilitaryDoc"
+            @file-opening="loadingStates.MilitaryDoc = true"
+            @file-opened="loadingStates.MilitaryDoc = false"
+            :rules="militaryDocRules"
+            :uploaded-documents="completeApplication.uploadedDocuments"
+            :filter-document-type="'MilitaryDoc'"
+            @upload-files="files => handleMultiInput(files, 'MilitaryDoc')"
+            @delete-file="name => deleteFile(name)"
+          />
         </v-col>
       </v-row>
 
       <v-divider />
 
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t(' Military') }}
-      </v-subheader>
-
       <v-row>
         <v-col
           cols="12"
-          lg="6"
+          lg="3"
+          class="mb-4 mt-4"
         >
-          <v-file-input
-            outlined
-            show-size
-            dense
-            multiple
-            small-chips
-            persistent-hint
-            accept="image/png, image/jpeg, .pdf"
-            :label="$t('Military Document')"
-            :hint="
-              state.military ? $t('Document has already been submitted') : ''
-            "
-            @change="handleMultiInput($event, 'MilitaryDoc')"
-          >
-            <template #prepend-inner>
-              <v-icon
-                v-if="state.military"
-                color="success"
-              >
-                mdi-check-circle-outline
-              </v-icon>
-            </template>
-          </v-file-input>
+          <FileUploadContainer
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
+            :document-label="'Citizenship Documents'"
+            :is-loading="loadingStates.Citizenship"
+            @file-opening="loadingStates.Citizenship = true"
+            @file-opened="loadingStates.Citizenship = false"
+            :uploaded-documents="completeApplication.uploadedDocuments"
+            :filter-document-type="'Citizenship'"
+            @upload-files="files => handleMultiInput(files, 'Citizenship')"
+            @delete-file="name => deleteFile(name)"
+          />
         </v-col>
-      </v-row>
-
-      <v-divider />
-
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t(' Not born in US') }}
-      </v-subheader>
-
-      <v-row>
         <v-col
           cols="12"
-          lg="6"
+          lg="3"
+          class="mb-4 mt-4"
         >
-          <v-file-input
-            outlined
-            show-size
-            dense
-            multiple
-            small-chips
-            persistent-hint
-            accept="image/png, image/jpeg, .pdf"
-            :label="$t('Citizenship Documents')"
-            :hint="
-              state.citizenship ? $t('Document has already been submitted') : ''
-            "
-            @change="handleMultiInput($event, 'Citizenship')"
-          >
-            <template #prepend-inner>
-              <v-icon
-                v-if="state.citizenship"
-                color="success"
-              >
-                mdi-check-circle-outline
-              </v-icon>
-            </template>
-          </v-file-input>
+          <FileUploadContainer
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
+            :document-label="'Supporting Documents'"
+            :is-loading="loadingStates.Supporting"
+            @file-opening="loadingStates.Supporting = true"
+            @file-opened="loadingStates.Supporting = false"
+            :uploaded-documents="completeApplication.uploadedDocuments"
+            :filter-document-type="'Supporting'"
+            @upload-files="files => handleMultiInput(files, 'Supporting')"
+            @delete-file="name => deleteFile(name)"
+          />
         </v-col>
-      </v-row>
-
-      <v-divider />
-
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t(' Supporting Documents') }}
-      </v-subheader>
-
-      <v-row>
         <v-col
           cols="12"
-          lg="6"
+          lg="3"
+          class="mb-4 mt-4"
         >
-          <v-file-input
-            outlined
-            dense
-            show-size
-            small-chips
-            multiple
-            persistent-hint
-            accept="image/png, image/jpeg, .pdf"
-            :hint="
-              state.supporting.length > 0
-                ? $t('Documents has already been submitted')
-                : ''
-            "
-            :label="$t('Supporting Documents')"
-            @change="handleMultiInput($event, 'Supporting')"
-          >
-            <template #prepend-inner>
-              <v-icon
-                v-if="state.supporting.length > 0"
-                color="success"
-              >
-                mdi-check-circle-outline
-              </v-icon>
-            </template>
-          </v-file-input>
+          <FileUploadContainer
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
+            :document-label="'Legal Name Change Documents'"
+            :is-loading="loadingStates.NameChange"
+            @file-opening="loadingStates.NameChange = true"
+            @file-opened="loadingStates.NameChange = false"
+            :uploaded-documents="completeApplication.uploadedDocuments"
+            :filter-document-type="'NameChange'"
+            @upload-files="files => handleMultiInput(files, 'NameChange')"
+            @delete-file="name => deleteFile(name)"
+          />
         </v-col>
-      </v-row>
-
-      <v-divider />
-
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t(' Legal name change') }}
-      </v-subheader>
-
-      <v-row>
         <v-col
           cols="12"
-          lg="6"
+          lg="3"
+          class="mb-4 mt-4"
         >
-          <v-file-input
-            outlined
-            show-size
-            dense
-            multiple
-            small-chips
-            persistent-hint
-            accept="image/png, image/jpeg, .pdf"
-            :hint="
-              state.nameChange ? $t('Document has already been submitted') : ''
-            "
-            :label="$t('Name change documents')"
-            @change="handleMultiInput($event, 'NameChange')"
-          >
-            <template #prepend-inner>
-              <v-icon
-                v-if="state.nameChange"
-                color="success"
-              >
-                mdi-check-circle-outline
-              </v-icon>
-            </template>
-          </v-file-input>
-        </v-col>
-      </v-row>
-
-      <v-divider />
-
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t(' License Type Documents') }}
-      </v-subheader>
-
-      <v-row>
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-file-input
-            outlined
-            dense
-            multiple
-            show-size
-            small-chips
-            persistent-hint
-            :hint="
-              state.judicial ? $t('Document has already been submitted') : ''
-            "
-            accept="image/png, image/jpeg, .pdf"
-            :label="$t('Judicial documents')"
-            @change="handleMultiInput($event, 'Judicial')"
+          <FileUploadContainer
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
+            :document-label="'Judicial Documents'"
+            :is-loading="loadingStates.Judicial"
+            @file-opening="loadingStates.Judicial = true"
+            @file-opened="loadingStates.Judicial = false"
             :rules="judicialValidationRule"
-          >
-            <template #prepend-inner>
-              <v-icon
-                v-if="state.judicial"
-                color="success"
-              >
-                mdi-check-circle-outline
-              </v-icon>
-            </template>
-          </v-file-input>
+            :uploaded-documents="completeApplication.uploadedDocuments"
+            :filter-document-type="'Judicial'"
+            @upload-files="files => handleMultiInput(files, 'Judicial')"
+            @delete-file="name => deleteFile(name)"
+          />
         </v-col>
+      </v-row>
 
+      <v-divider />
+
+      <v-row>
         <v-col
           cols="12"
-          lg="6"
+          lg="3"
+          class="mb-4 mt-4"
         >
-          <v-file-input
-            outlined
-            show-size
-            dense
-            multiple
-            small-chips
-            persistent-hint
-            :hint="
-              state.reserve ? $t('Document has already been submitted') : ''
-            "
-            accept="image/png, image/jpeg "
-            :label="$t('Reserve documents')"
-            @change="handleMultiInput($event, 'Reserve')"
+          <FileUploadContainer
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
+            :document-label="'Reserve Documents'"
+            :is-loading="loadingStates.Reserve"
+            @file-opening="loadingStates.Reserve = true"
+            @file-opened="loadingStates.Reserve = false"
             :rules="reserveValidationRule"
-          >
-            <template #prepend-inner>
-              <v-icon
-                v-if="state.reserve"
-                color="success"
-              >
-                mdi-check-circle-outline
-              </v-icon>
-            </template>
-          </v-file-input>
+            :uploaded-documents="completeApplication.uploadedDocuments"
+            :filter-document-type="'Reserve'"
+            @upload-files="files => handleMultiInput(files, 'Reserve')"
+            @delete-file="name => deleteFile(name)"
+          />
+        </v-col>
+        <v-col
+          cols="12"
+          lg="3"
+          class="mb-4 mt-4"
+        >
+          <FileUploadContainer
+            v-if="brandStore.brand.employmentLicense"
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
+            :document-label="'Employment Documents'"
+            :is-loading="loadingStates.Employment"
+            @file-opening="loadingStates.Employment = true"
+            @file-opened="loadingStates.Employment = false"
+            :rules="employmentValidationRule"
+            :uploaded-documents="completeApplication.uploadedDocuments"
+            :filter-document-type="'Employment'"
+            @upload-files="files => handleMultiInput(files, 'Employment')"
+            @delete-file="name => deleteFile(name)"
+          />
         </v-col>
       </v-row>
 
@@ -350,22 +222,31 @@
     />
     <FormButtonContainer
       :valid="valid"
-      @submit="handleSubmit"
+      @continue="handleContinue"
       @save="handleSave"
+      v-on="$listeners"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import DocumentInfoSection from '@shared-ui/components/info-sections/DocumentInfoSection.vue'
 import Endpoints from '@shared-ui/api/endpoints'
+import FileUploadContainer from '@core-public/components/containers/FileUploadContainer.vue'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
-import { UploadedDocType } from '@shared-utils/types/defaultTypes'
+import {
+  ApplicationStatus,
+  UploadedDocType,
+} from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import {
+  ApplicationType,
+  CompleteApplication,
+} from '@shared-utils/types/defaultTypes'
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()
 const completeApplication = applicationStore.completeApplication.application
@@ -375,9 +256,10 @@ interface ISecondFormStepTwoProps {
 }
 
 const props = defineProps<ISecondFormStepTwoProps>()
+const brandStore = useBrandStore()
 const emit = defineEmits([
   'input',
-  'handle-submit',
+  'handle-continue',
   'handle-save',
   'update-step-six-valid',
 ])
@@ -400,25 +282,50 @@ const state = reactive({
   nameChange: '',
   judicial: '',
   reserve: '',
+  employment: '',
   uploadSuccessful: true,
 })
 
 const judicialValidationRule = computed(() => {
-  if (applicationType.value === 'judicial') {
-    return [
-      v =>
-        Boolean(v) || state.judicial.length || 'Judicial Document is required',
-    ]
+  if (
+    applicationType.value === ApplicationType.Judicial ||
+    applicationType.value === ApplicationType['Renew Judicial']
+  ) {
+    const documentJudicial = completeApplication.uploadedDocuments.some(
+      obj => obj.documentType === 'Judicial'
+    )
+
+    return [() => documentJudicial || 'Judicial Document is required']
   }
 
   return []
 })
 
 const reserveValidationRule = computed(() => {
-  if (applicationType.value === 'reserve') {
-    return [
-      v => Boolean(v) || state.reserve.length || 'Reserve Document is required',
-    ]
+  if (
+    applicationType.value === ApplicationType.Reserve ||
+    applicationType.value === ApplicationType['Renew Reserve']
+  ) {
+    const documentReserve = completeApplication.uploadedDocuments.some(
+      obj => obj.documentType === 'Reserve'
+    )
+
+    return [() => documentReserve || 'Reserve Document is required']
+  }
+
+  return []
+})
+
+const employmentValidationRule = computed(() => {
+  if (
+    applicationType.value === ApplicationType.Employment ||
+    applicationType.value === ApplicationType['Renew Employment']
+  ) {
+    const documentEmployment = completeApplication.uploadedDocuments.some(
+      obj => obj.documentType === 'Employment'
+    )
+
+    return [() => documentEmployment || 'Employment Document is required']
   }
 
   return []
@@ -429,12 +336,15 @@ const valid = ref(false)
 
 const driverLicenseRules = computed(() => {
   const documentDriverLicense = completeApplication.uploadedDocuments.some(
-    obj => {
-      return obj.documentType === 'DriverLicense'
-    }
+    obj => obj.documentType === 'DriverLicense'
   )
 
-  return [documentDriverLicense || "Driver's license is required"]
+  return [
+    () =>
+      documentDriverLicense ||
+      completeApplication.status === ApplicationStatus['Permit Delivered'] ||
+      "Driver's License is Required",
+  ]
 })
 
 const proofOfResidenceRules = computed(() => {
@@ -442,7 +352,12 @@ const proofOfResidenceRules = computed(() => {
     return obj.documentType === 'ProofResidency'
   })
 
-  return [proofOfResidence || 'Proof of Residence is required']
+  return [
+    () =>
+      proofOfResidence ||
+      completeApplication.status === ApplicationStatus['Permit Delivered'] ||
+      'Proof of Residency is Required',
+  ]
 })
 
 const proofOfResidence2Rules = computed(() => {
@@ -450,10 +365,58 @@ const proofOfResidence2Rules = computed(() => {
     return obj.documentType === 'ProofResidency2'
   })
 
-  return [proofOfResidence2 || 'Proof of Residence is required']
+  return [
+    () =>
+      proofOfResidence2 ||
+      completeApplication.status === ApplicationStatus['Permit Delivered'] ||
+      '2nd Proof of Residency is Required',
+  ]
 })
 
-const { isLoading, mutate: fileMutation } = useMutation({
+const militaryDocRules = computed(() => {
+  const militaryStatus = completeApplication.citizenship.militaryStatus
+  const addressState = completeApplication.currentAddress.state
+  const issuingState = completeApplication.idInfo.issuingState
+
+  if (
+    militaryStatus === 'Active' &&
+    (addressState !== 'California' || issuingState !== 'California')
+  ) {
+    const documentMilitaryDocument = completeApplication.uploadedDocuments.some(
+      obj => obj.documentType === 'MilitaryDoc'
+    )
+
+    return [() => documentMilitaryDocument || 'Military Documents are Required']
+  }
+
+  return [() => true]
+})
+
+const isRenew = computed(() => {
+  const appType = model.value.application.applicationType
+
+  return (
+    appType === ApplicationType['Renew Standard'] ||
+    appType === ApplicationType['Renew Reserve'] ||
+    appType === ApplicationType['Renew Judicial'] ||
+    appType === ApplicationType['Renew Employment']
+  )
+})
+
+const loadingStates = reactive({
+  DriverLicense: false,
+  ProofResidency: false,
+  ProofResidency2: false,
+  MilitaryDoc: false,
+  Citizenship: false,
+  Supporting: false,
+  NameChange: false,
+  Judicial: false,
+  Reserve: false,
+  Employment: false,
+})
+
+const { mutate: fileMutation } = useMutation({
   mutationFn: handleFileUpload,
 })
 
@@ -491,6 +454,9 @@ const { mutate: updateMutation } = useMutation({
         case 'reserve':
           state.reserve = item.name
           break
+        case 'employment':
+          state.employment = item.name
+          break
         case 'signature':
           break
         default:
@@ -499,8 +465,17 @@ const { mutate: updateMutation } = useMutation({
     }
 
     state.files = []
+    validateForm()
   },
 })
+
+function validateForm() {
+  nextTick(() => {
+    if (form.value) {
+      form.value.validate()
+    }
+  })
+}
 
 function handleMultiInput(event, target: string) {
   if (!event || event.length === 0) {
@@ -511,23 +486,31 @@ function handleMultiInput(event, target: string) {
 
   let startIndex = getNextFileIndex(target)
 
-  event.forEach(file => {
+  event.forEach((file: File) => {
     const formData = new FormData()
 
     formData.append('fileToUpload', file)
+
+    const name = isRenew.value
+      ? `${target}_Renew-${
+          applicationStore.completeApplication.application.renewalNumber
+        }_${startIndex.toString()}`
+      : `${target}_${startIndex.toString()}`
+
     const fileObject = {
       formData,
-      target: `${target}_${startIndex.toString()}`,
+      target: name,
     }
 
     state.files.push(fileObject)
     startIndex++
   })
   fileMutation()
+  validateForm()
 }
 
 function getNextFileIndex(target: string): number {
-  const targetPrefix = `${completeApplication.personalInfo.lastName}_${completeApplication.personalInfo.firstName}_${target}_`
+  const targetPrefix = `${target}_`
 
   const indexes = completeApplication.uploadedDocuments
     .filter(doc => doc.name.startsWith(targetPrefix))
@@ -545,41 +528,83 @@ function getNextFileIndex(target: string): number {
 }
 
 async function handleFileUpload() {
-  state.files.forEach(file => {
-    const newFileName = `${completeApplication.personalInfo.lastName}_${completeApplication.personalInfo.firstName}_${file.target}`
+  const documentTypes = new Set(
+    state.files.map(file => file.target.split('_').shift())
+  )
 
-    axios
-      .post(
-        `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${newFileName}`,
+  documentTypes.forEach(type => (loadingStates[type] = true))
+
+  for (let file of state.files) {
+    try {
+      await axios.post(
+        `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${file.target}`,
         file.formData
       )
-      .catch(e => {
-        window.console.warn(e)
-        Promise.reject()
-      })
 
-    const uploadDoc: UploadedDocType = {
-      documentType: file.target.split('_').shift(),
-      name: `${newFileName}`,
-      uploadedBy: completeApplication.userEmail,
-      uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
+      const uploadDoc: UploadedDocType = {
+        documentType: file.target.split('_').shift(),
+        name: file.target,
+        uploadedBy: completeApplication.userEmail,
+        uploadedDateTimeUtc: new Date().toISOString(),
+      }
+
+      completeApplication.uploadedDocuments.push(uploadDoc)
+    } catch (e) {
+      window.console.warn(e)
     }
+  }
 
-    completeApplication.uploadedDocuments.push(uploadDoc)
-    updateMutation()
-  })
+  documentTypes.forEach(type => (loadingStates[type] = false))
+
+  updateMutation()
 }
 
-function handleSubmit() {
+function handleContinue() {
   fileMutation()
   emit('update-step-six-valid', valid.value)
-  emit('handle-submit')
+  emit('handle-continue')
 }
 
 function handleSave() {
   fileMutation()
   emit('update-step-six-valid', valid.value)
   emit('handle-save')
+}
+
+async function deleteFile(name) {
+  const documentToDelete = completeApplication.uploadedDocuments.find(
+    doc => doc.name === name
+  )
+
+  if (!documentToDelete) {
+    return
+  }
+
+  const documentType = documentToDelete.documentType
+
+  if (documentType && loadingStates[documentType] !== undefined) {
+    loadingStates[documentType] = true
+  }
+
+  try {
+    await axios.delete(
+      `${Endpoints.DELETE_DOCUMENT_FILE_PUBLIC_ENDPOINT}?applicantFileName=${name}`
+    )
+
+    const updatedDocuments = completeApplication.uploadedDocuments.filter(
+      doc => doc.name !== name
+    )
+
+    completeApplication.uploadedDocuments = updatedDocuments
+
+    updateMutation()
+
+    validateForm()
+  } finally {
+    if (documentType && loadingStates[documentType] !== undefined) {
+      loadingStates[documentType] = false
+    }
+  }
 }
 
 onMounted(() => {

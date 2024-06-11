@@ -1,9 +1,15 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row>
       <v-col>
         <v-card
-          :loading="isGetApplicationsLoading"
+          :loading="
+            isGetApplicationsLoading ||
+            isUpdateApplicationLoading ||
+            isRefundRequestLoading ||
+            isAddHistoricalApplicationLoading ||
+            isMakePaymentLoading
+          "
           outlined
         >
           <v-card-title>
@@ -36,10 +42,10 @@
               >
                 Application Type:
                 {{
-                  capitalize(
+                  ApplicationType[
                     applicationStore.completeApplication.application
                       .applicationType
-                  )
+                  ].toString()
                 }}
               </v-col>
               <v-col
@@ -207,14 +213,22 @@
 
           <v-divider></v-divider>
 
-          <v-card-text>
+          <v-card-text
+            v-if="applicationStore.completeApplication.isMatchUpdated !== false"
+          >
             <v-row>
-              <v-col>
+              <v-col
+                v-if="canApplicationBeContinued"
+                cols="12"
+              >
                 <v-btn
                   color="primary"
                   block
                   :disabled="
-                    !canApplicationBeContinued || isGetApplicationsLoading
+                    !canApplicationBeContinued ||
+                    isGetApplicationsLoading ||
+                    isRenewLoading ||
+                    isMakePaymentLoading
                   "
                   @click="handleContinueApplication"
                 >
@@ -222,17 +236,33 @@
                 </v-btn>
               </v-col>
 
-              <v-col>
-                <v-btn
-                  v-if="
-                    applicationStore.completeApplication.application.status !==
-                      ApplicationStatus.Withdrawn &&
-                    applicationStore.completeApplication.application.status !==
-                      ApplicationStatus.Incomplete
+              <v-col
+                v-if="
+                  showModifyWithdrawButton ||
+                  showInitialWithdrawButton ||
+                  applicationStore.completeApplication.application.status ===
+                    ApplicationStatus.Withdrawn
+                "
+                cols="12"
+              >
+                <WithdrawModifyDialog
+                  v-if="showModifyWithdrawButton"
+                  :disabled="
+                    isRefundRequestLoading ||
+                    isUpdateApplicationLoading ||
+                    fileUploadLoading ||
+                    isMakePaymentLoading
                   "
+                  @confirm="handleConfirmWithdrawModification"
+                />
+
+                <v-btn
+                  v-if="showInitialWithdrawButton && canWithdrawApplication"
                   @click="handleShowWithdrawDialog"
                   :disabled="
-                    isGetApplicationsLoading || !canWithdrawlApplication
+                    isGetApplicationsLoading ||
+                    !canWithdrawApplication ||
+                    isMakePaymentLoading
                   "
                   color="primary"
                   block
@@ -248,40 +278,73 @@
                   color="primary"
                   block
                   @click="handleSubmit"
-                  :disabled="isGetApplicationsLoading"
+                  :disabled="isGetApplicationsLoading || isMakePaymentLoading"
                 >
                   Submit
                 </v-btn>
               </v-col>
             </v-row>
+
             <v-row>
-              <v-col>
+              <v-col
+                v-if="isRenewalActive"
+                cols="12"
+              >
                 <v-btn
                   color="primary"
                   block
-                  :disabled="
-                    applicationStore.completeApplication.application.status !==
-                      ApplicationStatus['Contingently Approved'] ||
-                    isGetApplicationsLoading
-                  "
-                  @click="handleRenewApplication"
+                  :disabled="!isRenewalActive || isMakePaymentLoading"
+                  @click="handleShowRenewDialog"
                 >
                   Renew
                 </v-btn>
               </v-col>
-              <v-col>
+              <v-col
+                v-if="canApplicationBeUpdated || canApplicationBeModified"
+                cols="12"
+              >
                 <v-btn
+                  v-if="
+                    canApplicationBeUpdated &&
+                    applicationStore.completeApplication.application
+                      .appointmentDateTime &&
+                    new Date() <=
+                      new Date(
+                        applicationStore.completeApplication.application.appointmentDateTime
+                      )
+                  "
                   color="primary"
                   block
                   :disabled="
-                    !canApplicationBeModified || isGetApplicationsLoading
+                    !canApplicationBeUpdated ||
+                    isGetApplicationsLoading ||
+                    isMakePaymentLoading
                   "
-                  @click="handleModifyApplication"
+                  @click="handleUpdateApplication"
                 >
                   Update
                 </v-btn>
+
+                <v-btn
+                  v-if="canApplicationBeModified"
+                  color="primary"
+                  block
+                  @click="handleModifyApplication"
+                >
+                  Modify
+                </v-btn>
               </v-col>
             </v-row>
+          </v-card-text>
+
+          <v-card-text v-else>
+            <v-btn
+              @click="handleUpdateApplication"
+              color="primary"
+              block
+            >
+              Verify Information
+            </v-btn>
           </v-card-text>
         </v-card>
       </v-col>
@@ -291,7 +354,13 @@
         md="4"
       >
         <v-card
-          :loading="isLoading"
+          v-if="
+            !isRenew &&
+            !isModification &&
+            applicationStore.completeApplication.application.status !==
+              ApplicationStatus['Permit Delivered']
+          "
+          :loading="isUpdateApplicationLoading"
           outlined
           class="fill-height"
         >
@@ -331,7 +400,7 @@
                 <v-btn
                   v-if="canRescheduleAppointment"
                   @click="handleShowAppointmentDialog"
-                  :disabled="isGetApplicationsLoading"
+                  :disabled="isGetApplicationsLoading || isMakePaymentLoading"
                   block
                   color="primary"
                 >
@@ -341,7 +410,7 @@
                 <v-btn
                   v-else-if="canScheduleAppointment"
                   @click="handleShowAppointmentDialogSchedule"
-                  :disabled="isGetApplicationsLoading"
+                  :disabled="isGetApplicationsLoading || isMakePaymentLoading"
                   block
                   color="primary"
                 >
@@ -351,15 +420,166 @@
               <v-col>
                 <v-btn
                   v-if="canCancelAppointment && !isGetApplicationsLoading"
-                  block
-                  color="primary"
                   @click="handleCancelAppointment"
+                  :disabled="isMakePaymentLoading"
+                  color="primary"
+                  block
                 >
                   Cancel
                 </v-btn>
               </v-col>
             </v-row>
+
+            <v-row
+              v-if="
+                applicationStore.completeApplication.application
+                  .readyForInitialPayment
+              "
+            >
+              <v-col>
+                <PaymentConfirmationDialog
+                  :disabled="isMakePaymentLoading"
+                  payment-type="Initial"
+                  @confirm="handlePayment"
+                />
+              </v-col>
+
+              <v-col></v-col>
+            </v-row>
           </v-card-text>
+        </v-card>
+
+        <v-card
+          v-else-if="
+            applicationStore.completeApplication.application
+              .readyForRenewalPayment
+          "
+          class="fill-height"
+          outlined
+        >
+          <v-card-title class="justify-center">
+            Ready for Renewal Payment
+          </v-card-title>
+
+          <v-divider></v-divider>
+
+          <v-card-title>
+            <v-row>
+              <v-col></v-col>
+
+              <v-col>
+                <PaymentConfirmationDialog
+                  :disabled="isMakePaymentLoading"
+                  payment-type="Renewal"
+                  @confirm="handlePayment"
+                />
+              </v-col>
+
+              <v-col></v-col>
+            </v-row>
+          </v-card-title>
+        </v-card>
+
+        <v-card
+          v-else-if="
+            applicationStore.completeApplication.application
+              .readyForModificationPayment
+          "
+          class="fill-height"
+          outlined
+        >
+          <v-card-title class="justify-center">
+            Ready for Modification Payment
+          </v-card-title>
+
+          <v-divider></v-divider>
+
+          <v-card-title>
+            <v-row>
+              <v-col></v-col>
+
+              <v-col>
+                <PaymentConfirmationDialog
+                  :disabled="isMakePaymentLoading"
+                  payment-type="Modification"
+                  @confirm="handlePayment"
+                />
+              </v-col>
+
+              <v-col></v-col>
+            </v-row>
+          </v-card-title>
+        </v-card>
+
+        <v-card
+          v-else-if="
+            (applicationStore.completeApplication.application.status ===
+              ApplicationStatus['Permit Delivered'] ||
+              isRenew ||
+              isModification) &&
+            !isLicenseExpired
+          "
+          class="fill-height"
+          outlined
+        >
+          <v-card-title class="justify-center">
+            Permit Expiration Date
+          </v-card-title>
+
+          <v-divider></v-divider>
+
+          <v-card-title class="justify-center">
+            <v-icon
+              color="primary"
+              class="mr-2"
+            >
+              mdi-clock-alert-outline
+            </v-icon>
+            {{
+              applicationStore.completeApplication.application.license
+                .expirationDate
+                ? new Date(
+                    applicationStore.completeApplication.application.license.expirationDate
+                  ).toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })
+                : ''
+            }}
+          </v-card-title>
+
+          <v-card-title> </v-card-title>
+        </v-card>
+
+        <v-card
+          v-else-if="isLicenseExpired"
+          class="fill-height"
+          outlined
+        >
+          <v-card-title class="justify-center"> Permit Expired </v-card-title>
+
+          <v-divider></v-divider>
+
+          <v-card-title>
+            <v-row>
+              <v-col>
+                <v-alert
+                  type="warning"
+                  color="warning"
+                  dark
+                  outlined
+                  dense
+                  elevation="2"
+                >
+                  Your permit has expired past the renewal period. You must fill
+                  out a new application.
+                </v-alert>
+              </v-col>
+            </v-row>
+          </v-card-title>
+
+          <v-card-title> </v-card-title>
         </v-card>
       </v-col>
     </v-row>
@@ -373,9 +593,11 @@
           outlined
         >
           <v-tabs
+            :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
             v-model="tab"
             grow
           >
+            <v-tabs-slider color="primary"></v-tabs-slider>
             <v-tab> Personal Info </v-tab>
             <v-tab> ID Info </v-tab>
             <v-tab> Address </v-tab>
@@ -416,6 +638,11 @@
                 "
               />
               <CharacterReferenceInfoSection
+                v-if="
+                  !isRenew &&
+                  !applicationStore.completeApplication.application
+                    .legacyQualifyingQuestions
+                "
                 :color="'primary'"
                 :character-references="
                   applicationStore.completeApplication.application
@@ -513,13 +740,7 @@
               />
             </v-tab-item>
             <v-tab-item>
-              <QualifyingQuestionsInfoSection
-                :color="'primary'"
-                :qualifying-questions-info="
-                  applicationStore.completeApplication.application
-                    .qualifyingQuestions
-                "
-              />
+              <QualifyingQuestionsInfoSection />
             </v-tab-item>
             <v-tab-item>
               <FileUploadInfoSection
@@ -561,11 +782,9 @@
           </v-btn>
           <v-toolbar-title>Schedule Appointment</v-toolbar-title>
         </v-toolbar>
+
         <AppointmentContainer
-          v-if="
-            (isLoading && isError) ||
-            (state.appointmentsLoaded && state.appointments.length > 0)
-          "
+          v-if="state.appointmentsLoaded && state.appointments.length > 0"
           :events="state.appointments"
           :show-header="false"
           :rescheduling="state.rescheduling"
@@ -615,6 +834,54 @@
             text
           >
             Yes, withdraw
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      v-model="state.renewDialog"
+      max-width="600"
+    >
+      <v-card>
+        <v-card-title>Begin Renewal?</v-card-title>
+
+        <v-card-text>
+          Are you sure you wish to begin the renewal process?<br />
+          <br />
+          You will need to update some of your information, and pay the renewal
+          fee at a later date.<br />
+          Your application will be changed to a renewal. This action cannot be
+          undone.
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn
+            @click="state.renewDialog = false"
+            color="error"
+            text
+          >
+            Cancel
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            @click="handleRenewApplication"
+            color="primary"
+            text
+            :loading="
+              isRenewLoading ||
+              isGetApplicationsLoading ||
+              isUpdateApplicationLoading ||
+              isAddHistoricalApplicationLoading
+            "
+            :disabled="
+              isRenewLoading ||
+              isGetApplicationsLoading ||
+              isUpdateApplicationLoading ||
+              isAddHistoricalApplicationLoading
+            "
+          >
+            Begin Renewal
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -710,6 +977,20 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog
+      v-model="isUpdatePaymentHistoryLoading"
+      max-width="600"
+      persistent
+    >
+      <v-card loading>
+        <v-card-title> Processing Payment </v-card-title>
+
+        <v-card-text>
+          Please do not close the browser or click the back button.
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
     <v-snackbar
       v-model="state.snackbar"
       color="primary"
@@ -727,6 +1008,21 @@
         </v-btn>
       </template>
     </v-snackbar>
+
+    <v-snackbar
+      v-model="paymentSnackbar"
+      :timeout="-1"
+      color="primary"
+      persistent
+    >
+      {{ $t('There was a problem processing the payment, please try again.') }}
+      <v-btn
+        @click="paymentSnackbar = !paymentSnackbar"
+        icon
+      >
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -734,16 +1030,15 @@
 import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue'
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
-import { AppointmentType } from '@shared-utils/types/defaultTypes'
 import CharacterReferenceInfoSection from '@shared-ui/components/info-sections/CharacterReferenceInfoSection.vue'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
-import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue'
 import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue'
 import EmploymentInfoSection from '@shared-ui/components/info-sections/EmploymentInfoSection.vue'
 import Endpoints from '@shared-ui/api/endpoints'
 import FileUploadInfoSection from '@shared-ui/components/info-sections/FileUploadInfoSection.vue'
 import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue'
+import PaymentConfirmationDialog from '@core-public/components/dialogs/PaymentConfirmationDialog.vue'
 import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue'
 import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue'
 import QualifyingQuestionsInfoSection from '@shared-ui/components/info-sections/QualifyingQuestionsInfoSection.vue'
@@ -753,19 +1048,32 @@ import SpouseAddressInfoSection from '@shared-ui/components/info-sections/Spouse
 import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
+import WithdrawModifyDialog from '@core-public/components/dialogs/WithdrawModifyDialog.vue'
 import axios from 'axios'
-import { capitalize } from '@shared-utils/formatters/defaultFormatters'
+import { getOriginalApplicationTypeModification } from '@shared-ui/composables/getOriginalApplicationType'
 import { i18n } from '@shared-ui/plugins'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 import {
   ApplicationStatus,
+  ApplicationType,
   AppointmentStatus,
   QualifyingQuestionStandard,
 } from '@shared-utils/types/defaultTypes'
+import {
+  AppointmentType,
+  RefundRequest,
+} from '@shared-utils/types/defaultTypes'
+import {
+  CompleteApplication,
+  PaymentType,
+} from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, reactive, ref } from 'vue'
-import { useMutation, useQuery } from '@tanstack/vue-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { useRoute, useRouter } from 'vue-router/composables'
 
 interface IFileSubmission {
   file: File
@@ -774,13 +1082,20 @@ interface IFileSubmission {
 
 const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
+const paymentStore = usePaymentStore()
+const brandStore = useBrandStore()
+const themeStore = useThemeStore()
 const router = useRouter()
+const route = useRoute()
 const tab = ref(null)
 const reviewDialog = ref(false)
 const flaggedQuestionText = ref('')
 const flaggedQuestionHeader = ref('')
 const fileUploadLoading = ref(false)
 const appointmentTime = ref('')
+const isRenewLoading = ref(false)
+const paymentSnackbar = ref(false)
+const queryClient = useQueryClient()
 
 const state = reactive({
   snackbar: false,
@@ -790,6 +1105,7 @@ const state = reactive({
   confirmSubmissionDialog: false,
   rescheduling: false,
   withdrawDialog: false,
+  renewDialog: false,
   appointmentDialog: false,
   appointments: [] as Array<AppointmentType>,
   appointmentsLoaded: false,
@@ -828,8 +1144,83 @@ const state = reactive({
   ],
 })
 
+const {
+  mutate: updatePaymentHistory,
+  isLoading: isUpdatePaymentHistoryLoading,
+} = useMutation({
+  mutationFn: ({
+    transactionId,
+    successful,
+    amount,
+    paymentType,
+    transactionDateTime,
+    hmac,
+    applicationId,
+  }: {
+    transactionId: string
+    successful: boolean
+    amount: number
+    paymentType: string
+    transactionDateTime: string
+    hmac: string
+    applicationId: string
+  }) => {
+    return paymentStore.updatePaymentHistory(
+      transactionId,
+      successful,
+      amount,
+      paymentType,
+      transactionDateTime,
+      hmac,
+      applicationId
+    )
+  },
+  onSuccess: () =>
+    applicationStore
+      .getCompleteApplicationFromApi(
+        applicationStore.completeApplication.id,
+        Boolean(route.query.isComplete)
+      )
+      .then(res => {
+        applicationStore.setCompleteApplication(res)
+      }),
+})
+
 onMounted(() => {
   state.isApplicationValid = Boolean(applicationStore.completeApplication.id)
+
+  const transactionId = route.query.transactionId
+  const successful = route.query.successful
+  const amount = route.query.amount
+  const hmac = route.query.hmac
+  const paymentType = route.query.paymentType
+  const applicationId = route.query.applicationId
+  let transactionDateTime = route.query.transactionDateTime
+
+  if (typeof transactionDateTime === 'string') {
+    transactionDateTime = transactionDateTime.replace(':', '%3A')
+    transactionDateTime = transactionDateTime.replace(':', '%3A')
+  }
+
+  if (
+    typeof transactionId === 'string' &&
+    typeof successful === 'string' &&
+    typeof amount === 'string' &&
+    typeof paymentType === 'string' &&
+    typeof transactionDateTime === 'string' &&
+    typeof hmac === 'string' &&
+    typeof applicationId === 'string'
+  ) {
+    updatePaymentHistory({
+      transactionId,
+      successful: Boolean(successful),
+      amount: Number(amount),
+      paymentType,
+      transactionDateTime,
+      hmac,
+      applicationId,
+    })
+  }
 })
 
 const { isLoading: isGetApplicationsLoading } = useQuery(
@@ -843,48 +1234,93 @@ const { isLoading: isGetApplicationsLoading } = useQuery(
   }
 )
 
-const {
-  mutate: getAppointmentMutation,
-  isLoading,
-  isError,
-} = useMutation({
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  mutationFn: () => {
-    const appRes = appointmentStore.getAvailableAppointments()
+const { refetch } = useQuery(
+  ['getAppointments', true],
+  () => appointmentStore.getAvailableAppointments(true),
+  {
+    enabled: false,
+    onSuccess: (data: Array<AppointmentType>) => {
+      const currentOffset = new Date().getTimezoneOffset() / 60
 
-    appRes
-      .then((data: Array<AppointmentType>) => {
-        data.forEach(event => {
-          let start = new Date(event.start)
-          let end = new Date(event.end)
+      const uniqueData = data.reduce(
+        (result, currentObj) => {
+          const key = `${currentObj.start}-${currentObj.end}`
 
-          let formatedStart = `${start.getFullYear()}-${
-            start.getMonth() + 1
-          }-${start.getDate()} ${start.getHours()}:${start
-            .getMinutes()
-            .toString()
-            .padStart(2, '0')}`
+          if (!result.set.has(key)) {
+            currentObj.slots = 1
+            result.set.add(key)
+            result.array.push(currentObj)
+          } else {
+            const index = result.array.findIndex(
+              obj => obj.start === currentObj.start
+            )
 
-          let formatedEnd = `${end.getFullYear()}-${
-            end.getMonth() + 1
-          }-${end.getDate()} ${end.getHours()}:${end
-            .getMinutes()
-            .toString()
-            .padStart(2, '0')}`
+            if (index !== -1) {
+              const updatedObj = result.array[index]
 
-          event.name = 'open'
-          event.start = formatedStart
-          event.end = formatedEnd
-        })
-        state.appointments = data
-        state.appointmentsLoaded = true
+              if (updatedObj.slots) {
+                updatedObj.slots += 1
+              }
+
+              result.array[index] = updatedObj
+            }
+          }
+
+          return result
+        },
+        { set: new Set(), array: [] } as {
+          set: Set<string>
+          array: Array<AppointmentType>
+        }
+      ).array
+
+      uniqueData.forEach(event => {
+        const start = new Date(event.start)
+
+        if (currentOffset !== start.getTimezoneOffset() / 60) {
+          const correctedOffset = currentOffset - start.getTimezoneOffset() / 60
+
+          start.setTime(start.getTime() - correctedOffset * 60 * 60 * 1000)
+        }
+
+        const end = new Date(event.end)
+
+        if (currentOffset !== end.getTimezoneOffset() / 60) {
+          const correctedOffset = currentOffset - end.getTimezoneOffset() / 60
+
+          end.setTime(end.getTime() - correctedOffset * 60 * 60 * 1000)
+        }
+
+        if (event.slots) {
+          event.name = `${event.slots} slot${event.slots > 1 ? 's' : ''} left`
+        }
+
+        event.start = formatDate(start, start.getHours(), start.getMinutes())
+        event.end = formatDate(end, end.getHours(), end.getMinutes())
       })
-      .catch(() => {
-        state.appointmentsLoaded = true
-      })
-  },
-})
+
+      state.appointments = uniqueData
+      state.appointmentsLoaded = true
+    },
+  }
+)
+
+function formatDate(date: Date, hour: number, minute: number): string {
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+  let formattedHour = hour.toString().padStart(2, '0')
+  let formattedMinute = minute.toString().padStart(2, '0')
+
+  if (formattedMinute === '60') {
+    formattedHour = (hour + 1).toString().padStart(2, '0')
+    formattedMinute = '00'
+  }
+
+  return `${year}-${month.toString().padStart(2, '0')}-${day
+    .toString()
+    .padStart(2, '0')} ${formattedHour}:${formattedMinute}`
+}
 
 const enableEightHourSafetyCourseButton = computed(() => {
   return (
@@ -895,6 +1331,45 @@ const enableEightHourSafetyCourseButton = computed(() => {
 
 const canApplicationBeModified = computed(() => {
   return (
+    applicationStore.completeApplication.application.status ===
+    ApplicationStatus['Permit Delivered']
+  )
+})
+
+const showInitialWithdrawButton = computed(() => {
+  return (
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Withdrawn &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Incomplete &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Permit Delivered'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Employment'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Judicial'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Reserve'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Standard']
+  )
+})
+
+const showModifyWithdrawButton = computed(() => {
+  return (
+    applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Modify Employment'] ||
+    applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Modify Judicial'] ||
+    applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Modify Reserve'] ||
+    applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Modify Standard']
+  )
+})
+
+const canApplicationBeUpdated = computed(() => {
+  return (
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Appointment Complete'] &&
     applicationStore.completeApplication.application.status !==
@@ -902,9 +1377,17 @@ const canApplicationBeModified = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Contingently Approved'] &&
     applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Contingently Denied'] &&
+    applicationStore.completeApplication.application.status !==
       ApplicationStatus.Approved &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Permit Delivered'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Ready To Issue'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Modification Approved'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Renewal Approved'] &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Suspended &&
     applicationStore.completeApplication.application.status !==
@@ -916,7 +1399,17 @@ const canApplicationBeModified = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Withdrawn &&
     applicationStore.completeApplication.application.status !==
-      ApplicationStatus['Flagged For Review']
+      ApplicationStatus['Flagged For Review'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Incomplete &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Reserve'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Employment'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Judicial'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Standard']
   )
 })
 
@@ -933,9 +1426,17 @@ const canApplicationBeContinued = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Contingently Approved'] &&
     applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Contingently Denied'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Modification Approved'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Renewal Approved'] &&
+    applicationStore.completeApplication.application.status !==
       ApplicationStatus.Approved &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Permit Delivered'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Ready To Issue'] &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Suspended &&
     applicationStore.completeApplication.application.status !==
@@ -972,9 +1473,10 @@ const canRescheduleAppointment = computed(() => {
 
 const canScheduleAppointment = computed(() => {
   return (
-    applicationStore.completeApplication.application.appointmentStatus === 1 &&
-    applicationStore.completeApplication.application.status !==
-      ApplicationStatus['Appointment Complete']
+    applicationStore.completeApplication.application.appointmentStatus ===
+      AppointmentStatus['Not Scheduled'] &&
+    applicationStore.completeApplication.application.status ===
+      ApplicationStatus.Withdrawn
   )
 })
 
@@ -988,11 +1490,12 @@ const canCancelAppointment = computed(() => {
       ApplicationStatus.Denied &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Appointment Complete'] &&
-    applicationStore.completeApplication.application.appointmentStatus === 2
+    applicationStore.completeApplication.application.appointmentStatus ===
+      AppointmentStatus.Scheduled
   )
 })
 
-const canWithdrawlApplication = computed(() => {
+const canWithdrawApplication = computed(() => {
   return (
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Suspended &&
@@ -1038,18 +1541,82 @@ const getApplicationStatusText = computed(() => {
   ]
 })
 
-const createMutation = useMutation({
-  mutationFn: applicationStore.createApplication,
-  onSuccess: () => {
-    router.push({
-      path: Routes.RENEW_FORM_ROUTE_PATH,
-      query: {
-        applicationId: state.application[0].id,
-        isComplete: state.application[0].application.isComplete.toString(),
-      },
-    })
-  },
-  onError: () => null,
+const isRenewalActive = computed(() => {
+  const application = applicationStore.completeApplication.application
+  const expirationDateString = application.license?.expirationDate
+  const currentDateTime = new Date()
+
+  if (!expirationDateString) return false
+
+  const expirationDate = new Date(expirationDateString)
+
+  expirationDate.setHours(23, 59, 59, 999)
+
+  const isActive = application.status === ApplicationStatus['Permit Delivered']
+
+  const expiredRenewalPeriod = brandStore.brand.expiredApplicationRenewalPeriod
+  const daysBeforeRenewal = brandStore.brand.daysBeforeActiveRenewal
+
+  const renewalActiveDate = new Date(
+    expirationDate.getTime() - daysBeforeRenewal * 86400000
+  )
+
+  renewalActiveDate.setHours(0, 0, 0, 0)
+
+  const renewalDisableDate = new Date(
+    expirationDate.getTime() + expiredRenewalPeriod * 86400000
+  )
+
+  renewalDisableDate.setHours(23, 59, 59, 999)
+
+  return (
+    isActive &&
+    currentDateTime >= renewalActiveDate &&
+    currentDateTime <= renewalDisableDate
+  )
+})
+
+const isRenew = computed(() => {
+  const applicationType =
+    applicationStore.completeApplication.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment']
+  )
+})
+
+const isModification = computed(() => {
+  const applicationType =
+    applicationStore.completeApplication.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Modify Standard'] ||
+    applicationType === ApplicationType['Modify Reserve'] ||
+    applicationType === ApplicationType['Modify Judicial'] ||
+    applicationType === ApplicationType['Modify Employment']
+  )
+})
+
+const isLicenseExpired = computed(() => {
+  const gracePeriod = brandStore.brand.expiredApplicationRenewalPeriod
+  let expirationDate: Date
+  let now: number
+
+  if (applicationStore.completeApplication.application.license.expirationDate) {
+    expirationDate = new Date(
+      applicationStore.completeApplication.application.license.expirationDate
+    )
+    now = new Date().setHours(23, 59, 59, 999)
+  } else {
+    return false
+  }
+
+  return (
+    now > expirationDate.getTime() + (gracePeriod + 1) * 24 * 60 * 60 * 1000
+  )
 })
 
 const updateWithoutRouteMutation = useMutation({
@@ -1072,19 +1639,205 @@ const updateMutation = useMutation({
   onError: () => null,
 })
 
+const {
+  mutateAsync: addHistoricalApplicationPublic,
+  isLoading: isAddHistoricalApplicationLoading,
+} = useMutation({
+  mutationFn: (application: CompleteApplication) =>
+    applicationStore.addHistoricalApplicationPublic(application),
+})
+
+const {
+  isLoading: isUpdateApplicationLoading,
+  mutateAsync: updateApplication,
+} = useMutation({
+  mutationFn: applicationStore.updateApplication,
+})
+
+const { isLoading: isRefundRequestLoading, mutateAsync: requestRefund } =
+  useMutation({
+    mutationFn: (refundRequest: RefundRequest) =>
+      paymentStore.requestRefund(refundRequest),
+  })
+
 const renewMutation = useMutation({
-  mutationFn: applicationStore.createApplication,
-  onSuccess: () => {
+  mutationFn: applicationStore.updateApplication,
+  onSuccess: async () => {
+    await queryClient.invalidateQueries(['getApplicationsByUser'])
+    isRenewLoading.value = false
     router.push({
-      path: Routes.RENEW_FORM_ROUTE_PATH,
+      path: Routes.FORM_ROUTE_PATH,
       query: {
         applicationId: state.application[0].id,
-        isComplete: state.application[0].application.isComplete.toString(),
       },
     })
   },
   onError: () => null,
 })
+
+const { mutate: makePayment, isLoading: isMakePaymentLoading } = useMutation({
+  mutationFn: () => {
+    let cost: number
+    let paymentType: string
+    let livescanAmount: number | null | undefined
+
+    switch (applicationStore.completeApplication.application.applicationType) {
+      case ApplicationType.Standard:
+        paymentType = PaymentType['CCW Application Initial Payment'].toString()
+        livescanAmount = brandStore.brand.cost.standardLivescanFee
+        cost = brandStore.brand.cost.new.standard
+        break
+
+      case ApplicationType.Judicial:
+        paymentType =
+          PaymentType['CCW Application Initial Judicial Payment'].toString()
+        livescanAmount = brandStore.brand.cost.judicialLivescanFee
+        cost = brandStore.brand.cost.new.judicial
+        break
+
+      case ApplicationType.Reserve:
+        paymentType =
+          PaymentType['CCW Application Initial Reserve Payment'].toString()
+        livescanAmount = brandStore.brand.cost.reserveLivescanFee
+        cost = brandStore.brand.cost.new.reserve
+        break
+
+      case ApplicationType.Employment:
+        paymentType =
+          PaymentType['CCW Application Initial Employment Payment'].toString()
+        livescanAmount = brandStore.brand.cost.employmentLivescanFee
+        cost = brandStore.brand.cost.new.employment
+        break
+
+      case ApplicationType['Renew Standard']:
+        paymentType = PaymentType['CCW Application Renewal Payment'].toString()
+        cost = brandStore.brand.cost.renew.standard
+        break
+
+      case ApplicationType['Renew Judicial']:
+        paymentType =
+          PaymentType['CCW Application Renewal Judicial Payment'].toString()
+        cost = brandStore.brand.cost.renew.judicial
+        break
+
+      case ApplicationType['Renew Reserve']:
+        paymentType =
+          PaymentType['CCW Application Renewal Reserve Payment'].toString()
+        cost = brandStore.brand.cost.renew.reserve
+        break
+
+      case ApplicationType['Renew Employment']:
+        paymentType =
+          PaymentType['CCW Application Renewal Employment Payment'].toString()
+        cost = brandStore.brand.cost.renew.employment
+        break
+
+      case ApplicationType['Modify Standard']:
+        paymentType =
+          PaymentType['CCW Application Modification Payment'].toString()
+        cost = brandStore.brand.cost.modify
+        break
+
+      case ApplicationType['Modify Judicial']:
+        paymentType =
+          PaymentType[
+            'CCW Application Modification Judicial Payment'
+          ].toString()
+        cost = brandStore.brand.cost.modify
+        break
+
+      case ApplicationType['Modify Reserve']:
+        paymentType =
+          PaymentType['CCW Application Modification Reserve Payment'].toString()
+        cost = brandStore.brand.cost.modify
+        break
+
+      case ApplicationType['Modify Employment']:
+        paymentType =
+          PaymentType[
+            'CCW Application Modification Employment Payment'
+          ].toString()
+        cost = brandStore.brand.cost.modify
+        break
+
+      default:
+        paymentType = PaymentType['CCW Application Initial Payment'].toString()
+        cost = brandStore.brand.cost.new.standard
+    }
+
+    return paymentStore.getPayment(
+      applicationStore.completeApplication.id,
+      cost,
+      livescanAmount,
+      applicationStore.completeApplication.application.orderId,
+      paymentType
+    )
+  },
+  onError: () => {
+    paymentSnackbar.value = true
+  },
+})
+
+function handlePayment() {
+  makePayment()
+}
+
+async function handleConfirmWithdrawModification() {
+  const transaction = applicationStore.completeApplication.paymentHistory.find(
+    ph => {
+      return (
+        ph.modificationNumber ===
+        applicationStore.completeApplication.application.modificationNumber
+      )
+    }
+  )
+
+  if (transaction) {
+    const refundRequest: RefundRequest = {
+      id: null,
+      transactionId: transaction.transactionId,
+      applicationId: applicationStore.completeApplication.id,
+      refundAmount: Number(transaction.amount),
+      reason: 'Withdraw Modification',
+      orderId: applicationStore.completeApplication.application.orderId,
+    }
+
+    await requestRefund(refundRequest)
+  }
+
+  applicationStore.completeApplication.application.modifiedAddress = {
+    streetAddress: '',
+    city: '',
+    state: '',
+    county: '',
+    zip: '',
+    country: '',
+  }
+  applicationStore.completeApplication.application.modifiedAddressComplete =
+    null
+  applicationStore.completeApplication.application.modifyAddWeapons = []
+  applicationStore.completeApplication.application.modifyDeleteWeapons = []
+  applicationStore.completeApplication.application.modifiedWeaponComplete = null
+  applicationStore.completeApplication.application.personalInfo.modifiedFirstName =
+    ''
+  applicationStore.completeApplication.application.personalInfo.modifiedLastName =
+    ''
+  applicationStore.completeApplication.application.personalInfo.modifiedMiddleName =
+    ''
+  applicationStore.completeApplication.application.modifiedNameComplete = null
+  applicationStore.completeApplication.application.status =
+    ApplicationStatus['Permit Delivered']
+
+  applicationStore.completeApplication.application.applicationType =
+    getOriginalApplicationTypeModification(
+      applicationStore.completeApplication.application.applicationType
+    )
+
+  applicationStore.completeApplication.application.currentStep = 1
+  applicationStore.completeApplication.application.modificationNumber += 1
+
+  await updateApplication()
+}
 
 function handleContinueApplication() {
   if (
@@ -1120,44 +1873,102 @@ function handleContinueApplication() {
   }
 }
 
-function handleModifyApplication() {
-  const appointmentDateTime =
-    applicationStore.completeApplication.application.appointmentDateTime
-  const appointmentDate = appointmentDateTime
-    ? new Date(Date.parse(appointmentDateTime))
-    : null
-  const currentDate = new Date()
+function handleUpdateApplication() {
+  router.push({
+    path: Routes.FORM_ROUTE_PATH,
+    query: {
+      applicationId: state.application[0].id,
+      isComplete: state.application[0].application.isComplete.toString(),
+    },
+  })
 
-  if (
-    appointmentDate &&
-    currentDate < appointmentDate &&
-    applicationStore.completeApplication.application.appointmentStatus ===
-      AppointmentStatus.Scheduled
-  ) {
-    router.push({
-      path: Routes.FORM_ROUTE_PATH,
-      query: {
-        applicationId: state.application[0].id,
-        isComplete: state.application[0].application.isComplete.toString(),
-      },
-    })
-
-    applicationStore.completeApplication.application.currentStep = 1
-  } else {
-    // Implement modification form functionality
-  }
+  applicationStore.completeApplication.application.currentStep = 1
+  applicationStore.completeApplication.application.isUpdatingApplication = true
+  applicationStore.updateApplication()
 }
 
-function handleRenewApplication() {
-  applicationStore.completeApplication.id = window.crypto.randomUUID()
+function handleModifyApplication() {
+  router.push({
+    path: Routes.MODIFY_FORM_PATH,
+    query: {
+      applicationId: state.application[0].id,
+      isComplete: state.application[0].application.isComplete.toString(),
+    },
+  })
+}
+
+async function handleRenewApplication() {
+  const historicalApplication: CompleteApplication = {
+    ...applicationStore.getCompleteApplication,
+  }
+
+  await addHistoricalApplicationPublic(historicalApplication)
+
+  isRenewLoading.value = true
+  const application = applicationStore.completeApplication.application
+
+  application.renewalNumber += 1
+
+  if (!isRenew.value) {
+    switch (application.applicationType) {
+      case ApplicationType.Standard:
+        applicationStore.completeApplication.application.applicationType =
+          ApplicationType['Renew Standard']
+        break
+      case ApplicationType.Judicial:
+        applicationStore.completeApplication.application.applicationType =
+          ApplicationType['Renew Judicial']
+        break
+      case ApplicationType.Reserve:
+        applicationStore.completeApplication.application.applicationType =
+          ApplicationType['Renew Reserve']
+        break
+      case ApplicationType.Employment:
+        applicationStore.completeApplication.application.applicationType =
+          ApplicationType['Renew Employment']
+        break
+      default:
+        break
+    }
+  }
+
+  applicationStore.completeApplication.application.cost = {
+    new: {
+      standard: brandStore.brand.cost.new.standard,
+      judicial: brandStore.brand.cost.new.judicial,
+      reserve: brandStore.brand.cost.new.reserve,
+      employment: brandStore.brand.cost.new.employment,
+    },
+    renew: {
+      standard: brandStore.brand.cost.renew.standard,
+      judicial: brandStore.brand.cost.renew.judicial,
+      reserve: brandStore.brand.cost.renew.reserve,
+      employment: brandStore.brand.cost.renew.employment,
+    },
+    issuance: brandStore.brand.cost.issuance,
+    modify: brandStore.brand.cost.modify,
+    creditFee: brandStore.brand.cost.creditFee,
+    convenienceFee: brandStore.brand.cost.convenienceFee,
+    standardLivescanFee: brandStore.brand.cost.standardLivescanFee,
+    judicialLivescanFee: brandStore.brand.cost.judicialLivescanFee,
+    reserveLivescanFee: brandStore.brand.cost.reserveLivescanFee,
+    employmentLivescanFee: brandStore.brand.cost.employmentLivescanFee,
+  }
+
+  applicationStore.completeApplication.application.isUpdatingApplication = false
+
   applicationStore.completeApplication.application.currentStep = 1
-  applicationStore.completeApplication.application.isComplete = false
-  applicationStore.completeApplication.application.appointmentStatus =
-    AppointmentStatus.Scheduled
+
   applicationStore.completeApplication.application.status =
     ApplicationStatus.Incomplete
-  applicationStore.completeApplication.application.applicationType = `renew-${applicationStore.completeApplication.application.applicationType}`
-  createMutation.mutate()
+
+  applicationStore.completeApplication.application.paymentStatus = 0
+
+  applicationStore.completeApplication.application.appointmentStatus = 1
+
+  resetDocuments()
+  resetAgreements()
+  renewMutation.mutate()
 }
 
 function handleWithdrawApplication() {
@@ -1222,17 +2033,21 @@ function handleConfirmCancelAppointment() {
 
 function handleShowAppointmentDialog() {
   state.rescheduling = true
-  getAppointmentMutation()
+  refetch()
   state.appointmentDialog = true
 }
 
 function handleShowAppointmentDialogSchedule() {
-  getAppointmentMutation()
+  refetch()
   state.appointmentDialog = true
 }
 
 function handleShowWithdrawDialog() {
   state.withdrawDialog = true
+}
+
+function handleShowRenewDialog() {
+  state.renewDialog = true
 }
 
 function toggleAppointmentComplete(time: string) {
@@ -1249,128 +2064,130 @@ function showReviewDialog() {
 
   flaggedQuestionText.value = ''
 
-  const questionOneAgencyTempValue =
-    qualifyingQuestions.questionOne.temporaryAgency || ''
-  const questionOneIssueDateTempValue =
-    qualifyingQuestions.questionOne.temporaryIssueDate || ''
-  const questionOneNumberTempValue =
-    qualifyingQuestions.questionOne.temporaryNumber || ''
-  const questionOneTemporaryIssuingStateValue =
-    qualifyingQuestions.questionOne.temporaryIssuingState || ''
+  if (qualifyingQuestions) {
+    const questionOneAgencyTempValue =
+      qualifyingQuestions.questionOne.temporaryAgency || ''
+    const questionOneIssueDateTempValue =
+      qualifyingQuestions.questionOne.temporaryIssueDate || ''
+    const questionOneNumberTempValue =
+      qualifyingQuestions.questionOne.temporaryNumber || ''
+    const questionOneTemporaryIssuingStateValue =
+      qualifyingQuestions.questionOne.temporaryIssuingState || ''
 
-  const questionTwoAgencyTempValue =
-    qualifyingQuestions.questionTwo.temporaryAgency || ''
-  const questionTwoDenialDateTempValue =
-    qualifyingQuestions.questionTwo.temporaryDenialDate || ''
-  const questionTwoDenialReasonTempValue =
-    qualifyingQuestions.questionTwo.temporaryDenialReason || ''
+    const questionTwoAgencyTempValue =
+      qualifyingQuestions.questionTwo.temporaryAgency || ''
+    const questionTwoDenialDateTempValue =
+      qualifyingQuestions.questionTwo.temporaryDenialDate || ''
+    const questionTwoDenialReasonTempValue =
+      qualifyingQuestions.questionTwo.temporaryDenialReason || ''
 
-  if (
-    questionOneAgencyTempValue ||
-    questionOneIssueDateTempValue ||
-    questionOneNumberTempValue ||
-    questionOneTemporaryIssuingStateValue
-  ) {
-    flaggedQuestionText.value += `${i18n.t('QUESTION-ONE')}\n\n`
-
-    flaggedQuestionText.value += `Original Response:\n`
-    flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionOne.agency || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issuing State: ${
-      qualifyingQuestions.questionOne.issuingState || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionOne.issueDate || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionOne.number || 'N/A'
-    }\n\n`
-
-    flaggedQuestionText.value += `Revised Changes:\n`
-    flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionOne.temporaryAgency || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issuing State: ${
-      qualifyingQuestions.questionOne.temporaryIssuingState || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionOne.temporaryIssueDate || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionOne.temporaryNumber || 'N/A'
-    }\n\n`
-  }
-
-  if (
-    questionTwoAgencyTempValue ||
-    questionTwoDenialDateTempValue ||
-    questionTwoDenialReasonTempValue
-  ) {
-    flaggedQuestionText.value += `${i18n.t('QUESTION-TWO')}\n\n`
-
-    flaggedQuestionText.value += `Original Response:\n`
-    flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionTwo.agency || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Denial Date: ${
-      qualifyingQuestions.questionTwo.denialDate || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Denial Reason Number: ${
-      qualifyingQuestions.questionTwo.denialReason || 'N/A'
-    }\n\n`
-
-    flaggedQuestionText.value += `Revised Changes:\n`
-    flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionTwo.temporaryAgency || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionTwo.temporaryDenialDate || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionTwo.temporaryDenialReason || 'N/A'
-    }\n\n`
-  }
-
-  if (
-    qualifyingQuestions.questionTwelve.temporaryTrafficViolations.length > 0
-  ) {
-    flaggedQuestionText.value += `${i18n.t('QUESTION-TWELVE')}\n\n`
-
-    for (const trafficViolation of qualifyingQuestions.questionTwelve
-      .temporaryTrafficViolations) {
-      flaggedQuestionText.value += `Additional Citations Found: \n`
-      flaggedQuestionText.value += `Date: ${trafficViolation.date}\n`
-      flaggedQuestionText.value += `Agency: ${trafficViolation.agency}\n`
-      flaggedQuestionText.value += `Violation: ${trafficViolation.violation}\n`
-      flaggedQuestionText.value += `Citation Number: ${trafficViolation.citationNumber}\n\n`
-    }
-  }
-
-  for (const [key, value] of Object.entries(qualifyingQuestions)) {
     if (
-      key !== 'questionOne' &&
-      key !== 'questionTwo' &&
-      key !== 'questionTwelve' &&
-      convertToQualifyingQuestionStandard(value).temporaryExplanation
+      questionOneAgencyTempValue ||
+      questionOneIssueDateTempValue ||
+      questionOneNumberTempValue ||
+      questionOneTemporaryIssuingStateValue
     ) {
-      const questionNumber = key.slice(8)
+      flaggedQuestionText.value += `${i18n.t('QUESTION-ONE')}\n\n`
 
-      flaggedQuestionText.value += `Question ${i18n.t(
-        `QUESTION-${questionNumber.toUpperCase()}`
-      )}\n\n`
-      flaggedQuestionText.value += `Original Response: ${
-        convertToQualifyingQuestionStandard(value).explanation
+      flaggedQuestionText.value += `Original Response:\n`
+      flaggedQuestionText.value += `Agency: ${
+        qualifyingQuestions.questionOne.agency || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Issuing State: ${
+        qualifyingQuestions.questionOne.issuingState || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Issue Date: ${
+        qualifyingQuestions.questionOne.issueDate || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `License Number: ${
+        qualifyingQuestions.questionOne.number || 'N/A'
       }\n\n`
-      flaggedQuestionText.value += `Revised Changes: ${
-        convertToQualifyingQuestionStandard(value).temporaryExplanation
+
+      flaggedQuestionText.value += `Revised Changes:\n`
+      flaggedQuestionText.value += `Agency: ${
+        qualifyingQuestions.questionOne.temporaryAgency || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Issuing State: ${
+        qualifyingQuestions.questionOne.temporaryIssuingState || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Issue Date: ${
+        qualifyingQuestions.questionOne.temporaryIssueDate || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `License Number: ${
+        qualifyingQuestions.questionOne.temporaryNumber || 'N/A'
       }\n\n`
     }
-  }
 
-  if (flaggedQuestionText.value !== '') {
-    reviewDialog.value = true
-    flaggedQuestionHeader.value = 'Review Required'
+    if (
+      questionTwoAgencyTempValue ||
+      questionTwoDenialDateTempValue ||
+      questionTwoDenialReasonTempValue
+    ) {
+      flaggedQuestionText.value += `${i18n.t('QUESTION-TWO')}\n\n`
+
+      flaggedQuestionText.value += `Original Response:\n`
+      flaggedQuestionText.value += `Agency: ${
+        qualifyingQuestions.questionTwo.agency || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Denial Date: ${
+        qualifyingQuestions.questionTwo.denialDate || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Denial Reason Number: ${
+        qualifyingQuestions.questionTwo.denialReason || 'N/A'
+      }\n\n`
+
+      flaggedQuestionText.value += `Revised Changes:\n`
+      flaggedQuestionText.value += `Agency: ${
+        qualifyingQuestions.questionTwo.temporaryAgency || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `Issue Date: ${
+        qualifyingQuestions.questionTwo.temporaryDenialDate || 'N/A'
+      }\n`
+      flaggedQuestionText.value += `License Number: ${
+        qualifyingQuestions.questionTwo.temporaryDenialReason || 'N/A'
+      }\n\n`
+    }
+
+    if (
+      qualifyingQuestions.questionTwelve.temporaryTrafficViolations.length > 0
+    ) {
+      flaggedQuestionText.value += `${i18n.t('QUESTION-TWELVE')}\n\n`
+
+      for (const trafficViolation of qualifyingQuestions.questionTwelve
+        .temporaryTrafficViolations) {
+        flaggedQuestionText.value += `Additional Citations Found: \n`
+        flaggedQuestionText.value += `Date: ${trafficViolation.date}\n`
+        flaggedQuestionText.value += `Agency: ${trafficViolation.agency}\n`
+        flaggedQuestionText.value += `Violation: ${trafficViolation.violation}\n`
+        flaggedQuestionText.value += `Citation Number: ${trafficViolation.citationNumber}\n\n`
+      }
+    }
+
+    for (const [key, value] of Object.entries(qualifyingQuestions)) {
+      if (
+        key !== 'questionOne' &&
+        key !== 'questionTwo' &&
+        key !== 'questionTwelve' &&
+        convertToQualifyingQuestionStandard(value).temporaryExplanation
+      ) {
+        const questionNumber = key.slice(8)
+
+        flaggedQuestionText.value += `Question ${i18n.t(
+          `QUESTION-${questionNumber.toUpperCase()}`
+        )}\n\n`
+        flaggedQuestionText.value += `Original Response: ${
+          convertToQualifyingQuestionStandard(value).explanation
+        }\n\n`
+        flaggedQuestionText.value += `Revised Changes: ${
+          convertToQualifyingQuestionStandard(value).temporaryExplanation
+        }\n\n`
+      }
+    }
+
+    if (flaggedQuestionText.value !== '') {
+      reviewDialog.value = true
+      flaggedQuestionHeader.value = 'Review Required'
+    }
   }
 }
 
@@ -1391,14 +2208,13 @@ function cancelChanges() {
 
 function handleFileSubmit(fileSubmission: IFileSubmission) {
   fileUploadLoading.value = true
-  const newFileName = `${applicationStore.completeApplication.application.personalInfo.lastName}_${applicationStore.completeApplication.application.personalInfo.firstName}_${fileSubmission.fileType}`
   const form = new FormData()
 
   form.append('fileToUpload', fileSubmission.file)
 
   axios
     .post(
-      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${newFileName}`,
+      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${fileSubmission.fileType}`,
       form
     )
     .catch(e => {
@@ -1408,7 +2224,7 @@ function handleFileSubmit(fileSubmission: IFileSubmission) {
 
   const uploadDoc: UploadedDocType = {
     documentType: fileSubmission.fileType,
-    name: `${newFileName}`,
+    name: fileSubmission.fileType,
     uploadedBy: applicationStore.completeApplication.application.userEmail,
     uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
   }
@@ -1422,5 +2238,51 @@ function handleFileSubmit(fileSubmission: IFileSubmission) {
 
 function convertToQualifyingQuestionStandard(item) {
   return item as QualifyingQuestionStandard
+}
+
+function resetDocuments() {
+  const uploadedDocuments =
+    applicationStore.completeApplication.application.uploadedDocuments
+  const documentTypesToReset = [
+    'DriverLicense',
+    'ProofResidency',
+    'ProofResidency2',
+    'Supporting',
+    'NameChange',
+    'Judicial',
+    'Reserve',
+    'Signature',
+    'Employment',
+  ]
+
+  const filesToDelete = uploadedDocuments.filter(file => {
+    return documentTypesToReset.includes(file.documentType)
+  })
+
+  filesToDelete.forEach(file => {
+    if (
+      file.documentType !== 'MilitaryDoc' &&
+      file.documentType !== 'Citizenship'
+    ) {
+      const index = uploadedDocuments.indexOf(file)
+
+      uploadedDocuments.splice(index, 1)
+    }
+  })
+
+  applicationStore.completeApplication.application.uploadedDocuments =
+    uploadedDocuments
+}
+
+function resetAgreements() {
+  applicationStore.completeApplication.application.agreements.conditionsForIssuanceAgreed =
+    false
+  applicationStore.completeApplication.application.agreements.conditionsForIssuanceAgreedDate =
+    null
+
+  applicationStore.completeApplication.application.agreements.falseInfoAgreed =
+    false
+  applicationStore.completeApplication.application.agreements.falseInfoAgreedDate =
+    null
 }
 </script>

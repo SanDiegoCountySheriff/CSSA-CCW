@@ -8,20 +8,6 @@
       class="sub-header font-weight-bold text-xl text-left mb-5"
     >
       {{ $t(' Physical Appearance Information ') }}
-      <template #actions>
-        <v-btn
-          v-if="
-            applicationStore.completeApplication.application.status ==
-            ApplicationStatus.Incomplete
-          "
-          icon
-          @click="handleEditRequest"
-        >
-          <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
-            mdi-square-edit-outline
-          </v-icon>
-        </v-btn>
-      </template>
     </v-banner>
     <v-row>
       <v-col
@@ -162,9 +148,6 @@
 
 <script setup lang="ts">
 import { AppearanceInfoType } from '@shared-utils/types/defaultTypes'
-import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
 
 interface IAppearanceInfoSectionProps {
   appearanceInfo: AppearanceInfoType
@@ -172,20 +155,6 @@ interface IAppearanceInfoSectionProps {
 }
 
 const props = defineProps<IAppearanceInfoSectionProps>()
-const router = useRouter()
-const applicationStore = useCompleteApplicationStore()
-
-function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 4
-  router.push({
-    path: '/form',
-    query: {
-      applicationId: applicationStore.completeApplication.id,
-      isComplete:
-        applicationStore.completeApplication.application.isComplete.toString(),
-    },
-  })
-}
 </script>
 
 <style lang="scss" scoped>
