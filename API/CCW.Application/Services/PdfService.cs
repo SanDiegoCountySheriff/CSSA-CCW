@@ -238,66 +238,6 @@ public class PdfService : IPdfService
             form.GetField("form1[0].#subform[3].State[0]").SetValue(spouseState, true);
         }
         form.GetField("form1[0].#subform[3].Zip[0]").SetValue(userApplication.Application.SpouseAddressInformation?.Zip ?? "", true);
-        //Description of previous addresses
-        var previousAddresses = userApplication.Application.PreviousAddresses;
-
-        if (previousAddresses != null && previousAddresses?.Length > 0)
-        {
-            int totalAddresses = (previousAddresses.Length > 4) ? 4 : previousAddresses.Length;
-
-            for (int i = 0; i < totalAddresses; i++)
-            {
-                int index = i + 1;
-                string address = previousAddresses[i].StreetAddress;
-                string state = previousAddresses[i].State?.Trim() ?? ""; 
-                form.GetField("form1[0].#subform[3].APP_Address[" + (index - 1) + "]").SetValue(address, true);
-                form.GetField("form1[0].#subform[3].APP_City[" + index + "]").SetValue(previousAddresses[i].City, true);
-                if (Constants.StateAbbreviations.TryGetValue(state, out abbreviation))
-                {
-                    form.GetField("form1[0].#subform[3].APP_State[" + index + "]").SetValue(GetStateByName(abbreviation), true);
-                }
-                else
-                {
-                    form.GetField("form1[0].#subform[3].APP_State[" + index + "]").SetValue(GetStateByName(state), true);
-                }
-                form.GetField("form1[0].#subform[3].APP_ZipCode[" + index + "]").SetValue(previousAddresses[i].Zip, true);
-            }
-
-            // NOTE: LM: Add additional page(s) for extra addresses
-            if (previousAddresses.Length > 3)
-            {
-                StringBuilder addressesSb = new StringBuilder();
-                int currentSetCount = 0;
-                int currentAddressCounter = 3;
-                bool isContinuation = false;
-
-                totalAddresses = previousAddresses.Length;
-                while (currentAddressCounter < totalAddresses)
-                {
-                    var previousAddress = previousAddresses[currentAddressCounter++];
-
-                    string address = previousAddress.StreetAddress;
-                    addressesSb.AppendLine($"{address}, {previousAddress.City}, {previousAddress.State} {previousAddress.Zip}");
-
-                    currentSetCount++;
-                    if (currentSetCount >= 30)
-                    {
-                        currentSetCount = 0;
-                        string headerText = "Appendix C: Additional Previous Addresses" + (isContinuation ? " - Continued" : "");
-                        AddAppendixPage(headerText, addressesSb.ToString(), form, pdfDoc, true);
-                        isContinuation = true;
-                        addressesSb.Clear();
-                    }
-                }
-
-                if (addressesSb.Length > 0)
-                {
-                    string headerText = "Appendix C: Additional Previous Addresses" + (isContinuation ? " - Continued" : "");
-                    AddAppendixPage(headerText, addressesSb.ToString(), form, pdfDoc, true);
-                }
-            }
-        }
-
 #if DEBUG
         foreach (var key in form.GetFormFields().Keys)
         {
@@ -590,6 +530,65 @@ public class PdfService : IPdfService
             }
         }
 
+        //Description of previous addresses
+        var previousAddresses = userApplication.Application.PreviousAddresses;
+
+        if (previousAddresses != null && previousAddresses?.Length > 0)
+        {
+            int totalAddresses = (previousAddresses.Length > 4) ? 4 : previousAddresses.Length;
+
+            for (int i = 0; i < totalAddresses; i++)
+            {
+                int index = i + 1;
+                string address = previousAddresses[i].StreetAddress;
+                string state = previousAddresses[i].State?.Trim() ?? "";
+                form.GetField("form1[0].#subform[3].APP_Address[" + (index - 1) + "]").SetValue(address, true);
+                form.GetField("form1[0].#subform[3].APP_City[" + index + "]").SetValue(previousAddresses[i].City, true);
+                if (Constants.StateAbbreviations.TryGetValue(state, out abbreviation))
+                {
+                    form.GetField("form1[0].#subform[3].APP_State[" + index + "]").SetValue(GetStateByName(abbreviation), true);
+                }
+                else
+                {
+                    form.GetField("form1[0].#subform[3].APP_State[" + index + "]").SetValue(GetStateByName(state), true);
+                }
+                form.GetField("form1[0].#subform[3].APP_ZipCode[" + index + "]").SetValue(previousAddresses[i].Zip, true);
+            }
+
+            if (previousAddresses.Length > 4)
+            {
+                StringBuilder addressesSb = new StringBuilder();
+                int currentSetCount = 0;
+                int currentAddressCounter = 4;
+                bool isContinuation = false;
+
+                totalAddresses = previousAddresses.Length;
+                while (currentAddressCounter < totalAddresses)
+                {
+                    var previousAddress = previousAddresses[currentAddressCounter++];
+
+                    string address = previousAddress.StreetAddress;
+                    addressesSb.AppendLine($"{address}, {previousAddress.City}, {previousAddress.State} {previousAddress.Zip}");
+
+                    currentSetCount++;
+                    if (currentSetCount >= 30)
+                    {
+                        currentSetCount = 0;
+                        string headerText = "Appendix C: Additional Previous Addresses" + (isContinuation ? " - Continued" : "");
+                        AddAppendixPage(headerText, addressesSb.ToString(), form, pdfDoc, true);
+                        isContinuation = true;
+                        addressesSb.Clear();
+                    }
+                }
+
+                if (addressesSb.Length > 0)
+                {
+                    string headerText = "Appendix C: Additional Previous Addresses" + (isContinuation ? " - Continued" : "");
+                    AddAppendixPage(headerText, addressesSb.ToString(), form, pdfDoc, true);
+                }
+            }
+        }
+
         mainDocument.Flush();
         form.FlattenFields();
         mainDocument.Close();
@@ -830,7 +829,7 @@ public class PdfService : IPdfService
                     stringBuilder.AppendLine($"{violation.Date}\t{violation.Violation}\t{violation.Agency}\t{violation.CitationNumber}");
                 }
 
-                AddAppendixPage("Appendix A: Additional Moving Violations", stringBuilder.ToString(), form, pdfDoc, true);
+                AddLegacyAppendixPage("Appendix A: Additional Moving Violations", stringBuilder.ToString(), form, pdfDoc, true);
             }
         }
 
@@ -881,7 +880,7 @@ public class PdfService : IPdfService
                     {
                         currentSetCount = 0;
                         string headerText = "Appendix B: Additional Weapons" + (isContinuation ? " - Continued" : "");
-                        AddAppendixPage(headerText, weaponsSb.ToString(), form, pdfDoc, true);
+                        AddLegacyAppendixPage(headerText, weaponsSb.ToString(), form, pdfDoc, true);
                         isContinuation = true;
                         weaponsSb.Clear();
                     }
@@ -890,7 +889,7 @@ public class PdfService : IPdfService
                 if (weaponsSb.Length > 0)
                 {
                     string headerText = "Appendix B: Additional Weapons" + (isContinuation ? " - Continued" : "");
-                    AddAppendixPage(headerText, weaponsSb.ToString(), form, pdfDoc, true);
+                    AddLegacyAppendixPage(headerText, weaponsSb.ToString(), form, pdfDoc, true);
                 }
             }
         }
@@ -965,11 +964,11 @@ public class PdfService : IPdfService
             }
 
             // NOTE: LM: Add additional page(s) for extra addresses
-            if (previousAddresses.Length > 3)
+            if (previousAddresses.Length > 4)
             {
                 StringBuilder addressesSb = new StringBuilder();
                 int currentSetCount = 0;
-                int currentAddressCounter = 3;
+                int currentAddressCounter = 4;
                 bool isContinuation = false;
 
                 totalAddresses = previousAddresses.Length;
@@ -985,7 +984,7 @@ public class PdfService : IPdfService
                     {
                         currentSetCount = 0;
                         string headerText = "Appendix C: Additional Previous Addresses" + (isContinuation ? " - Continued" : "");
-                        AddAppendixPage(headerText, addressesSb.ToString(), form, pdfDoc, true);
+                        AddLegacyAppendixPage(headerText, addressesSb.ToString(), form, pdfDoc, true);
                         isContinuation = true;
                         addressesSb.Clear();
                     }
@@ -994,7 +993,7 @@ public class PdfService : IPdfService
                 if (addressesSb.Length > 0)
                 {
                     string headerText = "Appendix C: Additional Previous Addresses" + (isContinuation ? " - Continued" : "");
-                    AddAppendixPage(headerText, addressesSb.ToString(), form, pdfDoc, true);
+                    AddLegacyAppendixPage(headerText, addressesSb.ToString(), form, pdfDoc, true);
                 }
             }
         }
@@ -1980,6 +1979,36 @@ public class PdfService : IPdfService
     }
 
     private void AddAppendixPage(string header, string content, PdfAcroForm form, PdfDocument pdfDoc, bool userBorder = false)
+    {
+        PdfPage page = pdfDoc.AddNewPage(PageSize.LETTER);
+
+        int x = 25;
+        int y = 20;
+        int w = 560;
+        int h = 750;
+        float f = 10f;
+
+        Text headerText = new Text(header + "\n").SetFontSize(14f);
+        Text paragraphText = new Text(content);
+
+        // Pick any font from existing fields
+        var font = form.GetField("form1[0].#subform[5].VIOLATION[3]").GetFont();
+
+        Paragraph paragraph = new Paragraph();
+        paragraph.SetFont(font).SetFontSize(f).SetBorder(new SolidBorder(ColorConstants.BLUE, .2F));
+        paragraph.Add(headerText).Add(paragraphText);
+
+        Rectangle rectangle = new Rectangle(x, y, w, h);
+        Canvas canvas = new Canvas(page, rectangle);
+        if (userBorder)
+        {
+            canvas.SetBorder(new SolidBorder(ColorConstants.BLUE, .2F));
+        }
+        canvas.Add(paragraph);
+        canvas.Close();
+    }
+
+    private void AddLegacyAppendixPage(string header, string content, PdfAcroForm form, PdfDocument pdfDoc, bool userBorder = false)
     {
         PdfPage page = pdfDoc.AddNewPage(PageSize.LETTER);
 
