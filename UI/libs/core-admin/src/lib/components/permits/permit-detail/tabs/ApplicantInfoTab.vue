@@ -333,18 +333,6 @@
           </v-col>
           <v-col cols="6">
             <v-text-field
-              :label="$t('Spouse Middle Name')"
-              :readonly="readonly"
-              v-model="
-                permitStore.getPermitDetail.application.spouseInformation
-                  .middleName
-              "
-              dense
-              outlined
-            />
-          </v-col>
-          <v-col cols="6">
-            <v-text-field
               :label="$t('Spouse First Name')"
               :rules="[v => !!v || $t('Spouse First name cannot be blank')]"
               :readonly="readonly"
@@ -356,6 +344,18 @@
               outlined
             >
             </v-text-field>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field
+              :label="$t('Spouse Middle Name')"
+              :readonly="readonly"
+              v-model="
+                permitStore.getPermitDetail.application.spouseInformation
+                  .middleName
+              "
+              dense
+              outlined
+            />
           </v-col>
           <v-col cols="6">
             <v-text-field
