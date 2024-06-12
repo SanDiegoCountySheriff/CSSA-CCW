@@ -19,8 +19,8 @@
       <v-card-title>Withdraw Modify</v-card-title>
 
       <v-card-text>
-        Are you sure you want to withdraw your modification? This will create a
-        refund request that may take some time to process.
+        Are you sure you want to withdraw your modification? If you have paid
+        for your modification the refund may take some time to process.
       </v-card-text>
 
       <v-card-actions>
