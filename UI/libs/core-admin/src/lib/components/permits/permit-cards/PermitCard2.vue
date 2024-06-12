@@ -336,8 +336,53 @@
           <v-card-text>
             <v-row>
               <v-col
+                v-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForInitialPayment &&
+                  !isInitialPaymentComplete &&
+                  !isRenew &&
+                  !isModify
+                "
                 cols="12"
-                xl="6"
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForInitialPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForRenewalPayment &&
+                  !isRenewalPaymentComplete &&
+                  isRenew
+                "
+                cols="12"
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForRenewalPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForModificationPayment &&
+                  !isModificationPaymentComplete &&
+                  isModify
+                "
+                cols="12"
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForModificationPayment"
+                />
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col
+                cols="12"
+                lg="6"
               >
                 <v-menu offset-y>
                   <template #activator="{ on }">
@@ -367,63 +412,8 @@
               </v-col>
 
               <v-col
-                v-if="
-                  !permitStore.getPermitDetail.application
-                    .readyForInitialPayment &&
-                  !isInitialPaymentComplete &&
-                  !isRenew &&
-                  !isModify
-                "
                 cols="12"
-                xl="6"
-              >
-                <ReadyForPaymentDialog
-                  @on-ready-for-payment="handleReadyForInitialPayment"
-                />
-              </v-col>
-
-              <v-col
-                v-else-if="
-                  !permitStore.getPermitDetail.application
-                    .readyForRenewalPayment &&
-                  !isRenewalPaymentComplete &&
-                  isRenew
-                "
-                cols="12"
-                xl="6"
-              >
-                <ReadyForPaymentDialog
-                  @on-ready-for-payment="handleReadyForRenewalPayment"
-                />
-              </v-col>
-
-              <v-col
-                v-else-if="
-                  !permitStore.getPermitDetail.application
-                    .readyForModificationPayment &&
-                  !isModificationPaymentComplete &&
-                  isModify
-                "
-                cols="12"
-                xl="6"
-              >
-                <ReadyForPaymentDialog
-                  @on-ready-for-payment="handleReadyForModificationPayment"
-                />
-              </v-col>
-
-              <v-col
-                v-else
-                cols="12"
-                xl="6"
-              >
-              </v-col>
-            </v-row>
-
-            <v-row>
-              <v-col
-                cols="12"
-                xl="6"
+                lg="6"
               >
                 <v-btn
                   v-if="showStart90DayCountdownButton"
@@ -459,23 +449,6 @@
                 >
                   <v-icon left>mdi-play</v-icon>
                   Reactivate 90 Days
-                </v-btn>
-              </v-col>
-
-              <v-col
-                cols="12"
-                xl="6"
-              >
-                <v-btn
-                  :disabled="readonly"
-                  color="primary"
-                  :href="`mailto:${permitStore.getPermitDetail.application.userEmail}`"
-                  target="_blank"
-                  small
-                  block
-                >
-                  <v-icon left>mdi-email-outline</v-icon>
-                  Send Request
                 </v-btn>
               </v-col>
             </v-row>
