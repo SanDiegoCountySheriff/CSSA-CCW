@@ -64,41 +64,7 @@
                 align-self="end"
               >
                 <v-row>
-                  <v-col
-                    cols="6"
-                    sm="6"
-                  >
-                    <FileUploadDialog
-                      :icon="'mdi-camera'"
-                      :default-selection="'Portrait'"
-                      :get-file-from-dialog="onFileChanged"
-                    />
-                  </v-col>
-                  <v-col
-                    cols="6"
-                    sm="6"
-                  >
-                    <FileUploadDialog
-                      :icon="'mdi-fingerprint'"
-                      :default-selection="'Thumbprint'"
-                      :get-file-from-dialog="onFileChanged"
-                    />
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col
-                    cols="6"
-                    sm="6"
-                  >
-                    <FileUploadDialog
-                      :icon="'mdi-file-upload'"
-                      :get-file-from-dialog="onFileChanged"
-                    />
-                  </v-col>
-                  <v-col
-                    cols="6"
-                    sm="6"
-                  >
+                  <v-col>
                     <v-menu
                       bottom
                       :elevation="10"
@@ -113,7 +79,8 @@
                           color="primary"
                           small
                         >
-                          <v-icon>mdi-printer</v-icon>
+                          <v-icon left>mdi-printer</v-icon>
+                          Print Documents
                         </v-btn>
                       </template>
 
@@ -201,6 +168,7 @@
                   </v-col>
                 </v-row>
               </v-col>
+
               <v-col
                 cols="12"
                 lg="4"
@@ -298,6 +266,19 @@
               mdi-alert
             </v-icon>
             Review Survey Details
+          </v-card-title>
+
+          <v-card-title
+            v-else-if="waitingForPayment"
+            class="justify-center"
+          >
+            <v-icon
+              color="error"
+              class="mr-2"
+            >
+              mdi-alert
+            </v-icon>
+            Waiting for Customer Payment
           </v-card-title>
 
           <v-card-title
@@ -436,7 +417,6 @@
                 cols="12"
                 xl="6"
               >
-                <PaymentDialog />
               </v-col>
             </v-row>
 
@@ -1001,24 +981,6 @@
       </v-col>
     </v-row>
 
-    <v-snackbar
-      v-model="state.snackbar"
-      :multi-line="state.multiLine"
-    >
-      {{ state.text }}
-
-      <template #action="{ attrs }">
-        <v-btn
-          :color="$vuetify.theme.dark ? '' : 'red'"
-          text
-          v-bind="attrs"
-          @click="state.snackbar = false"
-        >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
-
     <v-dialog
       v-model="ninetyDayDialog"
       persistent
@@ -1070,15 +1032,12 @@
 <script setup lang="ts">
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue'
 import ExpirationDateDialog from '@core-admin/components/dialogs/ExpirationDateDialog.vue'
-import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
 import FinishModificationDialog from '@core-admin/components/dialogs/FinishModificationDialog.vue'
 import FinishRenewalDialog from '@core-admin/components/dialogs/FinishRenewalDialog.vue'
-import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import ReadyForPaymentDialog from '@core-admin/components/dialogs/ReadyForPaymentDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
-import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { useMutation } from '@tanstack/vue-query'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
@@ -1126,29 +1085,16 @@ const state = reactive({
   snackColor: '',
   snackText: '',
   multiLine: false,
-  snackbar: false,
   text: `Invalid file type provided.`,
 })
 
 const ninetyDayStartDateSelection = ref(null)
 const ninetyDayDialog = ref(false)
 const permitStore = usePermitsStore()
-const documentsStore = useDocumentsStore()
 const appointmentStore = useAppointmentsStore()
 const adminUserStore = useAdminUserStore()
 const themeStore = useThemeStore()
 const changed = ref('')
-
-const allowedExtension = [
-  '.png',
-  '.jpeg',
-  '.jpg',
-  '.pjp',
-  '.pjpeg',
-  '.jfif',
-  '.bmp',
-  '.pdf',
-]
 
 const isInitialPaymentComplete = computed(() => {
   if (permitStore.permitDetail.paymentHistory) {
@@ -1423,6 +1369,14 @@ function handleSaveExpirationDate(expirationDate: string) {
 
   updatePermitDetails()
 }
+
+const waitingForPayment = computed(() => {
+  return (
+    permitStore.getPermitDetail.application.readyForInitialPayment === true ||
+    permitStore.getPermitDetail.application.readyForRenewalPayment === true ||
+    permitStore.getPermitDetail.application.readyForModificationPayment === true
+  )
+})
 
 const isApplicationModification = computed(() => {
   return (
@@ -1779,25 +1733,6 @@ function handleSetAppointmentScheduled() {
     setAppointmentScheduled(
       permitStore.getPermitDetail.application.appointmentId
     )
-  }
-}
-
-function onFileChanged(e: File, target: string) {
-  if (allowedExtension.some(ext => e.name.toLowerCase().endsWith(ext))) {
-    documentsStore
-      .setUserApplicationFile(e, target)
-      .then(() => {
-        state.text = 'Successfully uploaded file.'
-        state.snackbar = true
-        emit('refetch')
-      })
-      .catch(() => {
-        state.text = 'An API error occurred.'
-        state.snackbar = true
-      })
-  } else {
-    state.text = 'Invalid file type provided.'
-    state.snackbar = true
   }
 }
 

@@ -1,167 +1,194 @@
 <template>
-  <v-app-bar
-    app
-    color="primary"
-    class="white--text"
-    clipped-right
-  >
-    <v-btn
-      icon
-      v-if="!props.drawerShowing"
+  <div>
+    <v-app-bar
+      app
+      color="primary"
+      class="white--text"
+      clipped-right
     >
-      <v-icon
-        color="white"
-        @click="handleExpandMenu"
-      >
-        mdi-menu
-      </v-icon>
-    </v-btn>
-    <v-btn
-      text
-      color="white"
-      large
-      v-if="authStore.getAuthState.isAuthenticated"
-      @click="handleEditAdminUser(false)"
-    >
-      {{ authStore.getAuthState.userName }}
-      <v-icon
-        right
-        dark
-      >
-        mdi-cog
-      </v-icon>
-    </v-btn>
-
-    <v-dialog
-      v-model="showAdminUserDialog"
-      :persistent="persistentDialog"
-      max-width="600px"
-    >
-      <v-card
-        :loading="isCreateAdminUserLoading || isUploadAdminUserDocumentLoading"
-      >
-        <v-card-title>
-          {{ $t('Setup User Information') }}
-        </v-card-title>
-
-        <v-card-text>
-          <v-row>
-            <v-col>
-              <v-form v-model="valid">
-                <v-text-field
-                  v-model="adminUser.badgeNumber"
-                  :rules="[v => !!v || 'Badge Number is required']"
-                  label="Badge Number"
-                  outlined
-                ></v-text-field>
-              </v-form>
-            </v-col>
-
-            <v-col>
-              <v-form v-model="valid">
-                <v-text-field
-                  v-model="adminUser.jobTitle"
-                  :rules="[v => !!v || 'Job Title is required']"
-                  label="Job Title"
-                  outlined
-                ></v-text-field>
-              </v-form>
-            </v-col>
-          </v-row>
-        </v-card-text>
-
-        <v-card-title>Signature</v-card-title>
-
-        <v-card-text>
-          <v-card
-            light
-            flat
-            width="550px"
-            height="100px"
-            outlined
-            style="border: solid 2px black"
+      <template v-if="!permitsStore.viewingPermitDetail">
+        <v-btn
+          icon
+          v-if="!props.drawerShowing"
+        >
+          <v-icon
+            color="white"
+            @click="handleExpandMenu"
           >
-            <canvas
+            mdi-menu
+          </v-icon>
+        </v-btn>
+
+        <v-btn
+          text
+          color="white"
+          large
+          v-if="authStore.getAuthState.isAuthenticated"
+          @click="handleEditAdminUser(false)"
+        >
+          {{ authStore.getAuthState.userName }}
+          <v-icon
+            right
+            dark
+          >
+            mdi-cog
+          </v-icon>
+        </v-btn>
+      </template>
+
+      <template v-if="permitsStore.viewingPermitDetail">
+        <PaymentDialog />
+
+        <FileUploadDialog
+          :loading="isFetching"
+          @get-file-from-dialog="onFileChanged"
+        />
+      </template>
+
+      <v-dialog
+        v-model="showAdminUserDialog"
+        :persistent="persistentDialog"
+        max-width="600px"
+      >
+        <v-card
+          :loading="
+            isCreateAdminUserLoading || isUploadAdminUserDocumentLoading
+          "
+        >
+          <v-card-title>
+            {{ $t('Setup User Information') }}
+          </v-card-title>
+
+          <v-card-text>
+            <v-row>
+              <v-col>
+                <v-form v-model="valid">
+                  <v-text-field
+                    v-model="adminUser.badgeNumber"
+                    :rules="[v => !!v || 'Badge Number is required']"
+                    label="Badge Number"
+                    outlined
+                  ></v-text-field>
+                </v-form>
+              </v-col>
+
+              <v-col>
+                <v-form v-model="valid">
+                  <v-text-field
+                    v-model="adminUser.jobTitle"
+                    :rules="[v => !!v || 'Job Title is required']"
+                    label="Job Title"
+                    outlined
+                  ></v-text-field>
+                </v-form>
+              </v-col>
+            </v-row>
+          </v-card-text>
+
+          <v-card-title>Signature</v-card-title>
+
+          <v-card-text>
+            <v-card
+              light
+              flat
               width="550px"
               height="100px"
-              id="signature"
-              class="signature"
-            ></canvas>
-          </v-card>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn
-            color="primary"
-            @click="handleClearSignature"
-          >
-            {{ $t('Clear Signature') }}
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="primary"
-            :disabled="!valid"
-            @click="handleSaveAdminUser"
-          >
-            {{ $t('Save') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+              outlined
+              style="border: solid 2px black"
+            >
+              <canvas
+                width="550px"
+                height="100px"
+                id="signature"
+                class="signature"
+              ></canvas>
+            </v-card>
+          </v-card-text>
 
-    <v-spacer></v-spacer>
+          <v-card-actions>
+            <v-btn
+              color="primary"
+              @click="handleClearSignature"
+            >
+              {{ $t('Clear Signature') }}
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="primary"
+              :disabled="!valid"
+              @click="handleSaveAdminUser"
+            >
+              {{ $t('Save') }}
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
-    <div class="mr-4 ml-1">
-      <ThemeMode />
-    </div>
-    <div
-      v-if="
-        authStore.getAuthState.isAuthenticated && $vuetify.breakpoint.mdAndUp
-      "
-      class="caption font-weight-bold mr-4 ml-1"
-    >
-      {{ $t('Session started at') }} {{ formatTime(sessionTime) }}
-    </div>
-    <v-btn
-      v-if="authStore.getAuthState.isAuthenticated"
-      aria-label="Sign out of application"
-      @click="signOut"
-      class="mr-4 ml-1"
-      color="primary"
-      text
-      small
-    >
-      <!--eslint-disable-next-line vue/singleline-html-element-content-newline -->
-      <v-icon
-        v-if="$vuetify.breakpoint.mdAndDown"
-        class="pr-1 white--text"
+      <v-spacer></v-spacer>
+
+      <div class="mr-4 ml-1">
+        <ThemeMode />
+      </div>
+
+      <v-btn
+        v-if="authStore.getAuthState.isAuthenticated"
+        aria-label="Sign out of application"
+        @click="signOut"
+        class="mr-4 ml-1"
+        color="primary"
+        text
+        small
       >
-        mdi-logout-variant
-      </v-icon>
-      <span
-        v-else
-        class="white--text"
-        >{{ $t('Sign out') }}</span
-      >
-    </v-btn>
-  </v-app-bar>
+        <v-icon
+          v-if="$vuetify.breakpoint.mdAndDown"
+          class="pr-1 white--text"
+        >
+          mdi-logout-variant
+        </v-icon>
+
+        <span
+          v-else
+          class="white--text"
+          >{{ $t('Sign out') }}</span
+        >
+      </v-btn>
+    </v-app-bar>
+
+    <v-snackbar v-model="snackbar">
+      {{ text }}
+
+      <template #action="{ attrs }">
+        <v-btn
+          @click="snackbar = false"
+          v-bind="attrs"
+          color="primary"
+          text
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+  </div>
 </template>
 
 <script setup lang="ts">
+import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
 import { MsalBrowser } from '@shared-ui/api/auth/authentication'
+import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import SignaturePad from 'signature_pad'
 import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
-import { formatTime } from '@shared-utils/formatters/defaultFormatters'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
-import { useMutation } from '@tanstack/vue-query'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { computed, inject, nextTick, onMounted, ref, watch } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const authStore = useAuthStore()
 const documentsStore = useDocumentsStore()
 const adminUserStore = useAdminUserStore()
-const sessionTime = computed(() => authStore.getAuthState.sessionStarted)
+const permitsStore = usePermitsStore()
 const adminUser = computed(() => adminUserStore.adminUser)
 const valid = ref(false)
 const signaturePad = ref<SignaturePad>()
@@ -170,6 +197,8 @@ const validAdminUser = ref(adminUserStore.validAdminUser)
 const showAdminUserDialog = ref(false)
 const form = new FormData()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
+const text = ref('')
+const snackbar = ref(false)
 
 interface IHeaderProps {
   drawerShowing: boolean
@@ -178,6 +207,17 @@ interface IHeaderProps {
 const props = withDefaults(defineProps<IHeaderProps>(), {
   drawerShowing: true,
 })
+
+const allowedExtension = [
+  '.png',
+  '.jpeg',
+  '.jpg',
+  '.pjp',
+  '.pjpeg',
+  '.jfif',
+  '.bmp',
+  '.pdf',
+]
 
 const { isLoading: isCreateAdminUserLoading, mutate: createAdminUser } =
   useMutation(
@@ -277,6 +317,36 @@ async function handleSaveAdminUser() {
 
 function handleExpandMenu() {
   emit('on-expand-menu')
+}
+
+const { isFetching, refetch } = useQuery(
+  ['permitDetailHeader'],
+  () =>
+    permitsStore.getPermitDetailApi(
+      permitsStore.permitDetail.application.orderId
+    ),
+  {
+    enabled: false,
+  }
+)
+
+function onFileChanged({ file, target }: { file: File; target: string }) {
+  if (allowedExtension.some(ext => file.name.toLowerCase().endsWith(ext))) {
+    documentsStore
+      .setUserApplicationFile(file, target)
+      .then(() => {
+        text.value = 'Successfully uploaded file.'
+        snackbar.value = true
+        refetch()
+      })
+      .catch(() => {
+        text.value = 'There was a problem uploading the file.'
+        snackbar.value = true
+      })
+  } else {
+    text.value = 'Invalid file type provided.'
+    snackbar.value = true
+  }
 }
 
 watch(

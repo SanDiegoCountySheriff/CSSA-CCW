@@ -62,7 +62,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
       }
 
       permitStore.permitDetail.application.uploadedDocuments.push(uploadDoc)
-      permitStore.updatePermitDetailApi(
+      await permitStore.updatePermitDetailApi(
         `Uploaded new ${uploadDoc.documentType}`
       )
     }

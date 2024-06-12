@@ -7,12 +7,11 @@
   >
     <template #activator="{ on, attrs }">
       <v-btn
-        :disabled="readonly"
-        small
-        block
-        color="primary"
-        v-bind="attrs"
         v-on="on"
+        v-bind="attrs"
+        :disabled="readonly"
+        color="white"
+        text
       >
         <v-icon left>mdi-currency-usd</v-icon>
         {{ $t('Payments') }}
