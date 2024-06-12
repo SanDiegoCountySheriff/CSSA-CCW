@@ -49,7 +49,7 @@ export const permitRuleSet = [
 export const zipRuleSet = [
   v => Boolean(v) || i18n.t('Field is required'),
   v =>
-    Boolean(/^\d+$/.test(v)) ||
+    Boolean(/^[\d-]+$/.test(v)) ||
     v === 'N/A' ||
     v === 'n/a' ||
     i18n.t('Must contain only numbers'),
