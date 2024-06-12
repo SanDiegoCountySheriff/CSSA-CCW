@@ -13,6 +13,7 @@ export const adminFileTypes = [
   { name: 'Signature', value: 'Signature' },
   { name: 'Driver License', value: 'DriverLicense' },
   { name: 'Proof of Residency', value: 'ProofResidency' },
+  { name: 'Proof of Residency 2', value: 'ProofResidency2' },
   { name: 'Military Documents', value: 'MilitaryDoc' },
   { name: 'Citizenship', value: 'Citizenship' },
   { name: 'Supporting', value: 'Supporting' },
@@ -26,6 +27,7 @@ export const adminFileTypes = [
 export const userFileTypes = [
   { name: 'Driver License', value: 'DriverLicense' },
   { name: 'Proof of Residency', value: 'ProofResidency' },
+  { name: 'Proof of Residency 2', value: 'ProofResidency2' },
   { name: 'Military Documents', value: 'MilitaryDoc' },
   { name: 'Citizenship', value: 'Citizenship' },
   { name: 'Supporting', value: 'Supporting' },
