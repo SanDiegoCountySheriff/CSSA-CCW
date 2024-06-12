@@ -11,18 +11,18 @@ import {
 
 export class MsalBrowser {
   private static instance: MsalBrowser
-  private app: PublicClientApplication
+  private publicClientApplication: PublicClientApplication
   private authStore = useAuthStore()
 
   private constructor(config: Configuration) {
-    this.app = new PublicClientApplication(config)
+    this.publicClientApplication = new PublicClientApplication(config)
 
     this.authStore.auth.handlingRedirectPromise = true
-    this.app.handleRedirectPromise().then(() => {
-      const accounts = this.app.getAllAccounts()
+    this.publicClientApplication.handleRedirectPromise().then(() => {
+      const accounts = this.publicClientApplication.getAllAccounts()
 
       if (accounts.length > 0) {
-        this.app.setActiveAccount(accounts[0])
+        this.publicClientApplication.setActiveAccount(accounts[0])
         this.isAuthenticated()
         this.authStore.setToken(accounts[0].idToken)
         this.authStore.setSessionStarted(new Date().toString())
@@ -61,6 +61,7 @@ export class MsalBrowser {
       },
       system: {
         loadFrameTimeout: 60000,
+        tokenRenewalOffsetSeconds: 2700,
       },
     }
 
@@ -99,16 +100,16 @@ export class MsalBrowser {
   }
 
   logIn() {
-    this.app.loginRedirect()
+    this.publicClientApplication.loginRedirect()
   }
 
   logOut() {
     this.authStore.resetStore()
-    this.app.logoutRedirect()
+    this.publicClientApplication.logoutRedirect()
   }
 
   async acquireToken() {
-    const account = this.app.getActiveAccount()
+    const account = this.publicClientApplication.getActiveAccount()
 
     if (!account) {
       return
@@ -120,13 +121,15 @@ export class MsalBrowser {
       forceRefresh: false,
     }
 
-    const token = await this.app.acquireTokenSilent(silentRequest)
+    const token = await this.publicClientApplication.acquireTokenSilent(
+      silentRequest
+    )
 
     return token.idToken
   }
 
   isAuthenticated() {
-    const account = this.app.getActiveAccount()
+    const account = this.publicClientApplication.getActiveAccount()
 
     if (!account) {
       return false

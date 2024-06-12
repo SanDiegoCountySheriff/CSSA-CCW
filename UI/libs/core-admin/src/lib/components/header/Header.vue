@@ -154,21 +154,11 @@ import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import { formatTime } from '@shared-utils/formatters/defaultFormatters'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
-import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { useMutation } from '@tanstack/vue-query'
-import {
-  computed,
-  inject,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-} from 'vue'
+import { computed, inject, nextTick, onMounted, ref, watch } from 'vue'
 
 const authStore = useAuthStore()
-const brandStore = useBrandStore()
 const documentsStore = useDocumentsStore()
 const adminUserStore = useAdminUserStore()
 const sessionTime = computed(() => authStore.getAuthState.sessionStarted)
@@ -233,22 +223,11 @@ const {
   }
 )
 
-let silentRefresh
-
 onMounted(async () => {
-  if (authStore.getAuthState.isAuthenticated) {
-    silentRefresh = setInterval(
-      msalInstance.value.acquireToken,
-      brandStore.getBrand.refreshTokenTime * 1000 * 60
-    )
-  }
-
   if (!validAdminUser.value) {
     handleEditAdminUser(true)
   }
 })
-
-onBeforeUnmount(() => clearInterval(silentRefresh))
 
 const emit = defineEmits(['on-expand-menu'])
 
