@@ -7,7 +7,7 @@
       class="pt-2 fill-height"
       outlined
     >
-      <v-container>
+      <v-container fluid>
         <v-row>
           <v-col
             cols="12"
@@ -19,6 +19,7 @@
             <span class="body-2"> Submitted on {{ submittedDate }}</span>
           </v-col>
           <v-col
+            class="text-center"
             cols="12"
             lg="4"
           >

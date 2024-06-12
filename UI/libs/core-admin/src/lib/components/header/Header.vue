@@ -43,6 +43,16 @@
           :loading="isFetching"
           @get-file-from-dialog="onFileChanged"
         />
+
+        <v-btn
+          color="white"
+          :href="`mailto:${permitsStore.getPermitDetail.application.userEmail}`"
+          target="_blank"
+          text
+        >
+          <v-icon left>mdi-email-outline</v-icon>
+          Send Email
+        </v-btn>
       </template>
 
       <v-dialog
