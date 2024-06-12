@@ -473,6 +473,8 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             application.Application.BackgroundCheck.SafetyCertificate = new BackgroundCheckItem();
             application.Application.BackgroundCheck.Restrictions = new BackgroundCheckItem();
             application.Application.Comments = Array.Empty<Comment>();
+            application.History = Array.Empty<History>();
+            application.PaymentHistory = new List<PaymentHistory>();
 
             if (application.Application.LegacyQualifyingQuestions != null)
             {
