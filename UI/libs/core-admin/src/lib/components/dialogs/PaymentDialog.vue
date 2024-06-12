@@ -9,7 +9,6 @@
       <v-btn
         v-on="on"
         v-bind="attrs"
-        :disabled="readonly"
         color="white"
         text
       >
@@ -84,6 +83,7 @@
 <script lang="ts" setup>
 import PaymentHistory from '@core-admin/components/receipt/PaymentHistory.vue'
 import ReceiptForm from '@core-admin/components/receipt/ReceiptForm.vue'
+import { reactive } from 'vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -91,10 +91,7 @@ import {
   PaymentHistoryType,
   RefundRequest,
 } from '@shared-utils/types/defaultTypes'
-import { inject, reactive } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
-
-const readonly = inject('readonly')
 
 const state = reactive({
   dialog: false,
