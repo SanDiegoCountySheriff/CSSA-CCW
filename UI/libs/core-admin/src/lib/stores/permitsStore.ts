@@ -2,6 +2,7 @@ import Endpoints from '@shared-ui/api/endpoints'
 import axios from 'axios'
 import { defaultPermitState } from '@shared-utils/lists/defaultConstants'
 import { defineStore } from 'pinia'
+import { useAdminUserStore } from './adminUserStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import {
@@ -27,6 +28,7 @@ import {
 } from '@shared-utils/formatters/defaultFormatters'
 
 export const usePermitsStore = defineStore('PermitsStore', () => {
+  const adminUserStore = useAdminUserStore()
   const authStore = useAuthStore()
   const permits = ref<Array<PermitsType>>()
   const summaryCount = ref<ApplicationSummaryCount>()
@@ -692,6 +694,14 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       permitDetail.value.application.cost.employmentLivescanFee =
         brandStore.brand.cost.employmentLivescanFee
     }
+
+    const historyArray: HistoryType = {
+      change: item,
+      changeDateTimeUtc: new Date(Date.now()).toISOString(),
+      changeMadeBy: adminUserStore.adminUser.name,
+    }
+
+    permitDetail.value.history.push(historyArray)
 
     const res = await axios.put(
       Endpoints.PUT_UPDATE_AGENCY_PERMIT_ENDPOINT,

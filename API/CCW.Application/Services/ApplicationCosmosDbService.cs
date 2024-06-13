@@ -552,48 +552,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
     public async Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken)
     {
-        List<PatchOperation> patches = new(3)
-        {
-            PatchOperation.Set("/Application", application.Application),
-            PatchOperation.Add("/History/-", application.History[0])
-        };
-
-        if (null != application.PaymentHistory && application.PaymentHistory.Count > 0)
-        {
-            int paymentHistoryCount = application.PaymentHistory.Count;
-            PaymentHistory[] paymentHistories = new PaymentHistory[paymentHistoryCount];
-
-            for (int i = 0; i < paymentHistoryCount; i++)
-            {
-                var modelSPayment = JsonConvert.SerializeObject(application.PaymentHistory[i]);
-                var modelPayment = JsonConvert.DeserializeObject<PaymentHistory>(modelSPayment);
-                var paymentHistory = new PaymentHistory
-                {
-                    PaymentDateTimeUtc = modelPayment.PaymentDateTimeUtc,
-                    PaymentType = modelPayment.PaymentType,
-                    VendorInfo = modelPayment.VendorInfo,
-                    Amount = modelPayment.Amount,
-                    RecordedBy = modelPayment.RecordedBy,
-                    TransactionId = modelPayment.TransactionId,
-                    Successful = modelPayment.Successful,
-                    PaymentStatus = modelPayment.PaymentStatus,
-                    ModificationNumber = modelPayment.ModificationNumber,
-                    Verified = modelPayment.Verified,
-                };
-
-                paymentHistories[i] = paymentHistory;
-            }
-
-            patches.Add(PatchOperation.Replace("/PaymentHistory", paymentHistories));
-        }
-
-        await _container.PatchItemAsync<PermitApplication>(
-            application.Id.ToString(),
-            new PartitionKey(application.UserId),
-            patches,
-            null,
-            cancellationToken
-        );
+        var response = await _container.UpsertItemAsync(application);
     }
 
     public async Task DeleteUserApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken)

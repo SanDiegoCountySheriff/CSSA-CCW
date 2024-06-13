@@ -660,7 +660,7 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("updateUserApplication")]
     [HttpPut]
-    public async Task<IActionResult> UpdateUserApplication([FromBody] PermitApplicationRequestModel application, string updatedSection)
+    public async Task<IActionResult> UpdateUserApplication([FromBody] PermitApplicationRequestModel application)
     {
         try
         {
@@ -677,17 +677,6 @@ public class PermitApplicationController : ControllerBase
             {
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
             }
-
-            History[] history = new[]{
-                new History
-                    {
-                        ChangeMadeBy =  userName,
-                        Change = updatedSection,
-                        ChangeDateTimeUtc = DateTime.UtcNow,
-                    }
-                };
-
-            application.History = history;
 
             await _applicationCosmosDbService.UpdateUserApplicationAsync(_mapper.Map<PermitApplication>(application), cancellationToken: default);
 
