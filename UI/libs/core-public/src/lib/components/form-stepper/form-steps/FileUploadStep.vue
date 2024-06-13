@@ -19,6 +19,18 @@
         {{ $t('File Upload') }}
       </v-subheader>
 
+      <v-alert
+        v-if="isRenew"
+        class="mt-2"
+        outlined
+        type="warning"
+      >
+        The renewal process requires you to upload your firearm safety
+        proficiency certificate. Please upload the front
+        <strong>AND</strong> back of the certificate in the respective box
+        below.
+      </v-alert>
+
       <v-row>
         <v-col
           cols="12"
@@ -188,6 +200,26 @@
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'Reserve'"
             @upload-files="files => handleMultiInput(files, 'Reserve')"
+            @delete-file="name => deleteFile(name)"
+          />
+        </v-col>
+        <v-col
+          cols="12"
+          lg="3"
+          class="mb-4 mt-4"
+        >
+          <FileUploadContainer
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
+            :document-label="'Firearm Safety Proficiency Certificate'"
+            :is-loading="loadingStates.EightHourSafetyCourse"
+            @file-opening="loadingStates.EightHourSafetyCourse = true"
+            @file-opened="loadingStates.EightHourSafetyCourse = false"
+            :rules="safetyCertificateRules"
+            :uploaded-documents="completeApplication.uploadedDocuments"
+            :filter-document-type="'EightHourSafetyCourse'"
+            @upload-files="
+              files => handleMultiInput(files, 'EightHourSafetyCourse')
+            "
             @delete-file="name => deleteFile(name)"
           />
         </v-col>
@@ -403,6 +435,23 @@ const isRenew = computed(() => {
   )
 })
 
+const safetyCertificateRules = computed(() => {
+  if (isRenew.value) {
+    const documentSafetyCertificate =
+      completeApplication.uploadedDocuments.some(
+        obj => obj.documentType === 'EightHourSafetyCourse'
+      )
+
+    return [
+      () =>
+        documentSafetyCertificate ||
+        'Please upload front and back of certificate',
+    ]
+  }
+
+  return [() => true]
+})
+
 const loadingStates = reactive({
   DriverLicense: false,
   ProofResidency: false,
@@ -414,6 +463,7 @@ const loadingStates = reactive({
   Judicial: false,
   Reserve: false,
   Employment: false,
+  EightHourSafetyCourse: false,
 })
 
 const { mutate: fileMutation } = useMutation({
@@ -456,6 +506,9 @@ const { mutate: updateMutation } = useMutation({
           break
         case 'employment':
           state.employment = item.name
+          break
+        case 'eighthoursafetycourse':
+          state.eightHourSafetyCourse = item.name
           break
         case 'signature':
           break
