@@ -850,7 +850,7 @@
           Are you sure you wish to begin the renewal process?<br />
           <br />
           You will need to verify some of your information, upload new
-          documents, and go through the submission process again.
+          documents, and submit your application again.
         </v-card-text>
 
         <v-card-actions>
