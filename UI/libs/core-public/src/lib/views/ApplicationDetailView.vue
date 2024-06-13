@@ -849,10 +849,8 @@
         <v-card-text>
           Are you sure you wish to begin the renewal process?<br />
           <br />
-          You will need to update some of your information, and pay the renewal
-          fee at a later date.<br />
-          Your application will be changed to a renewal. This action cannot be
-          undone.
+          You will need to verify some of your information, upload new
+          documents, and go through the submission process again.
         </v-card-text>
 
         <v-card-actions>
