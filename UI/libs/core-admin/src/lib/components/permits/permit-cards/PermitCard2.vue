@@ -1393,37 +1393,63 @@ const modificationReadyForApproval = computed(() => {
 })
 
 const renewalReadyForApproval = computed(() => {
-  const ciiNumberComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.ciiNumber?.value ===
+  const proofOfIDComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.proofOfID?.value ===
     true
 
-  const dojComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.doj?.value === true
-
-  const fbiComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.fbi?.value === true
-
-  const dojLetterComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.dojApprovalLetter
+  const proofOfResidencyComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.proofOfResidency
       ?.value === true
 
-  const sidLettersCompelete =
-    permitStore.getPermitDetail.application.backgroundCheck.sidLettersReceived
+  const ncicWantsWarrantsComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.ncicWantsWarrants
       ?.value === true
 
-  const probationsComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.probations
+  const localsComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.locals?.value ===
+    true
+
+  const dmvRecordComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.dmvRecord?.value ===
+    true
+
+  const crimeTracerComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.crimeTracer
+      ?.value === true
+
+  const trafficCourtPortalComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.trafficCourtPortal
+      ?.value === true
+
+  const liveScanComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.livescan?.value ===
+    true
+
+  const sr14Complete =
+    permitStore.getPermitDetail.application.backgroundCheck.sR14?.value === true
+
+  const firearmsComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.firearms?.value ===
+    true
+
+  const safetyCertificateComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.safetyCertificate
       ?.value === true
 
   return (
     permitStore.getPermitDetail.application.status !==
       ApplicationStatus['Renewal Approved'] &&
-    ciiNumberComplete &&
-    dojComplete &&
-    fbiComplete &&
-    dojLetterComplete &&
-    sidLettersCompelete &&
-    probationsComplete
+    proofOfIDComplete &&
+    proofOfResidencyComplete &&
+    ncicWantsWarrantsComplete &&
+    localsComplete &&
+    dmvRecordComplete &&
+    crimeTracerComplete &&
+    trafficCourtPortalComplete &&
+    liveScanComplete &&
+    sr14Complete &&
+    firearmsComplete &&
+    safetyCertificateComplete
   )
 })
 
@@ -1456,37 +1482,63 @@ const modificationMissingChecklistItems = computed(() => {
 })
 
 const renewalMissingChecklistItems = computed(() => {
-  const ciiNumberComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.ciiNumber?.value ===
+  const proofOfIDComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.proofOfID?.value ===
     true
 
-  const dojComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.doj?.value === true
-
-  const fbiComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.fbi?.value === true
-
-  const dojLetterComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.dojApprovalLetter
+  const proofOfResidencyComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.proofOfResidency
       ?.value === true
 
-  const sidLettersCompelete =
-    permitStore.getPermitDetail.application.backgroundCheck.sidLettersReceived
+  const ncicWantsWarrantsComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.ncicWantsWarrants
       ?.value === true
 
-  const probationsComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.probations
+  const localsComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.locals?.value ===
+    true
+
+  const dmvRecordComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.dmvRecord?.value ===
+    true
+
+  const crimeTracerComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.crimeTracer
+      ?.value === true
+
+  const trafficCourtPortalComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.trafficCourtPortal
+      ?.value === true
+
+  const liveScanComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.livescan?.value ===
+    true
+
+  const sr14Complete =
+    permitStore.getPermitDetail.application.backgroundCheck.sR14?.value === true
+
+  const firearmsComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.firearms?.value ===
+    true
+
+  const safetyCertificateComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.safetyCertificate
       ?.value === true
 
   return (
     permitStore.getPermitDetail.application.status !==
       ApplicationStatus['Renewal Approved'] &&
-    (!ciiNumberComplete ||
-      !dojComplete ||
-      !fbiComplete ||
-      !dojLetterComplete ||
-      !sidLettersCompelete ||
-      !probationsComplete)
+    (!proofOfIDComplete ||
+      !proofOfResidencyComplete ||
+      !ncicWantsWarrantsComplete ||
+      !localsComplete ||
+      !dmvRecordComplete ||
+      !crimeTracerComplete ||
+      !trafficCourtPortalComplete ||
+      !liveScanComplete ||
+      !sr14Complete ||
+      !firearmsComplete ||
+      !safetyCertificateComplete)
   )
 })
 
