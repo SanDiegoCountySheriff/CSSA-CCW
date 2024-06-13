@@ -118,10 +118,10 @@ const { isLoading, refetch } = useQuery(
 
 const { mutate: updateApplication, isLoading: isUpdateApplicationLoading } =
   useMutation({
-    mutationFn: async (update: string) => {
-      await permitStore.updatePermitDetailApi(update)
-      refetch()
-    },
+    mutationFn: (update: string) =>
+      permitStore.updatePermitDetailApi(update).then(() => {
+        refetch()
+      }),
   })
 
 const { mutate: refundPayment, isLoading: isRefundPaymentLoading } =
@@ -143,7 +143,6 @@ function handleDeleteTransaction(paymentHistory: PaymentHistoryType) {
     permitStore.permitDetail.paymentHistory.filter(ph => {
       return ph.transactionId !== paymentHistory.transactionId
     })
-
   updateApplication('Delete Transaction')
 }
 
