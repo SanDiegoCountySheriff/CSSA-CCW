@@ -19,6 +19,18 @@
         {{ $t('File Upload') }}
       </v-subheader>
 
+      <v-alert
+        v-if="isRenew"
+        class="mt-2"
+        outlined
+        type="warning"
+      >
+        The renewal process requires you to upload your firearm safety
+        proficiency certificate. Please upload the front
+        <strong>AND</strong> back of the certificate in the respective box
+        below.
+      </v-alert>
+
       <v-row>
         <v-col
           cols="12"
