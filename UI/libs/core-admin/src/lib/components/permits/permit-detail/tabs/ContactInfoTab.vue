@@ -21,6 +21,7 @@
                   permitStore.getPermitDetail.application.contact
                     .primaryPhoneNumber
                 "
+                @input="formatPhone('contact', 'primaryPhoneNumber')"
                 :readonly="readonly"
                 :label="$t('Primary phone number')"
                 :rules="phoneRuleSet"
@@ -337,6 +338,22 @@ function formatReferencePhone(reference: CharacterReferenceType) {
     reference.phoneNumber = `(${match[1]})${match[2] ? ' ' : ''}${match[2]}${
       match[3] ? '-' : ''
     }${match[3]}`
+  }
+}
+
+function formatPhone(modelName1: string, modelName2: string) {
+  const phoneNumber =
+    permitStore.getPermitDetail.application[modelName1][modelName2]
+
+  if (phoneNumber) {
+    let validInput = phoneNumber.replace(/\D/g, '')
+    const match = validInput.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
+
+    if (match) {
+      permitStore.getPermitDetail.application[modelName1][modelName2] = `(${
+        match[1]
+      })${match[2] ? ' ' : ''}${match[2]}${match[3] ? '-' : ''}${match[3]}`
+    }
   }
 }
 </script>

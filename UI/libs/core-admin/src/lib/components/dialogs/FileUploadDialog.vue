@@ -1,61 +1,72 @@
 <template>
-  <div class="file-dialog-container">
-    <v-dialog
+  <v-dialog
+    v-model="dialog"
+    width="600"
+  >
+    <template #activator="{ on, attrs }">
+      <v-btn
+        v-on="on"
+        v-bind="attrs"
+        :loading="loading"
+        color="white"
+        text
+      >
+        <v-icon left> mdi-file-upload-outline</v-icon>
+        Upload Files
+      </v-btn>
+    </template>
+
+    <v-sheet
+      color="primary"
       width="600"
-      v-model="state.dialog"
+      outlined
+      rounded
     >
-      <template #activator="{ on, attrs }">
-        <v-btn
-          :disabled="readonly"
-          block
-          small
-          v-bind="attrs"
-          v-on="on"
-          color="primary"
-        >
-          <v-icon> {{ props.icon }}</v-icon>
-        </v-btn>
-      </template>
-      <v-card>
+      <v-card outlined>
         <v-card-title>
-          {{ $t('Upload Documents') }}
+          {{ $t('Upload Files') }}
         </v-card-title>
+
         <v-card-text class="mt-6">
           <v-file-input
-            dense
-            outlined
             :label="$t('Select File')"
+            @change="handleUpload"
             prepend-icon=""
             prepend-inner-icon="mdi-file-document"
             accept="image/png, image/jpeg, image/bmp"
-            @change="handleUpload"
+            outlined
+            dense
           >
           </v-file-input>
         </v-card-text>
+
         <v-card-text>
           <v-select
-            dense
-            outlined
+            v-model="fileType"
             :label="$t('File Type')"
             :items="adminFileTypes"
+            :rules="[v => !!v || 'Must select an option']"
             item-text="name"
             item-value="value"
-            :rules="[v => !!v || 'Must select an option']"
-            v-model="state.fileType"
+            outlined
+            dense
           >
           </v-select>
         </v-card-text>
+
         <v-card-actions>
           <v-btn
             color="error"
             text
-            @click="state.dialog = false"
+            @click="dialog = false"
           >
             Cancel
           </v-btn>
+
           <v-spacer> </v-spacer>
+
           <v-btn
-            :disabled="!state.fileType"
+            :disabled="!fileType"
             color="primary"
             text
             @click="handleSubmit"
@@ -64,35 +75,34 @@
           </v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
-  </div>
+    </v-sheet>
+  </v-dialog>
 </template>
+
 <script lang="ts" setup>
 import { adminFileTypes } from '@shared-utils/lists/defaultConstants'
-import { inject, reactive } from 'vue'
+import { ref } from 'vue'
+
 interface FileUploadDialogProps {
-  icon: string
-  defaultSelection?: string
-  getFileFromDialog: (file, target) => void
+  loading: boolean
 }
-const props = withDefaults(defineProps<FileUploadDialogProps>(), {
-  defaultSelection: '',
-})
 
-const readonly = inject('readonly')
+defineProps<FileUploadDialogProps>()
 
-const state = reactive({
-  dialog: false,
-  fileType: props.defaultSelection ? `${props.defaultSelection}` : '',
-  file: {} as File,
-})
+const emit = defineEmits(['get-file-from-dialog'])
 
-function handleUpload(file) {
-  state.file = file
+const dialog = ref(false)
+const fileType = ref('')
+const file = ref<File>()
+
+function handleUpload(input: File) {
+  file.value = input
 }
 
 function handleSubmit() {
-  props.getFileFromDialog(state.file, state.fileType)
-  state.dialog = false
+  emit('get-file-from-dialog', { file: file.value, target: fileType.value })
+  dialog.value = false
+  file.value = undefined
+  fileType.value = ''
 }
 </script>

@@ -36,6 +36,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   const openPermits = ref<number>(0)
   const permitDetail = ref<CompleteApplication>(defaultPermitState)
   const history = ref(defaultPermitState.history)
+  const viewingPermitDetail = ref(false)
   const searchResults = ref([])
   const brandStore = useBrandStore()
 
@@ -757,6 +758,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getHistory,
     summaryCount,
     assignedApplicationsSummary,
+    viewingPermitDetail,
     setPermits,
     setOpenPermits,
     setSearchResults,

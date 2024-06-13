@@ -84,10 +84,13 @@
 </template>
 
 <script setup lang="ts">
-import { PaymentHistoryType } from '@shared-utils/types/defaultTypes'
 import { reactive } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import {
+  ApplicationType,
+  PaymentHistoryType,
+} from '@shared-utils/types/defaultTypes'
 
 interface PaymentHistoryProps {
   loading: boolean
@@ -138,6 +141,8 @@ function submitAndPrint() {
     successful: true,
     paymentStatus: 1,
     refundAmount: '0',
+    verified: true,
+    modificationNumber: getModificationNumber(),
   }
 
   permitStore.permitDetail.paymentHistory.push(body)
@@ -145,5 +150,22 @@ function submitAndPrint() {
   permitStore.updatePermitDetailApi('Payment History added').catch(() => {
     state.snackbar = true
   })
+}
+
+function getModificationNumber() {
+  if (
+    permitStore.permitDetail.application.applicationType ===
+      ApplicationType['Modify Standard'] ||
+    permitStore.permitDetail.application.applicationType ===
+      ApplicationType['Modify Judicial'] ||
+    permitStore.permitDetail.application.applicationType ===
+      ApplicationType['Modify Reserve'] ||
+    permitStore.permitDetail.application.applicationType ===
+      ApplicationType['Modify Employment']
+  ) {
+    return permitStore.permitDetail.application.modificationNumber
+  }
+
+  return null
 }
 </script>

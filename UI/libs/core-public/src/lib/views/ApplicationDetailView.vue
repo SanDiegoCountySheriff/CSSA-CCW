@@ -1888,6 +1888,13 @@ function handleUpdateApplication() {
 }
 
 function handleModifyApplication() {
+  applicationStore.completeApplication.application.personalInfo.modifiedFirstName =
+    ''
+  applicationStore.completeApplication.application.personalInfo.modifiedLastName =
+    ''
+  applicationStore.completeApplication.application.personalInfo.modifiedMiddleName =
+    ''
+
   router.push({
     path: Routes.MODIFY_FORM_PATH,
     query: {

@@ -186,6 +186,7 @@
                   permitStore.getPermitDetail.application.workInformation
                     .employerPhone
                 "
+                @input="formatPhone('workInformation', 'employerPhone')"
                 :label="$t('Employer Phone number')"
                 :rules="phoneRuleSet"
                 :readonly="readonly"
@@ -219,5 +220,21 @@ const readonly = inject<boolean>('readonly')
 
 function handleSave() {
   emit('on-save', 'Employment Information')
+}
+
+function formatPhone(modelName1: string, modelName2: string) {
+  const phoneNumber =
+    permitStore.getPermitDetail.application[modelName1][modelName2]
+
+  if (phoneNumber) {
+    let validInput = phoneNumber.replace(/\D/g, '')
+    const match = validInput.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
+
+    if (match) {
+      permitStore.getPermitDetail.application[modelName1][modelName2] = `(${
+        match[1]
+      })${match[2] ? ' ' : ''}${match[2]}${match[3] ? '-' : ''}${match[3]}`
+    }
+  }
 }
 </script>
