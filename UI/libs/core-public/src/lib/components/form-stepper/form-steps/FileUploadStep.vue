@@ -197,6 +197,26 @@
           class="mb-4 mt-4"
         >
           <FileUploadContainer
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
+            :document-label="'Firearm Safety Proficiency Certificate'"
+            :is-loading="loadingStates.EightHourSafetyCourse"
+            @file-opening="loadingStates.EightHourSafetyCourse = true"
+            @file-opened="loadingStates.EightHourSafetyCourse = false"
+            :rules="safetyCertificateRules"
+            :uploaded-documents="completeApplication.uploadedDocuments"
+            :filter-document-type="'EightHourSafetyCourse'"
+            @upload-files="
+              files => handleMultiInput(files, 'EightHourSafetyCourse')
+            "
+            @delete-file="name => deleteFile(name)"
+          />
+        </v-col>
+        <v-col
+          cols="12"
+          lg="3"
+          class="mb-4 mt-4"
+        >
+          <FileUploadContainer
             v-if="brandStore.brand.employmentLicense"
             :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'Employment Documents'"
@@ -403,6 +423,23 @@ const isRenew = computed(() => {
   )
 })
 
+const safetyCertificateRules = computed(() => {
+  if (isRenew.value) {
+    const documentSafetyCertificate =
+      completeApplication.uploadedDocuments.some(
+        obj => obj.documentType === 'EightHourSafetyCourse'
+      )
+
+    return [
+      () =>
+        documentSafetyCertificate ||
+        'Please upload front and back of certificate',
+    ]
+  }
+
+  return [() => true]
+})
+
 const loadingStates = reactive({
   DriverLicense: false,
   ProofResidency: false,
@@ -414,6 +451,7 @@ const loadingStates = reactive({
   Judicial: false,
   Reserve: false,
   Employment: false,
+  EightHourSafetyCourse: false,
 })
 
 const { mutate: fileMutation } = useMutation({
@@ -456,6 +494,9 @@ const { mutate: updateMutation } = useMutation({
           break
         case 'employment':
           state.employment = item.name
+          break
+        case 'eighthoursafetycourse':
+          state.eightHourSafetyCourse = item.name
           break
         case 'signature':
           break
