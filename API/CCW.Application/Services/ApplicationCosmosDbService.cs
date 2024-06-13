@@ -553,7 +553,6 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     public async Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken)
     {
         var response = await _container.UpsertItemAsync(application);
-
     }
 
     public async Task DeleteUserApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken)

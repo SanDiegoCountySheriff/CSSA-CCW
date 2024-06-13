@@ -139,6 +139,7 @@ function handleDeleteTransaction(paymentHistory: PaymentHistoryType) {
     permitStore.permitDetail.paymentHistory.filter(ph => {
       return ph.transactionId !== paymentHistory.transactionId
     })
+
   updateApplication('Delete Transaction')
 }
 
