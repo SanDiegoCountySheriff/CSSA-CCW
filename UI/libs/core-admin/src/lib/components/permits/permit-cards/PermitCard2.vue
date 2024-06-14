@@ -91,10 +91,7 @@
                           </v-list-item-title>
                         </v-list-item>
 
-                        <v-list-item
-                          v-if="isApplicationModification"
-                          @click="printPdf('printModificationApi')"
-                        >
+                        <v-list-item @click="printPdf('printModificationApi')">
                           <v-list-item-title>
                             Print Modification
                           </v-list-item-title>
@@ -126,31 +123,6 @@
                           <span v-else>Print Official License</span>
                         </v-list-item>
 
-                        <v-list-item
-                          :style="{
-                            color: isUnofficialLicenseMissingInformation
-                              ? 'gray'
-                              : 'inherit',
-                            cursor: isUnofficialLicenseMissingInformation
-                              ? 'default'
-                              : 'pointer',
-                          }"
-                          @click.prevent="
-                            !isUnofficialLicenseMissingInformation &&
-                              printPdf('printUnofficialLicenseApi')
-                          "
-                        >
-                          <v-tooltip
-                            v-if="isUnofficialLicenseMissingInformation"
-                            bottom
-                          >
-                            <template #activator="{ on }">
-                              <span v-on="on">Print Unofficial License</span>
-                            </template>
-                            <span>{{ tooltipText }}</span>
-                          </v-tooltip>
-                          <span v-else>Print Unofficial License</span>
-                        </v-list-item>
                         <v-list-item @click="printPdf('printLiveScanApi')">
                           <v-list-item-title>
                             Print LiveScan Document
@@ -1425,19 +1397,6 @@ const waitingForPayment = computed(() => {
     permitStore.getPermitDetail.application.readyForInitialPayment === true ||
     permitStore.getPermitDetail.application.readyForRenewalPayment === true ||
     permitStore.getPermitDetail.application.readyForModificationPayment === true
-  )
-})
-
-const isApplicationModification = computed(() => {
-  return (
-    permitStore.getPermitDetail.application.applicationType ===
-      ApplicationType['Modify Standard'] ||
-    permitStore.getPermitDetail.application.applicationType ===
-      ApplicationType['Modify Reserve'] ||
-    permitStore.getPermitDetail.application.applicationType ===
-      ApplicationType['Modify Judicial'] ||
-    permitStore.getPermitDetail.application.applicationType ===
-      ApplicationType['Modify Employment']
   )
 })
 
