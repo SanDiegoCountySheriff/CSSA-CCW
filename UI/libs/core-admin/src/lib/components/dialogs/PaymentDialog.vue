@@ -83,14 +83,11 @@
 <script lang="ts" setup>
 import PaymentHistory from '@core-admin/components/receipt/PaymentHistory.vue'
 import ReceiptForm from '@core-admin/components/receipt/ReceiptForm.vue'
+import { RefundRequest } from '@shared-utils/types/defaultTypes'
 import { reactive } from 'vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import {
-  PaymentHistoryType,
-  RefundRequest,
-} from '@shared-utils/types/defaultTypes'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const state = reactive({
@@ -134,11 +131,8 @@ async function handleRefund(refundRequest: RefundRequest) {
   refundPayment(refundRequest)
 }
 
-function handleDeleteTransaction(paymentHistory: PaymentHistoryType) {
-  permitStore.permitDetail.paymentHistory =
-    permitStore.permitDetail.paymentHistory.filter(ph => {
-      return ph.transactionId !== paymentHistory.transactionId
-    })
+function handleDeleteTransaction(index: number) {
+  permitStore.permitDetail.paymentHistory.splice(index, 1)
 
   updateApplication('Delete Transaction')
 }
