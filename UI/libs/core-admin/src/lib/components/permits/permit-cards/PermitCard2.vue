@@ -1283,40 +1283,18 @@ const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
     }),
 })
 
-function handleApproveModification() {
-  permitStore.getPermitDetail.application.status =
-    ApplicationStatus['Modification Approved']
-
-  changed.value = 'Application Status - Modification Approved'
-
-  updatePermitDetails()
-}
-
-function handleApproveRenewal() {
-  permitStore.getPermitDetail.application.status =
-    ApplicationStatus['Renewal Approved']
-
-  changed.value = 'Application Status - Renewal Approved'
-
-  updatePermitDetails()
-}
-
-async function handleFinishModification() {
+async function handleApproveModification() {
   const historicalApplication: CompleteApplication = {
     ...permitStore.getPermitDetail,
   }
 
-  await addHistoricalApplication(historicalApplication)
-
   const app = permitStore.getPermitDetail.application
 
-  app.status = ApplicationStatus['Permit Delivered']
+  await addHistoricalApplication(historicalApplication)
 
-  changed.value = 'Modification - Permit Delivered'
+  app.status = ApplicationStatus['Modification Approved']
 
-  app.applicationType = getOriginalApplicationTypeModification(
-    app.applicationType
-  )
+  changed.value = 'Application Status - Modification Approved'
 
   if (app.personalInfo.modifiedFirstName) {
     app.personalInfo.firstName = app.personalInfo.modifiedFirstName
@@ -1385,6 +1363,29 @@ async function handleFinishModification() {
   app.modifiedWeaponComplete = null
   app.currentStep = 1
   app.modificationNumber += 1
+
+  updatePermitDetails()
+}
+
+function handleApproveRenewal() {
+  permitStore.getPermitDetail.application.status =
+    ApplicationStatus['Renewal Approved']
+
+  changed.value = 'Application Status - Renewal Approved'
+
+  updatePermitDetails()
+}
+
+async function handleFinishModification() {
+  const app = permitStore.getPermitDetail.application
+
+  app.status = ApplicationStatus['Permit Delivered']
+
+  changed.value = 'Modification - Permit Delivered'
+
+  app.applicationType = getOriginalApplicationTypeModification(
+    app.applicationType
+  )
 
   updatePermitDetails()
 }
