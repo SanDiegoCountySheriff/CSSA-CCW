@@ -850,7 +850,8 @@
           Are you sure you wish to begin the renewal process?<br />
           <br />
           You will need to verify some of your information, upload new
-          documents, and submit your application again.
+          documents, accept the terms and agreements, and provide a new
+          signature.
         </v-card-text>
 
         <v-card-actions>
