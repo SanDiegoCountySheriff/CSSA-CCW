@@ -1,7 +1,6 @@
 using CCW.Common.Models;
 using CCW.Schedule.Services.Contracts;
 using Microsoft.Azure.Cosmos;
-using Newtonsoft.Json;
 
 namespace CCW.Schedule.Services;
 
@@ -41,51 +40,6 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
     public async Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken)
     {
-        List<PatchOperation> patches = new List<PatchOperation>(3);
-        patches.Add(PatchOperation.Set("/Application", application.Application));
-
-        var modelS = JsonConvert.SerializeObject(application.History[0]);
-        var model = JsonConvert.DeserializeObject<History>(modelS);
-        var history = new History
-        {
-            ChangeMadeBy = model.ChangeMadeBy,
-            Change = model.Change,
-            ChangeDateTimeUtc = model.ChangeDateTimeUtc,
-        };
-        patches.Add(PatchOperation.Add("/History/-", history));
-
-        if (application.PaymentHistory != null && application.PaymentHistory.Count > 0)
-        {
-            int paymentHistoryCount = application.PaymentHistory.Count;
-            PaymentHistory[] paymentHistories = new PaymentHistory[paymentHistoryCount];
-
-            for (int i = 0; i < paymentHistoryCount; i++)
-            {
-                var modelSPayment = JsonConvert.SerializeObject(application.PaymentHistory[i]);
-                var modelPayment = JsonConvert.DeserializeObject<PaymentHistory>(modelSPayment);
-                var paymentHistory = new PaymentHistory
-                {
-
-                    PaymentDateTimeUtc = modelPayment.PaymentDateTimeUtc,
-                    PaymentType = modelPayment.PaymentType,
-                    VendorInfo = modelPayment.VendorInfo,
-                    Amount = modelPayment.Amount,
-                    RecordedBy = modelPayment.RecordedBy,
-                    TransactionId = modelPayment.TransactionId,
-                };
-
-                paymentHistories[i] = paymentHistory;
-            }
-
-            patches.Add(PatchOperation.Replace("/PaymentHistory", paymentHistories));
-        }
-
-        await _container.PatchItemAsync<PermitApplication>(
-            application.Id.ToString(),
-            new PartitionKey(application.UserId),
-            patches,
-            null,
-            cancellationToken
-        );
+        await _container.UpsertItemAsync(application, new PartitionKey(application.UserId));
     }
 }

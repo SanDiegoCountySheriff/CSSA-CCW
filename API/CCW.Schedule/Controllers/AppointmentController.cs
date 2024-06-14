@@ -353,16 +353,6 @@ public class AppointmentController : ControllerBase
                 return NotFound("Permit application cannot be found.");
             }
 
-            History[] history = new[]{
-                new History
-                {
-                    ChangeMadeBy =  userName,
-                    Change = "Updated appointment from " + existingApplication.Application.AppointmentDateTime,
-                    ChangeDateTimeUtc = DateTime.UtcNow,
-                }
-            };
-
-            existingApplication.History = history;
             existingApplication.Application.AppointmentDateTime = appointment.Start;
             existingApplication.Application.AppointmentStatus = AppointmentStatus.Scheduled;
             existingApplication.Application.AppointmentId = appointment.Id;
@@ -471,16 +461,6 @@ public class AppointmentController : ControllerBase
                 return NotFound("Permit application cannot be found.");
             }
 
-            History[] history = new[]{
-                new History
-                {
-                    ChangeMadeBy =  userName,
-                    Change = "Checked In appointment",
-                    ChangeDateTimeUtc = DateTime.UtcNow,
-                }
-            };
-
-            existingApplication.History = history;
             existingApplication.Application.AppointmentStatus = AppointmentStatus.CheckedIn;
 
             await _applicationCosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
@@ -525,17 +505,7 @@ public class AppointmentController : ControllerBase
                 return NotFound("Permit application cannot be found.");
             }
 
-            History[] history = new[]{
-                new History
-                {
-                    ChangeMadeBy =  userName,
-                    Change = "Set appointment to No Show",
-                    ChangeDateTimeUtc = DateTime.UtcNow,
-                }
-            };
-
             existingApplication.Application.Status = ApplicationStatus.AppointmentNoShow;
-            existingApplication.History = history;
             existingApplication.Application.AppointmentStatus = AppointmentStatus.NoShow;
 
             await _applicationCosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
@@ -580,17 +550,7 @@ public class AppointmentController : ControllerBase
                 return NotFound("Permit application cannot be found.");
             }
 
-            History[] history = new[]{
-                new History
-                {
-                    ChangeMadeBy =  userName,
-                    Change = "Set user appointment to scheduled",
-                    ChangeDateTimeUtc = DateTime.UtcNow,
-                }
-            };
-
             existingApplication.Application.Status = ApplicationStatus.ReadyForAppointment;
-            existingApplication.History = history;
             existingApplication.Application.AppointmentStatus = AppointmentStatus.Scheduled;
 
             await _applicationCosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
@@ -616,6 +576,7 @@ public class AppointmentController : ControllerBase
         {
             var appointment = await _appointmentCosmosDbService.GetAppointmentByIdAsync(appointmentId, cancellationToken: default);
             var appointmentApplicationID = "";
+
             if (appointment.ApplicationId == null)
             {
                 return NotFound();
@@ -652,16 +613,6 @@ public class AppointmentController : ControllerBase
                 return NotFound("Permit application cannot be found.");
             }
 
-            History[] history = new[]{
-                new History
-                {
-                    ChangeMadeBy =  userName,
-                    Change = "Removed appointment from " + existingApplication.Application.AppointmentDateTime,
-                    ChangeDateTimeUtc = DateTime.UtcNow,
-                }
-            };
-
-            existingApplication.History = history;
             existingApplication.Application.AppointmentDateTime = null;
             existingApplication.Application.AppointmentStatus = AppointmentStatus.NotScheduled;
             existingApplication.Application.AppointmentId = null;

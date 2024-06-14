@@ -337,6 +337,8 @@
             <v-row>
               <v-col
                 v-if="
+                  permitStore.getPermitDetail.application.status ===
+                    ApplicationStatus.Submitted &&
                   !permitStore.getPermitDetail.application
                     .readyForInitialPayment &&
                   !isInitialPaymentComplete &&
@@ -1190,7 +1192,10 @@ const { mutateAsync: createManualAppointment } = useMutation({
 const { mutate: checkInAppointment, isLoading: isCheckInLoading } = useMutation(
   {
     mutationFn: (appointmentId: string) =>
-      appointmentStore.putCheckInAppointment(appointmentId),
+      appointmentStore.putCheckInAppointment(appointmentId).then(() => {
+        changed.value = 'checked in appointment'
+        updatePermitDetails()
+      }),
   }
 )
 
@@ -1199,12 +1204,18 @@ const {
   isLoading: isAppointmentScheduledLoading,
 } = useMutation({
   mutationFn: (appointmentId: string) =>
-    appointmentStore.putSetAppointmentScheduled(appointmentId),
+    appointmentStore.putSetAppointmentScheduled(appointmentId).then(() => {
+      changed.value = 'appointment time'
+      updatePermitDetails()
+    }),
 })
 
 const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
   mutationFn: (appointmentId: string) =>
-    appointmentStore.putNoShowAppointment(appointmentId),
+    appointmentStore.putNoShowAppointment(appointmentId).then(() => {
+      changed.value = 'no show appointment'
+      updatePermitDetails()
+    }),
 })
 
 function handleApproveModification() {
