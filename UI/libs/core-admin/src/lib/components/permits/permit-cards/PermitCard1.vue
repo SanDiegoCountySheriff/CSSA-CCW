@@ -228,7 +228,7 @@ function updateApplicationStatus(update: string) {
   state.update = `Changed application status to ${ApplicationStatus[update]}`
 
   if (
-    ApplicationStatus[update] === 'Appointment Complete' &&
+    ApplicationStatus[update] === 'Permit Delivered' &&
     permitStore.getPermitDetail.application.appointmentId
   ) {
     appointmentStore.deleteSlotByApplicationId(permitStore.getPermitDetail.id)

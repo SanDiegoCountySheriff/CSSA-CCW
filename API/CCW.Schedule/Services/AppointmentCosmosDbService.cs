@@ -166,9 +166,9 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         await _holidayContainer.UpsertItemAsync(organizationalHolidays, new PartitionKey(organizationalHolidays.Id.ToString()));
     }
 
-    public async Task UpdateAsync(AppointmentWindow appointment, CancellationToken cancellationToken)
+    public async Task<AppointmentWindow> UpdateAsync(AppointmentWindow appointment, CancellationToken cancellationToken)
     {
-        await _container.UpsertItemAsync(appointment, new PartitionKey(appointment.Id.ToString()));
+        return await _container.UpsertItemAsync(appointment, new PartitionKey(appointment.Id.ToString()));
     }
 
     public async Task<AppointmentWindow> GetAsync(string applicationId, CancellationToken cancellationToken)

@@ -215,14 +215,16 @@
 
       <template #[`item.appointmentStatus`]="props">
         {{
-          props.item.appointmentDateTime
-            ? AppointmentStatus[props.item.appointmentStatus]
-            : 'n/a'
+          isAppointmentComplete
+            ? 'Complete'
+            : AppointmentStatus[props.item.appointmentStatus]
         }}
       </template>
 
       <template #[`item.appointmentDateTime`]="props">
-        {{ props.item.appointmentDateTime }}
+        {{
+          isAppointmentComplete ? 'Complete' : props.item.appointmentDateTime
+        }}
       </template>
 
       <template #[`item.paymentStatus`]="{ item }">
@@ -370,6 +372,50 @@ const adminUserStore = useAdminUserStore()
 const appointmentsStore = useAppointmentsStore()
 const menu = ref(false)
 const date = ref('')
+let changed: string
+
+const isAppointmentComplete = computed(() => {
+  return (
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Appointment Complete'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Background In Progress'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Contingently Denied'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Contingently Approved'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Approved ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Permit Delivered'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Suspended ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Revoked ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Canceled ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Denied ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Withdrawn ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Ready To Issue'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Modification Approved'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Renewal Approved'] ||
+    (permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Waiting For Customer'] &&
+      permitStore.getPermitDetail.application.appointmentDateTime !== null &&
+      permitStore.getPermitDetail.application.appointmentDateTime <
+        new Date().toISOString()) ||
+    (permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Flagged For Review'] &&
+      permitStore.getPermitDetail.application.appointmentDateTime !== null &&
+      permitStore.getPermitDetail.application.appointmentDateTime <
+        new Date().toISOString())
+  )
+})
 
 const state = reactive({
   selected: [] as PermitsType[],
@@ -400,30 +446,66 @@ const state = reactive({
 })
 
 const {
+  mutate: addApplicationHistory,
+  isLoading: isAddApplicationHistoryLoading,
+} = useMutation({
+  mutationFn: (applicationId: string) =>
+    permitStore.addApplicationHistory(changed, applicationId),
+})
+
+const {
   mutate: setAppointmentScheduled,
   isLoading: isAppointmentScheduledLoading,
 } = useMutation({
-  mutationFn: (appointmentId: string) =>
-    appointmentsStore.putSetAppointmentScheduled(appointmentId),
+  mutationFn: ({
+    appointmentId,
+    applicationId,
+  }: {
+    appointmentId: string
+    applicationId: string
+  }) =>
+    appointmentsStore.putSetAppointmentScheduled(appointmentId).then(() => {
+      changed = 'Undo no show or check in appointment'
+      addApplicationHistory(applicationId)
+    }),
 })
 
 const { mutate: checkInAppointment, isLoading: isCheckInLoading } = useMutation(
   {
-    mutationFn: (appointmentId: string) =>
-      appointmentsStore.putCheckInAppointment(appointmentId),
+    mutationFn: ({
+      appointmentId,
+      applicationId,
+    }: {
+      appointmentId: string
+      applicationId: string
+    }) =>
+      appointmentsStore.putCheckInAppointment(appointmentId).then(() => {
+        changed = 'Update check in appointment'
+        addApplicationHistory(applicationId)
+      }),
   }
 )
 
 const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
-  mutationFn: (appointmentId: string) =>
-    appointmentsStore.putNoShowAppointment(appointmentId),
+  mutationFn: ({
+    appointmentId,
+    applicationId,
+  }: {
+    appointmentId: string
+    applicationId: string
+  }) =>
+    appointmentsStore.putNoShowAppointment(appointmentId).then(() => {
+      changed = 'Update no show appointment'
+      addApplicationHistory(applicationId)
+    }),
 })
 
 const appointmentLoading = computed(() => {
   return (
     isAppointmentScheduledLoading.value ||
     isCheckInLoading.value ||
-    isNoShowLoading.value
+    isNoShowLoading.value ||
+    isAddApplicationHistoryLoading.value
   )
 })
 
@@ -495,17 +577,26 @@ function clearDate() {
 
 function handleSetScheduled(application) {
   application.appointmentStatus = AppointmentStatus.Scheduled
-  setAppointmentScheduled(application.appointmentId)
+  setAppointmentScheduled({
+    appointmentId: application.appointmentId,
+    applicationId: application.id,
+  })
 }
 
 function handleCheckIn(application) {
   application.appointmentStatus = AppointmentStatus['Checked In']
-  checkInAppointment(application.appointmentId)
+  checkInAppointment({
+    appointmentId: application.appointmentId,
+    applicationId: application.id,
+  })
 }
 
 function handleNoShow(application) {
   application.appointmentStatus = AppointmentStatus['No Show']
-  noShowAppointment(application.appointmentId)
+  noShowAppointment({
+    appointmentId: application.appointmentId,
+    applicationId: application.id,
+  })
 }
 
 watch(

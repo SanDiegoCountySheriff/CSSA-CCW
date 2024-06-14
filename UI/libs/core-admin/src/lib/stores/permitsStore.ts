@@ -670,6 +670,22 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     )
   }
 
+  async function addApplicationHistory(
+    historyText: string,
+    applicationId: string
+  ) {
+    const newHistory: HistoryType = {
+      change: historyText,
+      changeDateTimeUtc: new Date(Date.now()).toISOString(),
+      changeMadeBy: adminUserStore.adminUser.name,
+    }
+
+    await axios.post(
+      `${Endpoints.ADD_APPLICATION_HISTORY_ENDPOINT}?applicationId=${applicationId}`,
+      newHistory
+    )
+  }
+
   async function updatePermitDetailApi(item: string) {
     if (permitDetail.value.application.cost === null) {
       permitDetail.value.application.cost = brandStore.brand.cost
@@ -695,13 +711,13 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
         brandStore.brand.cost.employmentLivescanFee
     }
 
-    const historyArray: HistoryType = {
+    const newHistory: HistoryType = {
       change: item,
       changeDateTimeUtc: new Date(Date.now()).toISOString(),
       changeMadeBy: adminUserStore.adminUser.name,
     }
 
-    permitDetail.value.history.push(historyArray)
+    permitDetail.value.history.push(newHistory)
 
     const res = await axios.put(
       Endpoints.PUT_UPDATE_AGENCY_PERMIT_ENDPOINT,
@@ -785,5 +801,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     matchApplication,
     undoMatchApplication,
     getEmails,
+    addApplicationHistory,
   }
 })

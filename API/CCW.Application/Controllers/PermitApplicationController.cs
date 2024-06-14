@@ -691,6 +691,34 @@ public class PermitApplicationController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
+    [Route("addApplicationHistory")]
+    [HttpPost]
+    public async Task<IActionResult> AddApplicationHistory([FromBody] History history, string applicationId)
+    {
+        try
+        {
+            var application = await _applicationCosmosDbService.GetUserApplicationAsync(applicationId.ToString(), cancellationToken: default);
+
+            if (application == null)
+            {
+                return NotFound();
+            }
+
+            application.History = application.History.Append(history).ToArray();
+
+            await _applicationCosmosDbService.UpdateUserApplicationAsync(application, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to update permit application.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
     [Route("deleteUserApplication")]
     [HttpPut]
     public async Task<IActionResult> DeleteUserApplication(string applicationId)
