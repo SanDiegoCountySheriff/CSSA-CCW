@@ -91,10 +91,7 @@
                           </v-list-item-title>
                         </v-list-item>
 
-                        <v-list-item
-                          v-if="isApplicationModification"
-                          @click="printPdf('printModificationApi')"
-                        >
+                        <v-list-item @click="printPdf('printModificationApi')">
                           <v-list-item-title>
                             Print Modification
                           </v-list-item-title>
@@ -126,31 +123,6 @@
                           <span v-else>Print Official License</span>
                         </v-list-item>
 
-                        <v-list-item
-                          :style="{
-                            color: isUnofficialLicenseMissingInformation
-                              ? 'gray'
-                              : 'inherit',
-                            cursor: isUnofficialLicenseMissingInformation
-                              ? 'default'
-                              : 'pointer',
-                          }"
-                          @click.prevent="
-                            !isUnofficialLicenseMissingInformation &&
-                              printPdf('printUnofficialLicenseApi')
-                          "
-                        >
-                          <v-tooltip
-                            v-if="isUnofficialLicenseMissingInformation"
-                            bottom
-                          >
-                            <template #activator="{ on }">
-                              <span v-on="on">Print Unofficial License</span>
-                            </template>
-                            <span>{{ tooltipText }}</span>
-                          </v-tooltip>
-                          <span v-else>Print Unofficial License</span>
-                        </v-list-item>
                         <v-list-item @click="printPdf('printLiveScanApi')">
                           <v-list-item-title>
                             Print LiveScan Document
@@ -1283,40 +1255,18 @@ const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
     }),
 })
 
-function handleApproveModification() {
-  permitStore.getPermitDetail.application.status =
-    ApplicationStatus['Modification Approved']
-
-  changed.value = 'Application Status - Modification Approved'
-
-  updatePermitDetails()
-}
-
-function handleApproveRenewal() {
-  permitStore.getPermitDetail.application.status =
-    ApplicationStatus['Renewal Approved']
-
-  changed.value = 'Application Status - Renewal Approved'
-
-  updatePermitDetails()
-}
-
-async function handleFinishModification() {
+async function handleApproveModification() {
   const historicalApplication: CompleteApplication = {
     ...permitStore.getPermitDetail,
   }
 
-  await addHistoricalApplication(historicalApplication)
-
   const app = permitStore.getPermitDetail.application
 
-  app.status = ApplicationStatus['Permit Delivered']
+  await addHistoricalApplication(historicalApplication)
 
-  changed.value = 'Modification - Permit Delivered'
+  app.status = ApplicationStatus['Modification Approved']
 
-  app.applicationType = getOriginalApplicationTypeModification(
-    app.applicationType
-  )
+  changed.value = 'Application Status - Modification Approved'
 
   if (app.personalInfo.modifiedFirstName) {
     app.personalInfo.firstName = app.personalInfo.modifiedFirstName
@@ -1389,6 +1339,29 @@ async function handleFinishModification() {
   updatePermitDetails()
 }
 
+function handleApproveRenewal() {
+  permitStore.getPermitDetail.application.status =
+    ApplicationStatus['Renewal Approved']
+
+  changed.value = 'Application Status - Renewal Approved'
+
+  updatePermitDetails()
+}
+
+async function handleFinishModification() {
+  const app = permitStore.getPermitDetail.application
+
+  app.status = ApplicationStatus['Permit Delivered']
+
+  changed.value = 'Modification - Permit Delivered'
+
+  app.applicationType = getOriginalApplicationTypeModification(
+    app.applicationType
+  )
+
+  updatePermitDetails()
+}
+
 function handleFinishRenewal() {
   const app = permitStore.getPermitDetail.application
 
@@ -1424,19 +1397,6 @@ const waitingForPayment = computed(() => {
     permitStore.getPermitDetail.application.readyForInitialPayment === true ||
     permitStore.getPermitDetail.application.readyForRenewalPayment === true ||
     permitStore.getPermitDetail.application.readyForModificationPayment === true
-  )
-})
-
-const isApplicationModification = computed(() => {
-  return (
-    permitStore.getPermitDetail.application.applicationType ===
-      ApplicationType['Modify Standard'] ||
-    permitStore.getPermitDetail.application.applicationType ===
-      ApplicationType['Modify Reserve'] ||
-    permitStore.getPermitDetail.application.applicationType ===
-      ApplicationType['Modify Judicial'] ||
-    permitStore.getPermitDetail.application.applicationType ===
-      ApplicationType['Modify Employment']
   )
 })
 
