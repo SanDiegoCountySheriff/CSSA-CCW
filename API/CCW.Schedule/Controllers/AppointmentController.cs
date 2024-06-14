@@ -327,13 +327,16 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            var existingAppointments = await _appointmentCosmosDbService.ResetApplicantAppointmentsAsync(appointment.ApplicationId, cancellationToken: default);
+            await _appointmentCosmosDbService.ResetApplicantAppointmentsAsync(appointment.ApplicationId, cancellationToken: default);
 
             if (appointment.Id == Guid.Empty.ToString())
             {
                 var nextSlot = await _appointmentCosmosDbService.GetAvailableSlotByDateTime(appointment.Start, cancellationToken: default);
+
                 if (nextSlot == null || nextSlot.Count < 1)
-                    throw new ArgumentOutOfRangeException("start");
+                {
+                    return NotFound();
+                }
 
                 var slot = nextSlot.First();
                 appointment.Id = slot.Id.ToString();
@@ -343,23 +346,9 @@ public class AppointmentController : ControllerBase
 
             AppointmentWindow appt = _mapper.Map<AppointmentWindow>(appointment);
 
-            await _appointmentCosmosDbService.UpdateAsync(appt, cancellationToken: default);
-            GetAADUserName(out string userName);
+            var result = await _appointmentCosmosDbService.UpdateAsync(appt, cancellationToken: default);
 
-            var existingApplication = await _applicationCosmosDbService.GetUserApplicationAsync(appointment.ApplicationId, cancellationToken: default);
-
-            if (existingApplication == null)
-            {
-                return NotFound("Permit application cannot be found.");
-            }
-
-            existingApplication.Application.AppointmentDateTime = appointment.Start;
-            existingApplication.Application.AppointmentStatus = AppointmentStatus.Scheduled;
-            existingApplication.Application.AppointmentId = appointment.Id;
-
-            await _applicationCosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
-
-            return Ok();
+            return Ok(result);
         }
         catch (Exception e)
         {

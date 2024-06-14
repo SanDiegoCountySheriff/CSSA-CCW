@@ -320,11 +320,14 @@ const appointmentMutation = useMutation({
       time: '',
     }
 
-    return appointmentsStore.sendAppointmentCheck(body).then(() => {
+    return appointmentsStore.sendAppointmentCheck(body).then(res => {
+      permitStore.getPermitDetail.application.appointmentDateTime = res.start
+      permitStore.getPermitDetail.application.appointmentId = res.id
+      permitStore.getPermitDetail.application.appointmentStatus =
+        AppointmentStatus.Scheduled
       changed = 'scheduled appointment'
+
       updatePermitDetails()
-      appointmentsStore.currentAppointment = body
-      permitStore.getPermitDetail.application.appointmentDateTime = body.start
     })
   },
   onSuccess: () => {
