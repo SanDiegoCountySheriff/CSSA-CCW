@@ -147,6 +147,18 @@ function submitAndPrint() {
 
   permitStore.permitDetail.paymentHistory.push(body)
 
+  if (permitStore.permitDetail.application.readyForInitialPayment) {
+    permitStore.permitDetail.application.readyForInitialPayment = false
+  }
+
+  if (permitStore.permitDetail.application.readyForRenewalPayment) {
+    permitStore.permitDetail.application.readyForRenewalPayment = false
+  }
+
+  if (permitStore.permitDetail.application.readyForModificationPayment) {
+    permitStore.permitDetail.application.readyForModificationPayment = false
+  }
+
   permitStore.updatePermitDetailApi('Payment History added').catch(() => {
     state.snackbar = true
   })
