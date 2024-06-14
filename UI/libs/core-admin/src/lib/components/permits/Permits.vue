@@ -215,14 +215,16 @@
 
       <template #[`item.appointmentStatus`]="props">
         {{
-          props.item.appointmentDateTime
-            ? AppointmentStatus[props.item.appointmentStatus]
-            : 'n/a'
+          isAppointmentComplete
+            ? 'Complete'
+            : AppointmentStatus[props.item.appointmentStatus]
         }}
       </template>
 
       <template #[`item.appointmentDateTime`]="props">
-        {{ props.item.appointmentDateTime }}
+        {{
+          isAppointmentComplete ? 'Complete' : props.item.appointmentDateTime
+        }}
       </template>
 
       <template #[`item.paymentStatus`]="{ item }">
@@ -371,6 +373,49 @@ const appointmentsStore = useAppointmentsStore()
 const menu = ref(false)
 const date = ref('')
 let changed: string
+
+const isAppointmentComplete = computed(() => {
+  return (
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Appointment Complete'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Background In Progress'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Contingently Denied'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Contingently Approved'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Approved ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Permit Delivered'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Suspended ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Revoked ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Canceled ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Denied ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Withdrawn ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Ready To Issue'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Modification Approved'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Renewal Approved'] ||
+    (permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Waiting For Customer'] &&
+      permitStore.getPermitDetail.application.appointmentDateTime !== null &&
+      permitStore.getPermitDetail.application.appointmentDateTime <
+        new Date().toISOString()) ||
+    (permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Flagged For Review'] &&
+      permitStore.getPermitDetail.application.appointmentDateTime !== null &&
+      permitStore.getPermitDetail.application.appointmentDateTime <
+        new Date().toISOString())
+  )
+})
 
 const state = reactive({
   selected: [] as PermitsType[],
