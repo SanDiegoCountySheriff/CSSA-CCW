@@ -4,16 +4,20 @@
       <v-card-title>
         {{ $t('Terms and Agreements') }}
       </v-card-title>
-
-      <v-card-text
-        v-if="isMobile"
-        class="text-center"
-      >
-        {{ $t('(Please read each document below and agree)') }}
-      </v-card-text>
     </v-row>
 
     <v-container style="max-width: 750px">
+      <v-alert
+        v-if="isMobile"
+        type="warning"
+        outlined
+      >
+        <span :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''">
+          Please read each document by clicking on the links below. Checking the
+          boxes indicates you accept the terms and agreements
+        </span>
+      </v-alert>
+
       <v-row justify="center">
         <v-col
           cols="12"
@@ -154,7 +158,7 @@
       />
     </v-container>
 
-    <v-container>
+    <v-container style="max-width: 750px">
       <v-row
         v-if="
           !applicationStore.completeApplication.application
