@@ -5,6 +5,7 @@
   >
     <template #activator="{ on, attrs }">
       <v-btn
+        :disabled="disabled"
         v-on="on"
         v-bind="attrs"
         color="primary"
@@ -69,6 +70,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
+interface Props {
+  disabled: boolean
+}
+
+const props = defineProps<Props>()
 
 const emit = defineEmits(['handle-finish-renewal'])
 

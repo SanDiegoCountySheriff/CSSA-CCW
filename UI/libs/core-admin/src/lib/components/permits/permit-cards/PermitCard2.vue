@@ -528,6 +528,7 @@
                 </v-alert>
 
                 <FinishModificationDialog
+                  :disabled="!isModificationPaymentComplete"
                   v-if="
                     permitStore.getPermitDetail.application.status ===
                     ApplicationStatus['Modification Approved']
@@ -732,6 +733,7 @@
                 </v-alert>
 
                 <FinishRenewalDialog
+                  :disabled="!isRenewalPaymentComplete"
                   v-if="
                     permitStore.getPermitDetail.application.status ===
                     ApplicationStatus['Renewal Approved']
