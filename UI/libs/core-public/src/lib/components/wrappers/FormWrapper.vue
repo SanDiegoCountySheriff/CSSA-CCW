@@ -133,7 +133,7 @@
           </v-stepper-step>
 
           <v-progress-linear
-            :active="isLoading || isSaveLoading"
+            :active="isLoading || isSaveLoading || isAgreementLoading"
             indeterminate
           ></v-progress-linear>
         </v-stepper-header>
@@ -221,6 +221,18 @@
               @update-step-eight-valid="handleUpdateStepEightValid"
               @handle-save="handleSave"
               @previous-step="handlePrevious"
+              @handle-condition-agreement-link="
+                handleAgreementLinkClick('Conditions_for_Issuance')
+              "
+              @handle-falseinfo-agreement-link="
+                handleAgreementLinkClick('False_Info')
+              "
+              @handle-falseinfo-agreement-enter="
+                handleEnterKeyPress('Conditions_for_Issuance')
+              "
+              @handle-condition-agreement-enter="
+                handleEnterKeyPress('False_Info')
+              "
             />
           </v-stepper-content>
         </v-stepper-items>
@@ -232,7 +244,7 @@
       class="pa-0"
     >
       <v-progress-circular
-        v-if="isLoading || isSaveLoading"
+        v-if="isLoading || isSaveLoading || isAgreementLoading"
         indeterminate
         absolute
         class="progress-circular"
@@ -451,6 +463,18 @@
               @update-step-eight-valid="handleUpdateStepEightValid"
               @handle-save="handleSave"
               @previous-step="handlePrevious"
+              @handle-condition-agreement-link="
+                handleAgreementLinkClick('Conditions_for_Issuance')
+              "
+              @handle-falseinfo-agreement-link="
+                handleAgreementLinkClick('False_Info')
+              "
+              @handle-falseinfo-agreement-enter="
+                handleEnterKeyPress('Conditions_for_Issuance')
+              "
+              @handle-condition-agreement-enter="
+                handleEnterKeyPress('False_Info')
+              "
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -485,6 +509,7 @@ const stepSixValid = ref(false)
 const stepSevenValid = ref(false)
 const stepEightValid = ref(false)
 const router = useRouter()
+const isAgreementLoading = ref(false)
 
 const stepIndex = reactive({
   step: 0,
@@ -559,6 +584,16 @@ const { isLoading: isGetApplicationsLoading } = useQuery(
     },
   }
 )
+
+async function handleAgreementLinkClick(agreementType) {
+  isAgreementLoading.value = true
+  await applicationStore.getAgreementPdf(agreementType)
+  isAgreementLoading.value = false
+}
+
+async function handleEnterKeyPress(agreementType) {
+  await applicationStore.getAgreementPdf(agreementType)
+}
 
 function handleSave(isMatching = false) {
   if (isMatching) {

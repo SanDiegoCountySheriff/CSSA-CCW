@@ -36,10 +36,8 @@
               <a
                 href="#"
                 @click.stop
-                @click.prevent="
-                  handleAgreementLinkClick('Conditions_for_Issuance')
-                "
-                @keydown.enter="handleEnterKeyPress('Conditions_for_Issuance')"
+                @click.prevent="handleConditionAgreementLinkClick()"
+                @keydown.enter="handleConditionEnterKeyPress()"
                 class="mx-2"
               >
                 Conditions For Issuance
@@ -79,8 +77,8 @@
               <a
                 href="#"
                 @click.stop
-                @click.prevent="handleAgreementLinkClick('False_Info')"
-                @keydown.enter="handleEnterKeyPress('False_Info')"
+                @click.prevent="handleFalseInfoAgreementLinkClick()"
+                @keydown.enter="handleFalseInfoEnterKeyPress()"
                 class="mx-2"
               >
                 False Info
@@ -223,6 +221,10 @@ const emit = defineEmits([
   'handle-continue',
   'handle-save',
   'update-step-eight-valid',
+  'handle-condition-agreement-link',
+  'handle-falseinfo-agreement-link',
+  'handle-condition-agreement-enter',
+  'handle-falseinfo-agreement-enter',
 ])
 
 const router = useRouter()
@@ -390,12 +392,20 @@ async function handleFileUpload() {
     })
 }
 
-async function handleEnterKeyPress(agreementType) {
-  await applicationStore.getAgreementPdf(agreementType)
+async function handleConditionEnterKeyPress() {
+  emit('handle-condition-agreement-enter')
 }
 
-async function handleAgreementLinkClick(agreementType) {
-  await applicationStore.getAgreementPdf(agreementType)
+async function handleConditionAgreementLinkClick() {
+  emit('handle-condition-agreement-link')
+}
+
+async function handleFalseInfoEnterKeyPress() {
+  emit('handle-falseinfo-agreement-enter')
+}
+
+async function handleFalseInfoAgreementLinkClick() {
+  emit('handle-falseinfo-agreement-link')
 }
 
 function setAgreedDate(agreedDateKey) {
