@@ -42,6 +42,11 @@ const routes: Array<RouteConfig> = [
     component: () => import('@core-admin/views/ExistingApplicantsView.vue'),
   },
   {
+    path: Routes.REPORTS_PATH,
+    name: 'Reportss',
+    component: () => import('@core-admin/views/ReportsView.vue'),
+  },
+  {
     // keep this at the very end
     path: '*',
     component: () => import('@core-admin/views/NotFoundView.vue'),
