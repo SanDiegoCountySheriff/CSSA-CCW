@@ -948,4 +948,25 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             await _legacyContainer.UpsertItemAsync(application, new PartitionKey(application.Id.ToString()), null, cancellationToken);
         }
     }
+
+    public async Task<bool> MatchUserInformation(string firstName, string lastName, string idNumber, CancellationToken cancellationToken)
+    {
+        var queryString = "SELECT * FROM c WHERE (c.Application.PersonalInfo.FirstName = @firstName AND c.Application.PersonalInfo.LastName = @lastName) OR c.Application.IdInfo.IdNumber = @idNumber";
+
+        var query = new QueryDefinition(queryString)
+            .WithParameter("@firstName", firstName)
+            .WithParameter("@lastName", lastName)
+            .WithParameter("@idNumber", idNumber);
+
+        using FeedIterator<PermitApplication> filteredFeed = _legacyContainer.GetItemQueryIterator<PermitApplication>(queryDefinition: query);
+
+        if (filteredFeed.HasMoreResults)
+        {
+            FeedResponse<PermitApplication> response = await filteredFeed.ReadNextAsync(cancellationToken);
+
+            return response.Resource.Any();
+        }
+
+        return false;
+    }
 }
