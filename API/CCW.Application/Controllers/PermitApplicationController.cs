@@ -348,6 +348,31 @@ public class PermitApplicationController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
+    [HttpGet("getPermitsByDate")]
+    public async Task<IActionResult> GetPermitsByDate([FromQuery] DateTime date)
+    {
+        try
+        {
+            var permits = await _applicationCosmosDbService.GetPermitsByDateAsync(date, cancellationToken: default);
+
+            var response = new SummaryResponse()
+            {
+                Items = permits.ToList(),
+                Total = permits.Count(),
+            };
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            var originalException = ex.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occurred while trying to retrieve permits.");
+        }
+    }
+
+
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("getEmails")]
     public async Task<IActionResult> GetEmails([FromQuery] PermitsOptions options)
     {

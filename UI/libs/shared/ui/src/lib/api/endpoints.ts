@@ -101,6 +101,12 @@ export default class Endpoints {
     }/application/v1/permitapplication/getAllPermitsSummary`
   }
 
+  static get GET_PERMITS_BY_DATE_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getPermitsByDate`
+  }
+
   static get GET_ALL_LEGACY_APPLICATIONS_ENDPOINT() {
     return `${
       useAppConfigStore().appConfig.applicationApiBaseUrl

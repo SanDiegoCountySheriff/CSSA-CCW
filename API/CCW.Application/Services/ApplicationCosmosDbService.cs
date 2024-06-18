@@ -445,6 +445,33 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return results;
     }
 
+    public async Task<IEnumerable<SummarizedPermitApplication>> GetPermitsByDateAsync(DateTime date, CancellationToken cancellationToken)
+    {
+        var queryString = @"SELECT a.Application, a.id, a.Application.OrderId, a.PaymentHistory, a.Application.PersonalInfo.FirstName, 
+                          a.Application.PersonalInfo.LastName, a.Application.AppointmentDateTime
+                          FROM applications a WHERE STARTSWITH(a.Application.AppointmentDateTime, @date)";
+
+        var parameterizedQuery = new QueryDefinition(query: queryString)
+            .WithParameter("@date", date.ToString("yyyy-MM-dd"));
+
+        var results = new List<SummarizedPermitApplication>();
+
+        using FeedIterator<SummarizedPermitApplication> iterator = _container.GetItemQueryIterator<SummarizedPermitApplication>(
+            queryDefinition: parameterizedQuery
+        );
+        while (iterator.HasMoreResults)
+        {
+            FeedResponse<SummarizedPermitApplication> response = await iterator.ReadNextAsync(cancellationToken);
+            foreach (var item in response)
+            {
+                results.Add(item);
+            }
+        }
+
+        return results;
+    }
+
+
     public async Task UpdateApplicationAsync(PermitApplication application, PermitApplication existingApplication, CancellationToken cancellationToken)
     {
         application.Application.Comments = existingApplication.Application.Comments;
