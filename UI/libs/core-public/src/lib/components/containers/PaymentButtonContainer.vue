@@ -101,58 +101,170 @@ const { mutate: makePayment, isLoading } = useMutation({
 
     switch (applicationStore.completeApplication.application.applicationType) {
       case ApplicationType.Standard:
-        cost =
-          applicationStore.completeApplication.application.cost.new.standard
-        livescanAmount = brandStore.brand.cost.standardLivescanFee
-        paymentType = PaymentType['CCW Application Initial Payment'].toString()
+        if (
+          applicationStore.completeApplication.application
+            .readyForInitialPayment
+        ) {
+          paymentType =
+            PaymentType['CCW Application Initial Payment'].toString()
+          livescanAmount =
+            applicationStore.completeApplication.application.cost
+              .standardLivescanFee ?? brandStore.brand.cost.standardLivescanFee
+          cost =
+            applicationStore.completeApplication.application.cost.new
+              .standard ?? brandStore.brand.cost.new.standard
+        } else {
+          paymentType =
+            PaymentType['CCW Application Issuance Payment'].toString()
+          cost =
+            applicationStore.completeApplication.application.cost.issuance ??
+            brandStore.brand.cost.issuance
+        }
+
         break
+
       case ApplicationType.Judicial:
-        cost =
-          applicationStore.completeApplication.application.cost.new.judicial
-        livescanAmount = brandStore.brand.cost.judicialLivescanFee
-        paymentType =
-          PaymentType['CCW Application Initial Judicial Payment'].toString()
+        if (
+          applicationStore.completeApplication.application
+            .readyForInitialPayment
+        ) {
+          paymentType =
+            PaymentType['CCW Application Initial Judicial Payment'].toString()
+          livescanAmount =
+            applicationStore.completeApplication.application.cost
+              .judicialLivescanFee ?? brandStore.brand.cost.judicialLivescanFee
+          cost =
+            applicationStore.completeApplication.application.cost.new
+              .judicial ?? brandStore.brand.cost.new.judicial
+        } else {
+          paymentType =
+            PaymentType['CCW Application Issuance Payment'].toString()
+          cost =
+            applicationStore.completeApplication.application.cost.issuance ??
+            brandStore.brand.cost.issuance
+        }
+
         break
+
       case ApplicationType.Reserve:
-        cost = applicationStore.completeApplication.application.cost.new.reserve
-        livescanAmount = brandStore.brand.cost.reserveLivescanFee
-        paymentType =
-          PaymentType['CCW Application Initial Reserve Payment'].toString()
+        if (
+          applicationStore.completeApplication.application
+            .readyForInitialPayment
+        ) {
+          paymentType =
+            PaymentType['CCW Application Initial Reserve Payment'].toString()
+          livescanAmount =
+            applicationStore.completeApplication.application.cost
+              .reserveLivescanFee ?? brandStore.brand.cost.reserveLivescanFee
+          cost =
+            applicationStore.completeApplication.application.cost.new.reserve ??
+            brandStore.brand.cost.new.reserve
+        } else {
+          paymentType =
+            PaymentType['CCW Application Issuance Payment'].toString()
+          cost =
+            applicationStore.completeApplication.application.cost.issuance ??
+            brandStore.brand.cost.issuance
+        }
+
         break
+
       case ApplicationType.Employment:
-        cost =
-          applicationStore.completeApplication.application.cost.new.employment
-        livescanAmount = brandStore.brand.cost.employmentLivescanFee
-        paymentType =
-          PaymentType['CCW Application Initial Employment Payment'].toString()
+        if (
+          applicationStore.completeApplication.application
+            .readyForInitialPayment
+        ) {
+          paymentType =
+            PaymentType['CCW Application Initial Employment Payment'].toString()
+          livescanAmount =
+            applicationStore.completeApplication.application.cost
+              .employmentLivescanFee ??
+            brandStore.brand.cost.employmentLivescanFee
+          cost =
+            applicationStore.completeApplication.application.cost.new
+              .employment ?? brandStore.brand.cost.new.employment
+        } else {
+          paymentType =
+            PaymentType['CCW Application Issuance Payment'].toString()
+          cost =
+            applicationStore.completeApplication.application.cost.issuance ??
+            brandStore.brand.cost.issuance
+        }
+
         break
+
       case ApplicationType['Renew Standard']:
-        cost =
-          applicationStore.completeApplication.application.cost.renew.standard
         paymentType = PaymentType['CCW Application Renewal Payment'].toString()
-        break
-      case ApplicationType['Renew Judicial']:
         cost =
-          applicationStore.completeApplication.application.cost.renew.judicial
+          applicationStore.completeApplication.application.cost.renew
+            .standard ?? brandStore.brand.cost.renew.standard
+        break
+
+      case ApplicationType['Renew Judicial']:
         paymentType =
           PaymentType['CCW Application Renewal Judicial Payment'].toString()
-        break
-      case ApplicationType['Renew Reserve']:
         cost =
-          applicationStore.completeApplication.application.cost.renew.reserve
+          applicationStore.completeApplication.application.cost.renew
+            .judicial ?? brandStore.brand.cost.renew.judicial
+        break
+
+      case ApplicationType['Renew Reserve']:
         paymentType =
           PaymentType['CCW Application Renewal Reserve Payment'].toString()
-        break
-      case ApplicationType['Renew Employment']:
         cost =
-          applicationStore.completeApplication.application.cost.renew.employment
+          applicationStore.completeApplication.application.cost.renew.reserve ??
+          brandStore.brand.cost.renew.reserve
+        break
+
+      case ApplicationType['Renew Employment']:
         paymentType =
           PaymentType['CCW Application Renewal Employment Payment'].toString()
-        break
-      default:
         cost =
-          applicationStore.completeApplication.application.cost.new.standard
+          applicationStore.completeApplication.application.cost.renew
+            .employment ?? brandStore.brand.cost.renew.employment
+        break
+
+      case ApplicationType['Modify Standard']:
+        paymentType =
+          PaymentType['CCW Application Modification Payment'].toString()
+        cost =
+          applicationStore.completeApplication.application.cost.modify ??
+          brandStore.brand.cost.modify
+        break
+
+      case ApplicationType['Modify Judicial']:
+        paymentType =
+          PaymentType[
+            'CCW Application Modification Judicial Payment'
+          ].toString()
+        cost =
+          applicationStore.completeApplication.application.cost.modify ??
+          brandStore.brand.cost.modify
+        break
+
+      case ApplicationType['Modify Reserve']:
+        paymentType =
+          PaymentType['CCW Application Modification Reserve Payment'].toString()
+        cost =
+          applicationStore.completeApplication.application.cost.modify ??
+          brandStore.brand.cost.modify
+        break
+
+      case ApplicationType['Modify Employment']:
+        paymentType =
+          PaymentType[
+            'CCW Application Modification Employment Payment'
+          ].toString()
+        cost =
+          applicationStore.completeApplication.application.cost.modify ??
+          brandStore.brand.cost.modify
+        break
+
+      default:
         paymentType = PaymentType['CCW Application Initial Payment'].toString()
+        cost =
+          applicationStore.completeApplication.application.cost.new.standard ??
+          brandStore.brand.cost.new.standard
     }
 
     return paymentStore.getPayment(

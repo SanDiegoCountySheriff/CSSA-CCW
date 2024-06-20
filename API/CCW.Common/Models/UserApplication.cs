@@ -58,6 +58,7 @@ public class UserApplication
     public bool ReadyForInitialPayment { get; set; } = false;
     public bool ReadyForRenewalPayment { get; set; } = false;
     public bool ReadyForModificationPayment { get; set; } = false;
+    public bool ReadyForIssuancePayment { get; set; } = false;
     public int ModificationNumber { get; set; } = 1;
     public int RenewalNumber { get; set; } = 0;
     public bool IsRenewingWithLegacyQuestions { get; set; } = false;

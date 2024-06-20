@@ -691,24 +691,29 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       permitDetail.value.application.cost = brandStore.brand.cost
     }
 
-    if (permitDetail.value.application.cost?.standardLivescanFee === null) {
+    if (permitDetail.value.application.cost?.standardLivescanFee === 0) {
       permitDetail.value.application.cost.standardLivescanFee =
         brandStore.brand.cost.standardLivescanFee
     }
 
-    if (permitDetail.value.application.cost?.judicialLivescanFee === null) {
+    if (permitDetail.value.application.cost?.judicialLivescanFee === 0) {
       permitDetail.value.application.cost.judicialLivescanFee =
         brandStore.brand.cost.judicialLivescanFee
     }
 
-    if (permitDetail.value.application.cost?.reserveLivescanFee === null) {
+    if (permitDetail.value.application.cost?.reserveLivescanFee === 0) {
       permitDetail.value.application.cost.reserveLivescanFee =
         brandStore.brand.cost.reserveLivescanFee
     }
 
-    if (permitDetail.value.application.cost?.employmentLivescanFee === null) {
+    if (permitDetail.value.application.cost?.employmentLivescanFee === 0) {
       permitDetail.value.application.cost.employmentLivescanFee =
         brandStore.brand.cost.employmentLivescanFee
+    }
+
+    if (permitDetail.value.application.cost?.issuance === 0) {
+      permitDetail.value.application.cost.issuance =
+        brandStore.brand.cost.issuance
     }
 
     const newHistory: HistoryType = {
