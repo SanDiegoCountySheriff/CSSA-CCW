@@ -949,14 +949,13 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         }
     }
 
-    public async Task<bool> MatchUserInformation(string firstName, string lastName, string idNumber, CancellationToken cancellationToken)
+    public async Task<bool> MatchUserInformation(string idNumber, string dateOfBirth, CancellationToken cancellationToken)
     {
-        var queryString = "SELECT * FROM c WHERE (c.Application.PersonalInfo.FirstName = @firstName AND c.Application.PersonalInfo.LastName = @lastName) OR c.Application.IdInfo.IdNumber = @idNumber";
+        var queryString = "SELECT * FROM c WHERE c.Application.IdInfo.IdNumber = @idNumber AND c.Application.DOB.BirthDate = @dateOfBirth";
 
         var query = new QueryDefinition(queryString)
-            .WithParameter("@firstName", firstName)
-            .WithParameter("@lastName", lastName)
-            .WithParameter("@idNumber", idNumber);
+            .WithParameter("@idNumber", idNumber)
+            .WithParameter("@dateOfBirth", dateOfBirth);
 
         using FeedIterator<PermitApplication> filteredFeed = _legacyContainer.GetItemQueryIterator<PermitApplication>(queryDefinition: query);
 

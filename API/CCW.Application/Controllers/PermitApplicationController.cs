@@ -494,12 +494,13 @@ public class PermitApplicationController : ControllerBase
 
     [Authorize(Policy = "B2CUsers")]
     [Route("matchUserInformation")]
-    [HttpPost]
-    public async Task<IActionResult> MatchUserInformation(string firstName, string lastName, string idNumber)
+    [HttpGet]
+    public async Task<IActionResult> MatchUserInformation(string idNumber, string dateOfBirth)
     {
         try
         {
-            bool result = await _applicationCosmosDbService.MatchUserInformation(firstName, lastName, idNumber, cancellationToken: default);
+            bool result = await _applicationCosmosDbService.MatchUserInformation(idNumber, dateOfBirth, cancellationToken: default);
+
             return Ok(result);
         }
         catch (Exception e)

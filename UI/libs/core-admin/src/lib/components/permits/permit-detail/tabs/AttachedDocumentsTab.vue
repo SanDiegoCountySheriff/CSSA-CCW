@@ -153,7 +153,9 @@ function onNameEdit(item, name) {
 
   documentStore.editApplicationFileName(oldNameWithId, newName)
 
-  permitStore.updatePermitDetailApi('updated name')
+  permitStore.updatePermitDetailApi(
+    `Updated name of document ${oldName} to ${newName}`
+  )
 }
 
 async function deletePdf() {
