@@ -478,9 +478,9 @@
 
                 <v-row class="mb-10">
                   <v-col>
-                    If you have previously scheduled an appointment it will be
+                    If you have previously scheduled an appointment, it will be
                     released and you will lose your spot. If you have previously
-                    applied with {{ brandStore.getBrand.agencyName }} your
+                    applied with {{ brandStore.getBrand.agencyName }} your,
                     application will be withdrawn.
                   </v-col>
                 </v-row>
