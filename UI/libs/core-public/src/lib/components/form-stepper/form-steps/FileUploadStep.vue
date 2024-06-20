@@ -315,6 +315,7 @@ const state = reactive({
   judicial: '',
   reserve: '',
   employment: '',
+  eightHourSafetyCourse: '',
   uploadSuccessful: true,
 })
 
@@ -670,6 +671,7 @@ onMounted(() => {
   state.nameChange = ''
   state.judicial = ''
   state.reserve = ''
+  state.eightHourSafetyCourse = ''
 
   for (let item of completeApplication.uploadedDocuments) {
     switch (item.documentType.toLowerCase()) {
@@ -699,6 +701,9 @@ onMounted(() => {
         break
       case 'reserve':
         state.reserve = item.name
+        break
+      case 'eighthoursafetycourse':
+        state.eightHourSafetyCourse = item.name
         break
       case 'signature':
         break
