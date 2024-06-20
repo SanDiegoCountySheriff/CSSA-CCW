@@ -372,7 +372,7 @@
         >
           According to these answers you have never filled out an application on
           this site, or any other site for {{ brandStore.getBrand.agencyName }}.
-          Continuing will take you to the application form.
+          If you continue you will be asked to fill out a new application.
 
           <v-alert
             type="warning"
