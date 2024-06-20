@@ -492,6 +492,25 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "B2CUsers")]
+    [Route("matchUserInformation")]
+    [HttpGet]
+    public async Task<IActionResult> MatchUserInformation(string idNumber, string dateOfBirth)
+    {
+        try
+        {
+            bool result = await _applicationCosmosDbService.MatchUserInformation(idNumber, dateOfBirth, cancellationToken: default);
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occurred while trying to find user information");
+        }
+    }
+
     [Authorize(Policy = "AADUsers")]
     [HttpPost("undoMatchApplication")]
     public async Task<IActionResult> UndoMatchApplication(string applicationId)
@@ -679,6 +698,34 @@ public class PermitApplicationController : ControllerBase
             }
 
             await _applicationCosmosDbService.UpdateUserApplicationAsync(_mapper.Map<PermitApplication>(application), cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to update permit application.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("addApplicationHistory")]
+    [HttpPost]
+    public async Task<IActionResult> AddApplicationHistory([FromBody] History history, string applicationId)
+    {
+        try
+        {
+            var application = await _applicationCosmosDbService.GetUserApplicationAsync(applicationId.ToString(), cancellationToken: default);
+
+            if (application == null)
+            {
+                return NotFound();
+            }
+
+            application.History = application.History.Append(history).ToArray();
+
+            await _applicationCosmosDbService.UpdateUserApplicationAsync(application, cancellationToken: default);
 
             return Ok();
         }

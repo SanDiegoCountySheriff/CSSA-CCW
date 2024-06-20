@@ -14,7 +14,7 @@ public interface IAppointmentCosmosDbService
     Task<List<AppointmentWindow>> GetAllBookedAppointmentsAsync(CancellationToken cancellationToken);
     Task<AppointmentWindow> AddAsync(AppointmentWindow appointment, CancellationToken cancellationToken);
     Task AddAvailableTimesAsync(List<AppointmentWindow> appointments, CancellationToken cancellationToken);
-    Task UpdateAsync(AppointmentWindow appointment, CancellationToken cancellationToken);
+    Task<AppointmentWindow> UpdateAsync(AppointmentWindow appointment, CancellationToken cancellationToken);
     Task AddDeleteTimeSlotsAsync(List<AppointmentWindow> appointments, bool isCreateAction,
         CancellationToken cancellationToken);
     Task DeleteAsync(string appointmentId, CancellationToken cancellationToken);

@@ -192,6 +192,7 @@ const permitStore = usePermitsStore()
 const appointmentsStore = useAppointmentsStore()
 const paymentType = 'cash'
 const calendar = ref<any>(null)
+let changed: string
 
 const state = reactive({
   dialog: false,
@@ -208,7 +209,6 @@ const state = reactive({
   snackbarOk: false,
   appointments: [] as Array<AppointmentType>,
   appointmentsLoaded: false,
-  reschedule: false,
 })
 
 const { refetch } = useQuery(
@@ -298,6 +298,10 @@ function formatDate(date: Date, hour: number, minute: number): string {
     .padStart(2, '0')} ${formattedHour}:${formattedMinute}`
 }
 
+const { mutate: updatePermitDetails } = useMutation({
+  mutationFn: () => permitStore.updatePermitDetailApi(`Updated ${changed}`),
+})
+
 const appointmentMutation = useMutation({
   mutationFn: () => {
     const body: AppointmentType = {
@@ -316,9 +320,14 @@ const appointmentMutation = useMutation({
       time: '',
     }
 
-    return appointmentsStore.sendAppointmentCheck(body).then(() => {
-      appointmentsStore.currentAppointment = body
-      permitStore.getPermitDetail.application.appointmentDateTime = body.start
+    return appointmentsStore.sendAppointmentCheck(body).then(res => {
+      permitStore.getPermitDetail.application.appointmentDateTime = res.start
+      permitStore.getPermitDetail.application.appointmentId = res.id
+      permitStore.getPermitDetail.application.appointmentStatus =
+        AppointmentStatus.Scheduled
+      changed = 'scheduled appointment'
+
+      updatePermitDetails()
     })
   },
   onSuccess: () => {
@@ -352,20 +361,10 @@ function selectEvent(event) {
 }
 
 function handleConfirm() {
-  if (!state.reschedule) {
-    state.isLoading = true
-    state.checkAppointment = true
+  state.isLoading = true
+  state.checkAppointment = true
 
-    appointmentMutation.mutate()
-  } else {
-    let appointment = appointmentsStore.currentAppointment
-
-    appointment.applicationId = null
-    appointment.status = AppointmentStatus.Scheduled
-    appointmentsStore.sendAppointmentCheck(appointment).then(() => {
-      appointmentMutation.mutate()
-    })
-  }
+  appointmentMutation.mutate()
 
   state.dialog = false
 }
