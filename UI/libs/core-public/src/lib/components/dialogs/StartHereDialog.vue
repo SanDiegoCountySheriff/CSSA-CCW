@@ -370,9 +370,10 @@
               : 'text-h6 black--text'
           "
         >
-          According to these answers you have never filled out an application on
-          this site, or any other site for {{ brandStore.getBrand.agencyName }}.
-          If you continue you will be asked to fill out a new application.
+          According to these answers, you have never filled out an application
+          on this site, or any other site for
+          {{ brandStore.getBrand.agencyName }}. If you continue you will be
+          asked to fill out a new application.
 
           <v-alert
             type="warning"
@@ -389,8 +390,8 @@
               "
             >
               If you have previously filled out an application on any other site
-              or system and scheduled an appointment you may lose your time slot
-              and delay your application process.
+              or system and scheduled an appointment, you may lose your time
+              slot and delay your application process.
             </span>
           </v-alert>
 
