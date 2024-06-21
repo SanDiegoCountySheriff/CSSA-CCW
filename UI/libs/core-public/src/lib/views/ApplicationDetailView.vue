@@ -2218,9 +2218,34 @@ function handleFileSubmit(fileSubmission: IFileSubmission) {
 
   form.append('fileToUpload', fileSubmission.file)
 
+  const documentType = fileSubmission.fileType
+  const uploadedDocs =
+    applicationStore.completeApplication.application.uploadedDocuments
+
+  const sameTypeDocs = uploadedDocs.filter(
+    doc => doc.documentType === documentType
+  )
+
+  let count = 0
+
+  sameTypeDocs.forEach(doc => {
+    const match = doc.name.match(/_(\d+)$/)
+
+    if (match) {
+      const num = parseInt(match[1], 10)
+
+      if (num > count) {
+        count = num
+      }
+    }
+  })
+  const nextCount = count + 1
+
+  const documentName = `${documentType}_${nextCount}`
+
   axios
     .post(
-      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${fileSubmission.fileType}`,
+      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${documentName}`,
       form
     )
     .catch(e => {
@@ -2230,7 +2255,7 @@ function handleFileSubmit(fileSubmission: IFileSubmission) {
 
   const uploadDoc: UploadedDocType = {
     documentType: fileSubmission.fileType,
-    name: fileSubmission.fileType,
+    name: documentName,
     uploadedBy: applicationStore.completeApplication.application.userEmail,
     uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
   }
