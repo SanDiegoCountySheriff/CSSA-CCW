@@ -28,7 +28,7 @@
                   "
                   :readonly="readonly"
                   :label="$t('Date of birth')"
-                  hint="YYYY-MM-DD format"
+                  hint="Click the month and year at the top to change the year"
                   persistent-hint
                   :rules="[validateDate]"
                   v-bind="attrs"

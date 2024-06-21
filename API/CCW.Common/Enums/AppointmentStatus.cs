@@ -2,9 +2,9 @@ namespace CCW.Common.Enums;
 
 public enum AppointmentStatus
 {
-    Available,
-    NotScheduled,
-    Scheduled,
-    CheckedIn,
-    NoShow,
+    Available = 0,
+    NotScheduled = 1,
+    Scheduled = 2,
+    CheckedIn = 3,
+    NoShow = 4,
 }

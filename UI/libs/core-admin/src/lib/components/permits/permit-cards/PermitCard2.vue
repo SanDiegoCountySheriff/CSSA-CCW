@@ -578,6 +578,61 @@
 
           <v-card-text class="text-center">
             <v-row>
+              <v-col
+                v-if="
+                  permitStore.getPermitDetail.application.status ===
+                    ApplicationStatus.Submitted &&
+                  !permitStore.getPermitDetail.application
+                    .readyForInitialPayment &&
+                  !isInitialPaymentComplete &&
+                  !isRenew &&
+                  !isModify
+                "
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForInitialPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForRenewalPayment &&
+                  !isRenewalPaymentComplete &&
+                  isRenew
+                "
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForRenewalPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForModificationPayment &&
+                  !isModificationPaymentComplete &&
+                  isModify
+                "
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForModificationPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForIssuancePayment &&
+                  !isIssuancePaymentComplete &&
+                  (!isModify || !isRenew)
+                "
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForIssuancePayment"
+                />
+              </v-col>
+
               <v-col>
                 <v-btn
                   v-if="showStart90DayCountdownButton"
@@ -870,53 +925,6 @@
 
           <v-card-text>
             <v-row>
-              <v-col
-                v-if="
-                  permitStore.getPermitDetail.application.status ===
-                    ApplicationStatus.Submitted &&
-                  !permitStore.getPermitDetail.application
-                    .readyForInitialPayment &&
-                  !isInitialPaymentComplete &&
-                  !isRenew &&
-                  !isModify
-                "
-                cols="12"
-              >
-                <ReadyForPaymentDialog
-                  @on-ready-for-payment="handleReadyForInitialPayment"
-                />
-              </v-col>
-
-              <v-col
-                v-else-if="
-                  !permitStore.getPermitDetail.application
-                    .readyForRenewalPayment &&
-                  !isRenewalPaymentComplete &&
-                  isRenew
-                "
-                cols="12"
-              >
-                <ReadyForPaymentDialog
-                  @on-ready-for-payment="handleReadyForRenewalPayment"
-                />
-              </v-col>
-
-              <v-col
-                v-else-if="
-                  !permitStore.getPermitDetail.application
-                    .readyForModificationPayment &&
-                  !isModificationPaymentComplete &&
-                  isModify
-                "
-                cols="12"
-              >
-                <ReadyForPaymentDialog
-                  @on-ready-for-payment="handleReadyForModificationPayment"
-                />
-              </v-col>
-            </v-row>
-
-            <v-row>
               <v-col cols="12">
                 <v-menu offset-y>
                   <template #activator="{ on }">
@@ -1014,6 +1022,7 @@ import {
   ApplicationStatus,
   AppointmentStatus,
   AppointmentWindowCreateRequestModel,
+  PaymentStatus,
   PaymentType,
 } from '@shared-utils/types/defaultTypes'
 import {
@@ -1080,7 +1089,9 @@ const isInitialPaymentComplete = computed(() => {
             ph.paymentType === 11) &&
           ph.successful === true
         )
-      }) || permitStore.permitDetail.application.paymentStatus === 1
+      }) ||
+      permitStore.permitDetail.application.paymentStatus ===
+        PaymentStatus['In Person']
     )
   }
 
@@ -1128,6 +1139,19 @@ const isModificationPaymentComplete = computed(() => {
       )
     }) || permitStore.permitDetail.application.paymentStatus === 1
   )
+})
+
+const isIssuancePaymentComplete = computed(() => {
+  if (permitStore.permitDetail.paymentHistory) {
+    return permitStore.permitDetail.paymentHistory.some(ph => {
+      return (
+        ph.paymentType === PaymentType['CCW Application Issuance Payment'] &&
+        ph.successful === true
+      )
+    })
+  }
+
+  return false
 })
 
 const isRenew = computed(() => {
@@ -1396,7 +1420,9 @@ const waitingForPayment = computed(() => {
   return (
     permitStore.getPermitDetail.application.readyForInitialPayment === true ||
     permitStore.getPermitDetail.application.readyForRenewalPayment === true ||
-    permitStore.getPermitDetail.application.readyForModificationPayment === true
+    permitStore.getPermitDetail.application.readyForModificationPayment ===
+      true ||
+    permitStore.getPermitDetail.application.readyForIssuancePayment === true
   )
 })
 
@@ -1717,23 +1743,6 @@ const isOfficialLicenseMissingInformation = computed(() => {
   return true
 })
 
-const isUnofficialLicenseMissingInformation = computed(() => {
-  if (permitStore.getPermitDetail.application.uploadedDocuments) {
-    const uploadedDocuments =
-      permitStore.getPermitDetail.application.uploadedDocuments
-    const missingThumbprint = !uploadedDocuments.some(
-      doc => doc.documentType.toLowerCase().indexOf('thumbprint') !== -1
-    )
-    const missingPortrait = !uploadedDocuments.some(
-      doc => doc.documentType.toLowerCase().indexOf('portrait') !== -1
-    )
-
-    return missingThumbprint || missingPortrait
-  }
-
-  return true
-})
-
 const tooltipText = computed(() => {
   if (permitStore.getPermitDetail.application.uploadedDocuments) {
     const uploadedDocuments =
@@ -1908,6 +1917,12 @@ function handleReadyForRenewalPayment() {
 function handleReadyForModificationPayment() {
   changed.value = 'Marked ready for modification payment'
   permitStore.getPermitDetail.application.readyForModificationPayment = true
+  updatePermitDetails()
+}
+
+function handleReadyForIssuancePayment() {
+  changed.value = 'Marked ready for issuance payment'
+  permitStore.getPermitDetail.application.readyForIssuancePayment = true
   updatePermitDetails()
 }
 </script>

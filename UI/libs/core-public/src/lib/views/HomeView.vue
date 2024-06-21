@@ -70,33 +70,14 @@
             </v-container>
           </v-btn>
 
-          <v-btn
+          <StartHereDialog
             v-else-if="
               authStore.getAuthState.isAuthenticated &&
               !completeApplicationStore.completeApplication.id &&
               !userStore.getUserState.isPendingReview
             "
-            @click="showDialog = true"
-            :color="$vuetify.theme.dark ? 'white' : 'primary'"
-            text
-            :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
-            :x-large="$vuetify.breakpoint.lgAndUp"
-            :small="$vuetify.breakpoint.smAndDown"
-          >
-            <v-container>
-              <v-row>
-                <v-col>
-                  <v-icon x-large> mdi-file-star-outline </v-icon>
-                </v-col>
-              </v-row>
+          />
 
-              <v-row>
-                <v-col>
-                  {{ $t('Start Here') }}
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-btn>
           <v-btn
             v-else-if="userStore.getUserState.isPendingReview"
             @click="showStatus = true"
@@ -177,356 +158,6 @@
           </v-card>
         </v-dialog>
 
-        <v-dialog
-          v-model="showDialog"
-          max-width="900px"
-        >
-          <v-card>
-            <v-card-title
-              v-if="!isMobile"
-              class="text-h3 justify-center"
-            >
-              Let's find out more about you
-            </v-card-title>
-
-            <v-card-title
-              v-else
-              class="text-h5"
-            >
-              Let's find out more about you
-            </v-card-title>
-
-            <v-card-title :class="isMobile ? 'text-h6' : 'text-h5'">
-              <template v-if="step === 1">
-                <v-row class="mb-10">
-                  <v-col>
-                    {{ brandStore.getBrand.agencyName }} CCW records have moved
-                    to this new program. Help us find your record by answering
-                    these questions. It is very important to read the questions
-                    thoroughly before answering
-                  </v-col>
-                </v-row>
-
-                <v-row class="text-center">
-                  <v-col>
-                    <v-btn
-                      @click="step = 2"
-                      color="primary"
-                      x-large
-                      outlined
-                    >
-                      <span
-                        :class="
-                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
-                        "
-                      >
-                        Get Started
-                      </span>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </template>
-
-              <template v-if="step === 2">
-                <v-row class="mb-10">
-                  <v-col>
-                    Have you ever attempted to get a Concealed Carry Weapon's
-                    license with {{ brandStore.getBrand.agencyName }}?
-                  </v-col>
-                </v-row>
-
-                <v-row class="text-center">
-                  <v-col>
-                    <v-btn
-                      @click="step = 3"
-                      color="primary"
-                      x-large
-                      outlined
-                    >
-                      <span
-                        :class="
-                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
-                        "
-                      >
-                        Yes
-                      </span>
-                    </v-btn>
-                  </v-col>
-
-                  <v-col>
-                    <v-btn
-                      @click="step = 4"
-                      color="primary"
-                      x-large
-                      outlined
-                    >
-                      <span
-                        :class="
-                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
-                        "
-                      >
-                        No
-                      </span>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </template>
-
-              <template v-if="step === 3">
-                <v-row class="mb-10">
-                  <v-col>
-                    Did you obtain the Concealed Carry Weapon's license with
-                    {{ brandStore.getBrand.agencyName }}?
-                  </v-col>
-                </v-row>
-
-                <v-row class="text-center">
-                  <v-col>
-                    <v-btn
-                      @click="step = 5"
-                      color="primary"
-                      x-large
-                      outlined
-                    >
-                      <span
-                        :class="
-                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
-                        "
-                      >
-                        Yes
-                      </span>
-                    </v-btn>
-                  </v-col>
-
-                  <v-col>
-                    <v-btn
-                      @click="step = 6"
-                      color="primary"
-                      x-large
-                      outlined
-                    >
-                      <span
-                        :class="
-                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
-                        "
-                      >
-                        No
-                      </span>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </template>
-
-              <template v-if="step === 6">
-                <v-row class="mb-10">
-                  <v-col>
-                    Do you have an upcoming appointment with
-                    {{ brandStore.getBrand.agencyName }}?
-                  </v-col>
-                </v-row>
-
-                <v-row class="text-center">
-                  <v-col>
-                    <v-btn
-                      @click="step = 7"
-                      color="primary"
-                      x-large
-                      outlined
-                    >
-                      <span
-                        :class="
-                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
-                        "
-                      >
-                        Yes
-                      </span>
-                    </v-btn>
-                  </v-col>
-
-                  <v-col>
-                    <v-btn
-                      @click="step = 8"
-                      color="primary"
-                      x-large
-                      outlined
-                    >
-                      <span
-                        :class="
-                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
-                        "
-                      >
-                        No
-                      </span>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </template>
-
-              <template v-if="step === 8">
-                <v-row class="mb-10">
-                  <v-col>
-                    Have you started the Concealed Carry Weapon's license
-                    application with
-                    {{ brandStore.getBrand.agencyName }}?
-                  </v-col>
-                </v-row>
-
-                <v-row class="text-center">
-                  <v-col>
-                    <v-btn
-                      @click="step = 9"
-                      color="primary"
-                      x-large
-                      outlined
-                    >
-                      <span
-                        :class="
-                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
-                        "
-                      >
-                        Yes
-                      </span>
-                    </v-btn>
-                  </v-col>
-
-                  <v-col>
-                    <v-btn
-                      @click="step = 10"
-                      color="primary"
-                      x-large
-                      outlined
-                    >
-                      <span
-                        :class="
-                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
-                        "
-                      >
-                        No
-                      </span>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </template>
-
-              <template v-if="step === 5 || step === 7 || step === 9">
-                <v-row>
-                  <v-col>
-                    According to these answers you have an existing CCW license,
-                    or an existing CCW license application with
-                    {{ brandStore.getBrand.agencyName }}. Acknowledging will
-                    lead you to the next step.
-                  </v-col>
-                </v-row>
-
-                <v-row class="mb-10">
-                  <v-col>
-                    On this next step you will be asked to enter information
-                    about yourself and a picture of your state-issued ID. If you
-                    have an existing CCW Permit you will be asked to upload
-                    information about that permit as well. Please only do this
-                    if you have an existing application or permit, otherwise
-                    your application process will be greatly delayed.
-                  </v-col>
-                </v-row>
-
-                <v-row class="text-center">
-                  <v-col>
-                    <v-btn
-                      @click="step = 1"
-                      color="primary"
-                      x-large
-                      outlined
-                    >
-                      <span
-                        :class="
-                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
-                        "
-                      >
-                        Go Back
-                      </span>
-                    </v-btn>
-                  </v-col>
-
-                  <v-col>
-                    <v-btn
-                      @click="handleExistingApplication"
-                      color="primary"
-                      x-large
-                      outlined
-                    >
-                      <span
-                        :class="
-                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
-                        "
-                      >
-                        Acknowledge
-                      </span>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </template>
-
-              <template v-if="step === 10 || step === 4">
-                <v-row>
-                  <v-col>
-                    According to these answers you are required to start a new
-                    application. Only acknowledge this if you have never filled
-                    out an application with
-                    {{ brandStore.getBrand.agencyName }} before.
-                  </v-col>
-                </v-row>
-
-                <v-row class="mb-10">
-                  <v-col>
-                    If you have previously scheduled an appointment it will be
-                    released and you will lose your spot. If you have previously
-                    applied with {{ brandStore.getBrand.agencyName }} your
-                    application will be withdrawn.
-                  </v-col>
-                </v-row>
-
-                <v-row class="text-center">
-                  <v-col>
-                    <v-btn
-                      @click="step = 1"
-                      color="primary"
-                      x-large
-                      outlined
-                    >
-                      <span
-                        :class="
-                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
-                        "
-                      >
-                        Go Back
-                      </span>
-                    </v-btn>
-                  </v-col>
-
-                  <v-col>
-                    <v-btn
-                      @click="redirectToAcknowledgements"
-                      color="primary"
-                      x-large
-                      outlined
-                    >
-                      <span
-                        :class="
-                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
-                        "
-                      >
-                        Acknowledge
-                      </span>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </template>
-            </v-card-title>
-
-            <v-card-text></v-card-text>
-          </v-card>
-        </v-dialog>
-
         <v-col
           cols="6"
           lg="2"
@@ -600,30 +231,22 @@ import ContactDialog from '@core-public/components/dialogs/ContactDialog.vue'
 import { MsalBrowser } from '@shared-ui/api/auth/authentication'
 import PriceInfoDialog from '@core-public/components/dialogs/PriceInfoDialog.vue'
 import Routes from '@core-public/router/routes'
+import StartHereDialog from '@core-public/components/dialogs/StartHereDialog.vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
-import { useThemeStore } from '@shared-ui/stores/themeStore'
 import { useUserStore } from '@shared-ui/stores/userStore'
-import { useVuetify } from '@shared-ui/composables/useVuetify'
 import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const brandStore = useBrandStore()
 const authStore = useAuthStore()
 const userStore = useUserStore()
-const themeStore = useThemeStore()
 const router = useRouter()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 const completeApplicationStore = useCompleteApplicationStore()
 const innerHeight = ref(0)
-const showDialog = ref(false)
 const showStatus = ref(false)
-const step = ref(1)
-const vuetify = useVuetify()
-const isMobile = computed(
-  () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
-)
 
 onMounted(() => {
   calculateInnerHeight()
@@ -647,13 +270,6 @@ const doesAgencyHomePageImageExist = computed(() => {
 
 function handleLogIn() {
   msalInstance.value.logIn()
-}
-
-function redirectToAcknowledgements() {
-  router.push({
-    name: 'Application',
-    params: { informationOnly: 'false' },
-  })
 }
 
 function redirectToMoreInformation() {
@@ -684,12 +300,6 @@ const maxHeight = computed(() => {
 
 function calculateInnerHeight() {
   innerHeight.value = window.innerHeight
-}
-
-function handleExistingApplication() {
-  router.push({
-    path: Routes.EXISTING_APPLICATION_PATH,
-  })
 }
 </script>
 

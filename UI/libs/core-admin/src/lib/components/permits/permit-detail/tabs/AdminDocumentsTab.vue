@@ -124,7 +124,9 @@ function onNameEdit(item, name) {
 
   documentStore.editAdminApplicationFileName(oldNameWithId, newName)
 
-  permitStore.updatePermitDetailApi('updated name')
+  permitStore.updatePermitDetailApi(
+    `Updated name of document ${oldName} to ${newName}`
+  )
 }
 
 async function openPdf(item) {

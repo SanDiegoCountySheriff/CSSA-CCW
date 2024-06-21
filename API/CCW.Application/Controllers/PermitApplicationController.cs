@@ -492,6 +492,25 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "B2CUsers")]
+    [Route("matchUserInformation")]
+    [HttpGet]
+    public async Task<IActionResult> MatchUserInformation(string idNumber, string dateOfBirth)
+    {
+        try
+        {
+            bool result = await _applicationCosmosDbService.MatchUserInformation(idNumber, dateOfBirth, cancellationToken: default);
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occurred while trying to find user information");
+        }
+    }
+
     [Authorize(Policy = "AADUsers")]
     [HttpPost("undoMatchApplication")]
     public async Task<IActionResult> UndoMatchApplication(string applicationId)
