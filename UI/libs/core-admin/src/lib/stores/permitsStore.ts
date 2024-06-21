@@ -111,6 +111,17 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
   const orderIds = new Map()
 
+  const isRenew = computed(() => {
+    const applicationType = permitDetail.value.application.applicationType
+
+    return (
+      applicationType === ApplicationType['Renew Standard'] ||
+      applicationType === ApplicationType['Renew Reserve'] ||
+      applicationType === ApplicationType['Renew Judicial'] ||
+      applicationType === ApplicationType['Renew Employment']
+    )
+  })
+
   function setPermits(payload: Array<PermitsType>) {
     permits.value = payload
   }
@@ -546,7 +557,12 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     const license = permitDetail.value.application.license
     const applicationType = permitDetail.value.application.applicationType
 
-    if (license && license.issueDate && license.expirationDate) {
+    if (
+      license &&
+      license.issueDate &&
+      license.expirationDate &&
+      !isRenew.value
+    ) {
       issueDate = new Date(license.issueDate)
       expDate = new Date(license.expirationDate)
     } else {
