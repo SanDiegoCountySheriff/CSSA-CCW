@@ -1284,7 +1284,7 @@ public class PdfService : IPdfService
             case ApplicationType.RenewReserve:
             case ApplicationType.RenewEmployment:
             case ApplicationType.RenewStandard:
-                form.GetField("LICENSE_ISSUED[0]").SetValue("RENEWAL", true);
+                form.GetField("LICENSE_ISSUED[0]").SetValue("SUBSEQUENT", true);
                 break;
             case ApplicationType.ModifyJudicial:
             case ApplicationType.ModifyEmployment:
