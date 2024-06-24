@@ -597,32 +597,6 @@
               <v-col
                 v-else-if="
                   !permitStore.getPermitDetail.application
-                    .readyForRenewalPayment &&
-                  !isRenewalPaymentComplete &&
-                  isRenew
-                "
-              >
-                <ReadyForPaymentDialog
-                  @on-ready-for-payment="handleReadyForRenewalPayment"
-                />
-              </v-col>
-
-              <v-col
-                v-else-if="
-                  !permitStore.getPermitDetail.application
-                    .readyForModificationPayment &&
-                  !isModificationPaymentComplete &&
-                  isModify
-                "
-              >
-                <ReadyForPaymentDialog
-                  @on-ready-for-payment="handleReadyForModificationPayment"
-                />
-              </v-col>
-
-              <v-col
-                v-else-if="
-                  !permitStore.getPermitDetail.application
                     .readyForIssuancePayment &&
                   !isIssuancePaymentComplete &&
                   (!isModify || !isRenew)
@@ -925,6 +899,34 @@
 
           <v-card-text>
             <v-row>
+              <v-col
+                v-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForRenewalPayment &&
+                  !isRenewalPaymentComplete &&
+                  isRenew
+                "
+                cols="12"
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForRenewalPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForModificationPayment &&
+                  !isModificationPaymentComplete &&
+                  isModify
+                "
+                cols="12"
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForModificationPayment"
+                />
+              </v-col>
+
               <v-col cols="12">
                 <v-menu offset-y>
                   <template #activator="{ on }">
