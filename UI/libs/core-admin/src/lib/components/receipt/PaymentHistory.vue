@@ -7,11 +7,7 @@
         <v-divider />
 
         <v-card-text
-          v-for="(
-            item, index
-          ) in permitStore.getPermitDetail.paymentHistory.filter(
-            ph => ph.successful === true
-          )"
+          v-for="(item, index) in permitStore.getPermitDetail.paymentHistory"
           :key="index"
         >
           Initial Payment: $ {{ Number.parseFloat(item.amount).toFixed(2) }}
@@ -61,54 +57,12 @@
 
             <v-spacer />
 
-            <v-dialog
-              v-if="item.paymentStatus === 1"
-              v-model="dialog"
-              max-width="600px"
-            >
-              <template #activator="{ on, attrs }">
-                <v-btn
-                  :disabled="loading"
-                  v-on="on"
-                  v-bind="attrs"
-                  color="primary"
-                  small
-                >
-                  <v-icon left>mdi-delete</v-icon>
-                  Delete
-                </v-btn>
-              </template>
-
-              <v-card>
-                <v-card-title>
-                  Delete Transaction {{ item.transactionId }}
-                </v-card-title>
-
-                <v-card-text>
-                  Are you sure you wish to delete transaction
-                  {{ item.transactionId }} for ${{ item.amount }}? This cannot
-                  be undone.
-                </v-card-text>
-
-                <v-card-actions>
-                  <v-btn
-                    @click="dialog = !dialog"
-                    color="error"
-                  >
-                    Cancel
-                  </v-btn>
-
-                  <v-spacer />
-
-                  <v-btn
-                    @click="handleDeleteTransaction(item)"
-                    color="primary"
-                  >
-                    Yes
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+            <DeletePaymentDialog
+              :item="item"
+              :index="index"
+              :loading="loading"
+              @confirm="handleDeleteTransaction"
+            />
 
             <v-btn
               :disabled="loading"
@@ -174,6 +128,7 @@
 
 <script lang="ts" setup>
 import { ApplicationType } from '@shared-utils/types/defaultTypes'
+import DeletePaymentDialog from '@core-admin/components/dialogs/DeletePaymentDialog.vue'
 import Receipt from '@core-admin/components/receipt/Receipt.vue'
 import RefundDialog from '@core-admin/components/dialogs/RefundDialog.vue'
 import VerifyTransactionDialog from '@core-admin/components/dialogs/VerifyTransactionDialog.vue'
@@ -194,7 +149,6 @@ const emit = defineEmits(['delete-transaction', 'verify-transaction'])
 
 const permitStore = usePermitsStore()
 const html2Pdf = ref(null)
-const dialog = ref(false)
 
 const state = reactive({
   paymentType: '',
@@ -223,9 +177,8 @@ function reprintReceipt(item) {
   html2Pdf.value.generatePdf()
 }
 
-function handleDeleteTransaction(paymentHistory: PaymentHistoryType) {
-  dialog.value = false
-  emit('delete-transaction', paymentHistory)
+function handleDeleteTransaction(index: number) {
+  emit('delete-transaction', index)
 }
 
 function handleConfirm(

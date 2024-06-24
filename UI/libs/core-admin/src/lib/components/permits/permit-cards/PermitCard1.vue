@@ -1,4 +1,3 @@
-<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <v-container
     class="px-0 py-0"
@@ -8,7 +7,7 @@
       class="pt-2 fill-height"
       outlined
     >
-      <v-container>
+      <v-container fluid>
         <v-row>
           <v-col
             cols="12"
@@ -20,42 +19,18 @@
             <span class="body-2"> Submitted on {{ submittedDate }}</span>
           </v-col>
           <v-col
+            class="text-center"
             cols="12"
             lg="4"
           >
-            <v-tooltip bottom>
-              <template #activator="{ on, attrs }">
-                <v-btn
-                  @click="dialog = true"
-                  v-on="on"
-                  v-bind="attrs"
-                  outlined
-                  color="primary"
-                >
-                  <v-icon
-                    left
-                    :class="
-                      themeStore.getThemeConfig.isDark ? 'white--text' : ''
-                    "
-                  >
-                    mdi-tag-edit-outline
-                  </v-icon>
-                  <span
-                    :class="
-                      themeStore.getThemeConfig.isDark ? 'white--text' : ''
-                    "
-                  >
-                    Application Type:
-                    {{
-                      ApplicationType[
-                        permitStore.getPermitDetail.application.applicationType
-                      ]
-                    }}
-                  </span>
-                </v-btn>
-              </template>
-              <span>Edit Application Type</span>
-            </v-tooltip>
+            <div class="font-weight-bold">
+              Application Type:
+              {{
+                ApplicationType[
+                  permitStore.getPermitDetail.application.applicationType
+                ]
+              }}
+            </div>
           </v-col>
 
           <v-col
@@ -107,51 +82,6 @@
         />
       </template>
     </v-card>
-
-    <v-dialog
-      v-model="dialog"
-      max-width="600"
-    >
-      <v-card :loading="isFetching">
-        <v-card-title>
-          Are you sure you want to change the application type?
-        </v-card-title>
-
-        <v-card-text>
-          It is very rare that you should change this, only in the case of a
-          customer making a mistake. Never change this for a customer unless
-          they have made a mistake.
-        </v-card-text>
-
-        <v-card-text>
-          <v-select
-            ref="select"
-            :items="appType"
-            :readonly="readonly"
-            label="Application Type"
-            item-text="text"
-            item-value="value"
-            v-model="permitStore.getPermitDetail.application.applicationType"
-            @change="updateApplicationType($event)"
-            dense
-            outlined
-            :menu-props="{
-              offsetY: true,
-            }"
-          ></v-select>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-btn
-            @click="dialog = false"
-            text
-            color="primary"
-          >
-            Cancel
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </v-container>
 </template>
 
@@ -162,7 +92,6 @@ import RevocationDialog from '@core-admin/components/dialogs/RevocationDialog.vu
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
-import { useThemeStore } from '@shared-ui/stores/themeStore'
 import {
   ApplicationStatus,
   ApplicationType,
@@ -171,7 +100,6 @@ import {
 import { computed, inject, reactive, ref } from 'vue'
 
 const permitStore = usePermitsStore()
-const themeStore = useThemeStore()
 const appointmentStore = useAppointmentsStore()
 const readonly = inject('readonly')
 const dialog = ref(false)
@@ -270,78 +198,7 @@ const appStatus = [
   },
 ]
 
-const appType = [
-  {
-    value: 0,
-    text: 'None',
-  },
-  {
-    value: 1,
-    text: 'Standard',
-  },
-  {
-    value: 2,
-    text: 'Reserve',
-  },
-  {
-    value: 3,
-    text: 'Judicial',
-  },
-  {
-    value: 4,
-    text: 'Employment',
-  },
-  {
-    value: 5,
-    text: 'Renew Standard',
-  },
-  {
-    value: 6,
-    text: 'Renew Reserve',
-  },
-  {
-    value: 7,
-    text: 'Renew Judicial',
-  },
-  {
-    value: 8,
-    text: 'Renew Employment',
-  },
-  {
-    value: 9,
-    text: 'Modify Standard',
-  },
-  {
-    value: 10,
-    text: 'Modify Reserve',
-  },
-  {
-    value: 11,
-    text: 'Modify Judicial',
-  },
-  {
-    value: 12,
-    text: 'Modify Employment',
-  },
-  {
-    value: 13,
-    text: 'Duplicate Standard',
-  },
-  {
-    value: 14,
-    text: 'Duplicate Reserve',
-  },
-  {
-    value: 15,
-    text: 'Duplicate Judicial',
-  },
-  {
-    value: 16,
-    text: 'Duplicate Employment',
-  },
-]
-
-const { isFetching, refetch: updatePermitDetails } = useQuery(
+const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
   () => permitStore.updatePermitDetailApi(state.update),
   {
@@ -371,7 +228,7 @@ function updateApplicationStatus(update: string) {
   state.update = `Changed application status to ${ApplicationStatus[update]}`
 
   if (
-    ApplicationStatus[update] === 'Appointment Complete' &&
+    ApplicationStatus[update] === 'Permit Delivered' &&
     permitStore.getPermitDetail.application.appointmentId
   ) {
     appointmentStore.deleteSlotByApplicationId(permitStore.getPermitDetail.id)
@@ -387,11 +244,6 @@ function updateApplicationStatus(update: string) {
     state.showDenialDialog = true
   }
 
-  updatePermitDetails()
-}
-
-function updateApplicationType(update: ApplicationType) {
-  state.update = `Changed application type to ${ApplicationType[update]}`
   updatePermitDetails()
 }
 

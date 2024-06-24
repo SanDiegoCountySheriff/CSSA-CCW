@@ -139,7 +139,14 @@ import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useRoute } from 'vue-router/composables'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
-import { computed, provide, reactive, ref } from 'vue'
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  provide,
+  reactive,
+  ref,
+} from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const permitStore = usePermitsStore()
@@ -165,6 +172,14 @@ const state = reactive({
   ],
   updatedSection: '',
   userPhoto: '',
+})
+
+onMounted(() => {
+  permitStore.viewingPermitDetail = true
+})
+
+onBeforeUnmount(() => {
+  permitStore.viewingPermitDetail = false
 })
 
 const { refetch: getPortrait } = useQuery(

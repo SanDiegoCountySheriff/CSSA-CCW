@@ -7,12 +7,10 @@
   >
     <template #activator="{ on, attrs }">
       <v-btn
-        :disabled="readonly"
-        small
-        block
-        color="primary"
-        v-bind="attrs"
         v-on="on"
+        v-bind="attrs"
+        color="white"
+        text
       >
         <v-icon left>mdi-currency-usd</v-icon>
         {{ $t('Payments') }}
@@ -85,17 +83,12 @@
 <script lang="ts" setup>
 import PaymentHistory from '@core-admin/components/receipt/PaymentHistory.vue'
 import ReceiptForm from '@core-admin/components/receipt/ReceiptForm.vue'
+import { RefundRequest } from '@shared-utils/types/defaultTypes'
+import { reactive } from 'vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import {
-  PaymentHistoryType,
-  RefundRequest,
-} from '@shared-utils/types/defaultTypes'
-import { inject, reactive } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
-
-const readonly = inject('readonly')
 
 const state = reactive({
   dialog: false,
@@ -118,10 +111,10 @@ const { isLoading, refetch } = useQuery(
 
 const { mutate: updateApplication, isLoading: isUpdateApplicationLoading } =
   useMutation({
-    mutationFn: async (update: string) => {
-      await permitStore.updatePermitDetailApi(update)
-      refetch()
-    },
+    mutationFn: (update: string) =>
+      permitStore.updatePermitDetailApi(update).then(() => {
+        refetch()
+      }),
   })
 
 const { mutate: refundPayment, isLoading: isRefundPaymentLoading } =
@@ -138,11 +131,8 @@ async function handleRefund(refundRequest: RefundRequest) {
   refundPayment(refundRequest)
 }
 
-function handleDeleteTransaction(paymentHistory: PaymentHistoryType) {
-  permitStore.permitDetail.paymentHistory =
-    permitStore.permitDetail.paymentHistory.filter(ph => {
-      return ph.transactionId !== paymentHistory.transactionId
-    })
+function handleDeleteTransaction(index: number) {
+  permitStore.permitDetail.paymentHistory.splice(index, 1)
 
   updateApplication('Delete Transaction')
 }

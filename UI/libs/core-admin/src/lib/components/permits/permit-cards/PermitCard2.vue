@@ -64,41 +64,7 @@
                 align-self="end"
               >
                 <v-row>
-                  <v-col
-                    cols="6"
-                    sm="6"
-                  >
-                    <FileUploadDialog
-                      :icon="'mdi-camera'"
-                      :default-selection="'Portrait'"
-                      :get-file-from-dialog="onFileChanged"
-                    />
-                  </v-col>
-                  <v-col
-                    cols="6"
-                    sm="6"
-                  >
-                    <FileUploadDialog
-                      :icon="'mdi-fingerprint'"
-                      :default-selection="'Thumbprint'"
-                      :get-file-from-dialog="onFileChanged"
-                    />
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col
-                    cols="6"
-                    sm="6"
-                  >
-                    <FileUploadDialog
-                      :icon="'mdi-file-upload'"
-                      :get-file-from-dialog="onFileChanged"
-                    />
-                  </v-col>
-                  <v-col
-                    cols="6"
-                    sm="6"
-                  >
+                  <v-col>
                     <v-menu
                       bottom
                       :elevation="10"
@@ -113,7 +79,8 @@
                           color="primary"
                           small
                         >
-                          <v-icon>mdi-printer</v-icon>
+                          <v-icon left>mdi-printer</v-icon>
+                          Print Documents
                         </v-btn>
                       </template>
 
@@ -124,10 +91,7 @@
                           </v-list-item-title>
                         </v-list-item>
 
-                        <v-list-item
-                          v-if="isApplicationModification"
-                          @click="printPdf('printModificationApi')"
-                        >
+                        <v-list-item @click="printPdf('printModificationApi')">
                           <v-list-item-title>
                             Print Modification
                           </v-list-item-title>
@@ -159,31 +123,6 @@
                           <span v-else>Print Official License</span>
                         </v-list-item>
 
-                        <v-list-item
-                          :style="{
-                            color: isUnofficialLicenseMissingInformation
-                              ? 'gray'
-                              : 'inherit',
-                            cursor: isUnofficialLicenseMissingInformation
-                              ? 'default'
-                              : 'pointer',
-                          }"
-                          @click.prevent="
-                            !isUnofficialLicenseMissingInformation &&
-                              printPdf('printUnofficialLicenseApi')
-                          "
-                        >
-                          <v-tooltip
-                            v-if="isUnofficialLicenseMissingInformation"
-                            bottom
-                          >
-                            <template #activator="{ on }">
-                              <span v-on="on">Print Unofficial License</span>
-                            </template>
-                            <span>{{ tooltipText }}</span>
-                          </v-tooltip>
-                          <span v-else>Print Unofficial License</span>
-                        </v-list-item>
                         <v-list-item @click="printPdf('printLiveScanApi')">
                           <v-list-item-title>
                             Print LiveScan Document
@@ -201,6 +140,7 @@
                   </v-col>
                 </v-row>
               </v-col>
+
               <v-col
                 cols="12"
                 lg="4"
@@ -224,289 +164,9 @@
       </v-col>
 
       <v-col
-        cols="4"
-        class="pt-0 pr-0"
-      >
-        <v-card
-          v-if="props.isLoading"
-          class="fill-height"
-          outlined
-        >
-          <v-skeleton-loader type="list-item,divider,list-item" />
-        </v-card>
-
-        <v-card
-          v-else
-          class="d-flex flex-column fill-height"
-          outlined
-          :loading="props.isLoading"
-        >
-          <v-card-title
-            v-if="
-              !permitStore.getPermitDetail.application.isComplete &&
-              !permitStore.getPermitDetail.isMatchUpdated === false
-            "
-            class="justify-center"
-          >
-            <v-icon
-              color="error"
-              class="mr-2"
-            >
-              mdi-alert
-            </v-icon>
-            Missing Requirement
-          </v-card-title>
-
-          <v-card-title
-            v-else-if="permitStore.getPermitDetail.isMatchUpdated === false"
-            class="justify-center"
-          >
-            <v-icon
-              color="error"
-              class="mr-2"
-            >
-              mdi-alert
-            </v-icon>
-            Waiting for Customer Verification
-          </v-card-title>
-
-          <v-card-title
-            v-else-if="
-              permitStore.getPermitDetail.application.flaggedForCustomerReview
-            "
-            class="justify-center"
-          >
-            <v-icon
-              color="error"
-              class="mr-2"
-            >
-              mdi-alert
-            </v-icon>
-            Flagged for Applicant Review
-          </v-card-title>
-
-          <v-card-title
-            v-else-if="
-              permitStore.getPermitDetail.application.flaggedForLicensingReview
-            "
-            class="justify-center"
-          >
-            <v-icon
-              color="error"
-              class="mr-2"
-            >
-              mdi-alert
-            </v-icon>
-            Review Survey Details
-          </v-card-title>
-
-          <v-card-title
-            v-else
-            class="justify-center"
-          >
-            <v-icon
-              color="success"
-              class="mr-2"
-            >
-              mdi-shield-check
-            </v-icon>
-            Requirements Fulfilled
-          </v-card-title>
-
-          <v-card-text
-            v-if="
-              permitStore.getPermitDetail.application
-                .startOfNinetyDayCountdown &&
-              !permitStore.getPermitDetail.application.ninetyDayCountdownPaused
-            "
-            class="text-center"
-          >
-            {{ daysLeft }} day{{ daysLeft > 1 ? 's' : '' }} left to complete
-            application before it expires
-          </v-card-text>
-
-          <v-card-text
-            v-if="
-              permitStore.getPermitDetail.application.ninetyDayCountdownPaused
-            "
-            class="text-center"
-          >
-            90 day countdown paused on
-            {{
-              permitStore.getPermitDetail.application
-                .ninetyDayCountdownPausedDate
-                ? new Date(
-                    permitStore.getPermitDetail.application.ninetyDayCountdownPausedDate
-                  ).toLocaleDateString()
-                : ''
-            }}
-          </v-card-text>
-
-          <v-card-text
-            v-if="permitStore.getPermitDetail.application.assignedTo"
-            class="text-center"
-          >
-            Assigned to:
-            {{ permitStore.getPermitDetail.application.assignedTo }}
-          </v-card-text>
-
-          <v-spacer></v-spacer>
-
-          <v-card-text>
-            <v-row>
-              <v-col
-                cols="12"
-                xl="6"
-              >
-                <v-menu offset-y>
-                  <template #activator="{ on }">
-                    <v-btn
-                      :disabled="readonly"
-                      color="primary"
-                      v-on="on"
-                      small
-                      block
-                    >
-                      <v-icon left>mdi-clipboard-account</v-icon>
-                      {{ 'Assign User' }}
-                    </v-btn>
-                  </template>
-                  <v-list>
-                    <v-list-item
-                      v-for="(adminUser, index) in adminUserStore.allAdminUsers"
-                      :key="index"
-                      @click="handleAssignApplication(adminUser.name)"
-                    >
-                      <v-list-item-title>
-                        {{ adminUser.name }}
-                      </v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-              </v-col>
-
-              <v-col
-                v-if="
-                  !permitStore.getPermitDetail.application
-                    .readyForInitialPayment &&
-                  !isInitialPaymentComplete &&
-                  !isRenew &&
-                  !isModify
-                "
-                cols="12"
-                xl="6"
-              >
-                <ReadyForPaymentDialog
-                  @on-ready-for-payment="handleReadyForInitialPayment"
-                />
-              </v-col>
-
-              <v-col
-                v-else-if="
-                  !permitStore.getPermitDetail.application
-                    .readyForRenewalPayment &&
-                  !isRenewalPaymentComplete &&
-                  isRenew
-                "
-                cols="12"
-                xl="6"
-              >
-                <ReadyForPaymentDialog
-                  @on-ready-for-payment="handleReadyForRenewalPayment"
-                />
-              </v-col>
-
-              <v-col
-                v-else-if="
-                  !permitStore.getPermitDetail.application
-                    .readyForModificationPayment &&
-                  !isModificationPaymentComplete &&
-                  isModify
-                "
-                cols="12"
-                xl="6"
-              >
-                <ReadyForPaymentDialog
-                  @on-ready-for-payment="handleReadyForModificationPayment"
-                />
-              </v-col>
-
-              <v-col
-                v-else
-                cols="12"
-                xl="6"
-              >
-                <PaymentDialog />
-              </v-col>
-            </v-row>
-
-            <v-row>
-              <v-col
-                cols="12"
-                xl="6"
-              >
-                <v-btn
-                  v-if="showStart90DayCountdownButton"
-                  :disabled="readonly"
-                  @click="handleStart90DayCountdown"
-                  color="primary"
-                  small
-                  block
-                >
-                  <v-icon left>mdi-timer</v-icon>
-                  Start 90 Days
-                </v-btn>
-
-                <v-btn
-                  v-else-if="showPause90DayCountdownButton"
-                  :disabled="readonly"
-                  @click="pause90DayCountdown"
-                  color="primary"
-                  small
-                  block
-                >
-                  <v-icon left>mdi-pause</v-icon>
-                  Pause 90 Days
-                </v-btn>
-
-                <v-btn
-                  v-else-if="showReactivate90DayCountdownButton"
-                  :disabled="readonly"
-                  @click="reactivate90DayCountdown"
-                  color="primary"
-                  small
-                  block
-                >
-                  <v-icon left>mdi-play</v-icon>
-                  Reactivate 90 Days
-                </v-btn>
-              </v-col>
-
-              <v-col
-                cols="12"
-                xl="6"
-              >
-                <v-btn
-                  :disabled="readonly"
-                  color="primary"
-                  :href="`mailto:${permitStore.getPermitDetail.application.userEmail}`"
-                  target="_blank"
-                  small
-                  block
-                >
-                  <v-icon left>mdi-email-outline</v-icon>
-                  Send Request
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <v-col
         v-if="isModify"
         cols="4"
-        class="pt-0"
+        class="pt-0 pr-0"
       >
         <v-card
           v-if="props.isLoading"
@@ -575,6 +235,7 @@
                 </v-alert>
 
                 <FinishModificationDialog
+                  :disabled="!isModificationPaymentComplete"
                   v-if="
                     permitStore.getPermitDetail.application.status ===
                     ApplicationStatus['Modification Approved']
@@ -717,7 +378,7 @@
       <v-col
         v-else-if="isRenew"
         cols="4"
-        class="pt-0"
+        class="pt-0 pr-0"
       >
         <v-card
           :loading="isAppointmentLoading"
@@ -779,6 +440,7 @@
                 </v-alert>
 
                 <FinishRenewalDialog
+                  :disabled="!isRenewalPaymentComplete"
                   v-if="
                     permitStore.getPermitDetail.application.status ===
                     ApplicationStatus['Renewal Approved']
@@ -842,7 +504,7 @@
       <v-col
         v-else
         cols="4"
-        class="pt-0"
+        class="pt-0 pr-0"
       >
         <v-card
           v-if="props.isLoading"
@@ -898,21 +560,140 @@
         </v-card>
 
         <v-card
-          v-else
-          :loading="isAppointmentLoading"
+          v-else-if="isAppointmentComplete"
           class="d-flex flex-column fill-height"
           outlined
         >
-          <v-card-title
-            v-if="permitStore.getPermitDetail.application.appointmentDateTime"
-            class="justify-center"
-          >
+          <v-card-title class="justify-center">
             <v-icon
               color="success"
               class="mr-2"
             >
               mdi-shield-check
             </v-icon>
+            Next Steps
+          </v-card-title>
+
+          <v-spacer></v-spacer>
+
+          <v-card-text class="text-center">
+            <v-row>
+              <v-col
+                v-if="
+                  permitStore.getPermitDetail.application.status ===
+                    ApplicationStatus.Submitted &&
+                  !permitStore.getPermitDetail.application
+                    .readyForInitialPayment &&
+                  !isInitialPaymentComplete &&
+                  !isRenew &&
+                  !isModify
+                "
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForInitialPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForRenewalPayment &&
+                  !isRenewalPaymentComplete &&
+                  isRenew
+                "
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForRenewalPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForModificationPayment &&
+                  !isModificationPaymentComplete &&
+                  isModify
+                "
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForModificationPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForIssuancePayment &&
+                  !isIssuancePaymentComplete &&
+                  (!isModify || !isRenew)
+                "
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForIssuancePayment"
+                />
+              </v-col>
+
+              <v-col>
+                <v-btn
+                  v-if="showStart90DayCountdownButton"
+                  :disabled="readonly"
+                  @click="handleStart90DayCountdown"
+                  color="primary"
+                  small
+                  block
+                >
+                  <v-icon left>mdi-timer</v-icon>
+                  Start 90 Days
+                </v-btn>
+
+                <v-btn
+                  v-else-if="showPause90DayCountdownButton"
+                  :disabled="readonly"
+                  @click="pause90DayCountdown"
+                  color="primary"
+                  small
+                  block
+                >
+                  <v-icon left>mdi-pause</v-icon>
+                  Pause 90 Days
+                </v-btn>
+
+                <v-btn
+                  v-else-if="showReactivate90DayCountdownButton"
+                  :disabled="readonly"
+                  @click="reactivate90DayCountdown"
+                  color="primary"
+                  small
+                  block
+                >
+                  <v-icon left>mdi-play</v-icon>
+                  Reactivate 90 Days
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+
+        <v-card
+          v-else
+          :loading="isAppointmentLoading"
+          class="d-flex flex-column fill-height"
+          outlined
+        >
+          <v-card-title class="justify-center mb-0 pb-0">
+            <v-icon
+              color="success"
+              class="mr-2"
+            >
+              mdi-shield-check
+            </v-icon>
+            Appointment
+          </v-card-title>
+
+          <v-card-title
+            v-if="permitStore.getPermitDetail.application.appointmentDateTime"
+            class="justify-center"
+          >
             {{ appointmentTime }} on {{ appointmentDate }}
           </v-card-title>
 
@@ -999,25 +780,183 @@
           </v-card-text>
         </v-card>
       </v-col>
-    </v-row>
 
-    <v-snackbar
-      v-model="state.snackbar"
-      :multi-line="state.multiLine"
-    >
-      {{ state.text }}
-
-      <template #action="{ attrs }">
-        <v-btn
-          :color="$vuetify.theme.dark ? '' : 'red'"
-          text
-          v-bind="attrs"
-          @click="state.snackbar = false"
+      <v-col
+        cols="4"
+        class="pt-0"
+      >
+        <v-card
+          v-if="props.isLoading"
+          class="fill-height"
+          outlined
         >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
+          <v-skeleton-loader type="list-item,divider,list-item" />
+        </v-card>
+
+        <v-card
+          v-else
+          class="d-flex flex-column fill-height"
+          outlined
+          :loading="props.isLoading"
+        >
+          <v-card-title
+            v-if="
+              !permitStore.getPermitDetail.application.isComplete &&
+              !permitStore.getPermitDetail.isMatchUpdated === false
+            "
+            class="justify-center"
+          >
+            <v-icon
+              color="error"
+              class="mr-2"
+            >
+              mdi-alert
+            </v-icon>
+            Missing Requirement
+          </v-card-title>
+
+          <v-card-title
+            v-else-if="permitStore.getPermitDetail.isMatchUpdated === false"
+            class="justify-center"
+          >
+            <v-icon
+              color="error"
+              class="mr-2"
+            >
+              mdi-alert
+            </v-icon>
+            Waiting for Customer Verification
+          </v-card-title>
+
+          <v-card-title
+            v-else-if="
+              permitStore.getPermitDetail.application.flaggedForCustomerReview
+            "
+            class="justify-center"
+          >
+            <v-icon
+              color="error"
+              class="mr-2"
+            >
+              mdi-alert
+            </v-icon>
+            Flagged for Applicant Review
+          </v-card-title>
+
+          <v-card-title
+            v-else-if="
+              permitStore.getPermitDetail.application.flaggedForLicensingReview
+            "
+            class="justify-center"
+          >
+            <v-icon
+              color="error"
+              class="mr-2"
+            >
+              mdi-alert
+            </v-icon>
+            Review Survey Details
+          </v-card-title>
+
+          <v-card-title
+            v-else-if="waitingForPayment"
+            class="justify-center"
+          >
+            <v-icon
+              color="error"
+              class="mr-2"
+            >
+              mdi-alert
+            </v-icon>
+            Waiting for Customer Payment
+          </v-card-title>
+
+          <v-card-title
+            v-else
+            class="justify-center"
+          >
+            <v-icon
+              color="success"
+              class="mr-2"
+            >
+              mdi-shield-check
+            </v-icon>
+            Requirements Fulfilled
+          </v-card-title>
+
+          <v-card-text
+            v-if="
+              permitStore.getPermitDetail.application
+                .startOfNinetyDayCountdown &&
+              !permitStore.getPermitDetail.application.ninetyDayCountdownPaused
+            "
+            class="text-center"
+          >
+            {{ daysLeft }} day{{ daysLeft > 1 ? 's' : '' }} left to complete
+            application before it expires
+          </v-card-text>
+
+          <v-card-text
+            v-if="
+              permitStore.getPermitDetail.application.ninetyDayCountdownPaused
+            "
+            class="text-center"
+          >
+            90 day countdown paused on
+            {{
+              permitStore.getPermitDetail.application
+                .ninetyDayCountdownPausedDate
+                ? new Date(
+                    permitStore.getPermitDetail.application.ninetyDayCountdownPausedDate
+                  ).toLocaleDateString()
+                : ''
+            }}
+          </v-card-text>
+
+          <v-card-text
+            v-if="permitStore.getPermitDetail.application.assignedTo"
+            class="text-center"
+          >
+            Assigned to:
+            {{ permitStore.getPermitDetail.application.assignedTo }}
+          </v-card-text>
+
+          <v-spacer></v-spacer>
+
+          <v-card-text>
+            <v-row>
+              <v-col cols="12">
+                <v-menu offset-y>
+                  <template #activator="{ on }">
+                    <v-btn
+                      :disabled="readonly"
+                      color="primary"
+                      v-on="on"
+                      small
+                      block
+                    >
+                      <v-icon left>mdi-clipboard-account</v-icon>
+                      {{ 'Assign User' }}
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item
+                      v-for="(adminUser, index) in adminUserStore.allAdminUsers"
+                      :key="index"
+                      @click="handleAssignApplication(adminUser.name)"
+                    >
+                      <v-list-item-title>
+                        {{ adminUser.name }}
+                      </v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
 
     <v-dialog
       v-model="ninetyDayDialog"
@@ -1070,15 +1009,12 @@
 <script setup lang="ts">
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue'
 import ExpirationDateDialog from '@core-admin/components/dialogs/ExpirationDateDialog.vue'
-import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
 import FinishModificationDialog from '@core-admin/components/dialogs/FinishModificationDialog.vue'
 import FinishRenewalDialog from '@core-admin/components/dialogs/FinishRenewalDialog.vue'
-import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import ReadyForPaymentDialog from '@core-admin/components/dialogs/ReadyForPaymentDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
-import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { useMutation } from '@tanstack/vue-query'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
@@ -1086,6 +1022,7 @@ import {
   ApplicationStatus,
   AppointmentStatus,
   AppointmentWindowCreateRequestModel,
+  PaymentStatus,
   PaymentType,
 } from '@shared-utils/types/defaultTypes'
 import {
@@ -1126,29 +1063,16 @@ const state = reactive({
   snackColor: '',
   snackText: '',
   multiLine: false,
-  snackbar: false,
   text: `Invalid file type provided.`,
 })
 
 const ninetyDayStartDateSelection = ref(null)
 const ninetyDayDialog = ref(false)
 const permitStore = usePermitsStore()
-const documentsStore = useDocumentsStore()
 const appointmentStore = useAppointmentsStore()
 const adminUserStore = useAdminUserStore()
 const themeStore = useThemeStore()
 const changed = ref('')
-
-const allowedExtension = [
-  '.png',
-  '.jpeg',
-  '.jpg',
-  '.pjp',
-  '.pjpeg',
-  '.jfif',
-  '.bmp',
-  '.pdf',
-]
 
 const isInitialPaymentComplete = computed(() => {
   if (permitStore.permitDetail.paymentHistory) {
@@ -1165,7 +1089,9 @@ const isInitialPaymentComplete = computed(() => {
             ph.paymentType === 11) &&
           ph.successful === true
         )
-      }) || permitStore.permitDetail.application.paymentStatus === 1
+      }) ||
+      permitStore.permitDetail.application.paymentStatus ===
+        PaymentStatus['In Person']
     )
   }
 
@@ -1215,6 +1141,19 @@ const isModificationPaymentComplete = computed(() => {
   )
 })
 
+const isIssuancePaymentComplete = computed(() => {
+  if (permitStore.permitDetail.paymentHistory) {
+    return permitStore.permitDetail.paymentHistory.some(ph => {
+      return (
+        ph.paymentType === PaymentType['CCW Application Issuance Payment'] &&
+        ph.successful === true
+      )
+    })
+  }
+
+  return false
+})
+
 const isRenew = computed(() => {
   const applicationType =
     permitStore.getPermitDetail.application.applicationType
@@ -1236,6 +1175,49 @@ const isModify = computed(() => {
     applicationType === ApplicationType['Modify Reserve'] ||
     applicationType === ApplicationType['Modify Judicial'] ||
     applicationType === ApplicationType['Modify Employment']
+  )
+})
+
+const isAppointmentComplete = computed(() => {
+  return (
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Appointment Complete'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Background In Progress'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Contingently Denied'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Contingently Approved'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Approved ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Permit Delivered'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Suspended ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Revoked ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Canceled ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Denied ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus.Withdrawn ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Ready To Issue'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Modification Approved'] ||
+    permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Renewal Approved'] ||
+    (permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Waiting For Customer'] &&
+      permitStore.getPermitDetail.application.appointmentDateTime !== null &&
+      permitStore.getPermitDetail.application.appointmentDateTime <
+        new Date().toISOString()) ||
+    (permitStore.getPermitDetail.application.status ===
+      ApplicationStatus['Flagged For Review'] &&
+      permitStore.getPermitDetail.application.appointmentDateTime !== null &&
+      permitStore.getPermitDetail.application.appointmentDateTime <
+        new Date().toISOString())
   )
 })
 
@@ -1271,7 +1253,10 @@ const { mutateAsync: createManualAppointment } = useMutation({
 const { mutate: checkInAppointment, isLoading: isCheckInLoading } = useMutation(
   {
     mutationFn: (appointmentId: string) =>
-      appointmentStore.putCheckInAppointment(appointmentId),
+      appointmentStore.putCheckInAppointment(appointmentId).then(() => {
+        changed.value = 'checked in appointment'
+        updatePermitDetails()
+      }),
   }
 )
 
@@ -1280,48 +1265,32 @@ const {
   isLoading: isAppointmentScheduledLoading,
 } = useMutation({
   mutationFn: (appointmentId: string) =>
-    appointmentStore.putSetAppointmentScheduled(appointmentId),
+    appointmentStore.putSetAppointmentScheduled(appointmentId).then(() => {
+      changed.value = 'appointment time'
+      updatePermitDetails()
+    }),
 })
 
 const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
   mutationFn: (appointmentId: string) =>
-    appointmentStore.putNoShowAppointment(appointmentId),
+    appointmentStore.putNoShowAppointment(appointmentId).then(() => {
+      changed.value = 'no show appointment'
+      updatePermitDetails()
+    }),
 })
 
-function handleApproveModification() {
-  permitStore.getPermitDetail.application.status =
-    ApplicationStatus['Modification Approved']
-
-  changed.value = 'Application Status - Modification Approved'
-
-  updatePermitDetails()
-}
-
-function handleApproveRenewal() {
-  permitStore.getPermitDetail.application.status =
-    ApplicationStatus['Renewal Approved']
-
-  changed.value = 'Application Status - Renewal Approved'
-
-  updatePermitDetails()
-}
-
-async function handleFinishModification() {
+async function handleApproveModification() {
   const historicalApplication: CompleteApplication = {
     ...permitStore.getPermitDetail,
   }
 
-  await addHistoricalApplication(historicalApplication)
-
   const app = permitStore.getPermitDetail.application
 
-  app.status = ApplicationStatus['Permit Delivered']
+  await addHistoricalApplication(historicalApplication)
 
-  changed.value = 'Modification - Permit Delivered'
+  app.status = ApplicationStatus['Modification Approved']
 
-  app.applicationType = getOriginalApplicationTypeModification(
-    app.applicationType
-  )
+  changed.value = 'Application Status - Modification Approved'
 
   if (app.personalInfo.modifiedFirstName) {
     app.personalInfo.firstName = app.personalInfo.modifiedFirstName
@@ -1394,6 +1363,29 @@ async function handleFinishModification() {
   updatePermitDetails()
 }
 
+function handleApproveRenewal() {
+  permitStore.getPermitDetail.application.status =
+    ApplicationStatus['Renewal Approved']
+
+  changed.value = 'Application Status - Renewal Approved'
+
+  updatePermitDetails()
+}
+
+async function handleFinishModification() {
+  const app = permitStore.getPermitDetail.application
+
+  app.status = ApplicationStatus['Permit Delivered']
+
+  changed.value = 'Modification - Permit Delivered'
+
+  app.applicationType = getOriginalApplicationTypeModification(
+    app.applicationType
+  )
+
+  updatePermitDetails()
+}
+
 function handleFinishRenewal() {
   const app = permitStore.getPermitDetail.application
 
@@ -1424,16 +1416,13 @@ function handleSaveExpirationDate(expirationDate: string) {
   updatePermitDetails()
 }
 
-const isApplicationModification = computed(() => {
+const waitingForPayment = computed(() => {
   return (
-    permitStore.getPermitDetail.application.applicationType ===
-      ApplicationType['Modify Standard'] ||
-    permitStore.getPermitDetail.application.applicationType ===
-      ApplicationType['Modify Reserve'] ||
-    permitStore.getPermitDetail.application.applicationType ===
-      ApplicationType['Modify Judicial'] ||
-    permitStore.getPermitDetail.application.applicationType ===
-      ApplicationType['Modify Employment']
+    permitStore.getPermitDetail.application.readyForInitialPayment === true ||
+    permitStore.getPermitDetail.application.readyForRenewalPayment === true ||
+    permitStore.getPermitDetail.application.readyForModificationPayment ===
+      true ||
+    permitStore.getPermitDetail.application.readyForIssuancePayment === true
   )
 })
 
@@ -1466,37 +1455,63 @@ const modificationReadyForApproval = computed(() => {
 })
 
 const renewalReadyForApproval = computed(() => {
-  const ciiNumberComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.ciiNumber?.value ===
+  const proofOfIDComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.proofOfID?.value ===
     true
 
-  const dojComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.doj?.value === true
-
-  const fbiComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.fbi?.value === true
-
-  const dojLetterComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.dojApprovalLetter
+  const proofOfResidencyComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.proofOfResidency
       ?.value === true
 
-  const sidLettersCompelete =
-    permitStore.getPermitDetail.application.backgroundCheck.sidLettersReceived
+  const ncicWantsWarrantsComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.ncicWantsWarrants
       ?.value === true
 
-  const probationsComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.probations
+  const localsComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.locals?.value ===
+    true
+
+  const dmvRecordComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.dmvRecord?.value ===
+    true
+
+  const crimeTracerComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.crimeTracer
+      ?.value === true
+
+  const trafficCourtPortalComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.trafficCourtPortal
+      ?.value === true
+
+  const liveScanComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.livescan?.value ===
+    true
+
+  const sr14Complete =
+    permitStore.getPermitDetail.application.backgroundCheck.sR14?.value === true
+
+  const firearmsComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.firearms?.value ===
+    true
+
+  const safetyCertificateComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.safetyCertificate
       ?.value === true
 
   return (
     permitStore.getPermitDetail.application.status !==
       ApplicationStatus['Renewal Approved'] &&
-    ciiNumberComplete &&
-    dojComplete &&
-    fbiComplete &&
-    dojLetterComplete &&
-    sidLettersCompelete &&
-    probationsComplete
+    proofOfIDComplete &&
+    proofOfResidencyComplete &&
+    ncicWantsWarrantsComplete &&
+    localsComplete &&
+    dmvRecordComplete &&
+    crimeTracerComplete &&
+    trafficCourtPortalComplete &&
+    liveScanComplete &&
+    sr14Complete &&
+    firearmsComplete &&
+    safetyCertificateComplete
   )
 })
 
@@ -1529,37 +1544,63 @@ const modificationMissingChecklistItems = computed(() => {
 })
 
 const renewalMissingChecklistItems = computed(() => {
-  const ciiNumberComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.ciiNumber?.value ===
+  const proofOfIDComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.proofOfID?.value ===
     true
 
-  const dojComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.doj?.value === true
-
-  const fbiComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.fbi?.value === true
-
-  const dojLetterComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.dojApprovalLetter
+  const proofOfResidencyComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.proofOfResidency
       ?.value === true
 
-  const sidLettersCompelete =
-    permitStore.getPermitDetail.application.backgroundCheck.sidLettersReceived
+  const ncicWantsWarrantsComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.ncicWantsWarrants
       ?.value === true
 
-  const probationsComplete =
-    permitStore.getPermitDetail.application.backgroundCheck.probations
+  const localsComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.locals?.value ===
+    true
+
+  const dmvRecordComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.dmvRecord?.value ===
+    true
+
+  const crimeTracerComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.crimeTracer
+      ?.value === true
+
+  const trafficCourtPortalComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.trafficCourtPortal
+      ?.value === true
+
+  const liveScanComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.livescan?.value ===
+    true
+
+  const sr14Complete =
+    permitStore.getPermitDetail.application.backgroundCheck.sR14?.value === true
+
+  const firearmsComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.firearms?.value ===
+    true
+
+  const safetyCertificateComplete =
+    permitStore.getPermitDetail.application.backgroundCheck.safetyCertificate
       ?.value === true
 
   return (
     permitStore.getPermitDetail.application.status !==
       ApplicationStatus['Renewal Approved'] &&
-    (!ciiNumberComplete ||
-      !dojComplete ||
-      !fbiComplete ||
-      !dojLetterComplete ||
-      !sidLettersCompelete ||
-      !probationsComplete)
+    (!proofOfIDComplete ||
+      !proofOfResidencyComplete ||
+      !ncicWantsWarrantsComplete ||
+      !localsComplete ||
+      !dmvRecordComplete ||
+      !crimeTracerComplete ||
+      !trafficCourtPortalComplete ||
+      !liveScanComplete ||
+      !sr14Complete ||
+      !firearmsComplete ||
+      !safetyCertificateComplete)
   )
 })
 
@@ -1702,23 +1743,6 @@ const isOfficialLicenseMissingInformation = computed(() => {
   return true
 })
 
-const isUnofficialLicenseMissingInformation = computed(() => {
-  if (permitStore.getPermitDetail.application.uploadedDocuments) {
-    const uploadedDocuments =
-      permitStore.getPermitDetail.application.uploadedDocuments
-    const missingThumbprint = !uploadedDocuments.some(
-      doc => doc.documentType.toLowerCase().indexOf('thumbprint') !== -1
-    )
-    const missingPortrait = !uploadedDocuments.some(
-      doc => doc.documentType.toLowerCase().indexOf('portrait') !== -1
-    )
-
-    return missingThumbprint || missingPortrait
-  }
-
-  return true
-})
-
 const tooltipText = computed(() => {
   if (permitStore.getPermitDetail.application.uploadedDocuments) {
     const uploadedDocuments =
@@ -1779,25 +1803,6 @@ function handleSetAppointmentScheduled() {
     setAppointmentScheduled(
       permitStore.getPermitDetail.application.appointmentId
     )
-  }
-}
-
-function onFileChanged(e: File, target: string) {
-  if (allowedExtension.some(ext => e.name.toLowerCase().endsWith(ext))) {
-    documentsStore
-      .setUserApplicationFile(e, target)
-      .then(() => {
-        state.text = 'Successfully uploaded file.'
-        state.snackbar = true
-        emit('refetch')
-      })
-      .catch(() => {
-        state.text = 'An API error occurred.'
-        state.snackbar = true
-      })
-  } else {
-    state.text = 'Invalid file type provided.'
-    state.snackbar = true
   }
 }
 
@@ -1912,6 +1917,12 @@ function handleReadyForRenewalPayment() {
 function handleReadyForModificationPayment() {
   changed.value = 'Marked ready for modification payment'
   permitStore.getPermitDetail.application.readyForModificationPayment = true
+  updatePermitDetails()
+}
+
+function handleReadyForIssuancePayment() {
+  changed.value = 'Marked ready for issuance payment'
+  permitStore.getPermitDetail.application.readyForIssuancePayment = true
   updatePermitDetails()
 }
 </script>

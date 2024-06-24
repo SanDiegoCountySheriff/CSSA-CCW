@@ -38,5 +38,4 @@ public enum PaymentType
     ReserveLivescan,
     [Description("CCW Application Employment Livescan Payment")]
     EmploymentLivescan,
-
 }

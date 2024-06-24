@@ -716,6 +716,7 @@ export type CompleteApplication = {
     readyForInitialPayment: boolean
     readyForRenewalPayment: boolean
     readyForModificationPayment: boolean
+    readyForIssuancePayment: boolean
     modificationNumber: number
     renewalNumber: number
     isRenewingWithLegacyQuestions: boolean
