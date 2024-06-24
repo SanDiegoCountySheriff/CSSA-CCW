@@ -145,7 +145,7 @@
       </v-row>
 
       <FormButtonContainer
-        :valid="!isSignaturePadEmpty"
+        :valid="!isSignaturePadEmpty && isSignatureMinLength"
         :loading="state.uploading || isLoading || loading"
         :all-steps-complete="props.allStepsComplete"
         :is-final-step="true"
@@ -276,6 +276,14 @@ function handleClearSignature() {
 
 const isSignaturePadEmpty = computed(() => {
   return signaturePad.value?.isEmpty()
+})
+
+const isSignatureMinLength = computed(() => {
+  const points = signaturePad.value?.toData()
+  // eslint-disable-next-line prefer-spread
+  const pointCount = [].concat.apply([], points).length
+
+  return points && pointCount >= 2
 })
 
 const isFalseInfoAgreed = computed(() => {
