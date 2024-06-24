@@ -204,9 +204,8 @@
 
           <v-card-text class="text-center">
             <v-row>
-              <v-col>
+              <v-col v-if="modificationReadyForApproval">
                 <v-btn
-                  v-if="modificationReadyForApproval"
                   :disabled="readonly"
                   @click="handleApproveModification"
                   color="primary"
@@ -216,9 +215,23 @@
                   <v-icon left>mdi-check-bold</v-icon>
                   Approve Modification
                 </v-btn>
+              </v-col>
 
+              <v-col v-if="modificationReadyForApproval">
+                <v-btn
+                  :disabled="readonly"
+                  @click="handleDenyModification"
+                  color="primary"
+                  block
+                  small
+                >
+                  <v-icon left>mdi-close-thick</v-icon>
+                  Deny Modification
+                </v-btn>
+              </v-col>
+
+              <v-col v-if="modificationMissingChecklistItems">
                 <v-alert
-                  v-if="modificationMissingChecklistItems"
                   :disabled="readonly"
                   color="primary"
                   type="info"
@@ -1281,6 +1294,20 @@ const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
     }),
 })
 
+async function handleDenyModification() {
+  const historicalApplication: CompleteApplication = {
+    ...permitStore.getPermitDetail,
+  }
+
+  const app = permitStore.getPermitDetail.application
+
+  await addHistoricalApplication(historicalApplication)
+
+  app.status = ApplicationStatus['Modification Denied']
+
+  app.modifiedAddressComplete = null
+}
+
 async function handleApproveModification() {
   const historicalApplication: CompleteApplication = {
     ...permitStore.getPermitDetail,
@@ -1360,7 +1387,6 @@ async function handleApproveModification() {
   app.modifyDeleteWeapons = []
   app.modifiedWeaponComplete = null
   app.currentStep = 1
-  app.modificationNumber += 1
 
   updatePermitDetails()
 }
@@ -1384,6 +1410,7 @@ async function handleFinishModification() {
   app.applicationType = getOriginalApplicationTypeModification(
     app.applicationType
   )
+  app.modificationNumber += 1
 
   updatePermitDetails()
 }
