@@ -246,13 +246,15 @@
                     Approve Checklist Items Next
                   </span>
                 </v-alert>
-
+              </v-col>
+              <v-col
+                v-if="
+                  permitStore.getPermitDetail.application.status ===
+                  ApplicationStatus['Modification Approved']
+                "
+              >
                 <FinishModificationDialog
                   :disabled="!isModificationPaymentComplete"
-                  v-if="
-                    permitStore.getPermitDetail.application.status ===
-                    ApplicationStatus['Modification Approved']
-                  "
                   @handle-finish-modification="handleFinishModification"
                 />
               </v-col>
@@ -1306,6 +1308,10 @@ async function handleDenyModification() {
   app.status = ApplicationStatus['Modification Denied']
 
   app.modifiedAddressComplete = null
+  app.modifiedNameComplete = null
+  app.modifiedWeaponComplete = null
+
+  updatePermitDetails()
 }
 
 async function handleApproveModification() {

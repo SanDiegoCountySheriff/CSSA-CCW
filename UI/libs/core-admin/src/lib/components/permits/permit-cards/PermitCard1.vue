@@ -196,6 +196,10 @@ const appStatus = [
     id: 20,
     value: 'Renewal Approved',
   },
+  {
+    id: 21,
+    value: 'Modification Denied',
+  },
 ]
 
 const { refetch: updatePermitDetails } = useQuery(
