@@ -68,7 +68,7 @@
                     v-model="user.dateOfBirth"
                     :label="$t('Date of Birth')"
                     :rules="[v => !!v || $t('Date of birth is required')]"
-                    hint="Click the month and year at the top to change the year"
+                    hint="Click the month and year at the top of the calendar to change the year"
                     prepend-inner-icon="mdi-calendar"
                     color="primary"
                     persistent-hint

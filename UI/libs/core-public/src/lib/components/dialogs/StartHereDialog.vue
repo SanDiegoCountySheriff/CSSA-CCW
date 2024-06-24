@@ -127,6 +127,8 @@
                       v-model="dateOfBirth"
                       :label="$t('Date of Birth')"
                       :rules="[v => !!v || $t('Date of birth is required')]"
+                      hint="Click the month and year at the top of the calendar to change the year"
+                      persistent-hint
                       :dense="isMobile"
                       outlined
                       prepend-inner-icon="mdi-calendar"
