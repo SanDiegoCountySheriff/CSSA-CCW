@@ -173,7 +173,7 @@
                     v => !!v || $t('Date of birth is required'),
                   ]"
                   outlined
-                  hint="Click the month and year at the top to change the year"
+                  hint="Click the month and year at the top of the calendar to change the year"
                   persistent-hint
                   :dense="isMobile"
                   prepend-inner-icon="mdi-calendar"

@@ -412,7 +412,7 @@ public class DocumentController : ControllerBase
         var documents = new string[] {
             "BOF_4012_rev_01_2024",
             "BOF_4012_rev_08_2022",
-            "BOF_4502_rev_09_2011",
+            "BOF_4502_rev_01_2024",
             "BOF_1032_rev_01_2024",
             "BOF_1031_orig_01_2024",
             "BOF_8018_rev_01_2024",
