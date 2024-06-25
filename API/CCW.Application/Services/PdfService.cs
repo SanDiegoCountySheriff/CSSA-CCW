@@ -1647,6 +1647,10 @@ public class PdfService : IPdfService
         {
             form.GetField("form1[0].#subform[0].CheckBox1[0]").SetValue("Yes", true);
         }
+        if (userApplication.Application.Status == ApplicationStatus.ModificationDenied)
+        {
+            form.GetField("form1[0].#subform[0].CheckBox1[1]").SetValue("No", true);
+        }
         var correctionReasons = new List<string>();
         if (!string.IsNullOrEmpty(userApplication.Application.ModifiedAddress.StreetAddress) ||
             !string.IsNullOrEmpty(userApplication.Application.ModifiedAddress.City) ||
