@@ -1389,14 +1389,16 @@ const showInitialWithdrawButton = computed(() => {
 
 const showModifyWithdrawButton = computed(() => {
   return (
-    applicationStore.completeApplication.application.applicationType ===
+    (applicationStore.completeApplication.application.applicationType ===
       ApplicationType['Modify Employment'] ||
-    applicationStore.completeApplication.application.applicationType ===
-      ApplicationType['Modify Judicial'] ||
-    applicationStore.completeApplication.application.applicationType ===
-      ApplicationType['Modify Reserve'] ||
-    applicationStore.completeApplication.application.applicationType ===
-      ApplicationType['Modify Standard']
+      applicationStore.completeApplication.application.applicationType ===
+        ApplicationType['Modify Judicial'] ||
+      applicationStore.completeApplication.application.applicationType ===
+        ApplicationType['Modify Reserve'] ||
+      applicationStore.completeApplication.application.applicationType ===
+        ApplicationType['Modify Standard']) &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Modification Denied']
   )
 })
 
@@ -1428,6 +1430,8 @@ const canApplicationBeUpdated = computed(() => {
       ApplicationStatus.Canceled &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Denied &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Modification Denied'] &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Withdrawn &&
     applicationStore.completeApplication.application.status !==
@@ -1477,6 +1481,8 @@ const canApplicationBeContinued = computed(() => {
       ApplicationStatus.Canceled &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Denied &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Modification Denied'] &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Withdrawn &&
     applicationStore.completeApplication.application.status !==

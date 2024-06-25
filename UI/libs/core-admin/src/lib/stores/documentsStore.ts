@@ -50,6 +50,14 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
         doc => doc.documentType === target
       )
 
+    const shouldNotIncrement = computed(() => {
+      return (
+        target === 'Signature' ||
+        target === 'Portrait' ||
+        target === 'Thumbprint'
+      )
+    })
+
     let count = 0
 
     sameTypeDocs.forEach(doc => {
@@ -65,7 +73,13 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     })
     const nextCount = count + 1
 
-    const newFileName = `${permitStore.permitDetail.userId}_${target}_${nextCount}`
+    let newFileName
+
+    if (shouldNotIncrement.value) {
+      newFileName = `${permitStore.permitDetail.userId}_${target}`
+    } else {
+      newFileName = `${permitStore.permitDetail.userId}_${target}_${nextCount}`
+    }
 
     formData.append('fileToUpload', data)
     const res = await axios.post(
@@ -76,7 +90,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     if (res) {
       const uploadDoc: UploadedDocType = {
         documentType: target,
-        name: `${target}_${nextCount}`,
+        name: shouldNotIncrement.value ? target : `${target}_${nextCount}`,
         uploadedBy: authStore.getAuthState.userEmail,
         uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
       }
