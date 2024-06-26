@@ -53,6 +53,17 @@
             >
             </v-text-field>
           </v-col>
+
+          <v-col cols="6">
+            <v-select
+              v-model="brandStore.getBrand.licensingManager"
+              :items="adminUserStore.allAdminUsers"
+              item-text="name"
+              item-value="name"
+              label="Licensing Manager"
+              outlined
+            ></v-select>
+          </v-col>
         </v-row>
 
         <v-row>
@@ -344,12 +355,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useTanstack } from '@shared-ui/composables/useTanstack'
 
 const brandStore = useBrandStore()
 const valid = ref(false)
 const { loading, setBrandSettings } = useTanstack()
+const adminUserStore = useAdminUserStore()
 
 async function save() {
   setBrandSettings()

@@ -790,6 +790,7 @@ export type BrandType = {
   agencyEyeColors: EyeColor[]
   daysBeforeActiveRenewal: number
   numberOfModificationsBetweenRenewals: number
+  licensingManager: string
 }
 
 export type AgencyDocumentsType = {

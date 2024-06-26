@@ -1614,13 +1614,13 @@ public class PdfService : IPdfService
         + adminResponse.AgencyShippingState + " " + adminResponse.AgencyShippingZip);
         form.GetField("form1[0].#subform[0].CITY[0]").SetValue(adminResponse.AgencyCity);
         form.GetField("form1[0].#subform[0].ZIP[0]").SetValue(adminResponse.AgencyZip);
-        string fullName = adminUserProfile.Name;
+        string fullName = adminResponse.LicensingManager;
         string[] parts = fullName.Split(',');
         string lastName = parts[0].Trim();
         string firstName = parts[1].Trim();
         form.GetField("form1[0].#subform[0].LAST_NAME[0]").SetValue(lastName);
         form.GetField("form1[0].#subform[0].FIRSTNAME[0]").SetValue(firstName);
-        form.GetField("form1[0].#subform[0].JOBRANK[0]").SetValue(adminUserProfile.JobTitle);
+        form.GetField("form1[0].#subform[0].JOBRANK[0]").SetValue("Licensing Manager");
         form.GetField("form1[0].#subform[0].TELEPHONENUMBER[0]").SetValue(adminResponse.AgencyTelephone);
         form.GetField("form1[0].#subform[0].FAXNUMBER[0]").SetValue(adminResponse.AgencyFax);
         form.GetField("form1[0].#subform[0].EMAILADDRESS[0]").SetValue(adminResponse.AgencyEmail);
