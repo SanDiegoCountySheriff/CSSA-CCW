@@ -215,7 +215,7 @@
 
       <template #[`item.appointmentStatus`]="props">
         {{
-          isAppointmentComplete
+          isAppointmentComplete(props.item)
             ? 'Complete'
             : AppointmentStatus[props.item.appointmentStatus]
         }}
@@ -223,7 +223,9 @@
 
       <template #[`item.appointmentDateTime`]="props">
         {{
-          isAppointmentComplete ? 'Complete' : props.item.appointmentDateTime
+          isAppointmentComplete(props.item)
+            ? 'Complete'
+            : props.item.appointmentDateTime
         }}
       </template>
 
@@ -375,48 +377,30 @@ const menu = ref(false)
 const date = ref('')
 let changed: string
 
-const isAppointmentComplete = computed(() => {
+function isAppointmentComplete(permit: PermitsType) {
   return (
-    permitStore.getPermitDetail.application.status ===
-      ApplicationStatus['Appointment Complete'] ||
-    permitStore.getPermitDetail.application.status ===
-      ApplicationStatus['Background In Progress'] ||
-    permitStore.getPermitDetail.application.status ===
-      ApplicationStatus['Contingently Denied'] ||
-    permitStore.getPermitDetail.application.status ===
-      ApplicationStatus['Contingently Approved'] ||
-    permitStore.getPermitDetail.application.status ===
-      ApplicationStatus.Approved ||
-    permitStore.getPermitDetail.application.status ===
-      ApplicationStatus['Permit Delivered'] ||
-    permitStore.getPermitDetail.application.status ===
-      ApplicationStatus.Suspended ||
-    permitStore.getPermitDetail.application.status ===
-      ApplicationStatus.Revoked ||
-    permitStore.getPermitDetail.application.status ===
-      ApplicationStatus.Canceled ||
-    permitStore.getPermitDetail.application.status ===
-      ApplicationStatus.Denied ||
-    permitStore.getPermitDetail.application.status ===
-      ApplicationStatus.Withdrawn ||
-    permitStore.getPermitDetail.application.status ===
-      ApplicationStatus['Ready To Issue'] ||
-    permitStore.getPermitDetail.application.status ===
-      ApplicationStatus['Modification Approved'] ||
-    permitStore.getPermitDetail.application.status ===
-      ApplicationStatus['Renewal Approved'] ||
-    (permitStore.getPermitDetail.application.status ===
-      ApplicationStatus['Waiting For Customer'] &&
-      permitStore.getPermitDetail.application.appointmentDateTime !== null &&
-      permitStore.getPermitDetail.application.appointmentDateTime <
-        new Date().toISOString()) ||
-    (permitStore.getPermitDetail.application.status ===
-      ApplicationStatus['Flagged For Review'] &&
-      permitStore.getPermitDetail.application.appointmentDateTime !== null &&
-      permitStore.getPermitDetail.application.appointmentDateTime <
-        new Date().toISOString())
+    permit.status === ApplicationStatus['Appointment Complete'] ||
+    permit.status === ApplicationStatus['Background In Progress'] ||
+    permit.status === ApplicationStatus['Contingently Denied'] ||
+    permit.status === ApplicationStatus['Contingently Approved'] ||
+    permit.status === ApplicationStatus.Approved ||
+    permit.status === ApplicationStatus['Permit Delivered'] ||
+    permit.status === ApplicationStatus.Suspended ||
+    permit.status === ApplicationStatus.Revoked ||
+    permit.status === ApplicationStatus.Canceled ||
+    permit.status === ApplicationStatus.Denied ||
+    permit.status === ApplicationStatus.Withdrawn ||
+    permit.status === ApplicationStatus['Ready To Issue'] ||
+    permit.status === ApplicationStatus['Modification Approved'] ||
+    permit.status === ApplicationStatus['Renewal Approved'] ||
+    (permit.status === ApplicationStatus['Waiting For Customer'] &&
+      permit.appointmentDateTime !== null &&
+      permit.appointmentDateTime < new Date().toISOString()) ||
+    (permit.status === ApplicationStatus['Flagged For Review'] &&
+      permit.appointmentDateTime !== null &&
+      permit.appointmentDateTime < new Date().toISOString())
   )
-})
+}
 
 const state = reactive({
   selected: [] as PermitsType[],
