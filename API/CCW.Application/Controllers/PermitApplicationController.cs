@@ -511,6 +511,27 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "B2CUsers")]
+    [Route("withdrawRenewal")]
+    [HttpPost]
+    public async Task<IActionResult> WithdrawRenewal()
+    {
+        try
+        {
+            GetUserId(out string userId);
+
+            await _applicationCosmosDbService.WithdrawRenewal(userId, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occurred while trying to withdraw the renewal.");
+        }
+    }
+
     [Authorize(Policy = "AADUsers")]
     [HttpPost("undoMatchApplication")]
     public async Task<IActionResult> UndoMatchApplication(string applicationId)

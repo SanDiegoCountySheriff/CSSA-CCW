@@ -162,7 +162,7 @@ interface AliasDialogProps {
   readonly: boolean
 }
 
-const props = withDefaults(defineProps<AliasDialogProps>(), {
+withDefaults(defineProps<AliasDialogProps>(), {
   readonly: false,
 })
 

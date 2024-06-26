@@ -32,4 +32,5 @@ public interface IApplicationCosmosDbService
     Task UpdateLegacyApplication(PermitApplication application, bool createApplication, CancellationToken cancellationToken);
     Task<List<string>> GetEmailsAsync(PermitsOptions options, CancellationToken cancellationToken);
     Task<bool> MatchUserInformation(string idNumber, string dateOfBirth, CancellationToken cancellationToken);
+    Task WithdrawRenewal(string userId, CancellationToken cancellationToken);
 }

@@ -596,21 +596,7 @@
               <v-col
                 v-if="
                   permitStore.getPermitDetail.application.status ===
-                    ApplicationStatus.Submitted &&
-                  !permitStore.getPermitDetail.application
-                    .readyForInitialPayment &&
-                  !isInitialPaymentComplete &&
-                  !isRenew &&
-                  !isModify
-                "
-              >
-                <ReadyForPaymentDialog
-                  @on-ready-for-payment="handleReadyForInitialPayment"
-                />
-              </v-col>
-
-              <v-col
-                v-else-if="
+                    ApplicationStatus.Approved &&
                   !permitStore.getPermitDetail.application
                     .readyForIssuancePayment &&
                   !isIssuancePaymentComplete &&
@@ -916,6 +902,44 @@
             <v-row>
               <v-col
                 v-if="
+                  permitStore.getPermitDetail.application.status ===
+                    ApplicationStatus.Submitted &&
+                  !permitStore.getPermitDetail.application
+                    .readyForInitialPayment &&
+                  !isInitialPaymentComplete &&
+                  !isRenew &&
+                  !isModify
+                "
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForInitialPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else-if="
+                  permitStore.getPermitDetail.application.status ===
+                    ApplicationStatus.Submitted &&
+                  !permitStore.getPermitDetail.application
+                    .readyForInitialPayment &&
+                  isInitialPaymentComplete &&
+                  !isRenew &&
+                  !isModify
+                "
+              >
+                <v-btn
+                  @click="handleAppointmentComplete"
+                  color="warning"
+                  small
+                  block
+                >
+                  <v-icon left>mdi-calendar-check</v-icon>
+                  Appointment Complete
+                </v-btn>
+              </v-col>
+
+              <v-col
+                v-else-if="
                   !permitStore.getPermitDetail.application
                     .readyForRenewalPayment &&
                   !isRenewalPaymentComplete &&
@@ -1835,7 +1859,7 @@ function handleCheckIn() {
 
 function handleAssignApplication(name: string) {
   permitStore.getPermitDetail.application.assignedTo = name
-  changed.value = 'Assigned User to Application'
+  changed.value = `Assigned User ${name} to Application`
   updatePermitDetails()
 }
 
@@ -1960,6 +1984,13 @@ async function handleSaveReschedule(reschedule) {
 function handleReadyForInitialPayment() {
   changed.value = 'Marked ready for initial payment'
   permitStore.getPermitDetail.application.readyForInitialPayment = true
+  updatePermitDetails()
+}
+
+function handleAppointmentComplete() {
+  changed.value = 'Marked appointment complete'
+  permitStore.getPermitDetail.application.status =
+    ApplicationStatus['Appointment Complete']
   updatePermitDetails()
 }
 
