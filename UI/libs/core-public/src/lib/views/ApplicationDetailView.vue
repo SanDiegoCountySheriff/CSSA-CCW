@@ -1982,7 +1982,6 @@ async function handleConfirmWithdrawRenewal() {
   }
 
   withdrawRenewal()
-  // TODO: get application again
 }
 
 async function handleConfirmWithdrawModification() {
