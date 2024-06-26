@@ -1269,16 +1269,17 @@ onMounted(() => {
   }
 })
 
-const { isLoading: isGetApplicationsLoading } = useQuery(
-  ['getApplicationsByUser'],
-  () => applicationStore.getAllUserApplicationsApi(),
-  {
-    enabled: !state.isApplicationValid,
-    onSuccess: data => {
-      applicationStore.setCompleteApplication(data[0] as CompleteApplication)
-    },
-  }
-)
+const { isLoading: isGetApplicationsLoading, refetch: getApplications } =
+  useQuery(
+    ['getApplicationsByUser'],
+    () => applicationStore.getAllUserApplicationsApi(),
+    {
+      enabled: !state.isApplicationValid,
+      onSuccess: data => {
+        applicationStore.setCompleteApplication(data[0] as CompleteApplication)
+      },
+    }
+  )
 
 const { refetch } = useQuery(
   ['getAppointments', true],
@@ -1704,6 +1705,9 @@ const updateWithoutRouteMutation = useMutation({
 const { mutate: withdrawRenewal, isLoading: isWithdrawRenewLoading } =
   useMutation({
     mutationFn: applicationStore.withdrawRenewal,
+    onSuccess: () => {
+      getApplications()
+    },
   })
 
 const updateMutation = useMutation({
@@ -1978,6 +1982,7 @@ async function handleConfirmWithdrawRenewal() {
   }
 
   withdrawRenewal()
+  // TODO: get application again
 }
 
 async function handleConfirmWithdrawModification() {

@@ -174,6 +174,7 @@
               :color="'primary'"
               :uploaded-documents="state.completeApplication.uploadedDocuments"
               :enable-button="false"
+              :enable-eight-hour-safety-course-button="false"
             />
           </div>
 
