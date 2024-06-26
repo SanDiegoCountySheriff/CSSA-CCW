@@ -153,6 +153,12 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     return false
   }
 
+  async function withdrawRenewal() {
+    const res = await axios.post(Endpoints.WITHDRAW_RENEWAL_ENDPOINT)
+
+    return res?.data
+  }
+
   return {
     addHistoricalApplicationPublic,
     allUserApplications,
@@ -167,5 +173,6 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     updateApplication,
     getAgreementPdf,
     matchUserInformation,
+    withdrawRenewal,
   }
 })

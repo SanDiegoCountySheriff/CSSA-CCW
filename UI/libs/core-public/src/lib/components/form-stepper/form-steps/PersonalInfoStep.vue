@@ -654,6 +654,7 @@
         </v-radio-group>
         <AliasDialog
           v-if="showAlias"
+          :readonly="false"
           @save-alias="getAliasFromDialog"
         />
         <AliasTable

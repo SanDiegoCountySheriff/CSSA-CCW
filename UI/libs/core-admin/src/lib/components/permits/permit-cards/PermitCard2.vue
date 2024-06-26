@@ -1835,7 +1835,7 @@ function handleCheckIn() {
 
 function handleAssignApplication(name: string) {
   permitStore.getPermitDetail.application.assignedTo = name
-  changed.value = 'Assigned User to Application'
+  changed.value = `Assigned User ${name} to Application`
   updatePermitDetails()
 }
 

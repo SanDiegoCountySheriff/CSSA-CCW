@@ -41,7 +41,9 @@
 
         <FileUploadDialog
           :loading="isFetching"
+          :eight-hour-safety-input="false"
           @get-file-from-dialog="onFileChanged"
+          title="Upload"
         />
 
         <v-btn

@@ -8,7 +8,8 @@
             isUpdateApplicationLoading ||
             isRefundRequestLoading ||
             isAddHistoricalApplicationLoading ||
-            isMakePaymentLoading
+            isMakePaymentLoading ||
+            isWithdrawRenewLoading
           "
           outlined
         >
@@ -239,6 +240,7 @@
               <v-col
                 v-if="
                   showModifyWithdrawButton ||
+                  showWithdrawRenewButton ||
                   showInitialWithdrawButton ||
                   applicationStore.completeApplication.application.status ===
                     ApplicationStatus.Withdrawn
@@ -254,6 +256,17 @@
                     isMakePaymentLoading
                   "
                   @confirm="handleConfirmWithdrawModification"
+                />
+
+                <WithdrawRenewDialog
+                  v-if="showWithdrawRenewButton"
+                  :disabled="
+                    isRefundRequestLoading ||
+                    isUpdateApplicationLoading ||
+                    fileUploadLoading ||
+                    isMakePaymentLoading
+                  "
+                  @confirm="handleConfirmWithdrawRenewal"
                 />
 
                 <v-btn
@@ -1081,6 +1094,7 @@ import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSec
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
 import WithdrawModifyDialog from '@core-public/components/dialogs/WithdrawModifyDialog.vue'
+import WithdrawRenewDialog from '@core-public/components/dialogs/WithdrawRenewDialog.vue'
 import axios from 'axios'
 import { getOriginalApplicationTypeModification } from '@shared-ui/composables/getOriginalApplicationType'
 import { i18n } from '@shared-ui/plugins'
@@ -1255,16 +1269,17 @@ onMounted(() => {
   }
 })
 
-const { isLoading: isGetApplicationsLoading } = useQuery(
-  ['getApplicationsByUser'],
-  () => applicationStore.getAllUserApplicationsApi(),
-  {
-    enabled: !state.isApplicationValid,
-    onSuccess: data => {
-      applicationStore.setCompleteApplication(data[0] as CompleteApplication)
-    },
-  }
-)
+const { isLoading: isGetApplicationsLoading, refetch: getApplications } =
+  useQuery(
+    ['getApplicationsByUser'],
+    () => applicationStore.getAllUserApplicationsApi(),
+    {
+      enabled: !state.isApplicationValid,
+      onSuccess: data => {
+        applicationStore.setCompleteApplication(data[0] as CompleteApplication)
+      },
+    }
+  )
 
 const { refetch } = useQuery(
   ['getAppointments', true],
@@ -1383,7 +1398,15 @@ const showInitialWithdrawButton = computed(() => {
     applicationStore.completeApplication.application.applicationType !==
       ApplicationType['Modify Reserve'] &&
     applicationStore.completeApplication.application.applicationType !==
-      ApplicationType['Modify Standard']
+      ApplicationType['Modify Standard'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Renew Standard'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Renew Judicial'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Renew Reserve'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Renew Employment']
   )
 })
 
@@ -1399,6 +1422,21 @@ const showModifyWithdrawButton = computed(() => {
         ApplicationType['Modify Standard']) &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Modification Denied']
+  )
+})
+
+const showWithdrawRenewButton = computed(() => {
+  return (
+    (applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Renew Employment'] ||
+      applicationStore.completeApplication.application.applicationType ===
+        ApplicationType['Renew Judicial'] ||
+      applicationStore.completeApplication.application.applicationType ===
+        ApplicationType['Renew Reserve'] ||
+      applicationStore.completeApplication.application.applicationType ===
+        ApplicationType['Renew Standard']) &&
+    applicationStore.completeApplication.application.status ===
+      ApplicationStatus.Submitted
   )
 })
 
@@ -1664,6 +1702,14 @@ const updateWithoutRouteMutation = useMutation({
   },
 })
 
+const { mutate: withdrawRenewal, isLoading: isWithdrawRenewLoading } =
+  useMutation({
+    mutationFn: applicationStore.withdrawRenewal,
+    onSuccess: () => {
+      getApplications()
+    },
+  })
+
 const updateMutation = useMutation({
   mutationFn: applicationStore.updateApplication,
   onSuccess: () => {
@@ -1905,6 +1951,37 @@ const { mutate: makePayment, isLoading: isMakePaymentLoading } = useMutation({
 
 function handlePayment() {
   makePayment()
+}
+
+async function handleConfirmWithdrawRenewal() {
+  const transaction = applicationStore.completeApplication.paymentHistory.find(
+    ph => {
+      return (
+        ph.paymentType === PaymentType['CCW Application Renewal Payment'] ||
+        ph.paymentType ===
+          PaymentType['CCW Application Renewal Judicial Payment'] ||
+        ph.paymentType ===
+          PaymentType['CCW Application Renewal Reserve Payment'] ||
+        ph.paymentType ===
+          PaymentType['CCW Application Renewal Employment Payment']
+      )
+    }
+  )
+
+  if (transaction) {
+    const refundRequest: RefundRequest = {
+      id: null,
+      transactionId: transaction.transactionId,
+      applicationId: applicationStore.completeApplication.id,
+      refundAmount: Number(transaction.amount),
+      reason: 'Withdraw Renewal',
+      orderId: applicationStore.completeApplication.application.orderId,
+    }
+
+    await requestRefund(refundRequest)
+  }
+
+  withdrawRenewal()
 }
 
 async function handleConfirmWithdrawModification() {

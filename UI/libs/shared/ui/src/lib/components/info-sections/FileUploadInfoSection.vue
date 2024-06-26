@@ -28,6 +28,8 @@
           <FileUploadDialog
             v-on="$listeners"
             :enable-button="enableButton"
+            :eight-hour-safety-input="false"
+            title="Upload"
             class="ml-4"
           />
         </template>

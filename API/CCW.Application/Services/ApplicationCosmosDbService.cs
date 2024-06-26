@@ -578,6 +578,57 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return 0;
     }
 
+    public async Task WithdrawRenewal(string userId, CancellationToken cancellationToken)
+    {
+        var queryString = "SELECT * FROM c WHERE c.userId = @userId ORDER BY c._ts DESC";
+
+        var parameterizedQuery = new QueryDefinition(query: queryString)
+            .WithParameter("@userId", userId);
+
+        using FeedIterator<PermitApplication> historicalResult = _historicalContainer.GetItemQueryIterator<PermitApplication>(
+            queryDefinition: parameterizedQuery
+        );
+
+        PermitApplication historicalApplication = null;
+
+        if (historicalResult.HasMoreResults)
+        {
+            FeedResponse<PermitApplication> response = await historicalResult.ReadNextAsync(cancellationToken);
+
+            historicalApplication = response.Resource.FirstOrDefault();
+        }
+
+        queryString = "SELECT * FROM c WHERE c.userId = @userId ORDER BY c._ts DESC";
+
+        parameterizedQuery = new QueryDefinition(query: queryString)
+            .WithParameter("@userId", userId);
+
+        using FeedIterator<PermitApplication> productionResult = _container.GetItemQueryIterator<PermitApplication>(
+            queryDefinition: parameterizedQuery
+        );
+
+        PermitApplication existingApplication = null;
+
+        if (productionResult.HasMoreResults)
+        {
+            FeedResponse<PermitApplication> response = await productionResult.ReadNextAsync(cancellationToken);
+
+            existingApplication = response.Resource.FirstOrDefault();
+        }
+
+        if (existingApplication != null)
+        {
+            await _container.DeleteItemAsync<PermitApplication>(existingApplication.Id.ToString(), new PartitionKey(existingApplication.UserId));
+        }
+
+        if (historicalApplication != null)
+        {
+            await _container.CreateItemAsync(historicalApplication, new PartitionKey(userId));
+
+            await _historicalContainer.DeleteItemAsync<PermitApplication>(historicalApplication.Id.ToString(), new PartitionKey(userId));
+        }
+    }
+
     public async Task<int> GetLegacyApplicationCount(PermitsOptions options, CancellationToken cancellationToken)
     {
         QueryDefinition query = GetLegacyQueryDefinition(options, true);
