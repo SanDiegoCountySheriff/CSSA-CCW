@@ -84,6 +84,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
     agencyEyeColors: [],
     daysBeforeActiveRenewal: 0,
     numberOfModificationsBetweenRenewals: 2,
+    licensingManager: '',
   })
 
   const documents = ref<AgencyDocumentsType>({
