@@ -101,8 +101,8 @@
             <v-card
               light
               flat
-              width="550px"
-              height="100px"
+              width="555px"
+              height="105px"
               outlined
               style="border: solid 2px black"
             >

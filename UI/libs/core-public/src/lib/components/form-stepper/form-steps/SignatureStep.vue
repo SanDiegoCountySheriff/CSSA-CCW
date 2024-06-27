@@ -116,8 +116,8 @@
           <v-card
             light
             flat
-            :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
-            height="100px"
+            :width="$vuetify.breakpoint.mdAndUp ? '605px' : ''"
+            height="105px"
             outlined
             style="border: solid 2px black"
           >
@@ -176,19 +176,6 @@
           </span>
         </v-alert>
       </v-row>
-
-      <v-row justify="center">
-        <SignatureFormButtonContainer
-          v-if="state.previousSignature"
-          :valid="true"
-          :loading="state.uploading || isLoading || loading"
-          :all-steps-complete="props.allStepsComplete"
-          :is-final-step="true"
-          @continue="handleContinueWithoutUpload"
-          @save="handleSave"
-          v-on="$listeners"
-        />
-      </v-row>
     </v-container>
   </div>
 </template>
@@ -199,7 +186,6 @@ import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import Endpoints from '@shared-ui/api/endpoints'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import Routes from '@core-public/router/routes'
-import SignatureFormButtonContainer from '@shared-ui/components/containers/SignatureFormButtonContainer.vue'
 import SignaturePad from 'signature_pad'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
