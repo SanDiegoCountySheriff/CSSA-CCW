@@ -145,7 +145,7 @@
       </v-row>
 
       <FormButtonContainer
-        :valid="!isSignaturePadEmpty && isSignatureMinLength"
+        :valid="!isSignaturePadEmpty"
         :loading="state.uploading || isLoading || loading"
         :all-steps-complete="props.allStepsComplete"
         :is-final-step="true"
@@ -265,6 +265,7 @@ onMounted(() => {
 
       signaturePad.value = new SignaturePad(canvas, {
         backgroundColor: 'white',
+        minDistance: 5,
       })
     })
   }
