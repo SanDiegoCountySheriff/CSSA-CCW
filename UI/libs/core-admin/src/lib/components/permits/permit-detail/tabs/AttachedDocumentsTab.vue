@@ -4,13 +4,13 @@
       {{ $t('Attached Documents:') }}
       <v-spacer></v-spacer>
       <SaveButton
-        :disabled="readonly"
+        :disabled="readonly || !valid"
         @on-save="handleSave"
       />
     </v-card-title>
 
     <v-card-text>
-      <template>
+      <v-form v-model="valid">
         <v-data-table
           :headers="state.headers"
           :items="state.documents"
@@ -19,6 +19,7 @@
         >
           <template #[`item.name`]="{ item }">
             <v-text-field
+              :rules="fileNameRules"
               :value="item.name"
               @change="onNameEdit(item, $event)"
               style="font-size: 12px"
@@ -51,7 +52,7 @@
             </v-icon>
           </template>
         </v-data-table>
-      </template>
+      </v-form>
       <v-dialog
         v-model="state.showDeleteDialog"
         max-width="600px"
@@ -93,7 +94,7 @@ import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import { openPdf } from '@core-admin/components/composables/openDocuments'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { computed, inject, reactive } from 'vue'
+import { computed, inject, reactive, ref } from 'vue'
 import {
   formatDate,
   formatTime,
@@ -103,6 +104,7 @@ const emit = defineEmits(['on-save'])
 const permitStore = usePermitsStore()
 const documentStore = useDocumentsStore()
 const readonly = inject<boolean>('readonly')
+const valid = ref(false)
 
 const state = reactive({
   documents: permitStore.getPermitDetail.application.uploadedDocuments || [],
@@ -144,18 +146,30 @@ const documentTypeSelections = computed(() => {
   }))
 })
 
+const fileNameRules = computed(() => {
+  return [
+    v => Boolean(v) || 'File name is required',
+    v =>
+      !/[#%&{}/\\<>*$'":@+`|=~?!]/.test(v) ||
+      'File name contains invalid characters',
+    v => !/\s/.test(v) || 'File name cannot contain spaces',
+  ]
+})
+
 function onNameEdit(item, name) {
-  let oldName = item.name
+  if (valid.value) {
+    let oldName = item.name
 
-  item.name = name
-  let oldNameWithId = `${permitStore.getPermitDetail.userId}_${oldName}`
-  let newName = `${permitStore.getPermitDetail.userId}_${name}`
+    item.name = name
+    let oldNameWithId = `${permitStore.getPermitDetail.userId}_${oldName}`
+    let newName = `${permitStore.getPermitDetail.userId}_${name}`
 
-  documentStore.editApplicationFileName(oldNameWithId, newName)
+    documentStore.editApplicationFileName(oldNameWithId, newName)
 
-  permitStore.updatePermitDetailApi(
-    `Updated name of document ${oldName} to ${newName}`
-  )
+    permitStore.updatePermitDetailApi(
+      `Updated name of document ${oldName} to ${name}`
+    )
+  }
 }
 
 async function deletePdf() {
@@ -166,7 +180,7 @@ async function deletePdf() {
     if (index > -1) {
       state.documents.splice(index, 1)
       permitStore.updatePermitDetailApi(
-        `'Deleted document: '${state.itemToDelete.name}`
+        `Deleted document: ${state.itemToDelete.name}`
       )
     }
   }
