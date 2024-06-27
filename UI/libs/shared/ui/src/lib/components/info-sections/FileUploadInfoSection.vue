@@ -87,21 +87,6 @@ interface IFileUploadInfoSection {
   enableEightHourSafetyCourseButton: boolean
 }
 
-const loadingStates = reactive({
-  DriverLicense: false,
-  ProofResidency: false,
-  ProofResidency2: false,
-  MilitaryDoc: false,
-  Citizenship: false,
-  Supporting: false,
-  NameChange: false,
-  Judicial: false,
-  Reserve: false,
-  Employment: false,
-  EightHourSafetyCourse: false,
-  Signature: false,
-})
-
 const router = useRouter()
 const applicationStore = useCompleteApplicationStore()
 
@@ -223,10 +208,6 @@ async function deleteFile(name) {
 
   const documentType = documentToDelete.documentType
 
-  if (documentType && loadingStates[documentType] !== undefined) {
-    loadingStates[documentType] = true
-  }
-
   try {
     await axios
       .delete(
@@ -245,10 +226,8 @@ async function deleteFile(name) {
       updatedDocuments
 
     updateMutation()
+    // eslint-disable-next-line no-empty
   } finally {
-    if (documentType && loadingStates[documentType] !== undefined) {
-      loadingStates[documentType] = false
-    }
   }
 }
 </script>
