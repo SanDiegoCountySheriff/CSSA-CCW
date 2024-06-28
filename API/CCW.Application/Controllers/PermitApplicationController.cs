@@ -603,7 +603,7 @@ public class PermitApplicationController : ControllerBase
                     Status = AppointmentStatus.Scheduled,
                     Name = user.FirstName + " " + user.LastName,
                     Permit = application.Application.OrderId,
-                    IsManuallyCreated = true,
+                    IsManuallyCreated = false,
                     UserId = user.Id,
                 };
 
