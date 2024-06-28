@@ -25,13 +25,23 @@
                 </td>
               </v-col>
               <v-col>
-                <v-icon
-                  @click="editDialog(item)"
-                  class="float-right"
-                  color="primary"
+                <v-tooltip
+                  top
+                  open-delay="500"
                 >
-                  mdi-pencil-box-outline
-                </v-icon>
+                  <template #activator="{ on, attrs }">
+                    <v-icon
+                      v-on="on"
+                      v-bind="attrs"
+                      color="primary"
+                      class="float-right"
+                      @click="editDialog(item)"
+                    >
+                      mdi-rename-box-outline
+                    </v-icon>
+                  </template>
+                  <span>{{ $t('Rename file') }}</span>
+                </v-tooltip>
               </v-col>
             </v-row>
           </template>

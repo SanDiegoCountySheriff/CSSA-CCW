@@ -75,7 +75,7 @@
               class="mx-3"
               default
             >
-              mdi-pencil
+              mdi-pencil-box-outline
             </v-icon>
           </template>
 
