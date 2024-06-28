@@ -18,54 +18,22 @@
           :editable="true"
         >
           <template #[`item.name`]="{ item }">
-            <td>
-              {{ item.name }}
-            </td>
-            <v-dialog
-              v-model="showEditDialog"
-              max-width="600px"
-            >
-              <v-card outlined>
-                <v-card-title class="headline">
-                  Rename {{ state.itemToEdit?.name }}
-                </v-card-title>
-
-                <v-card-text>
-                  <v-row>
-                    <v-col>
-                      <v-text-field
-                        v-model="editedFileName"
-                        :rules="fileNameRules"
-                        outlined
-                        dense
-                      >
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-card-text>
-
-                <v-card-actions>
-                  <v-btn
-                    color="error"
-                    text
-                    @click="showEditDialog = false"
-                  >
-                    Cancel
-                  </v-btn>
-
-                  <v-spacer />
-
-                  <v-btn
-                    :disabled="!valid"
-                    color="primary"
-                    text
-                    @click="onNameEdit()"
-                  >
-                    Confirm Edit
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+            <v-row>
+              <v-col>
+                <td>
+                  {{ item.name }}
+                </td>
+              </v-col>
+              <v-col>
+                <v-icon
+                  @click="editDialog(item)"
+                  class="float-right"
+                  color="primary"
+                >
+                  mdi-pencil-box-outline
+                </v-icon>
+              </v-col>
+            </v-row>
           </template>
           <template #[`item.documentType`]="{ item }">
             <v-select
@@ -91,13 +59,6 @@
               mdi-download
             </v-icon>
             <v-icon
-              @click="editDialog(item)"
-              class="mx-1"
-              color="primary"
-            >
-              mdi-pencil
-            </v-icon>
-            <v-icon
               @click="confirmDelete(item)"
               color="red"
               class="mx-1"
@@ -106,38 +67,85 @@
             </v-icon>
           </template>
         </v-data-table>
+
+        <v-dialog
+          v-model="state.showDeleteDialog"
+          max-width="600px"
+        >
+          <v-card>
+            <v-card-title class="headline">Confirm Delete</v-card-title>
+            <v-card-text>
+              Are you sure you want to delete:
+              {{ state.itemToDelete ? state.itemToDelete.name : '' }}?
+            </v-card-text>
+            <v-card-actions>
+              <v-btn
+                color="error"
+                text
+                @click="state.showDeleteDialog = false"
+              >
+                Cancel
+              </v-btn>
+
+              <v-spacer />
+
+              <v-btn
+                color="primary"
+                text
+                @click="deletePdf()"
+              >
+                Delete
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog
+          v-model="showEditDialog"
+          max-width="600px"
+        >
+          <v-card outlined>
+            <v-card-title class="headline">
+              Rename {{ state.itemToEdit?.name }}
+            </v-card-title>
+
+            <v-card-text>
+              <v-row>
+                <v-col>
+                  <v-text-field
+                    v-model="editedFileName"
+                    :rules="fileNameRules"
+                    :label="'New file name'"
+                    outlined
+                    dense
+                  >
+                  </v-text-field>
+                </v-col>
+              </v-row>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-btn
+                color="error"
+                text
+                @click="showEditDialog = false"
+              >
+                Cancel
+              </v-btn>
+
+              <v-spacer />
+
+              <v-btn
+                :disabled="!valid"
+                color="primary"
+                text
+                @click="onNameEdit()"
+              >
+                Confirm Edit
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-form>
-      <v-dialog
-        v-model="state.showDeleteDialog"
-        max-width="600px"
-      >
-        <v-card>
-          <v-card-title class="headline">Confirm Delete</v-card-title>
-          <v-card-text>
-            Are you sure you want to delete:
-            {{ state.itemToDelete ? state.itemToDelete.name : '' }}?
-          </v-card-text>
-          <v-card-actions>
-            <v-btn
-              color="error"
-              text
-              @click="state.showDeleteDialog = false"
-            >
-              Cancel
-            </v-btn>
-
-            <v-spacer />
-
-            <v-btn
-              color="primary"
-              text
-              @click="deletePdf()"
-            >
-              Delete
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </v-card-text>
   </v-card>
 </template>
@@ -205,11 +213,29 @@ const documentTypeSelections = computed(() => {
 
 const fileNameRules = computed(() => {
   return [
-    v => Boolean(v) || 'File name is required',
-    v => !/[#%&{}/\\<>*$'":@+`|=~?!]/.test(v) || 'File name is invalid',
-    v => !/\s/.test(v) || 'File name is invalid',
+    v => !showEditDialog.value || Boolean(v) || 'File name is required',
+    v =>
+      !/[#%&{}/\\<>*$'":@+`|=~?!]/.test(v) ||
+      'Special characters are not allowed',
+    v => !/\s/.test(v) || 'Blank spaces are not allowed',
+    v =>
+      !showEditDialog.value ||
+      !isDuplicateFileName(v) ||
+      'File name already exists',
   ]
 })
+
+function isDuplicateFileName(name) {
+  const ignoreNames = ['Signature', 'Thumbprint', 'Portrait']
+
+  if (ignoreNames.includes(name)) {
+    return false
+  }
+
+  return state.documents.some(
+    doc => doc.name === name && doc !== state.itemToEdit
+  )
+}
 
 function onNameEdit() {
   if (state.itemToEdit) {
@@ -218,6 +244,12 @@ function onNameEdit() {
 
     let oldNameWithId = `${permitStore.getPermitDetail.userId}_${oldName}`
     let newName = `${permitStore.getPermitDetail.userId}_${name}`
+
+    const index = state.documents.findIndex(doc => doc.name === oldName)
+
+    if (index !== -1) {
+      state.documents[index].name = name
+    }
 
     documentStore.editApplicationFileName(oldNameWithId, newName)
 
@@ -255,6 +287,7 @@ async function confirmDelete(item) {
 async function editDialog(item) {
   state.itemToEdit = item
   showEditDialog.value = true
+  editedFileName.value = ''
 }
 
 function handleSave() {
