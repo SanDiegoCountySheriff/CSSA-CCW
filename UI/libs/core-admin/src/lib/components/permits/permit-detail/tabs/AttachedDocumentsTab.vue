@@ -18,12 +18,54 @@
           :editable="true"
         >
           <template #[`item.name`]="{ item }">
-            <v-text-field
-              :rules="fileNameRules"
-              :value="item.name"
-              @change="onNameEdit(item, $event)"
-              style="font-size: 12px"
-            ></v-text-field>
+            <td>
+              {{ item.name }}
+            </td>
+            <v-dialog
+              v-model="state.showEditDialog"
+              max-width="600px"
+            >
+              <v-card outlined>
+                <v-card-title class="headline">
+                  Rename {{ item.name }}
+                </v-card-title>
+
+                <v-card-text>
+                  <v-row>
+                    <v-col>
+                      <v-text-field
+                        v-model="editedFileName"
+                        :rules="fileNameRules"
+                        outlined
+                        dense
+                      >
+                      </v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+
+                <v-card-actions>
+                  <v-btn
+                    color="error"
+                    text
+                    @click="state.showEditDialog = false"
+                  >
+                    Cancel
+                  </v-btn>
+
+                  <v-spacer />
+
+                  <v-btn
+                    :disabled="!valid"
+                    color="primary"
+                    text
+                    @click="onNameEdit(item, editedFileName)"
+                  >
+                    Confirm Edit
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </template>
           <template #[`item.documentType`]="{ item }">
             <v-select
@@ -42,11 +84,23 @@
             </td>
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-icon @click="openPdf(item)">mdi-download</v-icon>
+            <v-icon
+              @click="openPdf(item)"
+              class="mx-1"
+            >
+              mdi-download
+            </v-icon>
+            <v-icon
+              @click="editDialog(item)"
+              class="mx-1"
+              color="primary"
+            >
+              mdi-pencil
+            </v-icon>
             <v-icon
               @click="confirmDelete(item)"
               color="red"
-              class="ml-5"
+              class="mx-1"
             >
               mdi-delete
             </v-icon>
@@ -105,6 +159,7 @@ const permitStore = usePermitsStore()
 const documentStore = useDocumentsStore()
 const readonly = inject<boolean>('readonly')
 const valid = ref(false)
+const editedFileName = ref('')
 
 const state = reactive({
   documents: permitStore.getPermitDetail.application.uploadedDocuments || [],
@@ -137,6 +192,8 @@ const state = reactive({
   ],
   showDeleteDialog: false,
   itemToDelete: null as UploadedDocType | null,
+  showEditDialog: false,
+  itemToEdit: null as UploadedDocType | null,
 })
 
 const documentTypeSelections = computed(() => {
@@ -149,27 +206,26 @@ const documentTypeSelections = computed(() => {
 const fileNameRules = computed(() => {
   return [
     v => Boolean(v) || 'File name is required',
-    v =>
-      !/[#%&{}/\\<>*$'":@+`|=~?!]/.test(v) ||
-      'File name contains invalid characters',
-    v => !/\s/.test(v) || 'File name cannot contain spaces',
+    v => !/[#%&{}/\\<>*$'":@+`|=~?!]/.test(v) || 'File name is invalid',
+    v => !/\s/.test(v) || 'File name is invalid',
   ]
 })
 
 function onNameEdit(item, name) {
-  if (valid.value) {
-    let oldName = item.name
+  let oldName = item.name
 
-    item.name = name
-    let oldNameWithId = `${permitStore.getPermitDetail.userId}_${oldName}`
-    let newName = `${permitStore.getPermitDetail.userId}_${name}`
+  item.name = name
+  let oldNameWithId = `${permitStore.getPermitDetail.userId}_${oldName}`
+  let newName = `${permitStore.getPermitDetail.userId}_${name}`
 
-    documentStore.editApplicationFileName(oldNameWithId, newName)
+  documentStore.editApplicationFileName(oldNameWithId, newName)
 
-    permitStore.updatePermitDetailApi(
-      `Updated name of document ${oldName} to ${name}`
-    )
-  }
+  permitStore.updatePermitDetailApi(
+    `Updated name of document ${oldName} to ${name}`
+  )
+
+  state.showEditDialog = false
+  state.itemToEdit = null
 }
 
 async function deletePdf() {
@@ -192,6 +248,11 @@ async function deletePdf() {
 async function confirmDelete(item) {
   state.itemToDelete = item
   state.showDeleteDialog = true
+}
+
+async function editDialog(item) {
+  state.itemToEdit = item
+  state.showEditDialog = true
 }
 
 function handleSave() {
