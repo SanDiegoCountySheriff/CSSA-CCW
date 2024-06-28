@@ -22,12 +22,12 @@
               {{ item.name }}
             </td>
             <v-dialog
-              v-model="state.showEditDialog"
+              v-model="showEditDialog"
               max-width="600px"
             >
               <v-card outlined>
                 <v-card-title class="headline">
-                  Rename {{ item.name }}
+                  Rename {{ state.itemToEdit?.name }}
                 </v-card-title>
 
                 <v-card-text>
@@ -48,7 +48,7 @@
                   <v-btn
                     color="error"
                     text
-                    @click="state.showEditDialog = false"
+                    @click="showEditDialog = false"
                   >
                     Cancel
                   </v-btn>
@@ -59,7 +59,7 @@
                     :disabled="!valid"
                     color="primary"
                     text
-                    @click="onNameEdit(item, editedFileName)"
+                    @click="onNameEdit(state.itemToEdit?.name, editedFileName)"
                   >
                     Confirm Edit
                   </v-btn>
@@ -160,6 +160,7 @@ const documentStore = useDocumentsStore()
 const readonly = inject<boolean>('readonly')
 const valid = ref(false)
 const editedFileName = ref('')
+const showEditDialog = ref(false)
 
 const state = reactive({
   documents: permitStore.getPermitDetail.application.uploadedDocuments || [],
@@ -192,7 +193,6 @@ const state = reactive({
   ],
   showDeleteDialog: false,
   itemToDelete: null as UploadedDocType | null,
-  showEditDialog: false,
   itemToEdit: null as UploadedDocType | null,
 })
 
@@ -224,8 +224,8 @@ function onNameEdit(item, name) {
     `Updated name of document ${oldName} to ${name}`
   )
 
-  state.showEditDialog = false
-  state.itemToEdit = null
+  showEditDialog.value = false
+  editedFileName.value = ''
 }
 
 async function deletePdf() {
@@ -252,7 +252,7 @@ async function confirmDelete(item) {
 
 async function editDialog(item) {
   state.itemToEdit = item
-  state.showEditDialog = true
+  showEditDialog.value = true
 }
 
 function handleSave() {
