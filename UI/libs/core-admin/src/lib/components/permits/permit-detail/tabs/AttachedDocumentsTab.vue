@@ -59,7 +59,7 @@
                     :disabled="!valid"
                     color="primary"
                     text
-                    @click="onNameEdit(state.itemToEdit?.name, editedFileName)"
+                    @click="onNameEdit()"
                   >
                     Confirm Edit
                   </v-btn>
@@ -211,21 +211,23 @@ const fileNameRules = computed(() => {
   ]
 })
 
-function onNameEdit(item, name) {
-  let oldName = item.name
+function onNameEdit() {
+  if (state.itemToEdit) {
+    let oldName = state.itemToEdit.name
+    let name = editedFileName.value
 
-  item.name = name
-  let oldNameWithId = `${permitStore.getPermitDetail.userId}_${oldName}`
-  let newName = `${permitStore.getPermitDetail.userId}_${name}`
+    let oldNameWithId = `${permitStore.getPermitDetail.userId}_${oldName}`
+    let newName = `${permitStore.getPermitDetail.userId}_${name}`
 
-  documentStore.editApplicationFileName(oldNameWithId, newName)
+    documentStore.editApplicationFileName(oldNameWithId, newName)
 
-  permitStore.updatePermitDetailApi(
-    `Updated name of document ${oldName} to ${name}`
-  )
+    permitStore.updatePermitDetailApi(
+      `Updated name of document ${oldName} to ${name}`
+    )
+  }
 
   showEditDialog.value = false
-  editedFileName.value = ''
+  state.itemToEdit = null
 }
 
 async function deletePdf() {
