@@ -26,4 +26,3 @@ stages:
           backendsvc: $(BackendSvc)
           backendsuffix: $(BackendSuffix)
           webAppSuffix: $(WebAppSuffix)
-
