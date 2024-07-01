@@ -62,84 +62,84 @@
             </v-icon>
           </template>
         </v-data-table>
+        <v-dialog
+          v-model="showDeleteDialog"
+          max-width="600px"
+        >
+          <v-card>
+            <v-card-title class="headline">Confirm Delete</v-card-title>
+            <v-card-text>
+              Are you sure you want to delete:
+              {{ itemToDelete ? itemToDelete.name : '' }}?
+            </v-card-text>
+            <v-card-actions>
+              <v-btn
+                color="error"
+                text
+                @click="showDeleteDialog = false"
+              >
+                Cancel
+              </v-btn>
+
+              <v-spacer />
+
+              <v-btn
+                color="primary"
+                text
+                @click="deletePdf()"
+              >
+                Delete
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog
+          v-model="showEditDialog"
+          max-width="600px"
+        >
+          <v-card outlined>
+            <v-card-title class="headline">
+              Rename {{ itemToEdit?.name }}
+            </v-card-title>
+
+            <v-card-text>
+              <v-row>
+                <v-col>
+                  <v-text-field
+                    v-model="editedFileName"
+                    :rules="fileNameRules"
+                    :label="'New file name'"
+                    outlined
+                    dense
+                  >
+                  </v-text-field>
+                </v-col>
+              </v-row>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-btn
+                color="error"
+                text
+                @click="showEditDialog = false"
+              >
+                Cancel
+              </v-btn>
+
+              <v-spacer />
+
+              <v-btn
+                :disabled="!valid"
+                color="primary"
+                text
+                @click="onNameEdit()"
+              >
+                Confirm Edit
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-form>
-      <v-dialog
-        v-model="showDeleteDialog"
-        max-width="600px"
-      >
-        <v-card>
-          <v-card-title class="headline">Confirm Delete</v-card-title>
-          <v-card-text>
-            Are you sure you want to delete:
-            {{ itemToDelete ? itemToDelete.name : '' }}?
-          </v-card-text>
-          <v-card-actions>
-            <v-btn
-              color="error"
-              text
-              @click="showDeleteDialog = false"
-            >
-              Cancel
-            </v-btn>
-
-            <v-spacer />
-
-            <v-btn
-              color="primary"
-              text
-              @click="deletePdf()"
-            >
-              Delete
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-      <v-dialog
-        v-model="showEditDialog"
-        max-width="600px"
-      >
-        <v-card outlined>
-          <v-card-title class="headline">
-            Rename {{ itemToEdit?.name }}
-          </v-card-title>
-
-          <v-card-text>
-            <v-row>
-              <v-col>
-                <v-text-field
-                  v-model="editedFileName"
-                  :rules="fileNameRules"
-                  :label="'New file name'"
-                  outlined
-                  dense
-                >
-                </v-text-field>
-              </v-col>
-            </v-row>
-          </v-card-text>
-
-          <v-card-actions>
-            <v-btn
-              color="error"
-              text
-              @click="showEditDialog = false"
-            >
-              Cancel
-            </v-btn>
-
-            <v-spacer />
-
-            <v-btn
-              :disabled="!valid"
-              color="primary"
-              text
-              @click="onNameEdit()"
-            >
-              Confirm Edit
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </v-card-text>
   </v-card>
 </template>
