@@ -235,16 +235,21 @@ const fileNameRules = computed(() => {
 function isDuplicateFileName(name) {
   const ignoreNames = ['Signature', 'Thumbprint', 'Portrait']
 
-  if (ignoreNames.includes(name)) {
+  const lowerCaseName = name.toLowerCase()
+
+  if (ignoreNames.map(n => n.toLowerCase()).includes(lowerCaseName)) {
     return false
   }
 
-  if (itemToEdit.value && itemToEdit.value.name === name) {
+  if (
+    itemToEdit.value &&
+    itemToEdit.value.name.toLowerCase() === lowerCaseName
+  ) {
     return true
   }
 
   return permitStore.getPermitDetail.application.uploadedDocuments.some(
-    doc => doc.name === name && doc !== itemToEdit.value
+    doc => doc.name.toLowerCase() === lowerCaseName && doc !== itemToEdit.value
   )
 }
 

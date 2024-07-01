@@ -10,19 +10,39 @@
     </v-card-title>
 
     <v-card-text>
-      <template>
+      <v-form v-model="valid">
         <v-data-table
-          :headers="state.headers"
-          :items="state.documents"
+          :headers="headers"
+          :items="
+            permitStore.getPermitDetail.application.adminUploadedDocuments
+          "
           class="elevation-0"
           :editable="true"
         >
           <template #[`item.name`]="{ item }">
-            <v-text-field
-              :value="item.name"
-              @change="onNameEdit(item, $event)"
-              style="font-size: 12px"
-            ></v-text-field>
+            <v-row>
+              <v-col>
+                <td style="font-size: 12px">
+                  {{ item.name }}
+                </td>
+              </v-col>
+              <v-col>
+                <v-tooltip bottom>
+                  <template #activator="{ on, attrs }">
+                    <v-icon
+                      v-on="on"
+                      v-bind="attrs"
+                      color="primary"
+                      class="float-right"
+                      @click="editDialog(item)"
+                    >
+                      mdi-rename-box-outline
+                    </v-icon>
+                  </template>
+                  <span>{{ $t('Rename file') }}</span>
+                </v-tooltip>
+              </v-col>
+            </v-row>
           </template>
           <template #[`item.uploadedDateTimeUtc`]="{ item }">
             <td>
@@ -42,22 +62,22 @@
             </v-icon>
           </template>
         </v-data-table>
-      </template>
+      </v-form>
       <v-dialog
-        v-model="state.showDeleteDialog"
+        v-model="showDeleteDialog"
         max-width="600px"
       >
         <v-card>
           <v-card-title class="headline">Confirm Delete</v-card-title>
           <v-card-text>
             Are you sure you want to delete:
-            {{ state.itemToDelete ? state.itemToDelete.name : '' }}?
+            {{ itemToDelete ? itemToDelete.name : '' }}?
           </v-card-text>
           <v-card-actions>
             <v-btn
               color="error"
               text
-              @click="state.showDeleteDialog = false"
+              @click="showDeleteDialog = false"
             >
               Cancel
             </v-btn>
@@ -74,6 +94,52 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-dialog
+        v-model="showEditDialog"
+        max-width="600px"
+      >
+        <v-card outlined>
+          <v-card-title class="headline">
+            Rename {{ itemToEdit?.name }}
+          </v-card-title>
+
+          <v-card-text>
+            <v-row>
+              <v-col>
+                <v-text-field
+                  v-model="editedFileName"
+                  :rules="fileNameRules"
+                  :label="'New file name'"
+                  outlined
+                  dense
+                >
+                </v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-btn
+              color="error"
+              text
+              @click="showEditDialog = false"
+            >
+              Cancel
+            </v-btn>
+
+            <v-spacer />
+
+            <v-btn
+              :disabled="!valid"
+              color="primary"
+              text
+              @click="onNameEdit()"
+            >
+              Confirm Edit
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card-text>
   </v-card>
 </template>
@@ -83,50 +149,96 @@ import SaveButton from './SaveButton.vue'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { computed, inject, ref } from 'vue'
 import {
   formatDate,
   formatTime,
 } from '@shared-utils/formatters/defaultFormatters'
-import { inject, reactive } from 'vue'
 
 const emit = defineEmits(['on-save'])
 const permitStore = usePermitsStore()
 const documentStore = useDocumentsStore()
 const readonly = inject<boolean>('readonly')
+const valid = ref(false)
+const editedFileName = ref('')
+const showEditDialog = ref(false)
+const showDeleteDialog = ref(false)
+const itemToDelete = ref<UploadedDocType | null>(null)
+const itemToEdit = ref<UploadedDocType | null>(null)
 
-const state = reactive({
-  documents:
-    permitStore.getPermitDetail.application.adminUploadedDocuments || [],
-  documentTypes: [
-    'Unofficial_License',
-    'Official_License',
-    'Live_Scan',
-    'Application',
-    'RevocationLetter',
-  ],
-  headers: [
-    { text: 'DOCUMENT NAME', value: 'name' },
-    { text: 'DOCUMENT TYPE', value: 'documentType' },
-    { text: 'UPLOADED BY', value: 'uploadedBy' },
-    { text: 'UPLOADED DATE', value: 'uploadedDateTimeUtc' },
-    { text: 'ACTIONS', value: 'actions' },
-  ],
-  showDeleteDialog: false,
-  itemToDelete: null as UploadedDocType | null,
+const headers = [
+  { text: 'DOCUMENT NAME', value: 'name' },
+  { text: 'DOCUMENT TYPE', value: 'documentType', width: '200px' },
+  { text: 'UPLOADED BY', value: 'uploadedBy' },
+  { text: 'UPLOADED DATE', value: 'uploadedDateTimeUtc' },
+  { text: 'ACTIONS', value: 'actions' },
+]
+
+const fileNameRules = computed(() => {
+  return [
+    v => !showEditDialog.value || Boolean(v) || 'File name is required',
+    v =>
+      !showEditDialog.value ||
+      !/[#%&{}/\\<>*$'":@+`|=~?!]/.test(v) ||
+      'Special characters are not allowed',
+    v =>
+      !showEditDialog.value || !/\s/.test(v) || 'Blank spaces are not allowed',
+    v =>
+      !showEditDialog.value ||
+      !isDuplicateFileName(v) ||
+      'File name already exists',
+  ]
 })
 
-function onNameEdit(item, name) {
-  let oldName = item.name
+function isDuplicateFileName(name) {
+  const ignoreNames = ['Signature', 'Thumbprint', 'Portrait']
 
-  item.name = name
-  let oldNameWithId = `${permitStore.getPermitDetail.id}_${oldName}`
-  let newName = `${permitStore.getPermitDetail.id}_${name}`
+  const lowerCaseName = name.toLowerCase()
 
-  documentStore.editAdminApplicationFileName(oldNameWithId, newName)
+  if (ignoreNames.map(n => n.toLowerCase()).includes(lowerCaseName)) {
+    return false
+  }
 
-  permitStore.updatePermitDetailApi(
-    `Updated name of document ${oldName} to ${newName}`
+  if (
+    itemToEdit.value &&
+    itemToEdit.value.name.toLowerCase() === lowerCaseName
+  ) {
+    return true
+  }
+
+  return permitStore.getPermitDetail.application.adminUploadedDocuments.some(
+    doc => doc.name.toLowerCase() === lowerCaseName && doc !== itemToEdit.value
   )
+}
+
+async function onNameEdit() {
+  if (itemToEdit.value) {
+    let oldName = itemToEdit.value.name
+    let name = editedFileName.value
+
+    let oldNameWithId = `${permitStore.getPermitDetail.id}_${oldName}`
+    let newName = `${permitStore.getPermitDetail.id}_${name}`
+
+    documentStore.editAdminApplicationFileName(oldNameWithId, newName)
+
+    const index =
+      permitStore.getPermitDetail.application.adminUploadedDocuments.findIndex(
+        doc => doc.name === oldName
+      )
+
+    if (index !== -1) {
+      permitStore.getPermitDetail.application.adminUploadedDocuments[
+        index
+      ].name = name
+    }
+
+    permitStore.updatePermitDetailApi(
+      `Updated name of document ${oldName} to ${name}`
+    )
+  }
+
+  showEditDialog.value = false
+  itemToEdit.value = null
 }
 
 async function openPdf(item) {
@@ -173,25 +285,37 @@ async function openPdf(item) {
 }
 
 async function deletePdf() {
-  if (state.itemToDelete) {
-    documentStore.deleteAdminApplicationFile(state.itemToDelete.name)
-    const index = state.documents.indexOf(state.itemToDelete)
+  if (itemToDelete.value) {
+    documentStore.deleteAdminApplicationFile(itemToDelete.value?.name)
+    const index =
+      permitStore.getPermitDetail.application.adminUploadedDocuments.indexOf(
+        itemToDelete.value
+      )
 
     if (index > -1) {
-      state.documents.splice(index, 1)
+      permitStore.getPermitDetail.application.adminUploadedDocuments.splice(
+        index,
+        1
+      )
       permitStore.updatePermitDetailApi(
-        `'Deleted document: '${state.itemToDelete.name}`
+        `Deleted document: ${itemToDelete.value.name}`
       )
     }
-
-    state.showDeleteDialog = false
-    state.itemToDelete = null
   }
+
+  showDeleteDialog.value = false
+  itemToDelete.value = null
 }
 
 async function confirmDelete(item) {
-  state.itemToDelete = item
-  state.showDeleteDialog = true
+  itemToDelete.value = item
+  showDeleteDialog.value = true
+}
+
+async function editDialog(item) {
+  itemToEdit.value = item
+  showEditDialog.value = true
+  editedFileName.value = ''
 }
 
 function handleSave() {
