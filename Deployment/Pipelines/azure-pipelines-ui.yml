@@ -23,6 +23,7 @@ stages:
 
     jobs:
       - deployment: "Build_Public_UI"
+        environment: "ApprovalNotRequired"
         strategy:
           runOnce:
             deploy:
@@ -167,6 +168,7 @@ stages:
 
     jobs:
       - deployment: "Deploy_Public_UI"
+        environment: "ApprovalNotRequired"
         variables:
           - group: $(variable_library_public)
         strategy:
@@ -248,6 +250,7 @@ stages:
                     workingDirectory: "$(System.ArtifactsDirectory)"
 
       - deployment: "Deploy_Admin_UI"
+        environment: "ApprovalNotRequired"
         variables:
           - group: $(variable_library_admin)
         strategy:
