@@ -103,8 +103,8 @@
             <v-card
               light
               flat
-              width="550px"
-              height="100px"
+              width="555px"
+              height="105px"
               outlined
               style="border: solid 2px black"
             >
@@ -294,7 +294,7 @@ function handleEditAdminUser(persist: boolean) {
     const canvas = document.getElementById('signature') as HTMLCanvasElement
 
     signaturePad.value = new SignaturePad(canvas, {
-      backgroundColor: 'rgba(255, 255, 255, 0)',
+      backgroundColor: 'white',
     })
 
     if (adminUserStore.adminUserSignature) {
@@ -370,3 +370,10 @@ watch(
   }
 )
 </script>
+
+<style lang="scss" scoped>
+.signature {
+  border: black;
+  border-radius: 5px;
+}
+</style>

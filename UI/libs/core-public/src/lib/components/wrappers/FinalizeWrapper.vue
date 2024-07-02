@@ -24,7 +24,7 @@
             {{ $t('Application Review') }}
           </div>
           <v-icon>
-            {{ state.open ? 'mdi-menu-down' : 'mdi-menu-up' }}
+            {{ state.open ? 'mdi-menu-up' : 'mdi-menu-down' }}
           </v-icon>
         </v-card-title>
         <v-card-subtitle

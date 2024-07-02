@@ -116,8 +116,8 @@
           <v-card
             light
             flat
-            :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
-            height="100px"
+            :width="$vuetify.breakpoint.mdAndUp ? '605px' : ''"
+            height="105px"
             outlined
             style="border: solid 2px black"
           >
@@ -175,19 +175,6 @@
             and time in order to submit to Licensing.
           </span>
         </v-alert>
-      </v-row>
-
-      <v-row justify="center">
-        <FormButtonContainer
-          v-if="state.previousSignature"
-          :valid="true"
-          :loading="state.uploading || isLoading || loading"
-          :all-steps-complete="props.allStepsComplete"
-          :is-final-step="true"
-          @continue="handleContinueWithoutUpload"
-          @save="handleSave"
-          v-on="$listeners"
-        />
       </v-row>
     </v-container>
   </div>
@@ -263,7 +250,8 @@ onMounted(() => {
       const canvas = document.getElementById('signature') as HTMLCanvasElement
 
       signaturePad.value = new SignaturePad(canvas, {
-        backgroundColor: 'rgba(255, 255, 255, 0)',
+        backgroundColor: 'white',
+        minDistance: 5,
       })
     })
   }
@@ -275,6 +263,14 @@ function handleClearSignature() {
 
 const isSignaturePadEmpty = computed(() => {
   return signaturePad.value?.isEmpty()
+})
+
+const isSignatureMinLength = computed(() => {
+  const points = signaturePad.value?.toData()
+  // eslint-disable-next-line prefer-spread
+  const pointCount = [].concat.apply([], points).length
+
+  return points && pointCount >= 2
 })
 
 const isFalseInfoAgreed = computed(() => {
@@ -453,3 +449,10 @@ watch(
   }
 )
 </script>
+
+<style lang="scss" scoped>
+.signature {
+  border: black;
+  border-radius: 5px;
+}
+</style>
