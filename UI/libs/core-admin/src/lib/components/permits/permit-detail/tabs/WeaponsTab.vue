@@ -130,9 +130,24 @@ const items = computed(() => {
 })
 
 function handleEditWeapon(data) {
-  set(permitStore.getPermitDetail.application.weapons, data.index, {
-    ...data.value,
-  })
+  if (data.value.added) {
+    const index =
+      permitStore.getPermitDetail.application.modifyAddWeapons.findIndex(
+        weapon => weapon.serialNumber === data.value.serialNumber
+      )
+
+    if (index !== 1) {
+      window.console.log(index)
+
+      set(permitStore.getPermitDetail.application.modifyAddWeapons, index, {
+        ...data.value,
+      })
+    }
+  } else {
+    set(permitStore.getPermitDetail.application.weapons, data.index, {
+      ...data.value,
+    })
+  }
 }
 
 function handleSaveWeapon(weapon: WeaponInfoType) {
