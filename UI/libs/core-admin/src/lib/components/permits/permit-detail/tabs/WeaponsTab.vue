@@ -15,6 +15,7 @@
       <v-card-text>
         <WeaponsTable
           :weapons="items"
+          :readonly="readonly"
           :edit-enable="!readonly"
           :modifying="
             permitStore.getPermitDetail.application.modifiedWeaponComplete !==
