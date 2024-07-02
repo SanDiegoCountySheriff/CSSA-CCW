@@ -12,12 +12,32 @@
         />
       </v-card-title>
 
+      <v-spacer></v-spacer>
       <template
         v-if="
           permitStore.getPermitDetail.application.modifiedNameComplete !== null
         "
       >
-        <v-card-subtitle> Name Modification </v-card-subtitle>
+        <v-row>
+          <v-col cols="6">
+            <v-alert
+              class="ml-4"
+              border="left"
+              color="blue"
+              text
+              type="info"
+            >
+              Please review the following name modification(s).
+            </v-alert>
+          </v-col>
+        </v-row>
+      </template>
+      <template
+        v-if="
+          permitStore.getPermitDetail.application.modifiedNameComplete !== null
+        "
+      >
+        <!-- <v-card-title> Name Modification: </v-card-title> -->
 
         <v-card-text>
           <v-row>
@@ -62,28 +82,37 @@
                 dense
               />
             </v-col>
+          </v-row>
 
-            <v-col>
+          <v-row>
+            <v-col cols="3">
               <v-btn
                 @click="handleOpenPdf"
                 color="primary"
-                block
+                outlined
               >
                 <v-icon left>mdi-file-document-check</v-icon>
                 Check Document
               </v-btn>
             </v-col>
 
-            <v-col>
+            <v-col
+              cols="3"
+              class="mb-5"
+            >
               <v-btn
                 v-if="
                   !permitStore.getPermitDetail.application.modifiedNameComplete
                 "
                 @click="onApproveNameChange"
                 color="primary"
-                block
               >
-                <v-icon left>mdi-check</v-icon>
+                <v-icon
+                  left
+                  color="green"
+                >
+                  mdi-check
+                </v-icon>
                 Approve
               </v-btn>
 
@@ -93,17 +122,22 @@
                 "
                 @click="onUndoApproveNameChange"
                 color="primary"
-                block
               >
                 <v-icon left>mdi-undo</v-icon>
                 Undo Approve
               </v-btn>
             </v-col>
+            <v-spacer></v-spacer>
           </v-row>
         </v-card-text>
       </template>
 
+      <v-divider></v-divider>
+
       <v-card-text>
+        <v-row>
+          <v-col></v-col>
+        </v-row>
         <v-row>
           <v-col cols="6">
             <v-text-field
