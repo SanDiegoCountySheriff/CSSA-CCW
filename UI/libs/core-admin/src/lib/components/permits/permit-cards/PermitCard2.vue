@@ -1365,8 +1365,6 @@ async function handleApproveModification() {
     app.personalInfo.lastName = app.personalInfo.modifiedLastName
   }
 
-  app.modifiedNameComplete = null
-
   if (app.modifiedAddress.streetAddress) {
     app.currentAddress.streetAddress = app.modifiedAddress.streetAddress
   }
@@ -1391,8 +1389,6 @@ async function handleApproveModification() {
     app.currentAddress.country = app.modifiedAddress.country
   }
 
-  app.modifiedAddressComplete = null
-
   for (const weapon of app.modifyAddWeapons) {
     weapon.added = undefined
     weapon.deleted = undefined
@@ -1405,7 +1401,6 @@ async function handleApproveModification() {
     })
   }
 
-  app.modifiedWeaponComplete = null
   app.currentStep = 1
 
   updatePermitDetails()
@@ -1460,6 +1455,10 @@ async function handleFinishModification() {
     app.applicationType
   )
   app.modificationNumber += 1
+
+  app.modifiedNameComplete = null
+  app.modifiedAddressComplete = null
+  app.modifiedWeaponComplete = null
 
   resetDocuments()
   updatePermitDetails()

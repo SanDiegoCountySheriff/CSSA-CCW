@@ -16,7 +16,6 @@
         <WeaponsTable
           :weapons="items"
           :edit-enable="!readonly"
-          :readonly="readonly"
           :modifying="
             permitStore.getPermitDetail.application.modifiedWeaponComplete !==
             null
@@ -53,6 +52,10 @@
           </v-btn>
 
           <v-btn
+            :disabled="
+              permitStore.getPermitDetail.application.status ===
+              ApplicationStatus['Modification Approved']
+            "
             v-else
             @click="onUndoApproveWeaponChange"
             color="primary"
@@ -68,7 +71,10 @@
 
 <script setup lang="ts">
 import SaveButton from './SaveButton.vue'
-import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
+import {
+  ApplicationStatus,
+  WeaponInfoType,
+} from '@shared-utils/types/defaultTypes'
 import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue'
 import { openPdf } from '@core-admin/components/composables/openDocuments'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -86,7 +92,11 @@ const items = computed(() => {
     itemArray.push({ ...weapon })
   }
 
-  if (permitStore.getPermitDetail.application.modifyAddWeapons) {
+  if (
+    permitStore.getPermitDetail.application.modifyAddWeapons &&
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Modification Approved']
+  ) {
     for (const weapon of permitStore.getPermitDetail.application
       .modifyAddWeapons) {
       const item = { ...weapon, added: true }
@@ -95,7 +105,11 @@ const items = computed(() => {
     }
   }
 
-  if (permitStore.getPermitDetail.application.modifyDeleteWeapons) {
+  if (
+    permitStore.getPermitDetail.application.modifyDeleteWeapons &&
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Modification Approved']
+  ) {
     for (const weapon of permitStore.getPermitDetail.application
       .modifyDeleteWeapons) {
       const index = itemArray.findIndex(
