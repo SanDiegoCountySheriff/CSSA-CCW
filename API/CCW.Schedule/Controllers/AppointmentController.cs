@@ -232,24 +232,6 @@ public class AppointmentController : ControllerBase
 
             var existingAppointment = await _appointmentCosmosDbService.GetAppointmentByUserIdAsync(userId, cancellationToken: default);
 
-            if (existingAppointment.IsManuallyCreated)
-            {
-                await _appointmentCosmosDbService.DeleteAsync(existingAppointment.Id.ToString(), cancellationToken: default);
-            }
-            else
-            {
-                existingAppointment.ApplicationId = null;
-                existingAppointment.Status = AppointmentStatus.Available;
-                existingAppointment.Name = null;
-                existingAppointment.UserId = null;
-                existingAppointment.Permit = null;
-                existingAppointment.Payment = null;
-                existingAppointment.IsManuallyCreated = false;
-                existingAppointment.AppointmentCreatedDate = null;
-
-                await _appointmentCosmosDbService.UpdateAsync(existingAppointment, cancellationToken: default);
-            }
-
             if (appointmentRequest.Id == Guid.Empty.ToString())
             {
                 var nextSlot = await _appointmentCosmosDbService.GetAvailableSlotByDateTime(appointmentRequest.Start, cancellationToken: default);
@@ -268,6 +250,24 @@ public class AppointmentController : ControllerBase
 
             AppointmentWindow appointment = _mapper.Map<AppointmentWindow>(appointmentRequest);
             await _appointmentCosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+
+            if (existingAppointment.IsManuallyCreated)
+            {
+                await _appointmentCosmosDbService.DeleteAsync(existingAppointment.Id.ToString(), cancellationToken: default);
+            }
+            else
+            {
+                existingAppointment.ApplicationId = null;
+                existingAppointment.Status = AppointmentStatus.Available;
+                existingAppointment.Name = null;
+                existingAppointment.UserId = null;
+                existingAppointment.Permit = null;
+                existingAppointment.Payment = null;
+                existingAppointment.IsManuallyCreated = false;
+                existingAppointment.AppointmentCreatedDate = null;
+
+                await _appointmentCosmosDbService.UpdateAsync(existingAppointment, cancellationToken: default);
+            }
 
             return Ok(_mapper.Map<AppointmentWindowResponseModel>(appointment));
         }

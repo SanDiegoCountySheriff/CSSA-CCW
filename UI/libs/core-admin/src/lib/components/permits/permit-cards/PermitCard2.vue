@@ -744,17 +744,12 @@
                 </v-btn>
               </v-col>
             </v-row>
-            <!-- <v-row>
+            <v-row>
               <v-col>
                 <DateTimePicker @on-save-reschedule="handleSaveReschedule" />
               </v-col>
               <v-col>
                 <Schedule />
-              </v-col>
-            </v-row> -->
-            <v-row>
-              <v-col>
-                <v-card-text>Appointments are currently under maintenance.</v-card-text>
               </v-col>
             </v-row>
           </v-card-text>
