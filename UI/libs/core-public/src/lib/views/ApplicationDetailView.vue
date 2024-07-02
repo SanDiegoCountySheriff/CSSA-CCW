@@ -269,8 +269,9 @@
                   @confirm="handleConfirmWithdrawRenewal"
                 />
 
+                <!-- revert back to showInitialWithdrawButton && canWithdrawApplication -->
                 <v-btn
-                  v-if="showInitialWithdrawButton && canWithdrawApplication"
+                  v-if="false"
                   @click="handleShowWithdrawDialog"
                   :disabled="
                     isGetApplicationsLoading ||
@@ -411,7 +412,13 @@
 
           <v-card-text>
             <v-row>
+              <!-- Temporary Message -->
               <v-col>
+                <v-card-title class="justify-center">
+                  Appointments are currently under maintenance.
+                </v-card-title>
+              </v-col>
+              <!-- <v-col>
                 <v-btn
                   v-if="canRescheduleAppointment"
                   @click="handleShowAppointmentDialog"
@@ -442,7 +449,7 @@
                 >
                   Cancel
                 </v-btn>
-              </v-col>
+              </v-col> -->
             </v-row>
 
             <v-row
