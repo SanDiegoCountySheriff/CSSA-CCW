@@ -1,4 +1,3 @@
-import { parse } from 'date-fns'
 /**
  * Function to format the entered social security number into a more readable version.
  * Expects a validated form entry.
@@ -69,21 +68,6 @@ export function formatTime(dateStr: string): string {
       minute: '2-digit',
     }) || dateStr
   )
-}
-
-/**
- * Function to format local time to UTC time string
- * @param {string} time
- * @returns {string} utcTimeString
- */
-export function formatLocalTimeStringToUtcTimeString(time: string): string {
-  return parse(time, 'HH:mm', new Date()).toISOString()
-}
-
-export function formatUtcTimeStringToLocalTimeString(time: Date): string {
-  window.console.log('time in formatter', time)
-
-  return parse(time.toISOString(), 'HH:mm', new Date()).toLocaleTimeString()
 }
 
 /**

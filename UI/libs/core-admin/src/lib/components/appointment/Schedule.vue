@@ -177,7 +177,6 @@
 </template>
 
 <script setup lang="ts">
-import { formatUtcTimeStringToLocalTimeString } from '@shared-utils/formatters/defaultFormatters'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
