@@ -187,36 +187,7 @@ const { refetch, isLoading: isGetAppointmentManagementTemplateLoading } =
       return await appointmentsStore.getAppointmentManagementTemplate()
     },
     onSuccess: data => {
-      const firstAppointmentStartTime = new Date(data.firstAppointmentStartTime)
-
-      data.firstAppointmentStartTime =
-        firstAppointmentStartTime.toLocaleTimeString('en-US', {
-          hour12: false,
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-
-      const lastAppointmentStartTime = new Date(data.lastAppointmentStartTime)
-
-      data.lastAppointmentStartTime =
-        lastAppointmentStartTime.toLocaleTimeString('en-US', {
-          hour12: false,
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-
-      if (data.breakStartTime) {
-        const breakStartTime = new Date(data.breakStartTime)
-
-        data.breakStartTime = breakStartTime.toLocaleTimeString('en-US', {
-          hour12: false,
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-      }
-
       data.startDate = formatDate(new Date(), 0, 0).split(' ')[0]
-
       appointmentManagement.value = data
       handleChangeAppointmentParameters()
     },
@@ -225,24 +196,6 @@ const { refetch, isLoading: isGetAppointmentManagementTemplateLoading } =
 const { isLoading, mutate: uploadAppointments } = useMutation({
   mutationKey: ['uploadAppointments'],
   mutationFn: async () => {
-    // don't convert these before you send
-    // appointmentManagement.value.firstAppointmentStartTime =
-    //   formatLocalTimeStringToUtcTimeString(
-    //     appointmentManagement.value.firstAppointmentStartTime
-    //   )
-
-    // appointmentManagement.value.lastAppointmentStartTime =
-    //   formatLocalTimeStringToUtcTimeString(
-    //     appointmentManagement.value.lastAppointmentStartTime
-    //   )
-
-    // appointmentManagement.value.breakStartTime = appointmentManagement.value
-    //   .breakStartTime
-    //   ? formatLocalTimeStringToUtcTimeString(
-    //       appointmentManagement.value.breakStartTime
-    //     )
-    //   : null
-
     appointmentManagement.value.startDate = new Date(
       appointmentManagement.value.startDate
     ).toISOString()
