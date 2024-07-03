@@ -3,7 +3,6 @@ using CCW.Common.Models;
 using CCW.Schedule.Services.Contracts;
 using Microsoft.Azure.Cosmos;
 using PublicHoliday;
-using System;
 using System.Globalization;
 using Container = Microsoft.Azure.Cosmos.Container;
 
