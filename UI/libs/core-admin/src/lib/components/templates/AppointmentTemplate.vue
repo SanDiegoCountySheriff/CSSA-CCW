@@ -150,7 +150,6 @@
 
 <script setup lang="ts">
 import { AppointmentManagement } from '@shared-utils/types/defaultTypes'
-import { formatLocalTimeStringToUtcTimeString } from '@shared-utils/formatters/defaultFormatters'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { computed, onMounted, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
@@ -188,36 +187,7 @@ const { refetch, isLoading: isGetAppointmentManagementTemplateLoading } =
       return await appointmentsStore.getAppointmentManagementTemplate()
     },
     onSuccess: data => {
-      const firstAppointmentStartTime = new Date(data.firstAppointmentStartTime)
-
-      data.firstAppointmentStartTime =
-        firstAppointmentStartTime.toLocaleTimeString('en-US', {
-          hour12: false,
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-
-      const lastAppointmentStartTime = new Date(data.lastAppointmentStartTime)
-
-      data.lastAppointmentStartTime =
-        lastAppointmentStartTime.toLocaleTimeString('en-US', {
-          hour12: false,
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-
-      if (data.breakStartTime) {
-        const breakStartTime = new Date(data.breakStartTime)
-
-        data.breakStartTime = breakStartTime.toLocaleTimeString('en-US', {
-          hour12: false,
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-      }
-
       data.startDate = formatDate(new Date(), 0, 0).split(' ')[0]
-
       appointmentManagement.value = data
       handleChangeAppointmentParameters()
     },
@@ -226,23 +196,6 @@ const { refetch, isLoading: isGetAppointmentManagementTemplateLoading } =
 const { isLoading, mutate: uploadAppointments } = useMutation({
   mutationKey: ['uploadAppointments'],
   mutationFn: async () => {
-    appointmentManagement.value.firstAppointmentStartTime =
-      formatLocalTimeStringToUtcTimeString(
-        appointmentManagement.value.firstAppointmentStartTime
-      )
-
-    appointmentManagement.value.lastAppointmentStartTime =
-      formatLocalTimeStringToUtcTimeString(
-        appointmentManagement.value.lastAppointmentStartTime
-      )
-
-    appointmentManagement.value.breakStartTime = appointmentManagement.value
-      .breakStartTime
-      ? formatLocalTimeStringToUtcTimeString(
-          appointmentManagement.value.breakStartTime
-        )
-      : null
-
     appointmentManagement.value.startDate = new Date(
       appointmentManagement.value.startDate
     ).toISOString()

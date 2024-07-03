@@ -484,12 +484,12 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         appointmentManagement.Id = "1";
 
         await _appointmentManagementContainer.UpsertItemAsync<AppointmentManagement>(appointmentManagement, new PartitionKey(appointmentManagement.Id), cancellationToken: cancellationToken);
-
         var concurrentTasks = new List<Task>();
         var count = 0;
         var holidayCount = 0;
         var query = _container.GetItemQueryIterator<AppointmentWindow>("SELECT TOP 1 c.start FROM c ORDER BY c.start DESC");
         var nextDay = new DateTimeOffset();
+        TimeZoneInfo pstTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
 
         while (query.HasMoreResults)
         {
@@ -524,9 +524,9 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
                     continue;
                 }
 
-                var startTime = appointmentManagement.FirstAppointmentStartTime;
-                var endTime = appointmentManagement.FirstAppointmentStartTime.Add(TimeSpan.FromMinutes(appointmentManagement.AppointmentLength));
-                var lastAppointmentStartTime = appointmentManagement.LastAppointmentStartTime;
+                var startTime = TimeSpan.Parse(appointmentManagement.FirstAppointmentStartTime);
+                var endTime = startTime.Add(TimeSpan.FromMinutes(appointmentManagement.AppointmentLength));
+                var lastAppointmentStartTime = TimeSpan.Parse(appointmentManagement.LastAppointmentStartTime);
 
                 if (lastAppointmentStartTime < startTime)
                 {
@@ -544,11 +544,46 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 
                     for (var j = 0; j < appointmentManagement.NumberOfSlotsPerAppointment; j++)
                     {
+                        var nextAppointmentDay = new DateTimeOffset(
+                            nextDay.Year,
+                            nextDay.Month,
+                            nextDay.Day,
+                            0,
+                            0,
+                            0,
+                            nextDay.Offset
+                        );
+
+                        var adjustedAppointmentDay = TimeZoneInfo.ConvertTime(nextAppointmentDay, pstTimeZone);
+
+                        var correctedAppointmentStart = new DateTimeOffset(
+                            nextDay.Year,
+                            nextDay.Month,
+                            nextDay.Day,
+                            startTime.Hours,
+                            startTime.Minutes,
+                            startTime.Seconds,
+                            adjustedAppointmentDay.Offset
+                        );
+
+                        var correctedAppointmentEnd = new DateTimeOffset(
+                            adjustedAppointmentDay.Year,
+                            adjustedAppointmentDay.Month,
+                            adjustedAppointmentDay.Day,
+                            startTime.Hours,
+                            startTime.Minutes,
+                            startTime.Seconds,
+                            adjustedAppointmentDay.Offset
+                        );
+
+                        var appointmentStartTime = correctedAppointmentStart.ToUniversalTime();
+                        var appointmentEndTime = correctedAppointmentEnd.ToUniversalTime();
+
                         var appointment = new AppointmentWindow()
                         {
                             Id = Guid.NewGuid(),
-                            Start = nextDay.Add(startTime.TimeOfDay),
-                            End = nextDay.Add(endTime.TimeOfDay)
+                            Start = appointmentStartTime,
+                            End = appointmentEndTime
                         };
 
                         concurrentTasks.Add(_container.CreateItemAsync(appointment, new PartitionKey(appointment.Id.ToString()), cancellationToken: cancellationToken));
@@ -576,11 +611,11 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         return (count, holidayCount);
     }
 
-    private bool WillAppointmentFallInBreakTime(AppointmentManagement appointmentManagement, DateTimeOffset startTime)
+    private bool WillAppointmentFallInBreakTime(AppointmentManagement appointmentManagement, TimeSpan startTime)
     {
-        DateTimeOffset breakEnd = appointmentManagement.BreakStartTime.Value.Add(TimeSpan.FromMinutes(appointmentManagement.BreakLength ?? appointmentManagement.AppointmentLength));
+        TimeSpan breakEnd = TimeSpan.Parse(appointmentManagement.BreakStartTime).Add(TimeSpan.FromMinutes(appointmentManagement.BreakLength ?? appointmentManagement.AppointmentLength));
 
-        return startTime >= appointmentManagement.BreakStartTime && startTime < breakEnd;
+        return startTime >= TimeSpan.Parse(appointmentManagement.BreakStartTime) && startTime < breakEnd;
     }
 
     public async Task<int> GetNumberOfNewAppointments(int numberOfDays, CancellationToken cancellationToken)
