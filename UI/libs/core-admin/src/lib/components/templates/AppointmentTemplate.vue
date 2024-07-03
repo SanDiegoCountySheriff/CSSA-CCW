@@ -150,7 +150,6 @@
 
 <script setup lang="ts">
 import { AppointmentManagement } from '@shared-utils/types/defaultTypes'
-import { formatLocalTimeStringToUtcTimeString } from '@shared-utils/formatters/defaultFormatters'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { computed, onMounted, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
@@ -226,22 +225,23 @@ const { refetch, isLoading: isGetAppointmentManagementTemplateLoading } =
 const { isLoading, mutate: uploadAppointments } = useMutation({
   mutationKey: ['uploadAppointments'],
   mutationFn: async () => {
-    appointmentManagement.value.firstAppointmentStartTime =
-      formatLocalTimeStringToUtcTimeString(
-        appointmentManagement.value.firstAppointmentStartTime
-      )
+    // don't convert these before you send
+    // appointmentManagement.value.firstAppointmentStartTime =
+    //   formatLocalTimeStringToUtcTimeString(
+    //     appointmentManagement.value.firstAppointmentStartTime
+    //   )
 
-    appointmentManagement.value.lastAppointmentStartTime =
-      formatLocalTimeStringToUtcTimeString(
-        appointmentManagement.value.lastAppointmentStartTime
-      )
+    // appointmentManagement.value.lastAppointmentStartTime =
+    //   formatLocalTimeStringToUtcTimeString(
+    //     appointmentManagement.value.lastAppointmentStartTime
+    //   )
 
-    appointmentManagement.value.breakStartTime = appointmentManagement.value
-      .breakStartTime
-      ? formatLocalTimeStringToUtcTimeString(
-          appointmentManagement.value.breakStartTime
-        )
-      : null
+    // appointmentManagement.value.breakStartTime = appointmentManagement.value
+    //   .breakStartTime
+    //   ? formatLocalTimeStringToUtcTimeString(
+    //       appointmentManagement.value.breakStartTime
+    //     )
+    //   : null
 
     appointmentManagement.value.startDate = new Date(
       appointmentManagement.value.startDate

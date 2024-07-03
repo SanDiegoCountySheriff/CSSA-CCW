@@ -80,6 +80,12 @@ export function formatLocalTimeStringToUtcTimeString(time: string): string {
   return parse(time, 'HH:mm', new Date()).toISOString()
 }
 
+export function formatUtcTimeStringToLocalTimeString(time: Date): string {
+  window.console.log('time in formatter', time)
+
+  return parse(time.toISOString(), 'HH:mm', new Date()).toLocaleTimeString()
+}
+
 /**
  * Function to format local date and time into UTC dateTime string
  * @param {string} date
