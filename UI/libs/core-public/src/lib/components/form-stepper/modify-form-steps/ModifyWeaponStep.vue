@@ -8,6 +8,7 @@
           :weapons="items"
           :modifying="true"
           :readonly="false"
+          @handle-edit-weapon="handleEditWeapon"
           @modify-delete-weapon="deleteWeapon"
           @save-weapon="handleSaveWeapon"
           @undo-add-weapon="undoAddWeapon"
@@ -30,7 +31,7 @@ import FormButtonContainer from '@shared-ui/components/containers/FormButtonCont
 import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
 import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, set } from 'vue'
 
 const valid = ref(false)
 const applicationStore = useCompleteApplicationStore()
@@ -77,6 +78,31 @@ const items = computed(() => {
 
   return itemArray
 })
+
+function handleEditWeapon(data) {
+  const originalSerialNumber = items.value[data.index]?.serialNumber
+
+  if (data.value.added) {
+    const index =
+      applicationStore.completeApplication.application.modifyAddWeapons.findIndex(
+        weapon => weapon.serialNumber === originalSerialNumber
+      )
+
+    if (index !== -1) {
+      set(
+        applicationStore.completeApplication.application.modifyAddWeapons,
+        index,
+        {
+          ...data.value,
+        }
+      )
+    }
+  } else {
+    set(applicationStore.completeApplication.application.weapons, data.index, {
+      ...data.value,
+    })
+  }
+}
 
 function deleteWeapon(weapon: WeaponInfoType) {
   emit('handle-delete-weapon', weapon)

@@ -24,6 +24,9 @@
           @delete-weapon="deleteWeapon"
           @handle-edit-weapon="handleEditWeapon"
           @save-weapon="handleSaveWeapon"
+          @modify-delete-weapon="deleteWeapon"
+          @undo-delete-weapon="handleUndoDeleteWeapon"
+          @undo-add-weapon="handleUndoAddWeapon"
         />
 
         <template
@@ -130,15 +133,15 @@ const items = computed(() => {
 })
 
 function handleEditWeapon(data) {
+  const originalSerialNumber = items.value[data.index]?.serialNumber
+
   if (data.value.added) {
     const index =
       permitStore.getPermitDetail.application.modifyAddWeapons.findIndex(
-        weapon => weapon.serialNumber === data.value.serialNumber
+        weapon => weapon.serialNumber === originalSerialNumber
       )
 
-    if (index !== 1) {
-      window.console.log(index)
-
+    if (index !== -1) {
       set(permitStore.getPermitDetail.application.modifyAddWeapons, index, {
         ...data.value,
       })
@@ -150,12 +153,46 @@ function handleEditWeapon(data) {
   }
 }
 
+function handleUndoDeleteWeapon(weapon: WeaponInfoType) {
+  permitStore.getPermitDetail.application.modifyDeleteWeapons =
+    permitStore.getPermitDetail.application.modifyDeleteWeapons.filter(w => {
+      return w.serialNumber !== weapon.serialNumber
+    })
+}
+
+function handleUndoAddWeapon(weapon: WeaponInfoType) {
+  const index =
+    permitStore.getPermitDetail.application.modifyAddWeapons.findIndex(
+      w => w.serialNumber === weapon.serialNumber
+    )
+
+  if (index !== -1) {
+    permitStore.getPermitDetail.application.modifyAddWeapons.splice(index, 1)
+  }
+}
+
 function handleSaveWeapon(weapon: WeaponInfoType) {
-  permitStore.getPermitDetail.application.weapons.push(weapon)
+  if (
+    permitStore.getPermitDetail.application.modifiedWeaponComplete !== null &&
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Modification Approved']
+  ) {
+    permitStore.getPermitDetail.application.modifyAddWeapons.push(weapon)
+  } else {
+    permitStore.getPermitDetail.application.weapons.push(weapon)
+  }
 }
 
 function deleteWeapon(index) {
-  permitStore.getPermitDetail.application.weapons.splice(index, 1)
+  if (
+    permitStore.getPermitDetail.application.modifiedWeaponComplete !== null &&
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Modification Approved']
+  ) {
+    permitStore.getPermitDetail.application.modifyDeleteWeapons.push(index)
+  } else {
+    permitStore.getPermitDetail.application.weapons.splice(index, 1)
+  }
 }
 
 function handleSave() {
