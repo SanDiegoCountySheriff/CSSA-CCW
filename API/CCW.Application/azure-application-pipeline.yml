@@ -16,3 +16,6 @@ stages:
           backendsvc: $(BackendSvc)
           backendsuffix: $(BackendSuffix)
           webAppSuffix: $(WebAppSuffix)
+          webAppPrefix: $(WebAppPrefix)
+          rgPrefix: $(RgPrefix)
+          rgEnvironment: $(RgEnvironment)
