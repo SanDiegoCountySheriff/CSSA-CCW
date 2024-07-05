@@ -1638,7 +1638,7 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[0].DOB[0]").SetValue(birthDate.Date.ToShortDateString() ?? "", true);
         form.GetField("form1[0].#subform[0].LAST_NAME[2]").SetValue(userApplication.Application.PersonalInfo.ModifiedLastName ?? "", true);
         form.GetField("form1[0].#subform[0].FIRST_NAME[1]").SetValue(userApplication.Application.PersonalInfo.ModifiedFirstName ?? "", true);
-        form.GetField("form1[0].#subform[0].MIDDLE_NAME[1]").SetValue(userApplication.Application.PersonalInfo.ModifiedLastName ?? "", true);
+        form.GetField("form1[0].#subform[0].MIDDLE_NAME[1]").SetValue(userApplication.Application.PersonalInfo.ModifiedMiddleName ?? "", true);
         form.GetField("form1[0].#subform[0].RESIDENCE_STREET_ADDRESS[0]").SetValue(userApplication.Application.ModifiedAddress.StreetAddress ?? "", true);
         form.GetField("form1[0].#subform[0].CITY[1]").SetValue(userApplication.Application.ModifiedAddress.City ?? "", true);
         form.GetField("form1[0].#subform[0].COUNTY[0]").SetValue(userApplication.Application.ModifiedAddress.County ?? "", true);
