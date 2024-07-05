@@ -1224,37 +1224,51 @@ public class PdfService : IPdfService
         form.GetField("ISSUED_DATE[0]").SetValue(userApplication.Application.License.IssueDate.Value.Date.ToShortDateString() ?? "", true);
         form.GetField("EXPIRED_DATE[0]").SetValue(userApplication.Application.License.ExpirationDate.Value.Date.ToShortDateString() ?? "", true);
         form.GetField("CII_NUMBER[0]").SetValue(userApplication.Application.CiiNumber ?? "", true);
-        form.GetField("COUNTY_NAME[0]").SetValue(userApplication.Application.CurrentAddress.County);
+        form.GetField("COUNTY_NAME[0]").SetValue(userApplication.Application.CurrentAddress.County.ToUpper());
         string fullname = BuildApplicantFullName(userApplication);
-        form.GetField("APPLICANT_NAME[0]").SetValue(fullname.Trim(), true);
+        form.GetField("APPLICANT_NAME[0]").SetValue(fullname.Trim().ToUpper(), true);
         string residenceAddress = userApplication.Application.CurrentAddress?.StreetAddress + ", " + userApplication.Application.CurrentAddress?.City +
          " " + userApplication.Application.CurrentAddress.State + " " + userApplication.Application.CurrentAddress.Zip;
-        form.GetField("RESIDENTIAL_ADDRESS[0]").SetValue(residenceAddress ?? "", true);
+        form.GetField("RESIDENTIAL_ADDRESS[0]").SetValue(residenceAddress.ToUpper() ?? "", true);
         form.GetField("DATE_OF_BIRTH[0]").SetValue(userApplication.Application.DOB.BirthDate ?? "", true);
-        form.GetField("ID_NUMBER[0]").SetValue(userApplication.Application.IdInfo.IdNumber);
+        form.GetField("ID_NUMBER[0]").SetValue(userApplication.Application.IdInfo.IdNumber.ToUpper());
         if (userApplication.Application.Employment == "Unemployed")
         {
-            form.GetField("OCCUPATION[0]").SetValue("Unemployed", true);
+            form.GetField("OCCUPATION[0]").SetValue("UNEMPLOYED", true);
         }
         else if (userApplication.Application.Employment == "Retired")
         {
-            form.GetField("OCCUPATION[0]").SetValue("Retired", true);
+            form.GetField("OCCUPATION[0]").SetValue("RETIRED", true);
         }
         else
         {
-            form.GetField("OCCUPATION[0]").SetValue(userApplication.Application.WorkInformation.Occupation ?? "", true);
+            form.GetField("OCCUPATION[0]").SetValue(userApplication.Application.WorkInformation.Occupation.ToUpper() ?? "", true);
         }
 
         string businessAddress = userApplication.Application.WorkInformation?.EmployerStreetAddress + ", " + userApplication.Application.WorkInformation?.EmployerCity + " "
         + userApplication.Application.WorkInformation.EmployerState + " " + userApplication.Application.WorkInformation.EmployerZip;
         if (userApplication.Application.Employment != "Unemployed" && userApplication.Application.Employment != "Retired")
         {
-            form.GetField("BUSINESS_ADDRESS[0]").SetValue(businessAddress ?? "", true);
+            form.GetField("BUSINESS_ADDRESS[0]").SetValue(businessAddress.ToUpper() ?? "", true);
         }
         form.GetField("HEIGHT[0]").SetValue(userApplication.Application.PhysicalAppearance.HeightFeet + "'" + userApplication.Application.PhysicalAppearance.HeightInch ?? "", true);
         form.GetField("WEIGHT[0]").SetValue(userApplication.Application.PhysicalAppearance.Weight ?? "", true);
-        form.GetField("EYE_COLOR[0]").SetValue(userApplication.Application.PhysicalAppearance.EyeColor ?? "", true);
-        form.GetField("HAIR_COLOR[0]").SetValue(userApplication.Application.PhysicalAppearance.HairColor ?? "", true);
+        if (userApplication.Application.PhysicalAppearance.EyeColor == "Multicolor")
+        {
+            form.GetField("EYE_COLOR[0]").SetValue("MULTI", true);
+        }
+        else 
+        {
+            form.GetField("EYE_COLOR[0]").SetValue(userApplication.Application.PhysicalAppearance.EyeColor.ToUpper() ?? "", true);
+        }
+        if (userApplication.Application.PhysicalAppearance.HairColor == "Multicolor")
+        {
+            form.GetField("HAIR_COLOR[0]").SetValue("MULTI", true);
+        }
+        else
+        {
+            form.GetField("HAIR_COLOR[0]").SetValue(userApplication.Application.PhysicalAppearance.HairColor.ToUpper() ?? "", true);
+        }
 
         switch (userApplication.Application.ApplicationType)
         {
@@ -1290,7 +1304,7 @@ public class PdfService : IPdfService
             case ApplicationType.ModifyEmployment:
             case ApplicationType.ModifyReserve:
             case ApplicationType.ModifyStandard:
-                form.GetField("LICENSE_ISSUED[0]").SetValue("MODIFICATION", true);
+                form.GetField("LICENSE_ISSUED[0]").SetValue("SUBSEQUENT", true);
                 break;
             default:
                 form.GetField("LICENSE_ISSUED[0]").SetValue("INITIAL", true);
@@ -1305,32 +1319,46 @@ public class PdfService : IPdfService
         form.GetField("ISSUED_DATE[1]").SetValue(userApplication.Application.License.IssueDate.Value.Date.ToShortDateString() ?? "", true);
         form.GetField("EXPIRED_DATE[1]").SetValue(userApplication.Application.License.ExpirationDate.Value.Date.ToShortDateString() ?? "", true);
         form.GetField("CII_NUMBER[1]").SetValue(userApplication.Application.CiiNumber ?? "", true);
-        form.GetField("COUNTY_NAME[1]").SetValue(userApplication.Application.CurrentAddress.County);
-        form.GetField("APPLICANT_NAME[1]").SetValue(fullname.Trim(), true);
-        form.GetField("RESIDENTIAL_ADDRESS[1]").SetValue(residenceAddress ?? "", true);
+        form.GetField("COUNTY_NAME[1]").SetValue(userApplication.Application.CurrentAddress.County.ToUpper());
+        form.GetField("APPLICANT_NAME[1]").SetValue(fullname.Trim().ToUpper(), true);
+        form.GetField("RESIDENTIAL_ADDRESS[1]").SetValue(residenceAddress.ToUpper() ?? "", true);
         form.GetField("DATE_OF_BIRTH[1]").SetValue(userApplication.Application.DOB.BirthDate ?? "", true);
-        form.GetField("ID_NUMBER[1]").SetValue(userApplication.Application.IdInfo.IdNumber);
+        form.GetField("ID_NUMBER[1]").SetValue(userApplication.Application.IdInfo.IdNumber.ToUpper());
         if (userApplication.Application.Employment == "Unemployed")
         {
-            form.GetField("OCCUPATION[1]").SetValue("Unemployed", true);
+            form.GetField("OCCUPATION[1]").SetValue("UNEMPLOYED", true);
         }
         else if (userApplication.Application.Employment == "Retired")
         {
-            form.GetField("OCCUPATION[1]").SetValue("Retired", true);
+            form.GetField("OCCUPATION[1]").SetValue("RETIRED", true);
         }
         else
         {
-            form.GetField("OCCUPATION[1]").SetValue(userApplication.Application.WorkInformation.Occupation ?? "", true);
+            form.GetField("OCCUPATION[1]").SetValue(userApplication.Application.WorkInformation.Occupation.ToUpper() ?? "", true);
         }
 
         if (userApplication.Application.Employment != "Unemployed" && userApplication.Application.Employment != "Retired")
         {
-            form.GetField("BUSINESS_ADDRESS[1]").SetValue(businessAddress ?? "", true);
+            form.GetField("BUSINESS_ADDRESS[1]").SetValue(businessAddress.ToUpper() ?? "", true);
         }
         form.GetField("HEIGHT[1]").SetValue(userApplication.Application.PhysicalAppearance.HeightFeet + "'" + userApplication.Application.PhysicalAppearance.HeightInch ?? "", true);
         form.GetField("WEIGHT[1]").SetValue(userApplication.Application.PhysicalAppearance.Weight ?? "", true);
-        form.GetField("EYE_COLOR[1]").SetValue(userApplication.Application.PhysicalAppearance.EyeColor ?? "", true);
-        form.GetField("HAIR_COLOR[1]").SetValue(userApplication.Application.PhysicalAppearance.HairColor ?? "", true);
+        if (userApplication.Application.PhysicalAppearance.EyeColor == "Multicolor")
+        {
+            form.GetField("EYE_COLOR[1]").SetValue("MULTI", true);
+        }
+        else
+        {
+            form.GetField("EYE_COLOR[1]").SetValue(userApplication.Application.PhysicalAppearance.EyeColor.ToUpper() ?? "", true);
+        }
+        if (userApplication.Application.PhysicalAppearance.HairColor == "Multicolor")
+        {
+            form.GetField("HAIR_COLOR[1]").SetValue("MULTI", true);
+        }
+        else
+        {
+            form.GetField("HAIR_COLOR[1]").SetValue(userApplication.Application.PhysicalAppearance.HairColor.ToUpper() ?? "", true);
+        }
 
         switch (userApplication.Application.ApplicationType)
         {
@@ -1360,13 +1388,13 @@ public class PdfService : IPdfService
             case ApplicationType.RenewReserve:
             case ApplicationType.RenewEmployment:
             case ApplicationType.RenewStandard:
-                form.GetField("LICENSE_ISSUED[1]").SetValue("RENEWAL", true);
+                form.GetField("LICENSE_ISSUED[1]").SetValue("SUBSEQUENT", true);
                 break;
             case ApplicationType.ModifyJudicial:
             case ApplicationType.ModifyEmployment:
             case ApplicationType.ModifyReserve:
             case ApplicationType.ModifyStandard:
-                form.GetField("LICENSE_ISSUED[1]").SetValue("MODIFICATION", true);
+                form.GetField("LICENSE_ISSUED[1]").SetValue("SUBSEQUENT", true);
                 break;
             default:
                 form.GetField("LICENSE_ISSUED[1]").SetValue("INITIAL", true);
@@ -1381,9 +1409,9 @@ public class PdfService : IPdfService
         form.GetField("ISSUED_DATE[2]").SetValue(userApplication.Application.License.IssueDate.Value.Date.ToShortDateString() ?? "", true);
         form.GetField("EXPIRED_DATE[2]").SetValue(userApplication.Application.License.ExpirationDate.Value.Date.ToShortDateString() ?? "", true);
         form.GetField("CII_NUMBER[2]").SetValue(userApplication.Application.CiiNumber ?? "", true);
-        form.GetField("COUNTY_NAME[2]").SetValue(userApplication.Application.CurrentAddress.County);
-        form.GetField("APPLICANT_NAME[2]").SetValue(fullname.Trim(), true);
-        form.GetField("RESIDENTIAL_ADDRESS[2]").SetValue(residenceAddress?? "", true);
+        form.GetField("COUNTY_NAME[2]").SetValue(userApplication.Application.CurrentAddress.County.ToUpper());
+        form.GetField("APPLICANT_NAME[2]").SetValue(fullname.Trim().ToUpper(), true);
+        form.GetField("RESIDENTIAL_ADDRESS[2]").SetValue(residenceAddress.ToUpper() ?? "", true);
 
         switch (userApplication.Application.ApplicationType)
         {
@@ -1413,13 +1441,13 @@ public class PdfService : IPdfService
             case ApplicationType.RenewReserve:
             case ApplicationType.RenewEmployment:
             case ApplicationType.RenewStandard:
-                form.GetField("LICENSE_ISSUED[2]").SetValue("RENEWAL", true);
+                form.GetField("LICENSE_ISSUED[2]").SetValue("SUBSEQUENT", true);
                 break;
             case ApplicationType.ModifyJudicial:
             case ApplicationType.ModifyEmployment:
             case ApplicationType.ModifyReserve:
             case ApplicationType.ModifyStandard:
-                form.GetField("LICENSE_ISSUED[2]").SetValue("MODIFICATION", true);
+                form.GetField("LICENSE_ISSUED[2]").SetValue("SUBSEQUENT", true);
                 break;
             default:
                 form.GetField("LICENSE_ISSUED[2]").SetValue("INITIAL", true);
@@ -1445,10 +1473,10 @@ public class PdfService : IPdfService
                     serialField = $"SERIAL{i + 1}[{j}]";
                     caliberField = $"CALIBER{i + 1}[{j}]";
 
-                    form.GetField(makeField).SetValue(weapons[i].Make);
-                    form.GetField(modelField).SetValue(weapons[i].Model);
-                    form.GetField(serialField).SetValue(weapons[i].SerialNumber);
-                    form.GetField(caliberField).SetValue(weapons[i].Caliber);
+                    form.GetField(makeField).SetValue(weapons[i].Make.ToUpper());
+                    form.GetField(modelField).SetValue(weapons[i].Model.ToUpper());
+                    form.GetField(serialField).SetValue(weapons[i].SerialNumber.ToUpper());
+                    form.GetField(caliberField).SetValue(weapons[i].Caliber.ToUpper());
                 }
             }
         }
@@ -1471,10 +1499,10 @@ public class PdfService : IPdfService
                     serialField = $"SERIAL_AM{i + 1}[{j}]";
                     caliberField = $"CALIBER_AM{i + 1}[{j}]";
 
-                    form.GetField(makeField).SetValue(weapons[i].Make);
-                    form.GetField(modelField).SetValue(weapons[i].Model);
-                    form.GetField(serialField).SetValue(weapons[i].SerialNumber);
-                    form.GetField(caliberField).SetValue(weapons[i].Caliber);
+                    form.GetField(makeField).SetValue(weapons[i].Make.ToUpper());
+                    form.GetField(modelField).SetValue(weapons[i].Model.ToUpper());
+                    form.GetField(serialField).SetValue(weapons[i].SerialNumber.ToUpper());
+                    form.GetField(caliberField).SetValue(weapons[i].Caliber.ToUpper());
                 }
             }
         }
