@@ -1091,21 +1091,21 @@ public class PdfService : IPdfService
         PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
         form.SetGenerateAppearance(true);
 
-        form.GetField("form1[0].#subform[0].Issuing_LEA[0]").SetValue(adminResponse.AgencyName, true);
-        form.GetField("form1[0].#subform[0].ORI_Number[0]").SetValue(adminResponse.ORI, true);
-        form.GetField("form1[0].#subform[0].Address[0]").SetValue(adminResponse.AgencyShippingStreetAddress, true);
-        form.GetField("form1[0].#subform[0].City[0]").SetValue(adminResponse.AgencyShippingCity, true);
-        form.GetField("form1[0].#subform[0].County_Code[0]").SetValue(adminResponse.MailCode, true);
-        form.GetField("form1[0].#subform[0].ZIP[0]").SetValue(adminResponse.AgencyShippingZip, true);
+        form.GetField("form1[0].#subform[0].Issuing_LEA[0]").SetValue(adminResponse.AgencyName.ToUpper(), true);
+        form.GetField("form1[0].#subform[0].ORI_Number[0]").SetValue(adminResponse.ORI.ToUpper(), true);
+        form.GetField("form1[0].#subform[0].Address[0]").SetValue(adminResponse.AgencyShippingStreetAddress.ToUpper(), true);
+        form.GetField("form1[0].#subform[0].City[0]").SetValue(adminResponse.AgencyShippingCity.ToUpper(), true);
+        form.GetField("form1[0].#subform[0].County_Code[0]").SetValue(adminResponse.MailCode.ToUpper(), true);
+        form.GetField("form1[0].#subform[0].ZIP[0]").SetValue(adminResponse.AgencyShippingZip.ToUpper(), true);
         string[] nameParts = user.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
         string lastName = nameParts[0].Trim();
         string firstName = nameParts[1].Trim();
-        form.GetField("form1[0].#subform[0].LastName[0]").SetValue(lastName, true);
-        form.GetField("form1[0].#subform[0].FirstName[0]").SetValue(firstName, true);
-        form.GetField("form1[0].#subform[0].Job_Title_or_Rank[0]").SetValue(adminUserProfile.JobTitle, true);
-        form.GetField("form1[0].#subform[0].Phone_Number[0]").SetValue(adminResponse.AgencyTelephone, true);
-        form.GetField("form1[0].#subform[0].Fax_Number[0]").SetValue(adminResponse.AgencyFax, true);
-        form.GetField("form1[0].#subform[0].EmailAddress[0]").SetValue(licensingEmail, true);
+        form.GetField("form1[0].#subform[0].LastName[0]").SetValue(lastName.ToUpper(), true);
+        form.GetField("form1[0].#subform[0].FirstName[0]").SetValue(firstName.ToUpper(), true);
+        form.GetField("form1[0].#subform[0].Job_Title_or_Rank[0]").SetValue(adminUserProfile.JobTitle.ToUpper(), true);
+        form.GetField("form1[0].#subform[0].Phone_Number[0]").SetValue(adminResponse.AgencyTelephone.ToUpper(), true);
+        form.GetField("form1[0].#subform[0].Fax_Number[0]").SetValue(adminResponse.AgencyFax.ToUpper(), true);
+        form.GetField("form1[0].#subform[0].EmailAddress[0]").SetValue(licensingEmail.ToUpper(), true);
 
         switch (userApplication.Application.ApplicationType)
         {
@@ -1122,38 +1122,42 @@ public class PdfService : IPdfService
         }
 
         form.GetField("form1[0].#subform[0].DateofLiveScanorRenewal[0]").SetValue(userApplication.Application.LiveScanInfo.Date, true);
-        form.GetField("form1[0].#subform[0].ApplicantTrackingIdentifier[0]").SetValue(userApplication.Application.LiveScanInfo.ATINumber, true);
-        form.GetField("form1[0].#subform[0].CII_Number[0]").SetValue(userApplication.Application.CiiNumber, true);
-        form.GetField("form1[0].#subform[0].Local_Agency_Number[0]").SetValue(adminResponse.LocalAgencyNumber, true);
-        form.GetField("form1[0].#subform[0].dateofissue[0]").SetValue(userApplication.Application.License.IssueDate.ToString(), true);
-        form.GetField("form1[0].#subform[0].expirationDate[0]").SetValue(userApplication.Application.License.ExpirationDate.ToString(), true);
-        form.GetField("form1[0].#subform[0].LastName[1]").SetValue(userApplication.Application.PersonalInfo.LastName ?? "", true);
-        form.GetField("form1[0].#subform[0].Suffix[0]").SetValue(userApplication.Application.PersonalInfo.Suffix ?? "", true);
-        form.GetField("form1[0].#subform[0].FirstName[1]").SetValue(userApplication.Application.PersonalInfo.FirstName ?? "", true);
-        form.GetField("form1[0].#subform[0].MiddleName[0]").SetValue(userApplication.Application.PersonalInfo.MiddleName ?? "", true);
+        form.GetField("form1[0].#subform[0].ApplicantTrackingIdentifier[0]").SetValue(userApplication.Application.LiveScanInfo.ATINumber ?? "", true);
+        form.GetField("form1[0].#subform[0].CII_Number[0]").SetValue(userApplication.Application.CiiNumber ?? "", true);
+        form.GetField("form1[0].#subform[0].Local_Agency_Number[0]").SetValue(adminResponse.LocalAgencyNumber ?? "", true);
+        form.GetField("form1[0].#subform[0].dateofissue[0]").SetValue(userApplication.Application.License.IssueDate.Value.Date.ToShortDateString(), true);
+        form.GetField("form1[0].#subform[0].expirationDate[0]").SetValue(userApplication.Application.License.ExpirationDate.Value.Date.ToShortDateString(), true);
+        form.GetField("form1[0].#subform[0].LastName[1]").SetValue(userApplication.Application.PersonalInfo.LastName.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[0].Suffix[0]").SetValue(userApplication.Application.PersonalInfo.Suffix.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[0].FirstName[1]").SetValue(userApplication.Application.PersonalInfo.FirstName.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[0].MiddleName[0]").SetValue(userApplication.Application.PersonalInfo.MiddleName.ToUpper() ?? "", true);
         form.GetField("form1[0].#subform[0].dob[0]").SetValue(userApplication.Application.DOB.BirthDate ?? "", true);
-        form.GetField("form1[0].#subform[0].streetaddress[0]").SetValue(userApplication.Application.CurrentAddress.StreetAddress ?? "", true);
-        form.GetField("form1[0].#subform[0].city[0]").SetValue(userApplication.Application.CurrentAddress.City ?? "", true);
-        form.GetField("form1[0].#subform[0].county[0]").SetValue(userApplication.Application.CurrentAddress.County ?? "", true);
+        form.GetField("form1[0].#subform[0].streetaddress[0]").SetValue(userApplication.Application.CurrentAddress.StreetAddress.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[0].city[0]").SetValue(userApplication.Application.CurrentAddress.City.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[0].county[0]").SetValue(userApplication.Application.CurrentAddress.County.ToUpper() ?? "", true);
         form.GetField("form1[0].#subform[0].zipcode[0]").SetValue(userApplication.Application.CurrentAddress.Zip ?? "", true);
 
         switch (userApplication.Application.ApplicationType)
         {
             case ApplicationType.RenewStandard:
             case ApplicationType.Standard:
-                form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("Standard", true);
+            case ApplicationType.ModifyStandard:
+                form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("STANDARD", true);
                 break;
             case ApplicationType.RenewJudicial:
             case ApplicationType.Judicial:
-                form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("Judicial", true);
+            case ApplicationType.ModifyJudicial:
+                form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("JUDICIAL", true);
                 break;
             case ApplicationType.RenewReserve:
             case ApplicationType.Reserve:
-                form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("Reserve", true);
+            case ApplicationType.ModifyReserve:
+                form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("RESERVE", true);
                 break;
             case ApplicationType.RenewEmployment:
             case ApplicationType.Employment:
-                form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("Employment", true);
+            case ApplicationType.ModifyEmployment:
+                form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("EMPLOYMENT", true);
                 break;
         }
        
