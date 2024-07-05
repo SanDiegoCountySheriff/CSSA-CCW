@@ -11,8 +11,8 @@ parameters:
       type: string
 
 stages:
-    - stage: "Build_${{ parameters.environment }}"
-      displayName: "Build_${{ parameters.environment }}"
+    - stage: "Build"
+      displayName: "Build"
       jobs:
           - deployment: "Build_API"
             variables:
@@ -64,8 +64,8 @@ stages:
 
     - stage:
       jobs:
-          - job: Deploy_${{ parameters.environment }}
-            displayName: "Deploy_${{ parameters.environment }}"
+          - job: Deploy
+            displayName: "Deploy"
             variables:
                 ${{ if eq(parameters.environment, 'dev' ) }}:
                     webAppPrefix: "wa-sdsd-it-ccw"
