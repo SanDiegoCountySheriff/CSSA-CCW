@@ -15,8 +15,8 @@
       <v-card-text>
         <WeaponsTable
           :weapons="items"
-          :edit-enable="!readonly"
           :readonly="readonly"
+          :edit-enable="!readonly"
           :modifying="
             permitStore.getPermitDetail.application.modifiedWeaponComplete !==
             null
@@ -24,6 +24,9 @@
           @delete-weapon="deleteWeapon"
           @handle-edit-weapon="handleEditWeapon"
           @save-weapon="handleSaveWeapon"
+          @modify-delete-weapon="deleteWeapon"
+          @undo-delete-weapon="handleUndoDeleteWeapon"
+          @undo-add-weapon="handleUndoAddWeapon"
         />
 
         <template
@@ -53,6 +56,10 @@
           </v-btn>
 
           <v-btn
+            :disabled="
+              permitStore.getPermitDetail.application.status ===
+              ApplicationStatus['Modification Approved']
+            "
             v-else
             @click="onUndoApproveWeaponChange"
             color="primary"
@@ -68,7 +75,10 @@
 
 <script setup lang="ts">
 import SaveButton from './SaveButton.vue'
-import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
+import {
+  ApplicationStatus,
+  WeaponInfoType,
+} from '@shared-utils/types/defaultTypes'
 import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue'
 import { openPdf } from '@core-admin/components/composables/openDocuments'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -86,7 +96,11 @@ const items = computed(() => {
     itemArray.push({ ...weapon })
   }
 
-  if (permitStore.getPermitDetail.application.modifyAddWeapons) {
+  if (
+    permitStore.getPermitDetail.application.modifyAddWeapons &&
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Modification Approved']
+  ) {
     for (const weapon of permitStore.getPermitDetail.application
       .modifyAddWeapons) {
       const item = { ...weapon, added: true }
@@ -95,7 +109,11 @@ const items = computed(() => {
     }
   }
 
-  if (permitStore.getPermitDetail.application.modifyDeleteWeapons) {
+  if (
+    permitStore.getPermitDetail.application.modifyDeleteWeapons &&
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Modification Approved']
+  ) {
     for (const weapon of permitStore.getPermitDetail.application
       .modifyDeleteWeapons) {
       const index = itemArray.findIndex(
@@ -115,17 +133,66 @@ const items = computed(() => {
 })
 
 function handleEditWeapon(data) {
-  set(permitStore.getPermitDetail.application.weapons, data.index, {
-    ...data.value,
-  })
+  const originalSerialNumber = items.value[data.index]?.serialNumber
+
+  if (data.value.added) {
+    const index =
+      permitStore.getPermitDetail.application.modifyAddWeapons.findIndex(
+        weapon => weapon.serialNumber === originalSerialNumber
+      )
+
+    if (index !== -1) {
+      set(permitStore.getPermitDetail.application.modifyAddWeapons, index, {
+        ...data.value,
+      })
+    }
+  } else {
+    set(permitStore.getPermitDetail.application.weapons, data.index, {
+      ...data.value,
+    })
+  }
+}
+
+function handleUndoDeleteWeapon(weapon: WeaponInfoType) {
+  permitStore.getPermitDetail.application.modifyDeleteWeapons =
+    permitStore.getPermitDetail.application.modifyDeleteWeapons.filter(w => {
+      return w.serialNumber !== weapon.serialNumber
+    })
+}
+
+function handleUndoAddWeapon(weapon: WeaponInfoType) {
+  const index =
+    permitStore.getPermitDetail.application.modifyAddWeapons.findIndex(
+      w => w.serialNumber === weapon.serialNumber
+    )
+
+  if (index !== -1) {
+    permitStore.getPermitDetail.application.modifyAddWeapons.splice(index, 1)
+  }
 }
 
 function handleSaveWeapon(weapon: WeaponInfoType) {
-  permitStore.getPermitDetail.application.weapons.push(weapon)
+  if (
+    permitStore.getPermitDetail.application.modifiedWeaponComplete !== null &&
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Modification Approved']
+  ) {
+    permitStore.getPermitDetail.application.modifyAddWeapons.push(weapon)
+  } else {
+    permitStore.getPermitDetail.application.weapons.push(weapon)
+  }
 }
 
 function deleteWeapon(index) {
-  permitStore.getPermitDetail.application.weapons.splice(index, 1)
+  if (
+    permitStore.getPermitDetail.application.modifiedWeaponComplete !== null &&
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Modification Approved']
+  ) {
+    permitStore.getPermitDetail.application.modifyDeleteWeapons.push(index)
+  } else {
+    permitStore.getPermitDetail.application.weapons.splice(index, 1)
+  }
 }
 
 function handleSave() {

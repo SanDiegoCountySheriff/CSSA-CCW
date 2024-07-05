@@ -63,7 +63,7 @@
         </v-icon>
 
         <v-tooltip
-          v-if="!props.modifying"
+          v-if="!props.modifying || item.added"
           top
         >
           <template #activator="{ on, attrs }">
