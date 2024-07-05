@@ -29,8 +29,6 @@ pool:
 stages:
   - stage: Build
     displayName: "Building CCW UI Project"
-    variables:
-      group: $(variable_library_public)
 
     jobs:
       - deployment: "Build_Public_UI"
@@ -180,8 +178,7 @@ stages:
     jobs:
       - deployment: "Deploy_Public_UI"
         environment: "ApprovalNotRequired"
-        variables:
-          - group: $(variable_library_public)
+
         strategy:
           runOnce:
             deploy:
@@ -262,8 +259,7 @@ stages:
 
       - deployment: "Deploy_Admin_UI"
         environment: "ApprovalNotRequired"
-        variables:
-          - group: $(variable_library_admin)
+
         strategy:
           runOnce:
             deploy:
