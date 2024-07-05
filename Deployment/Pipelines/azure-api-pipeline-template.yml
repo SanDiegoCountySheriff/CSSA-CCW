@@ -14,15 +14,10 @@ stages:
     - stage: "Build_${{ parameters.environment }}"
       displayName: "Build_${{ parameters.environment }}"
       jobs:
-          - deployment: "Build_Public_UI_Dev"
+          - deployment: "Build_API"
             variables:
-                ${{ if eq(parameters.environment, 'dev' )}}:
-                    environment: "ApprovalNotRequired"
-                ${{ else }}:
-                    environment: "ApprovalRequired"
-
                 projectToBuild: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}/CCW.${{ parameters.backendsvc }}.sln
-            environment: ${{ variables.environment }}
+            environment: ApprovalNotRequired
 
             strategy:
                 runOnce:
@@ -72,11 +67,11 @@ stages:
           - job: Deploy_${{ parameters.environment }}
             displayName: "Deploy_${{ parameters.environment }}"
             variables:
-                ${{ if eq(parameters.environment, 'dev' )}}:
+                ${{ if eq(parameters.environment, 'dev' ) }}:
                     webAppPrefix: "wa-sdsd-it-ccw"
                     rgPrefix: "rg-sdsd-it-ccw"
                     rgEnvironment: "dev"
-                ${{ else }}:
+                ${{ elseif eq(parameters.environment, 'p') }}:
                     webAppPrefix: "wa-sdsd-ccw"
                     rgPrefix: "rg-sdsd-law-ccw"
                     rgEnvironment: "prd"
