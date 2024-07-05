@@ -6,7 +6,7 @@
 trigger:
   branches:
     include:
-      - $(branch)
+      - main
   paths:
     include:
       - UI/*
