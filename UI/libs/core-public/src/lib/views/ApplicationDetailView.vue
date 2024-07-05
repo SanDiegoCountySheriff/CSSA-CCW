@@ -591,7 +591,7 @@
           </v-card-title>
 
           <v-card-title
-            v-if="!isRenewalActive"
+            v-if="!isRenewalActive && !isModification && !isRenew"
             class="justify-center"
           >
             You can begin your renewal in
