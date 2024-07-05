@@ -96,8 +96,8 @@
 
             <v-row>
               <v-col>
-                To help determine your next step, please enter your state ID
-                number and date of birth.
+                To help determine your next step, please enter your driver's
+                license or State ID number and date of birth.
               </v-col>
             </v-row>
 
@@ -105,9 +105,12 @@
               <v-col>
                 <v-text-field
                   v-model="idNumber"
-                  :rules="[v => !!v || 'State ID Number is required.']"
+                  :rules="[
+                    v =>
+                      !!v || 'Drivers License or State ID Number is required.',
+                  ]"
                   :dense="isMobile"
-                  label="State ID Number"
+                  label="Driver's License or State ID Number"
                   outlined
                 />
               </v-col>
