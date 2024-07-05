@@ -331,6 +331,7 @@ stages:
                   condition: eq(variables['ADMINZIPEXISTS'], 'True')
                   inputs:
                     azureSubscription: $(AzureSubscription)
+                    scriptType: bash
                     scriptLocation: inlineScript
                     inlineScript: 'az cdn endpoint purge --subscription $(cssa_shd_subscription) -g rg-cssa-it-ops-shd -n $(AdminCustomEndpointName) --profile-name cssa-global-cdn --content-paths "/*" --verbose'
                     workingDirectory: "$(System.ArtifactsDirectory)"
