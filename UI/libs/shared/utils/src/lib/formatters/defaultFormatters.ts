@@ -61,6 +61,7 @@ export function formatDate(dateStr: string): string {
  * @param {string} dateStr
  * @returns {string}
  */
+// test
 export function formatTime(dateStr: string): string {
   return (
     new Date(dateStr).toLocaleTimeString('en-US', {
