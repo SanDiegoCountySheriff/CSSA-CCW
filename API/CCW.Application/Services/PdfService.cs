@@ -117,9 +117,9 @@ public class PdfService : IPdfService
         }
 
         //Applicant Personal Information
-        form.GetField("form1[0].#subform[3].APP_LAST_NAME[0]").SetValue(personalInfo?.LastName ?? "", true);
-        form.GetField("form1[0].#subform[3].APP_FIRST_NAME[0]").SetValue(personalInfo?.FirstName ?? "", true);
-        form.GetField("form1[0].#subform[3].APP_MIDDLE_NAME[0]").SetValue(personalInfo?.MiddleName ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_LAST_NAME[0]").SetValue(personalInfo?.LastName.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_FIRST_NAME[0]").SetValue(personalInfo?.FirstName.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_MIDDLE_NAME[0]").SetValue(personalInfo?.MiddleName.ToUpper() ?? "", true);
 
         string currentState = userApplication.Application.CurrentAddress?.State?.Trim() ?? "";
         string mailingState = userApplication.Application.MailingAddress?.State?.Trim() ?? "";
@@ -143,33 +143,33 @@ public class PdfService : IPdfService
 
             maidenAndAliases += aliases;
         }
-        form.GetField("form1[0].#subform[3].APP_MAIDEN_NAME[0]").SetValue(maidenAndAliases, true);
+        form.GetField("form1[0].#subform[3].APP_MAIDEN_NAME[0]").SetValue(maidenAndAliases.ToUpper(), true);
 
-        form.GetField("form1[0].#subform[3].CA_DRIVER_LICENSE_ID[0]").SetValue(userApplication.Application.IdInfo.IdNumber, true);
-        form.GetField("form1[0].#subform[3].CA_DRIVER_RESTRICTIONS[0]").SetValue(userApplication.Application.IdInfo.Restrictions ?? "", true);
+        form.GetField("form1[0].#subform[3].CA_DRIVER_LICENSE_ID[0]").SetValue(userApplication.Application.IdInfo.IdNumber.ToUpper(), true);
+        form.GetField("form1[0].#subform[3].CA_DRIVER_RESTRICTIONS[0]").SetValue(userApplication.Application.IdInfo.Restrictions.ToUpper() ?? "", true);
         if (userApplication.Application.Citizenship.Citizen)
         {
-            form.GetField("form1[0].#subform[3].APP_CITIZENSHIP[0]").SetValue("United States", true);
+            form.GetField("form1[0].#subform[3].APP_CITIZENSHIP[0]").SetValue("UNITED STATES", true);
         }
         else
         {
-            form.GetField("form1[0].#subform[3].APP_CITIZENSHIP[0]").SetValue(userApplication.Application.ImmigrantInformation.CountryOfCitizenship ?? "", true);
+            form.GetField("form1[0].#subform[3].APP_CITIZENSHIP[0]").SetValue(userApplication.Application.ImmigrantInformation.CountryOfCitizenship.ToUpper() ?? "", true);
         }
 
-        form.GetField("form1[0].#subform[3].RESIDENCE_Address[0]").SetValue(userApplication.Application.CurrentAddress?.StreetAddress ?? "", true);
-        form.GetField("form1[0].#subform[3].APP_City[0]").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
+        form.GetField("form1[0].#subform[3].RESIDENCE_Address[0]").SetValue(userApplication.Application.CurrentAddress?.StreetAddress.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_City[0]").SetValue(userApplication.Application.CurrentAddress?.City.ToUpper() ?? "", true);
         if (Constants.StateAbbreviations.TryGetValue(currentState, out abbreviation))
         {
-            form.GetField("form1[0].#subform[3].APP_State[0]").SetValue(abbreviation, true);
+            form.GetField("form1[0].#subform[3].APP_State[0]").SetValue(abbreviation.ToUpper(), true);
         }
         else
         {
-            form.GetField("form1[0].#subform[3].APP_State[0]").SetValue(currentState, true);
+            form.GetField("form1[0].#subform[3].APP_State[0]").SetValue(currentState.ToUpper(), true);
         }
         form.GetField("form1[0].#subform[3].APP_ZipCode[0]").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
         form.GetField("form1[0].#subform[3].APP_DAY_PhoneNum[0]").SetValue(userApplication.Application.Contact.PrimaryPhoneNumber ?? "", true);
 
-        form.GetField("form1[0].#subform[3].APP_DOB[0]").SetValue(userApplication.Application.DOB?.BirthDate ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_DOB[0]").SetValue(userApplication.Application.DOB?.BirthDate.ToUpper() ?? "", true);
 
         DateTimeOffset birthDate = DateTimeOffset.Parse(userApplication.Application.DOB.BirthDate);
         int age = DateTime.Today.Year - birthDate.Year;
@@ -179,18 +179,18 @@ public class PdfService : IPdfService
         }
         string ageString = age.ToString();
 
-        form.GetField("form1[0].#subform[3].AGE[0]").SetValue(ageString, true);
+        form.GetField("form1[0].#subform[3].AGE[0]").SetValue(ageString.ToUpper(), true);
 
-        form.GetField("form1[0].#subform[3].APP_OCC[0]").SetValue(userApplication.Application.WorkInformation.Occupation ?? "", true);
-        form.GetField("form1[0].#subform[3].EMPOYER_NAME[0]").SetValue(userApplication.Application.WorkInformation.EmployerName ?? "", true);
-        form.GetField("form1[0].#subform[3].CURRENT_EMP_Address[0]").SetValue(userApplication.Application.WorkInformation.EmployerStreetAddress ?? "", true);
-        form.GetField("form1[0].#subform[3].CURRENT_EMP_City[0]").SetValue(userApplication.Application.WorkInformation.EmployerCity ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_OCC[0]").SetValue(userApplication.Application.WorkInformation.Occupation.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[3].EMPOYER_NAME[0]").SetValue(userApplication.Application.WorkInformation.EmployerName.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[3].CURRENT_EMP_Address[0]").SetValue(userApplication.Application.WorkInformation.EmployerStreetAddress.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[3].CURRENT_EMP_City[0]").SetValue(userApplication.Application.WorkInformation.EmployerCity.ToUpper() ?? "", true);
         if (Constants.StateAbbreviations.TryGetValue(employerState, out abbreviation))
         {
-            form.GetField("form1[0].#subform[3].CURRENT_EMPLOYER_State[0]").SetValue(abbreviation, true);
+            form.GetField("form1[0].#subform[3].CURRENT_EMPLOYER_State[0]").SetValue(abbreviation.ToUpper(), true);
         } else
         {
-            form.GetField("form1[0].#subform[3].CURRENT_EMPLOYER_State[0]").SetValue(employerState, true);
+            form.GetField("form1[0].#subform[3].CURRENT_EMPLOYER_State[0]").SetValue(employerState.ToUpper(), true);
         }
         form.GetField("form1[0].#subform[3].CURRENT_EMPLOYER_ZipCode[0]").SetValue(userApplication.Application.WorkInformation.EmployerZip ?? "", true);
         form.GetField("form1[0].#subform[3].CURRENT_EMPLOYER_PhoneNum[0]").SetValue(userApplication.Application.WorkInformation.EmployerPhone ?? "", true);
@@ -202,40 +202,40 @@ public class PdfService : IPdfService
                          userApplication.Application.DOB?.BirthState + "  " +
                          userApplication.Application.DOB?.BirthCountry;
         }
-        form.GetField("form1[0].#subform[3].APP_BIRTH_PLACE[0]").SetValue(birthPlace, true);
+        form.GetField("form1[0].#subform[3].APP_BIRTH_PLACE[0]").SetValue(birthPlace.ToUpper(), true);
 
         string height = userApplication.Application.PhysicalAppearance?.HeightFeet + "ft" + " " +
                         userApplication.Application.PhysicalAppearance?.HeightInch + "in";
-        form.GetField("form1[0].#subform[3].APP_HEIGHT[0]").SetValue(height, true);
+        form.GetField("form1[0].#subform[3].APP_HEIGHT[0]").SetValue(height.ToUpper(), true);
         form.GetField("form1[0].#subform[3].APP_LBS[0]").SetValue(userApplication.Application.PhysicalAppearance?.Weight + "lbs" ?? "", true);
-        form.GetField("form1[0].#subform[3].APP_EYE_CLR[0]").SetValue(userApplication.Application.PhysicalAppearance?.EyeColor ?? "", true);
-        form.GetField("form1[0].#subform[3].APP_HAIR_CLR[0]").SetValue(userApplication.Application.PhysicalAppearance?.HairColor ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_EYE_CLR[0]").SetValue(userApplication.Application.PhysicalAppearance?.EyeColor.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_HAIR_CLR[0]").SetValue(userApplication.Application.PhysicalAppearance?.HairColor.ToUpper() ?? "", true);
         string gender = userApplication.Application.PhysicalAppearance?.Gender.First().ToString().ToUpper() ?? "";
 
-        form.GetField("form1[0].#subform[3].APP_MAILINGAddress[0]").SetValue(userApplication.Application.MailingAddress?.StreetAddress ?? "", true);
-        form.GetField("form1[0].#subform[3].APP_MAILING_City[0]").SetValue(userApplication.Application.MailingAddress?.City ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_MAILINGAddress[0]").SetValue(userApplication.Application.MailingAddress?.StreetAddress.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_MAILING_City[0]").SetValue(userApplication.Application.MailingAddress?.City.ToUpper() ?? "", true);
         if (Constants.StateAbbreviations.TryGetValue(mailingState, out abbreviation))
         {
-            form.GetField("form1[0].#subform[3].APP_MAILING_State[0]").SetValue(abbreviation, true);
+            form.GetField("form1[0].#subform[3].APP_MAILING_State[0]").SetValue(abbreviation.ToUpper(), true);
         }
         else
         {
-            form.GetField("form1[0].#subform[3].APP_MAILING_State[0]").SetValue(mailingState, true);
+            form.GetField("form1[0].#subform[3].APP_MAILING_State[0]").SetValue(mailingState.ToUpper(), true);
         }
-        form.GetField("form1[0].#subform[3].APP_MAILING_Zip[0]").SetValue(userApplication.Application.MailingAddress?.Zip ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_MAILING_Zip[0]").SetValue(userApplication.Application.MailingAddress?.Zip.ToUpper() ?? "", true);
 
-        form.GetField("form1[0].#subform[3].SPOUSE_LAST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.LastName ?? "", true);
-        form.GetField("form1[0].#subform[3].SPOUSE_FIRST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.FirstName ?? "", true);
-        form.GetField("form1[0].#subform[3].SPOUSE_MIDDLE_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.MiddleName ?? "", true);
+        form.GetField("form1[0].#subform[3].SPOUSE_LAST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.LastName.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[3].SPOUSE_FIRST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.FirstName.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[3].SPOUSE_MIDDLE_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.MiddleName.ToUpper() ?? "", true);
 
-        form.GetField("form1[0].#subform[3].SPOUSE_physical_Address[0]").SetValue(userApplication.Application.SpouseAddressInformation?.StreetAddress ?? "", true);
-        form.GetField("form1[0].#subform[3].City[0]").SetValue(userApplication.Application.SpouseAddressInformation?.City ?? "", true);
+        form.GetField("form1[0].#subform[3].SPOUSE_physical_Address[0]").SetValue(userApplication.Application.SpouseAddressInformation?.StreetAddress.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[3].City[0]").SetValue(userApplication.Application.SpouseAddressInformation?.City.ToUpper() ?? "", true);
         if (Constants.StateAbbreviations.TryGetValue(spouseState, out abbreviation))
         {
-            form.GetField("form1[0].#subform[3].State[0]").SetValue(abbreviation, true);
+            form.GetField("form1[0].#subform[3].State[0]").SetValue(abbreviation.ToUpper(), true);
         } else
         {
-            form.GetField("form1[0].#subform[3].State[0]").SetValue(spouseState, true);
+            form.GetField("form1[0].#subform[3].State[0]").SetValue(spouseState.ToUpper(), true);
         }
         form.GetField("form1[0].#subform[3].Zip[0]").SetValue(userApplication.Application.SpouseAddressInformation?.Zip ?? "", true);
 #if DEBUG
@@ -477,9 +477,9 @@ public class PdfService : IPdfService
         {
             for (int i = 0; i < 3; i++)
             {
-                form.GetField("form1[0].#subform[8].NAME[" + i + "]").SetValue(characterReferences[i].Name, true);
-                form.GetField("form1[0].#subform[8].RELATIONSHIP[" + i + "]").SetValue(characterReferences[i].Relationship, true);
-                form.GetField("form1[0].#subform[8].PHONE_NUMBER[" + i + "]").SetValue(characterReferences[i].PhoneNumber, true);
+                form.GetField("form1[0].#subform[8].NAME[" + i + "]").SetValue(characterReferences[i].Name.ToUpper(), true);
+                form.GetField("form1[0].#subform[8].RELATIONSHIP[" + i + "]").SetValue(characterReferences[i].Relationship.ToUpper(), true);
+                form.GetField("form1[0].#subform[8].PHONE_NUMBER[" + i + "]").SetValue(characterReferences[i].PhoneNumber.ToUpper(), true);
             }
         }
 
@@ -491,10 +491,10 @@ public class PdfService : IPdfService
 
             for (int i = 0; i < totalWeapons; i++)
             {
-                form.GetField("form1[0].#subform[8].MAKE[" + i + "]").SetValue(weapons[i].Make, true);
-                form.GetField("form1[0].#subform[8].MODEL[" + i + "]").SetValue(weapons[i].Model, true);
-                form.GetField("form1[0].#subform[8].CALIBER[" + i + "]").SetValue(weapons[i].Caliber, true);
-                form.GetField("form1[0].#subform[8].SERIAL_NUMBER[" + i + "]").SetValue(weapons[i].SerialNumber, true);
+                form.GetField("form1[0].#subform[8].MAKE[" + i + "]").SetValue(weapons[i].Make.ToUpper(), true);
+                form.GetField("form1[0].#subform[8].MODEL[" + i + "]").SetValue(weapons[i].Model.ToUpper(), true);
+                form.GetField("form1[0].#subform[8].CALIBER[" + i + "]").SetValue(weapons[i].Caliber.ToUpper(), true);
+                form.GetField("form1[0].#subform[8].SERIAL_NUMBER[" + i + "]").SetValue(weapons[i].SerialNumber.ToUpper(), true);
             }
 
             // NOTE: LM: Add additional page(s) for extra weapons
@@ -509,7 +509,7 @@ public class PdfService : IPdfService
                 while (currentWeaponCounter < totalWeapons)
                 {
                     var weapon = weapons[currentWeaponCounter++];
-                    weaponsSb.AppendLine($"{weapon.Make}\t{weapon.Model}\t{weapon.Caliber}\t{weapon.SerialNumber}");
+                    weaponsSb.AppendLine($"{weapon.Make.ToUpper()}\t{weapon.Model.ToUpper()}\t{weapon.Caliber.ToUpper()}\t{weapon.SerialNumber.ToUpper()}");
                     currentSetCount++;
 
                     if (currentSetCount >= 30)
@@ -542,8 +542,8 @@ public class PdfService : IPdfService
                 int index = i + 1;
                 string address = previousAddresses[i].StreetAddress;
                 string state = previousAddresses[i].State?.Trim() ?? "";
-                form.GetField("form1[0].#subform[3].APP_Address[" + (index - 1) + "]").SetValue(address, true);
-                form.GetField("form1[0].#subform[3].APP_City[" + index + "]").SetValue(previousAddresses[i].City, true);
+                form.GetField("form1[0].#subform[3].APP_Address[" + (index - 1) + "]").SetValue(address.ToUpper(), true);
+                form.GetField("form1[0].#subform[3].APP_City[" + index + "]").SetValue(previousAddresses[i].City.ToUpper(), true);
                 if (Constants.StateAbbreviations.TryGetValue(state, out abbreviation))
                 {
                     form.GetField("form1[0].#subform[3].APP_State[" + index + "]").SetValue(GetStateByName(abbreviation), true);
@@ -568,7 +568,7 @@ public class PdfService : IPdfService
                     var previousAddress = previousAddresses[currentAddressCounter++];
 
                     string address = previousAddress.StreetAddress;
-                    addressesSb.AppendLine($"{address}, {previousAddress.City}, {previousAddress.State} {previousAddress.Zip}");
+                    addressesSb.AppendLine($"{address.ToUpper()}, {previousAddress.City.ToUpper()}, {previousAddress.State.ToUpper()} {previousAddress.Zip}");
 
                     currentSetCount++;
                     if (currentSetCount >= 30)
@@ -687,9 +687,9 @@ public class PdfService : IPdfService
         }
 
         //Applicant Personal Information
-        form.GetField("form1[0].#subform[2].APP_LAST_NAME[0]").SetValue(personalInfo?.LastName ?? "", true);
-        form.GetField("form1[0].#subform[2].APP_FIRST_NAME[0]").SetValue(personalInfo?.FirstName ?? "", true);
-        form.GetField("form1[0].#subform[2].APP_MIDDLE_NAME[0]").SetValue(personalInfo?.MiddleName ?? "", true);
+        form.GetField("form1[0].#subform[2].APP_LAST_NAME[0]").SetValue(personalInfo?.LastName.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[2].APP_FIRST_NAME[0]").SetValue(personalInfo?.FirstName.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[2].APP_MIDDLE_NAME[0]").SetValue(personalInfo?.MiddleName.ToUpper() ?? "", true);
 
         string maidenAndAliases = string.Empty;
         if (!string.IsNullOrWhiteSpace(personalInfo?.MaidenName))
@@ -707,11 +707,11 @@ public class PdfService : IPdfService
 
             maidenAndAliases += aliases;
         }
-        form.GetField("form1[0].#subform[2].APP_MAIDEN_NAME[0]").SetValue(maidenAndAliases, true);
+        form.GetField("form1[0].#subform[2].APP_MAIDEN_NAME[0]").SetValue(maidenAndAliases.ToUpper(), true);
 
-        form.GetField("form1[0].#subform[2].APP_RESIDENT_CITY[0]").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
-        form.GetField("form1[0].#subform[2].APP_RESIDENT_COUNTY[0]").SetValue(userApplication.Application.CurrentAddress?.County ?? "", true);
-        form.GetField("form1[0].#subform[2].APP_CITIZENSHIP[0]").SetValue(userApplication.Application.CurrentAddress?.Country ?? "", true);
+        form.GetField("form1[0].#subform[2].APP_RESIDENT_CITY[0]").SetValue(userApplication.Application.CurrentAddress?.City.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[2].APP_RESIDENT_COUNTY[0]").SetValue(userApplication.Application.CurrentAddress?.County.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[2].APP_CITIZENSHIP[0]").SetValue(userApplication.Application.CurrentAddress?.Country.ToUpper() ?? "", true);
 
         form.GetField("form1[0].#subform[2].APP_DOB[0]").SetValue(userApplication.Application.DOB?.BirthDate ?? "", true);
 
@@ -722,14 +722,14 @@ public class PdfService : IPdfService
                          userApplication.Application.DOB?.BirthState + "  " +
                          userApplication.Application.DOB?.BirthCountry;
         }
-        form.GetField("form1[0].#subform[2].APP_BIRTH_PLACE[0]").SetValue(birthPlace, true);
+        form.GetField("form1[0].#subform[2].APP_BIRTH_PLACE[0]").SetValue(birthPlace.ToUpper(), true);
 
         string height = userApplication.Application.PhysicalAppearance?.HeightFeet + "ft" + " " +
                         userApplication.Application.PhysicalAppearance?.HeightInch + "in";
-        form.GetField("form1[0].#subform[2].APP_HEIGHT[0]").SetValue(height, true);
-        form.GetField("form1[0].#subform[2].APP_LBS[0]").SetValue(userApplication.Application.PhysicalAppearance?.Weight + "lbs" ?? "", true);
-        form.GetField("form1[0].#subform[2].APP_EYE_CLR[0]").SetValue(userApplication.Application.PhysicalAppearance?.EyeColor ?? "", true);
-        form.GetField("form1[0].#subform[2].APP_HAIR_CLR[0]").SetValue(userApplication.Application.PhysicalAppearance?.HairColor ?? "", true);
+        form.GetField("form1[0].#subform[2].APP_HEIGHT[0]").SetValue(height.ToUpper(), true);
+        form.GetField("form1[0].#subform[2].APP_LBS[0]").SetValue(userApplication.Application.PhysicalAppearance?.Weight.ToUpper() + "lbs" ?? "", true);
+        form.GetField("form1[0].#subform[2].APP_EYE_CLR[0]").SetValue(userApplication.Application.PhysicalAppearance?.EyeColor.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[2].APP_HAIR_CLR[0]").SetValue(userApplication.Application.PhysicalAppearance?.HairColor.ToUpper() ?? "", true);
         string gender = userApplication.Application.PhysicalAppearance?.Gender.First().ToString().ToUpper() ?? "";
         form.GetField("form1[0].#subform[2].APP_GENDER[0]").SetValue(gender, true);
 
@@ -855,10 +855,10 @@ public class PdfService : IPdfService
 
             for (int i = 0; i < totalWeapons; i++)
             {
-                form.GetField("form1[0].#subform[4].MAKE[" + i + "]").SetValue(weapons[i].Make, true);
-                form.GetField("form1[0].#subform[4].MODEL[" + i + "]").SetValue(weapons[i].Model, true);
-                form.GetField("form1[0].#subform[4].CALIBER[" + i + "]").SetValue(weapons[i].Caliber, true);
-                form.GetField("form1[0].#subform[4].SERIAL_NUMBER[" + i + "]").SetValue(weapons[i].SerialNumber, true);
+                form.GetField("form1[0].#subform[4].MAKE[" + i + "]").SetValue(weapons[i].Make.ToUpper(), true);
+                form.GetField("form1[0].#subform[4].MODEL[" + i + "]").SetValue(weapons[i].Model.ToUpper(), true);
+                form.GetField("form1[0].#subform[4].CALIBER[" + i + "]").SetValue(weapons[i].Caliber.ToUpper(), true);
+                form.GetField("form1[0].#subform[4].SERIAL_NUMBER[" + i + "]").SetValue(weapons[i].SerialNumber.ToUpper(), true);
             }
 
             // NOTE: LM: Add additional page(s) for extra weapons
@@ -873,7 +873,7 @@ public class PdfService : IPdfService
                 while (currentWeaponCounter < totalWeapons)
                 {
                     var weapon = weapons[currentWeaponCounter++];
-                    weaponsSb.AppendLine($"{weapon.Make}\t{weapon.Model}\t{weapon.Caliber}\t{weapon.SerialNumber}");
+                    weaponsSb.AppendLine($"{weapon.Make.ToUpper()}\t{weapon.Model.ToUpper()}\t{weapon.Caliber.ToUpper()}\t{weapon.SerialNumber.ToUpper()}");
                     currentSetCount++;
 
                     if (currentSetCount >= 30)
@@ -894,9 +894,9 @@ public class PdfService : IPdfService
             }
         }
 
-        form.GetField("form1[0].#subform[8].APPL_LAST_NAME[0]").SetValue(personalInfo?.LastName ?? "", true);
-        form.GetField("form1[0].#subform[8].APPL_FIRST_NAME[0]").SetValue(personalInfo?.FirstName ?? "", true);
-        form.GetField("form1[0].#subform[8].APPL_MIDDLE_NAME[0]").SetValue(personalInfo?.MiddleName ?? "", true);
+        form.GetField("form1[0].#subform[8].APPL_LAST_NAME[0]").SetValue(personalInfo?.LastName.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[8].APPL_FIRST_NAME[0]").SetValue(personalInfo?.FirstName.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[8].APPL_MIDDLE_NAME[0]").SetValue(personalInfo?.MiddleName.ToUpper() ?? "", true);
         form.GetField("form1[0].#subform[8].APP_DOB[1]").SetValue(userApplication.Application.DOB?.BirthDate ?? "", true);
 
         //Investigator's Interview Notes
@@ -909,42 +909,42 @@ public class PdfService : IPdfService
         }
 
         form.GetField("form1[0].#subform[8].APP_SSN[0]").SetValue(FormatSSN(userApplication.Application.PersonalInfo?.Ssn) ?? "", true);
-        form.GetField("form1[0].#subform[8].APP_CDL[0]").SetValue(userApplication.Application.IdInfo?.IdNumber ?? "", true);
+        form.GetField("form1[0].#subform[8].APP_CDL[0]").SetValue(userApplication.Application.IdInfo?.IdNumber.ToUpper() ?? "", true);
         form.GetField("form1[0].#subform[8].APP_CDL_RESTRICTIONS[0]").SetValue(userApplication.Application.LegacyQualifyingQuestions?.QuestionSixteen.Explanation ?? "", true);
         string residenceAddress = userApplication.Application.CurrentAddress?.StreetAddress;
-        form.GetField("form1[0].#subform[8].APP_Address[0]").SetValue(residenceAddress ?? "", true);
-        form.GetField("form1[0].#subform[8].APP_City[0]").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
-        form.GetField("form1[0].#subform[8].APP_State[0]").SetValue(GetStateByName(userApplication.Application.CurrentAddress?.State) ?? "", true);
+        form.GetField("form1[0].#subform[8].APP_Address[0]").SetValue(residenceAddress.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[8].APP_City[0]").SetValue(userApplication.Application.CurrentAddress?.City.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[8].APP_State[0]").SetValue(GetStateByName(userApplication.Application.CurrentAddress?.State.ToUpper()) ?? "", true);
         form.GetField("form1[0].#subform[8].APP_ZipCode[0]").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
         form.GetField("form1[0].#subform[8].APP_DAY_PhoneNum[0]").SetValue(FormatPhoneNumber(userApplication.Application.Contact?.PrimaryPhoneNumber), true);
 
         string mailingAddress = userApplication.Application.MailingAddress?.StreetAddress;
-        form.GetField("form1[0].#subform[8].APP_MAILINGAddress[0]").SetValue(mailingAddress ?? "", true);
-        form.GetField("form1[0].#subform[8].APP_MAILING_City[0]").SetValue(userApplication.Application.MailingAddress?.City ?? "", true);
-        form.GetField("form1[0].#subform[8].APP_MAILING_State[0]").SetValue(GetStateByName(userApplication.Application.MailingAddress?.State) ?? "", true);
+        form.GetField("form1[0].#subform[8].APP_MAILINGAddress[0]").SetValue(mailingAddress.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[8].APP_MAILING_City[0]").SetValue(userApplication.Application.MailingAddress?.City.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[8].APP_MAILING_State[0]").SetValue(GetStateByName(userApplication.Application.MailingAddress?.State.ToUpper()) ?? "", true);
         form.GetField("form1[0].#subform[8].APP_MAILING_Zip[0]").SetValue(userApplication.Application.MailingAddress?.Zip ?? "", true);
         form.GetField("form1[0].#subform[8].APP_EVE_PhoneNum[0]").SetValue(FormatPhoneNumber(userApplication.Application.Contact?.CellPhoneNumber), true);
 
-        form.GetField("form1[0].#subform[8].SPOUSE_LAST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.LastName ?? "", true);
-        form.GetField("form1[0].#subform[8].SPOUSE_FIRST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.FirstName ?? "", true);
-        form.GetField("form1[0].#subform[8].SPOUSE_MIDDLE_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.MiddleName ?? "", true);
+        form.GetField("form1[0].#subform[8].SPOUSE_LAST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.LastName.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[8].SPOUSE_FIRST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.FirstName.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[8].SPOUSE_MIDDLE_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.MiddleName.ToUpper() ?? "", true);
 
         string spouseAddress = userApplication.Application.SpouseAddressInformation?.StreetAddress;
-        form.GetField("form1[0].#subform[8].SPOUSE_Address[0]").SetValue(spouseAddress ?? "", true);
-        form.GetField("form1[0].#subform[8].SPOUSE_City[0]").SetValue(userApplication.Application.SpouseAddressInformation?.City ?? "", true);
-        form.GetField("form1[0].#subform[8].SPOUSE_State[0]").SetValue(GetStateByName(userApplication.Application.SpouseAddressInformation?.State) ?? "", true);
-        form.GetField("form1[0].#subform[8].SPOUSE_ZipCode[0]").SetValue(userApplication.Application.SpouseAddressInformation?.Zip ?? "", true);
-        form.GetField("form1[0].#subform[8].SPOUSE_PhoneNum[0]").SetValue(FormatPhoneNumber(userApplication.Application.SpouseInformation?.PhoneNumber) ?? "", true);
+        form.GetField("form1[0].#subform[8].SPOUSE_Address[0]").SetValue(spouseAddress.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[8].SPOUSE_City[0]").SetValue(userApplication.Application.SpouseAddressInformation?.City.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[8].SPOUSE_State[0]").SetValue(GetStateByName(userApplication.Application.SpouseAddressInformation?.State.ToUpper()) ?? "", true);
+        form.GetField("form1[0].#subform[8].SPOUSE_ZipCode[0]").SetValue(userApplication.Application.SpouseAddressInformation?.Zip.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[8].SPOUSE_PhoneNum[0]").SetValue(FormatPhoneNumber(userApplication.Application.SpouseInformation?.PhoneNumber.ToUpper()) ?? "", true);
 
-        form.GetField("form1[0].#subform[8].APP_OCC[0]").SetValue(userApplication.Application.WorkInformation?.Occupation ?? "", true);
-        form.GetField("form1[0].#subform[8].EMPOYER_NAME[0]").SetValue(userApplication.Application.WorkInformation?.EmployerName ?? "", true);
+        form.GetField("form1[0].#subform[8].APP_OCC[0]").SetValue(userApplication.Application.WorkInformation?.Occupation.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[8].EMPOYER_NAME[0]").SetValue(userApplication.Application.WorkInformation?.EmployerName.ToUpper() ?? "", true);
 
         string workAddress = userApplication.Application.WorkInformation?.EmployerStreetAddress;
-        form.GetField("form1[0].#subform[8].CURRENT_EMP_Address[0]").SetValue(workAddress ?? "", true);
-        form.GetField("form1[0].#subform[8].CURRENT_EMP_City[0]").SetValue(userApplication.Application.WorkInformation?.EmployerCity ?? "", true);
-        form.GetField("form1[0].#subform[8].CURRENT_EMPLOYER_State[0]").SetValue(GetStateByName(userApplication.Application.WorkInformation?.EmployerState) ?? "", true);
-        form.GetField("form1[0].#subform[8].CURRENT_EMPLOYER_ZipCode[0]").SetValue(userApplication.Application.WorkInformation?.EmployerZip ?? "", true);
-        form.GetField("form1[0].#subform[8].CURRENT_EMPLOYER_PhoneNum[0]").SetValue(FormatPhoneNumber(userApplication.Application.WorkInformation?.EmployerPhone), true);
+        form.GetField("form1[0].#subform[8].CURRENT_EMP_Address[0]").SetValue(workAddress.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[8].CURRENT_EMP_City[0]").SetValue(userApplication.Application.WorkInformation?.EmployerCity.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[8].CURRENT_EMPLOYER_State[0]").SetValue(GetStateByName(userApplication.Application.WorkInformation?.EmployerState.ToUpper()) ?? "", true);
+        form.GetField("form1[0].#subform[8].CURRENT_EMPLOYER_ZipCode[0]").SetValue(userApplication.Application.WorkInformation?.EmployerZip.ToUpper() ?? "", true);
+        form.GetField("form1[0].#subform[8].CURRENT_EMPLOYER_PhoneNum[0]").SetValue(FormatPhoneNumber(userApplication.Application.WorkInformation?.EmployerPhone.ToUpper()), true);
 
         //Description of previous addresses
         var previousAddresses = userApplication.Application.PreviousAddresses;
@@ -957,9 +957,9 @@ public class PdfService : IPdfService
             {
                 int index = i + 1;
                 string address = previousAddresses[i].StreetAddress;
-                form.GetField("form1[0].#subform[8].APP_Address[" + index + "]").SetValue(address, true);
-                form.GetField("form1[0].#subform[8].APP_City[" + index + "]").SetValue(previousAddresses[i].City, true);
-                form.GetField("form1[0].#subform[8].APP_State[" + index + "]").SetValue(GetStateByName(previousAddresses[i].State), true);
+                form.GetField("form1[0].#subform[8].APP_Address[" + index + "]").SetValue(address.ToUpper(), true);
+                form.GetField("form1[0].#subform[8].APP_City[" + index + "]").SetValue(previousAddresses[i].City.ToUpper(), true);
+                form.GetField("form1[0].#subform[8].APP_State[" + index + "]").SetValue(GetStateByName(previousAddresses[i].State.ToUpper()), true);
                 form.GetField("form1[0].#subform[8].APP_ZipCode[" + index + "]").SetValue(previousAddresses[i].Zip, true);
             }
 
@@ -977,7 +977,7 @@ public class PdfService : IPdfService
                     var previousAddress = previousAddresses[currentAddressCounter++];
 
                     string address = previousAddress.StreetAddress;
-                    addressesSb.AppendLine($"{address}, {previousAddress.City}, {previousAddress.State} {previousAddress.Zip}");
+                    addressesSb.AppendLine($"{address.ToUpper()}, {previousAddress.City.ToUpper()}, {previousAddress.State.ToUpper()} {previousAddress.Zip}");
 
                     currentSetCount++;
                     if (currentSetCount >= 30)
