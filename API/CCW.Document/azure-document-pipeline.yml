@@ -3,16 +3,6 @@
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
-trigger:
-    branches:
-        include:
-            - main
-    paths:
-        include:
-            - API/CCW.Document/*
-            - API/CCW.Common/*
-            - Deployment/Pipelines/azure-api-pipeline-template.yml
-
 pr: none
 
 pool:
@@ -21,17 +11,11 @@ pool:
 stages:
     - template: /Deployment/Pipelines/azure-api-pipeline-template.yml
       parameters:
-          azureSubscriptionConnection: "AZR-GOV-CSSA-SDSD-CCW-D-SP-ADO"
-          environment: "dev"
-          backendsvc: "Document"
-          backendsuffix: "001"
-          webAppSuffix: "001"
-
-    - template: /Deployment/Pipelines/azure-api-pipeline-template.yml
-      parameters:
-          azureSubscriptionConnection: "app-cssa-ccw-ado-prd-001"
-          environment: "p"
-          backendsvc: "Document"
-          backendsuffix: "001"
-          webAppSuffix: "1"
-
+          azureSubscriptionConnection: $(AzureSubscription)
+          environment: $(Environment)
+          backendsvc: $(BackendSvc)
+          backendsuffix: $(BackendSuffix)
+          webAppSuffix: $(WebAppSuffix)
+          webAppPrefix: $(WebAppPrefix)
+          rgPrefix: $(RgPrefix)
+          rgEnvironment: $(RgEnvironment)
