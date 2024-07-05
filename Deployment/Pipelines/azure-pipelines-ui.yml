@@ -3,6 +3,15 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
+trigger:
+  branches:
+    include:
+      - $(branch)
+  paths:
+    include:
+      - UI/*
+      - Deployment/Pipelines/azure-pipeline-ui.yml
+
 pr: none
 
 parameters:
