@@ -46,7 +46,6 @@ export function unformatNumber(number: string): string {
  * @param {string} dateStr
  * @returns {string}
  */
-// test
 export function formatDate(dateStr: string): string {
   return (
     new Date(dateStr).toLocaleDateString('en-US', {
