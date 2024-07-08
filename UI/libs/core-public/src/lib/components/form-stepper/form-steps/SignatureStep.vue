@@ -319,7 +319,7 @@ onMounted(() => {
       const canvas = document.getElementById('signature') as HTMLCanvasElement
 
       signaturePad.value = new SignaturePad(canvas, {
-        backgroundColor: 'white',
+        backgroundColor: 'rgba(0, 0, 0, 0)',
         minDistance: 5,
       })
     })
