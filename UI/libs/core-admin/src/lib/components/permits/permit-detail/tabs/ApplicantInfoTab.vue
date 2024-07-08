@@ -19,7 +19,10 @@
         "
       >
         <v-row>
-          <v-col cols="6">
+          <v-col
+            cols="12"
+            class="pr-7"
+          >
             <v-alert
               class="ml-4"
               border="left"
@@ -37,7 +40,7 @@
           permitStore.getPermitDetail.application.modifiedNameComplete !== null
         "
       >
-        <!-- <v-card-title> Name Modification: </v-card-title> -->
+
 
         <v-card-text>
           <v-row>
@@ -97,6 +100,7 @@
             </v-col>
 
             <v-col
+          
               cols="3"
               class="mb-5"
             >
