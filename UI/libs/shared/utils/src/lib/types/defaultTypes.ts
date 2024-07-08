@@ -548,6 +548,7 @@ export enum ApplicationStatus {
   'Waiting For Customer',
   'Modification Approved',
   'Renewal Approved',
+  'Modification Denied',
 }
 
 export enum PaymentType {
@@ -716,6 +717,7 @@ export type CompleteApplication = {
     readyForInitialPayment: boolean
     readyForRenewalPayment: boolean
     readyForModificationPayment: boolean
+    readyForIssuancePayment: boolean
     modificationNumber: number
     renewalNumber: number
     isRenewingWithLegacyQuestions: boolean
@@ -788,6 +790,7 @@ export type BrandType = {
   agencyEyeColors: EyeColor[]
   daysBeforeActiveRenewal: number
   numberOfModificationsBetweenRenewals: number
+  licensingManager: string
 }
 
 export type AgencyDocumentsType = {
@@ -806,7 +809,7 @@ export type AppointmentManagement = {
   numberOfSlotsPerAppointment: number
   appointmentLength: number
   numberOfWeeksToCreate: number
-  breakLength: number | undefined
+  breakLength: number | undefined | null
   breakStartTime: string | null
   startDate: string
 }

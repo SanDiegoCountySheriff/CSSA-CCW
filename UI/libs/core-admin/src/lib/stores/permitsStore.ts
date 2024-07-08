@@ -111,6 +111,17 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
   const orderIds = new Map()
 
+  const isRenew = computed(() => {
+    const applicationType = permitDetail.value.application.applicationType
+
+    return (
+      applicationType === ApplicationType['Renew Standard'] ||
+      applicationType === ApplicationType['Renew Reserve'] ||
+      applicationType === ApplicationType['Renew Judicial'] ||
+      applicationType === ApplicationType['Renew Employment']
+    )
+  })
+
   function setPermits(payload: Array<PermitsType>) {
     permits.value = payload
   }
@@ -560,7 +571,12 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     const license = permitDetail.value.application.license
     const applicationType = permitDetail.value.application.applicationType
 
-    if (license && license.issueDate && license.expirationDate) {
+    if (
+      license &&
+      license.issueDate &&
+      license.expirationDate &&
+      !isRenew.value
+    ) {
       issueDate = new Date(license.issueDate)
       expDate = new Date(license.expirationDate)
     } else {
@@ -705,24 +721,29 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       permitDetail.value.application.cost = brandStore.brand.cost
     }
 
-    if (permitDetail.value.application.cost?.standardLivescanFee === null) {
+    if (permitDetail.value.application.cost?.standardLivescanFee === 0) {
       permitDetail.value.application.cost.standardLivescanFee =
         brandStore.brand.cost.standardLivescanFee
     }
 
-    if (permitDetail.value.application.cost?.judicialLivescanFee === null) {
+    if (permitDetail.value.application.cost?.judicialLivescanFee === 0) {
       permitDetail.value.application.cost.judicialLivescanFee =
         brandStore.brand.cost.judicialLivescanFee
     }
 
-    if (permitDetail.value.application.cost?.reserveLivescanFee === null) {
+    if (permitDetail.value.application.cost?.reserveLivescanFee === 0) {
       permitDetail.value.application.cost.reserveLivescanFee =
         brandStore.brand.cost.reserveLivescanFee
     }
 
-    if (permitDetail.value.application.cost?.employmentLivescanFee === null) {
+    if (permitDetail.value.application.cost?.employmentLivescanFee === 0) {
       permitDetail.value.application.cost.employmentLivescanFee =
         brandStore.brand.cost.employmentLivescanFee
+    }
+
+    if (permitDetail.value.application.cost?.issuance === 0) {
+      permitDetail.value.application.cost.issuance =
+        brandStore.brand.cost.issuance
     }
 
     const newHistory: HistoryType = {

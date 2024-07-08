@@ -605,6 +605,57 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return 0;
     }
 
+    public async Task WithdrawRenewal(string userId, CancellationToken cancellationToken)
+    {
+        var queryString = "SELECT * FROM c WHERE c.userId = @userId ORDER BY c._ts DESC";
+
+        var parameterizedQuery = new QueryDefinition(query: queryString)
+            .WithParameter("@userId", userId);
+
+        using FeedIterator<PermitApplication> historicalResult = _historicalContainer.GetItemQueryIterator<PermitApplication>(
+            queryDefinition: parameterizedQuery
+        );
+
+        PermitApplication historicalApplication = null;
+
+        if (historicalResult.HasMoreResults)
+        {
+            FeedResponse<PermitApplication> response = await historicalResult.ReadNextAsync(cancellationToken);
+
+            historicalApplication = response.Resource.FirstOrDefault();
+        }
+
+        queryString = "SELECT * FROM c WHERE c.userId = @userId ORDER BY c._ts DESC";
+
+        parameterizedQuery = new QueryDefinition(query: queryString)
+            .WithParameter("@userId", userId);
+
+        using FeedIterator<PermitApplication> productionResult = _container.GetItemQueryIterator<PermitApplication>(
+            queryDefinition: parameterizedQuery
+        );
+
+        PermitApplication existingApplication = null;
+
+        if (productionResult.HasMoreResults)
+        {
+            FeedResponse<PermitApplication> response = await productionResult.ReadNextAsync(cancellationToken);
+
+            existingApplication = response.Resource.FirstOrDefault();
+        }
+
+        if (existingApplication != null)
+        {
+            await _container.DeleteItemAsync<PermitApplication>(existingApplication.Id.ToString(), new PartitionKey(existingApplication.UserId));
+        }
+
+        if (historicalApplication != null)
+        {
+            await _container.CreateItemAsync(historicalApplication, new PartitionKey(userId));
+
+            await _historicalContainer.DeleteItemAsync<PermitApplication>(historicalApplication.Id.ToString(), new PartitionKey(userId));
+        }
+    }
+
     public async Task<int> GetLegacyApplicationCount(PermitsOptions options, CancellationToken cancellationToken)
     {
         QueryDefinition query = GetLegacyQueryDefinition(options, true);
@@ -974,5 +1025,25 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         {
             await _legacyContainer.UpsertItemAsync(application, new PartitionKey(application.Id.ToString()), null, cancellationToken);
         }
+    }
+
+    public async Task<bool> MatchUserInformation(string idNumber, string dateOfBirth, CancellationToken cancellationToken)
+    {
+        var queryString = "SELECT * FROM c WHERE c.Application.IdInfo.IdNumber = @idNumber AND c.Application.DOB.BirthDate = @dateOfBirth";
+
+        var query = new QueryDefinition(queryString)
+            .WithParameter("@idNumber", idNumber)
+            .WithParameter("@dateOfBirth", dateOfBirth);
+
+        using FeedIterator<PermitApplication> filteredFeed = _legacyContainer.GetItemQueryIterator<PermitApplication>(queryDefinition: query);
+
+        if (filteredFeed.HasMoreResults)
+        {
+            FeedResponse<PermitApplication> response = await filteredFeed.ReadNextAsync(cancellationToken);
+
+            return response.Resource.Any();
+        }
+
+        return false;
     }
 }

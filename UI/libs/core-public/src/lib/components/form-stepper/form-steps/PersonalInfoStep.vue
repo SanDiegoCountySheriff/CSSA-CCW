@@ -173,6 +173,8 @@
                     v => !!v || $t('Date of birth is required'),
                   ]"
                   outlined
+                  hint="Click the month and year at the top of the calendar to change the year"
+                  persistent-hint
                   :dense="isMobile"
                   prepend-inner-icon="mdi-calendar"
                   v-bind="attrs"
@@ -652,6 +654,7 @@
         </v-radio-group>
         <AliasDialog
           v-if="showAlias"
+          :readonly="false"
           @save-alias="getAliasFromDialog"
         />
         <AliasTable

@@ -257,6 +257,23 @@ public class PaymentController : ControllerBase
                 application.PaymentHistory.Add(existingPaymentHistory);
                 application.Application.ReadyForModificationPayment = !successful;
             }
+            else if (paymentType is Common.Enums.PaymentType.Issuance)
+            {
+                var existingPaymentHistory = application.PaymentHistory.Where(ph =>
+                {
+                    return ph.PaymentType == paymentType;
+                }).FirstOrDefault();
+
+                application.PaymentHistory.Remove(existingPaymentHistory);
+
+                existingPaymentHistory.Verified = true;
+                existingPaymentHistory.TransactionId = transactionId;
+                existingPaymentHistory.Successful = successful;
+                existingPaymentHistory.PaymentDateTimeUtc = DateTimeOffset.Parse(transactionDateTime).ToUniversalTime();
+
+                application.PaymentHistory.Add(existingPaymentHistory);
+                application.Application.ReadyForIssuancePayment = !successful;
+            }
 
             application.Application.PaymentStatus = PaymentStatus.OnlineSubmitted;
             await _cosmosDbService.UpdateApplication(application);
@@ -319,7 +336,7 @@ public class PaymentController : ControllerBase
             {
                 PaymentDateTimeUtc = DateTimeOffset.UtcNow,
                 Amount = amount,
-                VendorInfo = "Credit Card",
+                VendorInfo = "Heartland",
                 PaymentType = paymentType,
                 PaymentStatus = PaymentStatus.OnlineSubmitted,
                 Verified = false,
@@ -348,7 +365,7 @@ public class PaymentController : ControllerBase
                 {
                     PaymentDateTimeUtc = DateTimeOffset.UtcNow,
                     Amount = livescanAmount,
-                    VendorInfo = "Credit Card",
+                    VendorInfo = "Heartland",
                     PaymentType = livescanPaymentType,
                     PaymentStatus = PaymentStatus.OnlineSubmitted,
                     Verified = false,

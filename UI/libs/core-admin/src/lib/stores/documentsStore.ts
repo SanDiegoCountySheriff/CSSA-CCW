@@ -45,7 +45,41 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   async function setUserApplicationFile(data, target) {
     const formData = new FormData()
 
-    const newFileName = `${permitStore.permitDetail.userId}_${target}`
+    const sameTypeDocs =
+      permitStore.permitDetail.application.uploadedDocuments.filter(
+        doc => doc.documentType === target
+      )
+
+    const shouldNotIncrement = computed(() => {
+      return (
+        target === 'Signature' ||
+        target === 'Portrait' ||
+        target === 'Thumbprint'
+      )
+    })
+
+    let count = 0
+
+    sameTypeDocs.forEach(doc => {
+      const match = doc.name.match(/_(\d+)$/)
+
+      if (match) {
+        const num = parseInt(match[1], 10)
+
+        if (num > count) {
+          count = num
+        }
+      }
+    })
+    const nextCount = count + 1
+
+    let newFileName
+
+    if (shouldNotIncrement.value) {
+      newFileName = `${permitStore.permitDetail.userId}_${target}`
+    } else {
+      newFileName = `${permitStore.permitDetail.userId}_${target}_${nextCount}`
+    }
 
     formData.append('fileToUpload', data)
     const res = await axios.post(
@@ -56,7 +90,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     if (res) {
       const uploadDoc: UploadedDocType = {
         documentType: target,
-        name: target,
+        name: shouldNotIncrement.value ? target : `${target}_${nextCount}`,
         uploadedBy: authStore.getAuthState.userEmail,
         uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
       }

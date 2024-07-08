@@ -8,7 +8,8 @@
             isUpdateApplicationLoading ||
             isRefundRequestLoading ||
             isAddHistoricalApplicationLoading ||
-            isMakePaymentLoading
+            isMakePaymentLoading ||
+            isWithdrawRenewLoading
           "
           outlined
         >
@@ -74,7 +75,7 @@
         md="4"
       >
         <v-card
-          class="fill-height"
+          class="d-flex flex-column fill-height"
           outlined
         >
           <v-card-title class="justify-center">
@@ -118,13 +119,14 @@
           </v-card-title>
         </v-card>
       </v-col>
+
       <v-col
         cols="12"
         md="4"
       >
         <v-card
           outlined
-          class="fill-height"
+          class="d-flex flex-column fill-height"
         >
           <v-card-title class="justify-center">
             <template
@@ -157,6 +159,7 @@
                     </v-icon>
                     {{ flaggedQuestionHeader }}
                   </v-card-title>
+
                   <v-card-text>
                     <div
                       class="text-h6 font-weight-bold dark-grey--text mt-5 mb-5"
@@ -165,6 +168,7 @@
                       of your qualifying questions. Please review the revised
                       information
                     </div>
+
                     <v-textarea
                       v-if="flaggedQuestionText"
                       class="mt-7"
@@ -176,6 +180,7 @@
                       style="font-size: 18px"
                     ></v-textarea>
                   </v-card-text>
+
                   <v-card-actions>
                     <v-btn
                       text
@@ -184,7 +189,9 @@
                     >
                       Cancel
                     </v-btn>
+
                     <v-spacer></v-spacer>
+
                     <v-btn
                       text
                       color="primary"
@@ -205,6 +212,7 @@
             >
               <div>Status: Under Review</div>
             </template>
+
             <template v-else>
               Status:
               {{ getApplicationStatusText }}
@@ -212,6 +220,8 @@
           </v-card-title>
 
           <v-divider></v-divider>
+
+          <v-spacer />
 
           <v-card-text
             v-if="applicationStore.completeApplication.isMatchUpdated !== false"
@@ -239,6 +249,7 @@
               <v-col
                 v-if="
                   showModifyWithdrawButton ||
+                  showWithdrawRenewButton ||
                   showInitialWithdrawButton ||
                   applicationStore.completeApplication.application.status ===
                     ApplicationStatus.Withdrawn
@@ -254,6 +265,17 @@
                     isMakePaymentLoading
                   "
                   @confirm="handleConfirmWithdrawModification"
+                />
+
+                <WithdrawRenewDialog
+                  v-if="showWithdrawRenewButton"
+                  :disabled="
+                    isRefundRequestLoading ||
+                    isUpdateApplicationLoading ||
+                    fileUploadLoading ||
+                    isMakePaymentLoading
+                  "
+                  @confirm="handleConfirmWithdrawRenewal"
                 />
 
                 <v-btn
@@ -287,19 +309,6 @@
 
             <v-row>
               <v-col
-                v-if="isRenewalActive"
-                cols="12"
-              >
-                <v-btn
-                  color="primary"
-                  block
-                  :disabled="!isRenewalActive || isMakePaymentLoading"
-                  @click="handleShowRenewDialog"
-                >
-                  Renew
-                </v-btn>
-              </v-col>
-              <v-col
                 v-if="canApplicationBeUpdated || canApplicationBeModified"
                 cols="12"
               >
@@ -325,14 +334,13 @@
                   Update
                 </v-btn>
 
-                <v-btn
-                  v-if="canApplicationBeModified"
-                  color="primary"
-                  block
-                  @click="handleModifyApplication"
-                >
-                  Modify
-                </v-btn>
+                <ConfirmDialog
+                  :icon="'mdi-swap-horizontal'"
+                  title="Are you sure you want to modify your permit?"
+                  text="Modifying allows you to change your address, name, and weapons listed on your permit for a small fee.  If you are able to renew you can make any necessary changes during the renewal process instead."
+                  button-text="Click here to modify"
+                  @confirm="handleModifyApplication"
+                />
               </v-col>
             </v-row>
           </v-card-text>
@@ -358,11 +366,13 @@
             !isRenew &&
             !isModification &&
             applicationStore.completeApplication.application.status !==
-              ApplicationStatus['Permit Delivered']
+              ApplicationStatus['Permit Delivered'] &&
+            !applicationStore.completeApplication.application
+              .readyForIssuancePayment
           "
           :loading="isUpdateApplicationLoading"
           outlined
-          class="fill-height"
+          class="d-flex flex-column fill-height"
         >
           <v-card-title
             v-if="
@@ -513,6 +523,37 @@
 
         <v-card
           v-else-if="
+            applicationStore.completeApplication.application
+              .readyForIssuancePayment
+          "
+          class="fill-height"
+          outlined
+        >
+          <v-card-title class="justify-center">
+            Ready for Issuance Payment
+          </v-card-title>
+
+          <v-divider></v-divider>
+
+          <v-card-title>
+            <v-row>
+              <v-col></v-col>
+
+              <v-col>
+                <PaymentConfirmationDialog
+                  :disabled="isMakePaymentLoading"
+                  payment-type="Issuance"
+                  @confirm="handlePayment"
+                />
+              </v-col>
+
+              <v-col></v-col>
+            </v-row>
+          </v-card-title>
+        </v-card>
+
+        <v-card
+          v-else-if="
             (applicationStore.completeApplication.application.status ===
               ApplicationStatus['Permit Delivered'] ||
               isRenew ||
@@ -549,7 +590,34 @@
             }}
           </v-card-title>
 
-          <v-card-title> </v-card-title>
+          <v-card-title
+            v-if="!isRenewalActive && !isModification && !isRenew"
+            class="justify-center"
+          >
+            You can begin your renewal in
+            {{ numberOfDaysUntilRenewalIsActive }} days
+          </v-card-title>
+
+          <v-spacer />
+
+          <v-card-text>
+            <v-row>
+              <v-col
+                v-if="isRenewalActive"
+                cols="12"
+              >
+                <v-btn
+                  color="primary"
+                  block
+                  :disabled="!isRenewalActive || isMakePaymentLoading"
+                  @click="handleShowRenewDialog"
+                >
+                  <v-icon left>mdi-autorenew</v-icon>
+                  Click here to renew
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-text>
         </v-card>
 
         <v-card
@@ -1031,6 +1099,7 @@ import AppearanceInfoSection from '@shared-ui/components/info-sections/Appearanc
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
 import CharacterReferenceInfoSection from '@shared-ui/components/info-sections/CharacterReferenceInfoSection.vue'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
+import ConfirmDialog from '@core-public/components/dialogs/ConfirmDialog.vue'
 import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue'
 import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue'
 import EmploymentInfoSection from '@shared-ui/components/info-sections/EmploymentInfoSection.vue'
@@ -1048,6 +1117,7 @@ import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSec
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
 import WithdrawModifyDialog from '@core-public/components/dialogs/WithdrawModifyDialog.vue'
+import WithdrawRenewDialog from '@core-public/components/dialogs/WithdrawRenewDialog.vue'
 import axios from 'axios'
 import { getOriginalApplicationTypeModification } from '@shared-ui/composables/getOriginalApplicationType'
 import { i18n } from '@shared-ui/plugins'
@@ -1222,16 +1292,17 @@ onMounted(() => {
   }
 })
 
-const { isLoading: isGetApplicationsLoading } = useQuery(
-  ['getApplicationsByUser'],
-  () => applicationStore.getAllUserApplicationsApi(),
-  {
-    enabled: !state.isApplicationValid,
-    onSuccess: data => {
-      applicationStore.setCompleteApplication(data[0] as CompleteApplication)
-    },
-  }
-)
+const { isLoading: isGetApplicationsLoading, refetch: getApplications } =
+  useQuery(
+    ['getApplicationsByUser'],
+    () => applicationStore.getAllUserApplicationsApi(),
+    {
+      enabled: !state.isApplicationValid,
+      onSuccess: data => {
+        applicationStore.setCompleteApplication(data[0] as CompleteApplication)
+      },
+    }
+  )
 
 const { refetch } = useQuery(
   ['getAppointments', true],
@@ -1239,8 +1310,6 @@ const { refetch } = useQuery(
   {
     enabled: false,
     onSuccess: (data: Array<AppointmentType>) => {
-      const currentOffset = new Date().getTimezoneOffset() / 60
-
       const uniqueData = data.reduce(
         (result, currentObj) => {
           const key = `${currentObj.start}-${currentObj.end}`
@@ -1275,20 +1344,7 @@ const { refetch } = useQuery(
 
       uniqueData.forEach(event => {
         const start = new Date(event.start)
-
-        if (currentOffset !== start.getTimezoneOffset() / 60) {
-          const correctedOffset = currentOffset - start.getTimezoneOffset() / 60
-
-          start.setTime(start.getTime() - correctedOffset * 60 * 60 * 1000)
-        }
-
         const end = new Date(event.end)
-
-        if (currentOffset !== end.getTimezoneOffset() / 60) {
-          const correctedOffset = currentOffset - end.getTimezoneOffset() / 60
-
-          end.setTime(end.getTime() - correctedOffset * 60 * 60 * 1000)
-        }
 
         if (event.slots) {
           event.name = `${event.slots} slot${event.slots > 1 ? 's' : ''} left`
@@ -1335,6 +1391,26 @@ const canApplicationBeModified = computed(() => {
   )
 })
 
+const numberOfDaysUntilRenewalIsActive = computed(() => {
+  if (applicationStore.completeApplication.application.license.expirationDate) {
+    const expirationDate = new Date(
+      applicationStore.completeApplication.application.license.expirationDate
+    )
+
+    const today = new Date()
+
+    const timeDifference = today.getTime() - expirationDate.getTime()
+
+    const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24))
+
+    const gracePeriod = brandStore.brand.daysBeforeActiveRenewal
+
+    return Math.abs(daysDifference + gracePeriod)
+  }
+
+  return 0
+})
+
 const showInitialWithdrawButton = computed(() => {
   return (
     applicationStore.completeApplication.application.status !==
@@ -1350,20 +1426,45 @@ const showInitialWithdrawButton = computed(() => {
     applicationStore.completeApplication.application.applicationType !==
       ApplicationType['Modify Reserve'] &&
     applicationStore.completeApplication.application.applicationType !==
-      ApplicationType['Modify Standard']
+      ApplicationType['Modify Standard'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Renew Standard'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Renew Judicial'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Renew Reserve'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Renew Employment']
   )
 })
 
 const showModifyWithdrawButton = computed(() => {
   return (
-    applicationStore.completeApplication.application.applicationType ===
+    (applicationStore.completeApplication.application.applicationType ===
       ApplicationType['Modify Employment'] ||
-    applicationStore.completeApplication.application.applicationType ===
-      ApplicationType['Modify Judicial'] ||
-    applicationStore.completeApplication.application.applicationType ===
-      ApplicationType['Modify Reserve'] ||
-    applicationStore.completeApplication.application.applicationType ===
-      ApplicationType['Modify Standard']
+      applicationStore.completeApplication.application.applicationType ===
+        ApplicationType['Modify Judicial'] ||
+      applicationStore.completeApplication.application.applicationType ===
+        ApplicationType['Modify Reserve'] ||
+      applicationStore.completeApplication.application.applicationType ===
+        ApplicationType['Modify Standard']) &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Modification Denied']
+  )
+})
+
+const showWithdrawRenewButton = computed(() => {
+  return (
+    (applicationStore.completeApplication.application.applicationType ===
+      ApplicationType['Renew Employment'] ||
+      applicationStore.completeApplication.application.applicationType ===
+        ApplicationType['Renew Judicial'] ||
+      applicationStore.completeApplication.application.applicationType ===
+        ApplicationType['Renew Reserve'] ||
+      applicationStore.completeApplication.application.applicationType ===
+        ApplicationType['Renew Standard']) &&
+    applicationStore.completeApplication.application.status ===
+      ApplicationStatus.Submitted
   )
 })
 
@@ -1395,6 +1496,8 @@ const canApplicationBeUpdated = computed(() => {
       ApplicationStatus.Canceled &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Denied &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Modification Denied'] &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Withdrawn &&
     applicationStore.completeApplication.application.status !==
@@ -1444,6 +1547,8 @@ const canApplicationBeContinued = computed(() => {
       ApplicationStatus.Canceled &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Denied &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Modification Denied'] &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Withdrawn &&
     applicationStore.completeApplication.application.status !==
@@ -1625,6 +1730,14 @@ const updateWithoutRouteMutation = useMutation({
   },
 })
 
+const { mutate: withdrawRenewal, isLoading: isWithdrawRenewLoading } =
+  useMutation({
+    mutationFn: applicationStore.withdrawRenewal,
+    onSuccess: () => {
+      getApplications()
+    },
+  })
+
 const updateMutation = useMutation({
   mutationFn: applicationStore.updateApplication,
   onSuccess: () => {
@@ -1682,59 +1795,138 @@ const { mutate: makePayment, isLoading: isMakePaymentLoading } = useMutation({
 
     switch (applicationStore.completeApplication.application.applicationType) {
       case ApplicationType.Standard:
-        paymentType = PaymentType['CCW Application Initial Payment'].toString()
-        livescanAmount = brandStore.brand.cost.standardLivescanFee
-        cost = brandStore.brand.cost.new.standard
+        if (
+          applicationStore.completeApplication.application
+            .readyForInitialPayment
+        ) {
+          paymentType =
+            PaymentType['CCW Application Initial Payment'].toString()
+          livescanAmount =
+            applicationStore.completeApplication.application.cost
+              .standardLivescanFee ?? brandStore.brand.cost.standardLivescanFee
+          cost =
+            applicationStore.completeApplication.application.cost.new
+              .standard ?? brandStore.brand.cost.new.standard
+        } else {
+          window.console.log('this one')
+          paymentType =
+            PaymentType['CCW Application Issuance Payment'].toString()
+          window.console.log(paymentType)
+          cost =
+            applicationStore.completeApplication.application.cost.issuance ??
+            brandStore.brand.cost.issuance
+          window.console.log(cost)
+        }
+
         break
 
       case ApplicationType.Judicial:
-        paymentType =
-          PaymentType['CCW Application Initial Judicial Payment'].toString()
-        livescanAmount = brandStore.brand.cost.judicialLivescanFee
-        cost = brandStore.brand.cost.new.judicial
+        if (
+          applicationStore.completeApplication.application
+            .readyForInitialPayment
+        ) {
+          paymentType =
+            PaymentType['CCW Application Initial Judicial Payment'].toString()
+          livescanAmount =
+            applicationStore.completeApplication.application.cost
+              .judicialLivescanFee ?? brandStore.brand.cost.judicialLivescanFee
+          cost =
+            applicationStore.completeApplication.application.cost.new
+              .judicial ?? brandStore.brand.cost.new.judicial
+        } else {
+          paymentType =
+            PaymentType['CCW Application Issuance Payment'].toString()
+          cost =
+            applicationStore.completeApplication.application.cost.issuance ??
+            brandStore.brand.cost.issuance
+        }
+
         break
 
       case ApplicationType.Reserve:
-        paymentType =
-          PaymentType['CCW Application Initial Reserve Payment'].toString()
-        livescanAmount = brandStore.brand.cost.reserveLivescanFee
-        cost = brandStore.brand.cost.new.reserve
+        if (
+          applicationStore.completeApplication.application
+            .readyForInitialPayment
+        ) {
+          paymentType =
+            PaymentType['CCW Application Initial Reserve Payment'].toString()
+          livescanAmount =
+            applicationStore.completeApplication.application.cost
+              .reserveLivescanFee ?? brandStore.brand.cost.reserveLivescanFee
+          cost =
+            applicationStore.completeApplication.application.cost.new.reserve ??
+            brandStore.brand.cost.new.reserve
+        } else {
+          paymentType =
+            PaymentType['CCW Application Issuance Payment'].toString()
+          cost =
+            applicationStore.completeApplication.application.cost.issuance ??
+            brandStore.brand.cost.issuance
+        }
+
         break
 
       case ApplicationType.Employment:
-        paymentType =
-          PaymentType['CCW Application Initial Employment Payment'].toString()
-        livescanAmount = brandStore.brand.cost.employmentLivescanFee
-        cost = brandStore.brand.cost.new.employment
+        if (
+          applicationStore.completeApplication.application
+            .readyForInitialPayment
+        ) {
+          paymentType =
+            PaymentType['CCW Application Initial Employment Payment'].toString()
+          livescanAmount =
+            applicationStore.completeApplication.application.cost
+              .employmentLivescanFee ??
+            brandStore.brand.cost.employmentLivescanFee
+          cost =
+            applicationStore.completeApplication.application.cost.new
+              .employment ?? brandStore.brand.cost.new.employment
+        } else {
+          paymentType =
+            PaymentType['CCW Application Issuance Payment'].toString()
+          cost =
+            applicationStore.completeApplication.application.cost.issuance ??
+            brandStore.brand.cost.issuance
+        }
+
         break
 
       case ApplicationType['Renew Standard']:
         paymentType = PaymentType['CCW Application Renewal Payment'].toString()
-        cost = brandStore.brand.cost.renew.standard
+        cost =
+          applicationStore.completeApplication.application.cost.renew
+            .standard ?? brandStore.brand.cost.renew.standard
         break
 
       case ApplicationType['Renew Judicial']:
         paymentType =
           PaymentType['CCW Application Renewal Judicial Payment'].toString()
-        cost = brandStore.brand.cost.renew.judicial
+        cost =
+          applicationStore.completeApplication.application.cost.renew
+            .judicial ?? brandStore.brand.cost.renew.judicial
         break
 
       case ApplicationType['Renew Reserve']:
         paymentType =
           PaymentType['CCW Application Renewal Reserve Payment'].toString()
-        cost = brandStore.brand.cost.renew.reserve
+        cost =
+          applicationStore.completeApplication.application.cost.renew.reserve ??
+          brandStore.brand.cost.renew.reserve
         break
 
       case ApplicationType['Renew Employment']:
         paymentType =
           PaymentType['CCW Application Renewal Employment Payment'].toString()
-        cost = brandStore.brand.cost.renew.employment
+        cost =
+          applicationStore.completeApplication.application.cost.renew
+            .employment ?? brandStore.brand.cost.renew.employment
         break
 
       case ApplicationType['Modify Standard']:
         paymentType =
           PaymentType['CCW Application Modification Payment'].toString()
-        cost = brandStore.brand.cost.modify
+        cost =
+          applicationStore.completeApplication.application.cost.modify ??
+          brandStore.brand.cost.modify
         break
 
       case ApplicationType['Modify Judicial']:
@@ -1742,13 +1934,17 @@ const { mutate: makePayment, isLoading: isMakePaymentLoading } = useMutation({
           PaymentType[
             'CCW Application Modification Judicial Payment'
           ].toString()
-        cost = brandStore.brand.cost.modify
+        cost =
+          applicationStore.completeApplication.application.cost.modify ??
+          brandStore.brand.cost.modify
         break
 
       case ApplicationType['Modify Reserve']:
         paymentType =
           PaymentType['CCW Application Modification Reserve Payment'].toString()
-        cost = brandStore.brand.cost.modify
+        cost =
+          applicationStore.completeApplication.application.cost.modify ??
+          brandStore.brand.cost.modify
         break
 
       case ApplicationType['Modify Employment']:
@@ -1756,12 +1952,16 @@ const { mutate: makePayment, isLoading: isMakePaymentLoading } = useMutation({
           PaymentType[
             'CCW Application Modification Employment Payment'
           ].toString()
-        cost = brandStore.brand.cost.modify
+        cost =
+          applicationStore.completeApplication.application.cost.modify ??
+          brandStore.brand.cost.modify
         break
 
       default:
         paymentType = PaymentType['CCW Application Initial Payment'].toString()
-        cost = brandStore.brand.cost.new.standard
+        cost =
+          applicationStore.completeApplication.application.cost.new.standard ??
+          brandStore.brand.cost.new.standard
     }
 
     return paymentStore.getPayment(
@@ -1779,6 +1979,37 @@ const { mutate: makePayment, isLoading: isMakePaymentLoading } = useMutation({
 
 function handlePayment() {
   makePayment()
+}
+
+async function handleConfirmWithdrawRenewal() {
+  const transaction = applicationStore.completeApplication.paymentHistory.find(
+    ph => {
+      return (
+        ph.paymentType === PaymentType['CCW Application Renewal Payment'] ||
+        ph.paymentType ===
+          PaymentType['CCW Application Renewal Judicial Payment'] ||
+        ph.paymentType ===
+          PaymentType['CCW Application Renewal Reserve Payment'] ||
+        ph.paymentType ===
+          PaymentType['CCW Application Renewal Employment Payment']
+      )
+    }
+  )
+
+  if (transaction) {
+    const refundRequest: RefundRequest = {
+      id: null,
+      transactionId: transaction.transactionId,
+      applicationId: applicationStore.completeApplication.id,
+      refundAmount: Number(transaction.amount),
+      reason: 'Withdraw Renewal',
+      orderId: applicationStore.completeApplication.application.orderId,
+    }
+
+    await requestRefund(refundRequest)
+  }
+
+  withdrawRenewal()
 }
 
 async function handleConfirmWithdrawModification() {
@@ -1971,6 +2202,8 @@ async function handleRenewApplication() {
   applicationStore.completeApplication.application.paymentStatus = 0
 
   applicationStore.completeApplication.application.appointmentStatus = 1
+
+  applicationStore.completeApplication.application.modificationNumber = 1
 
   resetDocuments()
   resetAgreements()
@@ -2218,9 +2451,34 @@ function handleFileSubmit(fileSubmission: IFileSubmission) {
 
   form.append('fileToUpload', fileSubmission.file)
 
+  const documentType = fileSubmission.fileType
+  const uploadedDocs =
+    applicationStore.completeApplication.application.uploadedDocuments
+
+  const sameTypeDocs = uploadedDocs.filter(
+    doc => doc.documentType === documentType
+  )
+
+  let count = 0
+
+  sameTypeDocs.forEach(doc => {
+    const match = doc.name.match(/_(\d+)$/)
+
+    if (match) {
+      const num = parseInt(match[1], 10)
+
+      if (num > count) {
+        count = num
+      }
+    }
+  })
+  const nextCount = count + 1
+
+  const documentName = `${documentType}_${nextCount}`
+
   axios
     .post(
-      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${fileSubmission.fileType}`,
+      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${documentName}`,
       form
     )
     .catch(e => {
@@ -2230,7 +2488,7 @@ function handleFileSubmit(fileSubmission: IFileSubmission) {
 
   const uploadDoc: UploadedDocType = {
     documentType: fileSubmission.fileType,
-    name: fileSubmission.fileType,
+    name: documentName,
     uploadedBy: applicationStore.completeApplication.application.userEmail,
     uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
   }

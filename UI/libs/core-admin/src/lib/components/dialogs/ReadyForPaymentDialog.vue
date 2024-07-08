@@ -8,7 +8,7 @@
         :disabled="readonly"
         v-bind="attrs"
         v-on="on"
-        color="success"
+        color="warning"
         small
         block
       >

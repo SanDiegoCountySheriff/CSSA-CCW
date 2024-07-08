@@ -197,6 +197,18 @@ export default class Endpoints {
     }/application/v1/permitapplication/addApplicationHistory`
   }
 
+  static get MATCH_USER_INFORMATION_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/matchUserInformation`
+  }
+
+  static get WITHDRAW_RENEWAL_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/withdrawRenewal`
+  }
+
   /********APPOINTMENTS******************/
 
   static get GET_APPOINTMENTS_ENDPOINT() {

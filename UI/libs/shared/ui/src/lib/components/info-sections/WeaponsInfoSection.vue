@@ -12,6 +12,7 @@
           :weapons="props.weapons"
           :edit-enable="false"
           :modifying="false"
+          :readonly="true"
         />
       </v-col>
     </v-row>

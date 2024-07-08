@@ -132,6 +132,33 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     return res?.data
   }
 
+  async function matchUserInformation(
+    idNumber: string,
+    dateOfBirth: string
+  ): Promise<boolean> {
+    const res = await axios
+      .get(
+        `${Endpoints.MATCH_USER_INFORMATION_ENDPOINT}?idNumber=${idNumber}&dateOfBirth=${dateOfBirth}`
+      )
+      .catch(err => {
+        console.warn(err)
+
+        return Promise.reject()
+      })
+
+    if (res.data) {
+      return res.data
+    }
+
+    return false
+  }
+
+  async function withdrawRenewal() {
+    const res = await axios.post(Endpoints.WITHDRAW_RENEWAL_ENDPOINT)
+
+    return res?.data
+  }
+
   return {
     addHistoricalApplicationPublic,
     allUserApplications,
@@ -145,5 +172,7 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     getAllUserApplicationsApi,
     updateApplication,
     getAgreementPdf,
+    matchUserInformation,
+    withdrawRenewal,
   }
 })

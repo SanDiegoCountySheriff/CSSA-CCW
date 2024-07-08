@@ -80,4 +80,6 @@ public class AgencyProfileSettings
     public int DaysBeforeActiveRenewal { get; set; }
     [JsonProperty("numberOfModificationsBetweenRenewals")]
     public int? NumberOfModificationsBetweenRenewals { get; set; }
+    [JsonProperty("licensingManager")]
+    public string LicensingManager { get; set; }
 }
