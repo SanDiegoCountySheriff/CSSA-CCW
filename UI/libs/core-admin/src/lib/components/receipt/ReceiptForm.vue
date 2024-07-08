@@ -25,7 +25,7 @@
               <v-select
                 v-model="paymentType"
                 :items="paymentOptions"
-                :rules="[v => !!v || 'Payment type is required.']"
+                :rules="[v => v !== null || 'Payment type is required.']"
                 item-text="text"
                 item-value="value"
                 label="Payment Type"
