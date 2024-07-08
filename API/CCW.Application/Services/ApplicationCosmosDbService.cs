@@ -448,7 +448,8 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     public async Task<IEnumerable<SummarizedPermitApplication>> GetPermitsByDateAsync(DateTime date, CancellationToken cancellationToken)
     {
         var queryString = @"SELECT a.Application, a.id, a.Application.OrderId, a.PaymentHistory, a.Application.PersonalInfo.FirstName, 
-                          a.Application.PersonalInfo.LastName, a.Application.AppointmentDateTime
+                          a.Application.PersonalInfo.LastName, a.Application.AppointmentDateTime, a.Application.PersonalInfo.MiddleName,
+                          a.Application.PersonalInfo.Suffix, a.Application.DOB.BirthDate, a.Application.Aliases
                           FROM applications a WHERE STARTSWITH(a.Application.AppointmentDateTime, @date)";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)

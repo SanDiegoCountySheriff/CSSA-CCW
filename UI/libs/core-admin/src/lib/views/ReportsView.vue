@@ -13,7 +13,7 @@
           class="pa-5"
           outlined
         >
-          <v-card-title class="headline mb-4">Export CSV Reports</v-card-title>
+          <v-card-title class="headline mb-4">CSV Reports</v-card-title>
           <v-card-text>
             <v-row
               justify="center"
@@ -42,7 +42,7 @@
 
                     <v-row>
                       <v-col>
-                        {{ $t('Appointment Reports') }}
+                        {{ $t('APPOINTMENT REPORT') }}
                       </v-col>
                     </v-row>
                   </v-container>
@@ -54,19 +54,26 @@
                 class="d-flex justify-center"
               >
                 <v-btn
-                  large
-                  color="primary"
-                  class="mb-4 mx-2"
-                  elevation="12"
-                  rounded
+                  @click="handleSIDDialog"
+                  :color="$vuetify.theme.dark ? 'white' : 'primary'"
+                  :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
+                  :x-large="$vuetify.breakpoint.lgAndUp"
+                  :small="$vuetify.breakpoint.smAndDown"
+                  text
                 >
-                  <v-icon
-                    left
-                    large
-                  >
-                    mdi-file-document-outline
-                  </v-icon>
-                  SID Letter Report
+                  <v-container>
+                    <v-row>
+                      <v-col>
+                        <v-icon x-large> mdi-file-chart-outline </v-icon>
+                      </v-col>
+                    </v-row>
+
+                    <v-row>
+                      <v-col>
+                        {{ $t('SID LETTER REPORT') }}
+                      </v-col>
+                    </v-row>
+                  </v-container>
                 </v-btn>
               </v-col>
             </v-row>
@@ -75,10 +82,9 @@
               max-width="600px"
             >
               <v-card>
-                <v-card-title>Appointment Packet Report</v-card-title>
+                <v-card-title>Appointment Report</v-card-title>
                 <v-card-text>
-                  Select the day you would like to generate a report for
-                  appointments
+                  Select which day to generate an appointment report
                   <v-date-picker
                     v-model="selectedDate"
                     class="mt-3 mb-3 rounded-lg"
@@ -98,7 +104,41 @@
                   <v-btn
                     color="primary"
                     text
-                    @click="handleExport"
+                    @click="handleAppointmentExport"
+                  >
+                    Generate Report
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-dialog
+              v-model="sidDialog"
+              max-width="600px"
+            >
+              <v-card>
+                <v-card-title>SID Letter Report</v-card-title>
+                <v-card-text>
+                  Select which day to generate an SID Letter report
+                  <v-date-picker
+                    v-model="selectedDate"
+                    class="mt-3 mb-3 rounded-lg"
+                    color="primary"
+                    full-width
+                  ></v-date-picker>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn
+                    color="primary"
+                    text
+                    @click="sidDialog = false"
+                  >
+                    Close
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    color="primary"
+                    text
+                    @click="handleSIDExport"
                   >
                     Generate Report
                   </v-btn>
@@ -120,15 +160,23 @@ const permitStore = usePermitsStore()
 const selectedDate = ref('')
 
 const appointmentDialog = ref(false)
+const sidDialog = ref(false)
 
-async function handleExport() {
+async function handleAppointmentExport() {
   const permitsData = await permitStore.getPermitsByDate(selectedDate.value)
 
-  exportToCsv(permitsData)
+  exportAppointmentCsv(permitsData)
   appointmentDialog.value = false
 }
 
-function exportToCsv(data) {
+async function handleSIDExport() {
+  const permitsData = await permitStore.getPermitsByDate(selectedDate.value)
+
+  exportSID(permitsData)
+  sidDialog.value = false
+}
+
+function exportSID(data) {
   const csvRows: string[] = []
 
   const headers = ['paid', 'lastName', 'firstName', 'appointmentDateTime']
@@ -173,7 +221,59 @@ function exportToCsv(data) {
 
     // eslint-disable-next-line node/no-unsupported-features/node-builtins
     link.href = URL.createObjectURL(blob)
-    link.setAttribute('download', `MAIL MERGE MONDAY APPOINTMENTS.csv`)
+    link.setAttribute('download', `APPOINTMENTS.csv`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+}
+
+function exportAppointmentCsv(data) {
+  const csvRows: string[] = []
+
+  const headers = ['paid', 'lastName', 'firstName', 'appointmentDateTime']
+
+  for (const row of data) {
+    const values = headers
+      .map(header => {
+        let value = row[header]
+
+        if (value === null || value === undefined) {
+          value = ''
+        }
+
+        if (header === 'paid') {
+          value = value ? 'Payment Received' : 'Requires Payment'
+        }
+
+        if (header === 'appointmentDateTime' && value) {
+          const date = new Date(value)
+
+          value = date.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+          })
+        }
+
+        return typeof value === 'string'
+          ? `"${value.replace(/"/g, '""')}"`
+          : value
+      })
+      .join(',')
+
+    csvRows.push(values)
+  }
+
+  const csvContent = csvRows.join('\n')
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+
+  if (typeof window !== 'undefined') {
+    const link = document.createElement('a')
+
+    // eslint-disable-next-line node/no-unsupported-features/node-builtins
+    link.href = URL.createObjectURL(blob)
+    link.setAttribute('download', `APPOINTMENTS.csv`)
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -182,5 +282,9 @@ function exportToCsv(data) {
 
 function handleAppointmentDialog() {
   appointmentDialog.value = true
+}
+
+function handleSIDDialog() {
+  sidDialog.value = true
 }
 </script>
