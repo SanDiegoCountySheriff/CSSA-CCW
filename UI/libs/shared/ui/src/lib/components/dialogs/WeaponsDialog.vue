@@ -13,58 +13,53 @@
         >
           <v-row>
             <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
-              <v-combobox
-                max-length="25"
-                :items="weaponMake"
+              <v-text-field
+                v-model="weapon.make"
                 :label="$t('Make')"
                 :rules="[v => !!v || 'Make is required']"
-                v-model="weapon.make"
+                max-length="25"
                 outlined
                 dense
-              >
-              </v-combobox>
+              />
             </v-col>
           </v-row>
 
           <v-row>
             <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
               <v-text-field
-                max-length="25"
+                v-model="weapon.model"
                 :label="$t('Model')"
                 :rules="[v => !!v || 'Model is required']"
-                v-model="weapon.model"
-                outlined
-                dense
-              >
-              </v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
-              <v-combobox
                 max-length="25"
-                :items="calibers"
-                :label="$t('Caliber')"
-                :rules="[v => !!v || 'Caliber is required']"
-                v-model="weapon.caliber"
                 outlined
                 dense
-              >
-              </v-combobox>
+              />
             </v-col>
           </v-row>
 
           <v-row>
             <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
               <v-text-field
-                :label="$t('Serial number')"
-                :rules="[v => !!v || 'Serial number is required']"
-                v-model="weapon.serialNumber"
+                v-model="weapon.caliber"
+                :label="$t('Caliber')"
+                :rules="[v => !!v || 'Caliber is required']"
+                max-length="25"
                 outlined
                 dense
-              >
-              </v-text-field>
+              />
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
+              <v-text-field
+                v-model="weapon.serialNumber"
+                :label="$t('Serial number')"
+                :rules="[v => !!v || 'Serial number is required']"
+                max-length="25"
+                outlined
+                dense
+              />
             </v-col>
           </v-row>
         </v-form>
@@ -79,7 +74,7 @@
           {{ $t('Cancel') }}
         </v-btn>
 
-        <v-spacer></v-spacer>
+        <v-spacer />
 
         <v-btn
           text
@@ -96,7 +91,6 @@
 
 <script setup lang="ts">
 import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
-import { calibers, weaponMake } from '@shared-utils/lists/defaultConstants'
 import { computed, ref } from 'vue'
 
 interface WeaponsDialogProps {
@@ -113,6 +107,7 @@ const emit = defineEmits([
   'update-weapon',
 ])
 const valid = ref(false)
+
 const dialog = computed({
   get() {
     return props.value

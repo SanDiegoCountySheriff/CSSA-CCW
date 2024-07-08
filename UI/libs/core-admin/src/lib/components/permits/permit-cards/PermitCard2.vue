@@ -833,18 +833,26 @@
             Review Survey Details
           </v-card-title>
 
-          <v-card-title
-            v-else-if="waitingForPayment"
-            class="justify-center"
-          >
-            <v-icon
-              color="error"
-              class="mr-2"
-            >
-              mdi-alert
-            </v-icon>
-            Waiting for Customer Payment
-          </v-card-title>
+          <template v-else-if="waitingForPayment">
+            <v-card-title class="justify-center">
+              <v-icon
+                color="error"
+                class="mr-2"
+              >
+                mdi-alert
+              </v-icon>
+              Waiting for Customer Payment
+            </v-card-title>
+
+            <v-card-text>
+              <v-alert
+                v-if="isPaymentUnverified"
+                type="warning"
+              >
+                There is an unverified payment in the payment history
+              </v-alert>
+            </v-card-text>
+          </template>
 
           <v-card-title
             v-else
@@ -1502,6 +1510,12 @@ const waitingForPayment = computed(() => {
       true ||
     permitStore.getPermitDetail.application.readyForIssuancePayment === true
   )
+})
+
+const isPaymentUnverified = computed(() => {
+  return permitStore.getPermitDetail.paymentHistory.find(ph => {
+    return ph.verified === false
+  })
 })
 
 const modificationReadyForApproval = computed(() => {
