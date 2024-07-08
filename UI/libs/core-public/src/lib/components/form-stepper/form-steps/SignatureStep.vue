@@ -73,7 +73,11 @@
             hide-details
           >
             <template #label>
-              {{ !isMobile ? 'By checking this box, I agree to the ' : '' }}
+              {{
+                !isMobile
+                  ? 'By checking this box, I agree that I have not provided any '
+                  : 'Provided no'
+              }}
               <a
                 href="#"
                 @click.stop

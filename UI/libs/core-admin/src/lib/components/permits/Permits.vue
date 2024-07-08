@@ -39,11 +39,9 @@
 
         <v-col>
           <v-select
-            v-model="options.applicationTypes"
             :items="applicationTypeItems"
+            @change="setApplicationType"
             label="Application Type"
-            item-value="value"
-            item-text="text"
             color="primary"
             hide-details
             small-chips
@@ -318,8 +316,10 @@ import {
 } from '@shared-utils/types/defaultTypes'
 import { computed, reactive, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 
 const { getAllPermitsSummary, options } = usePermitsStore()
+const brandStore = useBrandStore()
 
 const applicationStatusItems = [
   { text: 'Incomplete', value: 1 },
@@ -355,20 +355,78 @@ const appointmentStatusItems = [
   { text: 'No Show', value: 4 },
 ]
 
-const applicationTypeItems = [
-  { text: 'Standard', value: 1 },
-  { text: 'Reserve', value: 2 },
-  { text: 'Judicial', value: 3 },
-  { text: 'Employment', value: 4 },
-  { text: 'Renew Standard', value: 5 },
-  { text: 'Renew Reserve', value: 6 },
-  { text: 'Renew Judicial', value: 7 },
-  { text: 'Renew Employment', value: 8 },
-  { text: 'Modify Standard', value: 9 },
-  { text: 'Modify Reserve', value: 10 },
-  { text: 'Modify Judicial', value: 11 },
-  { text: 'Modify Employment', value: 12 },
-]
+const applicationTypeItems = brandStore.brand.employmentLicense
+  ? [
+      { text: 'Standard' },
+      { text: 'Reserve' },
+      { text: 'Judicial' },
+      { text: 'Employment' },
+      { text: 'Renew' },
+      { text: 'Modify' },
+    ]
+  : [
+      { text: 'Standard' },
+      { text: 'Reserve' },
+      { text: 'Judicial' },
+      { text: 'Renew' },
+      { text: 'Modify' },
+    ]
+
+function setApplicationType(item: Array<string>) {
+  if (item.includes('Renew')) {
+    options.applicationTypes.push(5)
+    options.applicationTypes.push(6)
+    options.applicationTypes.push(7)
+    options.applicationTypes.push(8)
+  } else {
+    options.applicationTypes = options.applicationTypes.filter(at => {
+      return at !== 5 && at !== 6 && at !== 7 && at !== 8
+    })
+  }
+
+  if (item.includes('Modify')) {
+    options.applicationTypes.push(9)
+    options.applicationTypes.push(10)
+    options.applicationTypes.push(11)
+    options.applicationTypes.push(12)
+  } else {
+    options.applicationTypes = options.applicationTypes.filter(at => {
+      return at !== 9 && at !== 10 && at !== 11 && at !== 12
+    })
+  }
+
+  if (item.includes('Standard')) {
+    options.applicationTypes.push(1)
+  } else {
+    options.applicationTypes = options.applicationTypes.filter(at => {
+      return at !== 1
+    })
+  }
+
+  if (item.includes('Reserve')) {
+    options.applicationTypes.push(2)
+  } else {
+    options.applicationTypes = options.applicationTypes.filter(at => {
+      return at !== 2
+    })
+  }
+
+  if (item.includes('Judicial')) {
+    options.applicationTypes.push(3)
+  } else {
+    options.applicationTypes = options.applicationTypes.filter(at => {
+      return at !== 3
+    })
+  }
+
+  if (item.includes('Employment')) {
+    options.applicationTypes.push(4)
+  } else {
+    options.applicationTypes = options.applicationTypes.filter(at => {
+      return at !== 4
+    })
+  }
+}
 
 const permitStore = usePermitsStore()
 const adminUserStore = useAdminUserStore()
