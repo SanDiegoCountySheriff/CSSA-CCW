@@ -17,6 +17,9 @@
               Application #{{ permitStore.getPermitDetail.application.orderId }}
             </div>
             <span class="body-2"> Submitted on {{ submittedDate }}</span>
+            <span class="body-2">
+              Modification submitted on {{ modificationSubmittedDate }}
+            </span>
           </v-col>
           <v-col
             class="text-center"
@@ -218,6 +221,23 @@ const submittedDate = computed(() => {
     return new Date(
       permitStore.getPermitDetail.application
         .submittedToLicensingDateTime as string
+    )?.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  }
+
+  return 'n/a'
+})
+
+const modificationSubmittedDate = computed(() => {
+  if (
+    permitStore.getPermitDetail.application
+      .modificationSubmittedToLicensingDateTime
+  ) {
+    return new Date(
+      permitStore.getPermitDetail.application.modificationSubmittedToLicensingDateTime
     )?.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
