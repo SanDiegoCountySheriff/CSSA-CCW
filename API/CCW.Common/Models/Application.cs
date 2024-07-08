@@ -46,6 +46,8 @@ public class Application
     public AppointmentStatus AppointmentStatus { get; set; }
     public string AppointmentId { get; set; }
     public DateTimeOffset? SubmittedToLicensingDateTime { get; set; }
+
+    public DateTimeOffset? ModificationSubmittedToLicensingDateTime { get; set; }
     public DateTimeOffset? AppointmentDateTime { get; set; }
     public BackgroundCheck BackgroundCheck { get; set; }
     public Comment[] Comments { get; set; }
