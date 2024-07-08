@@ -6,63 +6,79 @@
       </v-card-title>
 
       <v-card-text>
-        <v-row>
-          <v-col>
-            <v-text-field
-              dense
-              readonly
-              label="Order Id"
-              v-model="permitStore.getPermitDetail.application.orderId"
-              outlined
-            >
-            </v-text-field>
-          </v-col>
-        </v-row>
+        <v-form v-model="valid">
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="permitStore.getPermitDetail.application.orderId"
+                :rules="[v => !!v || 'Order ID is required']"
+                label="Order Id"
+                readonly
+                outlined
+                dense
+              />
+            </v-col>
+          </v-row>
 
-        <v-row>
-          <v-col>
-            <v-select
-              dense
-              :items="paymentOptions"
-              item-text="text"
-              item-value="value"
-              label="Payment Type"
-              v-model="state.paymentType"
-              outlined
-            >
-            </v-select>
-          </v-col>
-        </v-row>
+          <v-row>
+            <v-col>
+              <v-select
+                v-model="paymentType"
+                :items="paymentOptions"
+                :rules="[v => !!v || 'Payment type is required.']"
+                item-text="text"
+                item-value="value"
+                label="Payment Type"
+                outlined
+                dense
+              />
+            </v-col>
+          </v-row>
 
-        <v-row>
-          <v-col>
-            <v-text-field
-              dense
-              type="number"
-              label="Total Amount"
-              v-model="state.total"
-              outlined
-            >
-            </v-text-field>
-          </v-col>
-        </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="total"
+                :rules="[v => !!v || 'Total amount is required']"
+                type="number"
+                label="Total Amount"
+                outlined
+                dense
+              />
+            </v-col>
+          </v-row>
 
-        <v-row>
-          <v-col>
-            <v-text-field
-              dense
-              label="Transaction Id"
-              v-model="state.transactionId"
-              outlined
-            >
-            </v-text-field>
-          </v-col>
-        </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="transactionId"
+                :rules="[v => !!v || 'Transaction ID is required.']"
+                label="Transaction Id"
+                outlined
+                dense
+              />
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="vendorInfo"
+                :rules="[v => !!v || 'Vendor Information is required.']"
+                label="Vendor Information"
+                hint="Type in Vendor name or 'cash' for cash payments"
+                persistent-hint
+                outlined
+                dense
+              />
+            </v-col>
+          </v-row>
+        </v-form>
       </v-card-text>
 
       <v-card-actions>
         <v-btn
-          :disabled="loading"
+          :disabled="loading || !valid"
           @click="submitAndPrint"
           color="primary"
         >
@@ -73,7 +89,7 @@
     </v-card>
 
     <v-snackbar
-      v-model="state.snackbar"
+      v-model="snackbar"
       :timeout="4000"
       color="error"
       class="font-weight-bold"
@@ -84,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { ref } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
@@ -100,6 +116,12 @@ const props = defineProps<PaymentHistoryProps>()
 
 const permitStore = usePermitsStore()
 const authStore = useAuthStore()
+const valid = ref(false)
+const paymentType = ref(null)
+const total = ref(0)
+const snackbar = ref(false)
+const transactionId = ref('')
+const vendorInfo = ref('')
 
 const paymentOptions = [
   { text: 'CCW Application Initial Payment', value: 0 },
@@ -121,23 +143,16 @@ const paymentOptions = [
   { text: 'CCW Application Employment Livescan Payment', value: 16 },
 ]
 
-const state = reactive({
-  paymentType: 0,
-  total: 0,
-  transactionId: '',
-  snackbar: false,
-})
-
 const currentDate = new Date(Date.now())
 
 function submitAndPrint() {
   const body: PaymentHistoryType = {
-    amount: state.total.toString(),
+    amount: total.value.toString(),
     paymentDateTimeUtc: currentDate.toISOString(),
     recordedBy: authStore.getAuthState.userName,
-    paymentType: state.paymentType,
-    transactionId: state.transactionId,
-    vendorInfo: 'Manually entered',
+    paymentType: paymentType.value || 0,
+    transactionId: transactionId.value,
+    vendorInfo: vendorInfo.value,
     successful: true,
     paymentStatus: 1,
     refundAmount: '0',
@@ -160,7 +175,7 @@ function submitAndPrint() {
   }
 
   permitStore.updatePermitDetailApi('Payment History added').catch(() => {
-    state.snackbar = true
+    snackbar.value = true
   })
 }
 
