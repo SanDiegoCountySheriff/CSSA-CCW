@@ -252,7 +252,7 @@ stages:
                     azureSubscription: $(AzureSubscription)
                     scriptType: bash
                     scriptLocation: inlineScript
-                    inlineScript: 'az cdn endpoint purge --subscription $(cssa_shd_subscription) -g $(cssa_shd_resource_group) -n $(PublicCustomEndpointName) --profile-name cssa-global-cdn --content-paths "/*" --verbose'
+                    inlineScript: 'az cdn endpoint purge --subscription $(cssa_shd_subscription) -g $(cssa_shd_resource_group) -n $(PublicCustomEndpointName) --profile-name $(cssa_cdn) --content-paths "/*" --verbose'
                     workingDirectory: "$(System.ArtifactsDirectory)"
 
       - deployment: "Deploy_Admin_UI"
@@ -333,5 +333,5 @@ stages:
                     azureSubscription: $(AzureSubscription)
                     scriptType: bash
                     scriptLocation: inlineScript
-                    inlineScript: 'az cdn endpoint purge --subscription $(cssa_shd_subscription) -g $(cssa_shd_resource_group) -n $(AdminCustomEndpointName) --profile-name cssa-global-cdn --content-paths "/*" --verbose'
+                    inlineScript: 'az cdn endpoint purge --subscription $(cssa_shd_subscription) -g $(cssa_shd_resource_group) -n $(AdminCustomEndpointName) --profile-name $(cssa_cdn) --content-paths "/*" --verbose'
                     workingDirectory: "$(System.ArtifactsDirectory)"
