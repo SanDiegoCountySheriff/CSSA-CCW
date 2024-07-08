@@ -40,8 +40,6 @@
           permitStore.getPermitDetail.application.modifiedNameComplete !== null
         "
       >
-
-
         <v-card-text>
           <v-row>
             <v-col>
@@ -100,9 +98,9 @@
             </v-col>
 
             <v-col
-          
               cols="3"
               class="mb-5"
+              offset-md="6"
             >
               <v-btn
                 v-if="
