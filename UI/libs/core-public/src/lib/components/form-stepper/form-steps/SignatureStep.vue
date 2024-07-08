@@ -152,6 +152,75 @@
         @continue="handleContinue"
         @save="handleSave"
         @save-match="handleSaveMatch"
+        @modify="handleModifySignature"
+        v-on="$listeners"
+      />
+    </v-container>
+
+    <v-container v-else>
+      <v-row justify="center">
+        <v-card-title>
+          {{ $t('Signature Uploaded') }}
+        </v-card-title>
+
+        <v-col
+          cols="12"
+          class="d-flex align-center justify-center"
+        >
+          <v-container style="max-width: 600px">
+            <v-row
+              v-if="
+                !applicationStore.completeApplication.application
+                  .isUpdatingApplication && !state.isMatching
+              "
+              justify="center"
+            >
+              <v-alert
+                v-if="!isRenew"
+                color="success"
+                type="success"
+                outlined
+              >
+                <span
+                  :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
+                >
+                  You have already uploaded a signature.
+                </span>
+              </v-alert>
+            </v-row>
+          </v-container>
+        </v-col>
+
+        <v-col
+          cols="12"
+          class="text-center"
+        >
+          <v-btn
+            color="primary"
+            text
+            @click="handleClearSignature"
+          >
+            {{ $t('Clear Signature') }}
+          </v-btn>
+          <v-btn
+            color="primary"
+            text
+            @click="handleModifySignature"
+          >
+            {{ $t('Modify Signature') }}
+          </v-btn>
+        </v-col>
+      </v-row>
+
+      <FormButtonContainer
+        :valid="!isSignaturePadEmpty"
+        :loading="state.uploading || isLoading || loading"
+        :all-steps-complete="props.allStepsComplete"
+        :is-final-step="true"
+        @continue="handleContinue"
+        @save="handleSave"
+        @save-match="handleSaveMatch"
+        @modify="handleModifySignature"
         v-on="$listeners"
       />
     </v-container>
@@ -432,6 +501,72 @@ function handleContinueWithoutUpload() {
         applicationStore.completeApplication.application.isComplete.toString(),
     },
   })
+}
+
+const { mutate: updateMutation } = useMutation({
+  mutationFn: () => {
+    return applicationStore.updateApplication()
+  },
+  onSuccess: () => {
+    for (let item of applicationStore.completeApplication.application
+      .uploadedDocuments) {
+      switch (item.documentType.toLowerCase()) {
+        case 'signature':
+          state.signature = item.name
+          break
+        default:
+          break
+      }
+    }
+
+    state.file = {}
+  },
+  onError: () => {
+    state.submitted = false
+  },
+})
+
+function handleModifySignature() {
+  applicationStore.completeApplication.application.uploadedDocuments.forEach(
+    file => {
+      if (file.documentType === 'Signature') {
+        deleteFile(file.name)
+      }
+    }
+  )
+}
+
+async function deleteFile(name) {
+  const documentToDelete =
+    applicationStore.completeApplication.application.uploadedDocuments.find(
+      doc => doc.name === name
+    )
+
+  if (!documentToDelete) {
+    return
+  }
+
+  try {
+    await axios
+      .delete(
+        `${Endpoints.DELETE_DOCUMENT_FILE_PUBLIC_ENDPOINT}?applicantFileName=${name}`
+      )
+      .then(() => {
+        applicationStore.completeApplication.application.uploadedDocuments.pop()
+      })
+
+    const updatedDocuments =
+      applicationStore.completeApplication.application.uploadedDocuments.filter(
+        doc => doc.name !== name
+      )
+
+    applicationStore.completeApplication.application.uploadedDocuments =
+      updatedDocuments
+
+    updateMutation()
+    // eslint-disable-next-line no-empty
+  } finally {
+  }
 }
 
 watch(

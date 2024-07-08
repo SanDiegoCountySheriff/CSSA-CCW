@@ -45,14 +45,16 @@
               }}
             </td>
             <td>
-              <v-btn
-                v-if="item.documentType === 'Signature'"
-                color="primary"
-                text
-                @click="handleModifyDocument"
-              >
-                {{ $t('Edit Signature') }}
-              </v-btn>
+              <v-container ml-12>
+                <v-btn
+                  v-if="item.documentType === 'Signature'"
+                  color="primary"
+                  tonal
+                  @click="handleModifyDocument"
+                >
+                  {{ $t('Edit Signature') }}
+                </v-btn>
+              </v-container>
             </td>
           </template>
         </v-data-table>
@@ -78,7 +80,7 @@ import {
   formatTime,
 } from '@shared-utils/formatters/defaultFormatters'
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries, no-restricted-imports, sort-imports
-import Routes from '@core-public/router/routes'
+//import Routes from '@core-public/router/routes'
 
 interface IFileUploadInfoSection {
   uploadedDocuments: UploadedDocType[]
@@ -188,7 +190,7 @@ function handleModifyDocument() {
 
 function viewSignatureSection() {
   router.push({
-    path: Routes.FORM_ROUTE_PATH,
+    path: `/form`,
     query: {
       applicationId: state.application[0].id,
       isComplete: state.application[0].application.isComplete.toString(),
@@ -205,8 +207,6 @@ async function deleteFile(name) {
   if (!documentToDelete) {
     return
   }
-
-  const documentType = documentToDelete.documentType
 
   try {
     await axios
