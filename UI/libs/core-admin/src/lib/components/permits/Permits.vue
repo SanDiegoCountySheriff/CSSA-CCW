@@ -309,6 +309,7 @@ import AppointmentActionConfirmationDialog from '@core-admin/components/dialogs/
 import { PermitsType } from '@core-admin/types'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
   ApplicationType,
@@ -316,7 +317,6 @@ import {
 } from '@shared-utils/types/defaultTypes'
 import { computed, reactive, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
-import { useBrandStore } from '@shared-ui/stores/brandStore'
 
 const { getAllPermitsSummary, options } = usePermitsStore()
 const brandStore = useBrandStore()
