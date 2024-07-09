@@ -10,7 +10,10 @@
         md="8"
       >
         <template>
-          <v-card-title class="headline mb-4">CSV Reports</v-card-title>
+          <v-card-title class="headline mb-4 text-center d-flex justify-center">
+            CSV Reports
+          </v-card-title>
+
           <v-card-text>
             <v-row
               justify="center"
@@ -47,6 +50,7 @@
                   </v-btn>
                 </v-card>
               </v-col>
+
               <v-col
                 cols="12"
                 md="6"
@@ -78,12 +82,26 @@
                 </v-card>
               </v-col>
             </v-row>
+
+            <v-col>
+              <v-row class="d-flex justify-center text-center">
+                <v-alert
+                  type="info"
+                  outlined
+                  class="mt-4"
+                >
+                  Click on the desired report and choose a date to generate it.
+                </v-alert>
+              </v-row>
+            </v-col>
+
             <v-dialog
               v-model="appointmentDialog"
               max-width="600px"
             >
               <v-card>
                 <v-card-title>Appointment Report</v-card-title>
+
                 <v-card-text>
                   Select which day to generate an appointment report
                   <v-date-picker
@@ -93,6 +111,7 @@
                     full-width
                   ></v-date-picker>
                 </v-card-text>
+
                 <v-card-actions>
                   <v-btn
                     color="primary"
@@ -112,6 +131,7 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
+
             <v-dialog
               v-model="sidDialog"
               max-width="600px"
