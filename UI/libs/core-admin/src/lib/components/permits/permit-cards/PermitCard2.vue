@@ -833,18 +833,26 @@
             Review Survey Details
           </v-card-title>
 
-          <v-card-title
-            v-else-if="waitingForPayment"
-            class="justify-center"
-          >
-            <v-icon
-              color="error"
-              class="mr-2"
-            >
-              mdi-alert
-            </v-icon>
-            Waiting for Customer Payment
-          </v-card-title>
+          <template v-else-if="waitingForPayment">
+            <v-card-title class="justify-center">
+              <v-icon
+                color="error"
+                class="mr-2"
+              >
+                mdi-alert
+              </v-icon>
+              Waiting for Customer Payment
+            </v-card-title>
+
+            <v-card-text>
+              <v-alert
+                v-if="isPaymentUnverified"
+                type="warning"
+              >
+                There is an unverified payment in the payment history
+              </v-alert>
+            </v-card-text>
+          </template>
 
           <v-card-title
             v-else
@@ -1365,8 +1373,6 @@ async function handleApproveModification() {
     app.personalInfo.lastName = app.personalInfo.modifiedLastName
   }
 
-  app.modifiedNameComplete = null
-
   if (app.modifiedAddress.streetAddress) {
     app.currentAddress.streetAddress = app.modifiedAddress.streetAddress
   }
@@ -1391,8 +1397,6 @@ async function handleApproveModification() {
     app.currentAddress.country = app.modifiedAddress.country
   }
 
-  app.modifiedAddressComplete = null
-
   for (const weapon of app.modifyAddWeapons) {
     weapon.added = undefined
     weapon.deleted = undefined
@@ -1405,7 +1409,6 @@ async function handleApproveModification() {
     })
   }
 
-  app.modifiedWeaponComplete = null
   app.currentStep = 1
 
   updatePermitDetails()
@@ -1461,6 +1464,10 @@ async function handleFinishModification() {
   )
   app.modificationNumber += 1
 
+  app.modifiedNameComplete = null
+  app.modifiedAddressComplete = null
+  app.modifiedWeaponComplete = null
+
   resetDocuments()
   updatePermitDetails()
 }
@@ -1503,6 +1510,12 @@ const waitingForPayment = computed(() => {
       true ||
     permitStore.getPermitDetail.application.readyForIssuancePayment === true
   )
+})
+
+const isPaymentUnverified = computed(() => {
+  return permitStore.getPermitDetail.paymentHistory.find(ph => {
+    return ph.verified === false
+  })
 })
 
 const modificationReadyForApproval = computed(() => {

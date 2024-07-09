@@ -455,8 +455,6 @@ function handleUndoAddWeapon(weapon: WeaponInfoType) {
 }
 
 function handleUndoDeleteWeapon(weapon: WeaponInfoType) {
-  window.console.log(weapon)
-
   applicationStore.completeApplication.application.modifyDeleteWeapons =
     applicationStore.completeApplication.application.modifyDeleteWeapons.filter(
       w => {
