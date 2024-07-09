@@ -544,6 +544,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             {
                 application.Application.ModifiedWeaponComplete = false;
                 application.Application.BackgroundCheck.Firearms = new BackgroundCheckItem();
+                application.Application.BackgroundCheck.SafetyCertificate = new BackgroundCheckItem();
             }
         }
 
