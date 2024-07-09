@@ -151,6 +151,8 @@ const fileMutation = useMutation({
       ApplicationType['Modify Standard']
     applicationStore.completeApplication.application.status =
       ApplicationStatus.Submitted
+    applicationStore.completeApplication.application.modificationSubmittedToLicensingDateTime =
+      new Date().toISOString()
 
     updateMutation()
   },
