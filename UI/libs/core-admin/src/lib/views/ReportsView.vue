@@ -256,7 +256,7 @@ function exportSID(data) {
 
     // eslint-disable-next-line node/no-unsupported-features/node-builtins
     link.href = URL.createObjectURL(blob)
-    link.setAttribute('download', `APPOINTMENTS.csv`)
+    link.setAttribute('download', `SID LETTER REPORT ${selectedDate.value}.csv`)
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -308,7 +308,7 @@ function exportAppointmentCsv(data) {
 
     // eslint-disable-next-line node/no-unsupported-features/node-builtins
     link.href = URL.createObjectURL(blob)
-    link.setAttribute('download', `APPOINTMENTS.csv`)
+    link.setAttribute('download', `APPOINTMENTS ${selectedDate.value}.csv`)
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
