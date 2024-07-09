@@ -9,10 +9,7 @@
         cols="12"
         md="8"
       >
-        <v-card
-          class="pa-5"
-          outlined
-        >
+        <template>
           <v-card-title class="headline mb-4">CSV Reports</v-card-title>
           <v-card-text>
             <v-row
@@ -25,56 +22,60 @@
                 md="6"
                 class="d-flex justify-center"
               >
-                <v-btn
-                  @click="handleAppointmentDialog"
-                  :color="$vuetify.theme.dark ? 'white' : 'primary'"
-                  :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
-                  :x-large="$vuetify.breakpoint.lgAndUp"
-                  :small="$vuetify.breakpoint.smAndDown"
-                  text
-                >
-                  <v-container>
-                    <v-row>
-                      <v-col>
-                        <v-icon x-large> mdi-calendar </v-icon>
-                      </v-col>
-                    </v-row>
+                <v-card elevation="3">
+                  <v-btn
+                    @click="handleAppointmentDialog"
+                    :color="$vuetify.theme.dark ? 'white' : 'primary'"
+                    :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
+                    :x-large="$vuetify.breakpoint.lgAndUp"
+                    :small="$vuetify.breakpoint.smAndDown"
+                    text
+                  >
+                    <v-container>
+                      <v-row>
+                        <v-col>
+                          <v-icon x-large> mdi-calendar </v-icon>
+                        </v-col>
+                      </v-row>
 
-                    <v-row>
-                      <v-col>
-                        {{ $t('APPOINTMENT REPORT') }}
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-btn>
+                      <v-row>
+                        <v-col>
+                          {{ $t('APPOINTMENT REPORT') }}
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-btn>
+                </v-card>
               </v-col>
               <v-col
                 cols="12"
                 md="6"
                 class="d-flex justify-center"
               >
-                <v-btn
-                  @click="handleSIDDialog"
-                  :color="$vuetify.theme.dark ? 'white' : 'primary'"
-                  :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
-                  :x-large="$vuetify.breakpoint.lgAndUp"
-                  :small="$vuetify.breakpoint.smAndDown"
-                  text
-                >
-                  <v-container>
-                    <v-row>
-                      <v-col>
-                        <v-icon x-large> mdi-file-chart-outline </v-icon>
-                      </v-col>
-                    </v-row>
+                <v-card>
+                  <v-btn
+                    @click="handleSIDDialog"
+                    :color="$vuetify.theme.dark ? 'white' : 'primary'"
+                    :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
+                    :x-large="$vuetify.breakpoint.lgAndUp"
+                    :small="$vuetify.breakpoint.smAndDown"
+                    text
+                  >
+                    <v-container>
+                      <v-row>
+                        <v-col>
+                          <v-icon x-large> mdi-file-chart-outline </v-icon>
+                        </v-col>
+                      </v-row>
 
-                    <v-row>
-                      <v-col>
-                        {{ $t('SID LETTER REPORT') }}
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-btn>
+                      <v-row>
+                        <v-col>
+                          {{ $t('SID LETTER REPORT') }}
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-btn>
+                </v-card>
               </v-col>
             </v-row>
             <v-dialog
@@ -146,7 +147,7 @@
               </v-card>
             </v-dialog>
           </v-card-text>
-        </v-card>
+        </template>
       </v-col>
     </v-row>
   </v-container>
