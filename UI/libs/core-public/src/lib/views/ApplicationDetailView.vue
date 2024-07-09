@@ -335,6 +335,7 @@
                 </v-btn>
 
                 <ConfirmDialog
+                  v-else-if="canApplicationBeModified"
                   :icon="'mdi-swap-horizontal'"
                   title="Are you sure you want to modify your permit?"
                   text="Modifying allows you to change your address, name, and weapons listed on your permit for a small fee.  If you are able to renew you can make any necessary changes during the renewal process instead."
