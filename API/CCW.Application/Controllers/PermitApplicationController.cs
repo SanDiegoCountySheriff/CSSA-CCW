@@ -371,7 +371,6 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-
     [Authorize(Policy = "AADUsers")]
     [HttpGet("getEmails")]
     public async Task<IActionResult> GetEmails([FromQuery] PermitsOptions options)
