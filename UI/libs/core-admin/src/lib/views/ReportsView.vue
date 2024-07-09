@@ -138,6 +138,7 @@
             >
               <v-card>
                 <v-card-title>SID Letter Report</v-card-title>
+
                 <v-card-text>
                   Select which day to generate an SID Letter report
                   <v-date-picker
@@ -145,8 +146,10 @@
                     class="mt-3 mb-3 rounded-lg"
                     color="primary"
                     full-width
-                  ></v-date-picker>
+                  >
+                  </v-date-picker>
                 </v-card-text>
+
                 <v-card-actions>
                   <v-btn
                     color="primary"
