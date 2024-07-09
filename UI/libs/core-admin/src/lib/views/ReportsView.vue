@@ -217,7 +217,22 @@ function exportSID(data) {
         }
 
         if (header.dataKey === 'aliases') {
-          value = value ? value : 'NONE'
+          value =
+            Array.isArray(value) && value.length > 0
+              ? value
+                  .map(alias => {
+                    const aliasParts = [
+                      alias.prevLastName || '',
+                      alias.prevFirstName || '',
+                      alias.prevMiddleName || '',
+                    ]
+                      .filter(part => part)
+                      .join(', ')
+
+                    return aliasParts
+                  })
+                  .join('; ')
+              : 'NONE'
         }
 
         if (typeof value === 'string') {
