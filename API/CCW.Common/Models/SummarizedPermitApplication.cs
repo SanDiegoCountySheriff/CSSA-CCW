@@ -10,9 +10,7 @@ public class SummarizedPermitApplication
     public string Id { get; set; }
     public string OrderId { get; set; }
     public string LastName { get; set; }
-    public string MiddleName { get; set; }
     public string FirstName { get; set; }
-    public string Suffix { get; set; }
     public ApplicationStatus Status { get; set; }
     public AppointmentStatus AppointmentStatus { get; set; }
     public string AppointmentId { get; set; }
@@ -41,6 +39,4 @@ public class SummarizedPermitApplication
     public string AssignedTo { get; set; }
     public bool FlaggedForLicensingReview { get; set; }
     public bool FlaggedForCustomerReview { get; set; }
-    public string BirthDate { get; set; }
-    public List<Alias> Aliases { get; set; }
 }

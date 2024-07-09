@@ -472,7 +472,6 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return results;
     }
 
-
     public async Task UpdateApplicationAsync(PermitApplication application, PermitApplication existingApplication, CancellationToken cancellationToken)
     {
         application.Application.Comments = existingApplication.Application.Comments;
