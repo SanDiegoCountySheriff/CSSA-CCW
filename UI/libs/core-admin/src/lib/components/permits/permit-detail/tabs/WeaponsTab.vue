@@ -12,6 +12,22 @@
         />
       </v-card-title>
 
+      <v-row>
+        <v-col
+          cols="12"
+          class="pr-7"
+        >
+          <v-alert
+            class="ml-4"
+            border="left"
+            color="blue"
+            text
+            type="info"
+          >
+            Please review the following weapon modification(s).
+          </v-alert>
+        </v-col>
+      </v-row>
       <v-card-text>
         <WeaponsTable
           :weapons="items"
@@ -39,9 +55,10 @@
             @click="handleOpenPdf"
             color="primary"
             class="mr-3"
+            outlined
           >
             <v-icon left>mdi-file-document-check</v-icon>
-            Check Documents
+            Check Document
           </v-btn>
 
           <v-btn
@@ -50,8 +67,14 @@
             "
             @click="onApproveWeaponChange"
             color="primary"
+            style="float: right"
           >
-            <v-icon left> mdi-check </v-icon>
+            <v-icon
+              left
+              color="green"
+            >
+              mdi-check
+            </v-icon>
             Approve
           </v-btn>
 

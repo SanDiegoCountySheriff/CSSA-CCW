@@ -108,6 +108,7 @@
                 "
                 @click="onApproveNameChange"
                 color="primary"
+                style="float: right"
               >
                 <v-icon
                   left
