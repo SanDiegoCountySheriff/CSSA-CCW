@@ -705,6 +705,7 @@ export type CompleteApplication = {
     ciiNumber: string
     cost: CostType
     submittedToLicensingDateTime: string | null
+    modificationSubmittedToLicensingDateTime: string | null
     assignedTo: string | null
     flaggedForCustomerReview: boolean | null
     flaggedForLicensingReview: boolean | null
