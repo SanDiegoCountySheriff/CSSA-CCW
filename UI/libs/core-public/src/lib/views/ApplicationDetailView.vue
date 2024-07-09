@@ -2243,6 +2243,8 @@ function handleConfirmSubmit() {
     ApplicationStatus.Submitted
   applicationStore.completeApplication.application.submittedToLicensingDateTime =
     new Date().toISOString()
+  applicationStore.completeApplication.application.modificationSubmittedToLicensingDateTime =
+    new Date().toISOString()
 
   updateMutation.mutate()
   state.confirmSubmissionDialog = false

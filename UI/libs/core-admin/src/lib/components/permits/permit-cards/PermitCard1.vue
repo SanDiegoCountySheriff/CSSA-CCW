@@ -17,9 +17,11 @@
               Application #{{ permitStore.getPermitDetail.application.orderId }}
             </div>
             <span class="body-2"> Submitted on {{ submittedDate }}</span>
-            <span class="body-2">
-              Modification submitted on {{ modificationSubmittedDate }}
-            </span>
+            <div v-if="isApplicationModifyType === true">
+              <span class="body-2">
+                Modification submitted on {{ modificationSubmittedDate }}
+              </span>
+            </div>
           </v-col>
           <v-col
             class="text-center"
@@ -216,6 +218,15 @@ const { refetch: updatePermitDetails } = useQuery(
   }
 )
 
+const isApplicationModifyType = computed(() => {
+  return (
+    permitStore.getPermitDetail.application.applicationType ===
+      ApplicationType['Modify Standard'] ||
+    ApplicationType['Modify Judicial'] ||
+    ApplicationType['Modify Reserve']
+  )
+})
+
 const submittedDate = computed(() => {
   if (permitStore.getPermitDetail.application.submittedToLicensingDateTime) {
     return new Date(
@@ -237,7 +248,8 @@ const modificationSubmittedDate = computed(() => {
       .modificationSubmittedToLicensingDateTime
   ) {
     return new Date(
-      permitStore.getPermitDetail.application.modificationSubmittedToLicensingDateTime
+      permitStore.getPermitDetail.application
+        .modificationSubmittedToLicensingDateTime as string
     )?.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
