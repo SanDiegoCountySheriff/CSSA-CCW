@@ -47,7 +47,6 @@ public class UserApplication
     public string AppointmentId { get; set; }
     public DateTimeOffset? SubmittedToLicensingDateTime { get; set; }
     public DateTimeOffset? ModificationSubmittedToLicensingDateTime { get; set; }
-
     public DateTimeOffset? AppointmentDateTime { get; set; }
     public string OrderId { get; set; }
     public UploadedDocument[] UploadedDocuments { get; set; }

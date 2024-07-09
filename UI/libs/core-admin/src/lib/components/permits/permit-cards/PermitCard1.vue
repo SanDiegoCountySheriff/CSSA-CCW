@@ -222,8 +222,12 @@ const isApplicationModifyType = computed(() => {
   return (
     permitStore.getPermitDetail.application.applicationType ===
       ApplicationType['Modify Standard'] ||
-    ApplicationType['Modify Judicial'] ||
-    ApplicationType['Modify Reserve']
+    permitStore.getPermitDetail.application.applicationType ===
+      ApplicationType['Modify Judicial'] ||
+    permitStore.getPermitDetail.application.applicationType ===
+      ApplicationType['Modify Reserve'] ||
+    permitStore.getPermitDetail.application.applicationType ===
+      ApplicationType['Modify Employment']
   )
 })
 
