@@ -179,29 +179,49 @@ async function handleSIDExport() {
 function exportSID(data) {
   const csvRows: string[] = []
 
-  const headers = ['paid', 'lastName', 'firstName', 'appointmentDateTime']
+  const headers = [
+    { csvHeader: 'LAST NAME', dataKey: 'lastName' },
+    { csvHeader: 'FIRST NAME', dataKey: 'firstName' },
+    { csvHeader: 'MIDDLE NAME', dataKey: 'middleName' },
+    { csvHeader: 'SUFFIX', dataKey: 'suffix' },
+    { csvHeader: 'DATE OF BIRTH', dataKey: 'birthDate' },
+    { csvHeader: 'AKA', dataKey: 'aliases' },
+  ]
+
+  const headerRow = headers.map(header => header.csvHeader).join(',')
+
+  csvRows.push(headerRow)
+
+  data.sort((a, b) => {
+    const lastNameA = a.lastName ? a.lastName.toUpperCase() : ''
+    const lastNameB = b.lastName ? b.lastName.toUpperCase() : ''
+
+    if (lastNameA < lastNameB) {
+      return -1
+    }
+
+    if (lastNameA > lastNameB) {
+      return 1
+    }
+
+    return 0
+  })
 
   for (const row of data) {
     const values = headers
       .map(header => {
-        let value = row[header]
+        let value = row[header.dataKey]
 
         if (value === null || value === undefined) {
           value = ''
         }
 
-        if (header === 'paid') {
-          value = value ? 'Payment Received' : 'Requires Payment'
+        if (header.dataKey === 'aliases') {
+          value = value ? value : 'NONE'
         }
 
-        if (header === 'appointmentDateTime' && value) {
-          const date = new Date(value)
-
-          value = date.toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true,
-          })
+        if (typeof value === 'string') {
+          value = value.toUpperCase()
         }
 
         return typeof value === 'string'
