@@ -125,6 +125,7 @@
                 "
                 @click="onUndoApproveNameChange"
                 color="primary"
+                style="float: right"
               >
                 <v-icon left>mdi-undo</v-icon>
                 Undo Approve

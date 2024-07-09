@@ -9,6 +9,23 @@
       />
     </v-card-title>
 
+    <v-row>
+      <v-col
+        cols="12"
+        class="pr-7"
+      >
+        <v-alert
+          class="ml-4"
+          border="left"
+          color="blue"
+          text
+          type="info"
+        >
+          Please review documents before approving modification.
+        </v-alert>
+      </v-col>
+    </v-row>
+
     <v-card-text>
       <v-form v-model="valid">
         <v-data-table

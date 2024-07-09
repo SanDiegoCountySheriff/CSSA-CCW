@@ -17,7 +17,22 @@
         permitStore.getPermitDetail.application.modifiedAddressComplete !== null
       "
     >
-      <v-card-subtitle> Address Modification </v-card-subtitle>
+      <v-row>
+        <v-col
+          cols="12"
+          class="pr-7"
+        >
+          <v-alert
+            class="ml-4"
+            border="left"
+            color="blue"
+            text
+            type="info"
+          >
+            Please review the following address modification(s).
+          </v-alert>
+        </v-col>
+      </v-row>
 
       <v-card-text>
         <v-row>
@@ -45,18 +60,6 @@
               dense
             ></v-text-field>
           </v-col>
-
-          <v-col>
-            <v-btn
-              @click="handleOpenPdf"
-              :disabled="readonly"
-              color="primary"
-              class="mr-3"
-            >
-              <v-icon left>mdi-file-document-check</v-icon>
-              Check Documents
-            </v-btn>
-          </v-col>
         </v-row>
 
         <v-row>
@@ -83,8 +86,25 @@
               dense
             ></v-text-field>
           </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="3">
+            <v-btn
+              @click="handleOpenPdf"
+              :disabled="readonly"
+              color="primary"
+              outlined
+            >
+              <v-icon left>mdi-file-document-check</v-icon>
+              Check Documents
+            </v-btn>
+          </v-col>
 
-          <v-col>
+          <v-col
+            cols="3"
+            class="mb-5"
+            offset-md="6"
+          >
             <v-btn
               v-if="
                 !permitStore.getPermitDetail.application.modifiedAddressComplete
@@ -92,8 +112,14 @@
               :disabled="readonly"
               @click="onApproveAddressChange"
               color="primary"
+              style="float: right"
             >
-              <v-icon left>mdi-check</v-icon>
+              <v-icon
+                left
+                color="green"
+              >
+                mdi-check
+              </v-icon>
               Approve
             </v-btn>
 
@@ -104,6 +130,7 @@
               :disabled="readonly"
               @click="onUndoApproveAddressChange"
               color="primary"
+              style="float: right"
             >
               <v-icon left>mdi-undo</v-icon>
               Undo Approve
@@ -113,7 +140,12 @@
       </v-card-text>
     </template>
 
+    <v-divider></v-divider>
+
     <v-card-text>
+      <v-row>
+        <v-col></v-col>
+      </v-row>
       <v-form
         ref="addressForm"
         v-model="addressFormValid"
