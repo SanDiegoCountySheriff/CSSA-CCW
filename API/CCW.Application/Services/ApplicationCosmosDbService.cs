@@ -445,7 +445,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return results;
     }
 
-    public async Task<IEnumerable<SummarizedPermitApplication>> GetPermitsByDateAsync(DateTime date, CancellationToken cancellationToken)
+    public async Task<IEnumerable<SummarizedPermitApplicationReport>> GetPermitsByDateAsync(DateTime date, CancellationToken cancellationToken)
     {
         var queryString = @"SELECT a.Application, a.id, a.Application.OrderId, a.PaymentHistory, a.Application.PersonalInfo.FirstName, 
                           a.Application.PersonalInfo.LastName, a.Application.AppointmentDateTime, a.Application.PersonalInfo.MiddleName,
@@ -455,14 +455,14 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         var parameterizedQuery = new QueryDefinition(query: queryString)
             .WithParameter("@date", date.ToString("yyyy-MM-dd"));
 
-        var results = new List<SummarizedPermitApplication>();
+        var results = new List<SummarizedPermitApplicationReport>();
 
-        using FeedIterator<SummarizedPermitApplication> iterator = _container.GetItemQueryIterator<SummarizedPermitApplication>(
+        using FeedIterator<SummarizedPermitApplicationReport> iterator = _container.GetItemQueryIterator<SummarizedPermitApplicationReport>(
             queryDefinition: parameterizedQuery
         );
         while (iterator.HasMoreResults)
         {
-            FeedResponse<SummarizedPermitApplication> response = await iterator.ReadNextAsync(cancellationToken);
+            FeedResponse<SummarizedPermitApplicationReport> response = await iterator.ReadNextAsync(cancellationToken);
             foreach (var item in response)
             {
                 results.Add(item);

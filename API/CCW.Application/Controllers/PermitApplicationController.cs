@@ -355,7 +355,7 @@ public class PermitApplicationController : ControllerBase
         {
             var permits = await _applicationCosmosDbService.GetPermitsByDateAsync(date, cancellationToken: default);
 
-            var response = new SummaryResponse()
+            var response = new SummaryReportResponse()
             {
                 Items = permits.ToList(),
                 Total = permits.Count(),
@@ -1086,6 +1086,12 @@ public class PermitApplicationController : ControllerBase
     public class SummaryResponse
     {
         public List<SummarizedPermitApplication> Items { get; set; }
+        public int Total { get; set; }
+    }
+
+    public class SummaryReportResponse
+    {
+        public List<SummarizedPermitApplicationReport> Items { get; set; }
         public int Total { get; set; }
     }
 
