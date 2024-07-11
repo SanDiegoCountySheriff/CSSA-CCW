@@ -270,6 +270,22 @@
                   Withdraw
                 </v-btn>
 
+                &nbsp;
+
+                <v-btn
+                  v-if="showInitialWithdrawButton && canWithdrawApplication"
+                  @click="handleShowModifySignatureDialog"
+                  :disabled="
+                    isGetApplicationsLoading ||
+                    !canWithdrawApplication ||
+                    isMakePaymentLoading
+                  "
+                  color="primary"
+                  block
+                >
+                  Modify Signature
+                </v-btn>
+
                 <v-btn
                   v-else-if="
                     applicationStore.completeApplication.application.status ===
@@ -873,6 +889,86 @@
     </v-dialog>
 
     <v-dialog
+      v-model="state.modifySignatureDialog"
+      max-width="600"
+    >
+      <v-card :loading="isUploadSignatureDocumentLoading">
+        <v-card-title> Edit Signature </v-card-title>
+
+        <v-card-title>Signature</v-card-title>
+
+        <v-card-text>
+          <v-card
+            light
+            flat
+            width="555px"
+            height="105px"
+            outlined
+            style="border: solid 2px black"
+          >
+            <canvas
+              width="550px"
+              height="100px"
+              id="signature"
+              class="signature"
+            ></canvas>
+          </v-card>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn
+            color="primary"
+            @click="handleClearSignature"
+          >
+            Clear Signature
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            :valid="!isSignaturePadEmpty"
+            color="primary"
+            @click="handleSaveSignature"
+          >
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-snackbar
+      v-model="state.showUploadFailureSnackbar"
+      color="primary"
+    >
+      The signature modification failed. Please contact us if this error
+      continues.
+      <template #action="{ attrs }">
+        <v-btn
+          text
+          v-bind="attrs"
+          @click="state.showUploadFailureSnackbar = false"
+        >
+          Ok
+        </v-btn>
+      </template>
+    </v-snackbar>
+
+    <v-snackbar
+      v-model="state.showUploadSuccessSnackbar"
+      color="primary"
+    >
+      Your signature was successfully modified. Please inform Licensing so your
+      application can continue processing.
+      <template #action="{ attrs }">
+        <v-btn
+          text
+          v-bind="attrs"
+          @click="state.showUploadSuccessSnackbar = false"
+        >
+          Ok
+        </v-btn>
+      </template>
+    </v-snackbar>
+
+    <v-dialog
       v-model="state.renewDialog"
       max-width="600"
     >
@@ -1076,6 +1172,7 @@ import PreviousAddressInfoSection from '@shared-ui/components/info-sections/Prev
 import QualifyingQuestionsInfoSection from '@shared-ui/components/info-sections/QualifyingQuestionsInfoSection.vue'
 import Routes from '@core-public/router/routes'
 import SignatureInfoSection from '@shared-ui/components/info-sections/SignatureInfoSection.vue'
+import SignaturePad from 'signature_pad'
 import SpouseAddressInfoSection from '@shared-ui/components/info-sections/SpouseAddressInfoSection.vue'
 import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
@@ -1103,7 +1200,7 @@ import {
   CompleteApplication,
   PaymentType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { useRoute, useRouter } from 'vue-router/composables'
 
@@ -1128,6 +1225,11 @@ const appointmentTime = ref('')
 const isRenewLoading = ref(false)
 const paymentSnackbar = ref(false)
 const queryClient = useQueryClient()
+const userSignature = ref('')
+const signaturePad = ref<SignaturePad>()
+const signatureForm = new FormData()
+const persistentDialog = ref(true)
+const showModifySignatureDialog = ref(false)
 
 const state = reactive({
   snackbar: false,
@@ -1137,6 +1239,9 @@ const state = reactive({
   confirmSubmissionDialog: false,
   rescheduling: false,
   withdrawDialog: false,
+  modifySignatureDialog: false,
+  showUploadFailureSnackbar: false,
+  showUploadSuccessSnackbar: false,
   renewDialog: false,
   appointmentDialog: false,
   appointments: [] as Array<AppointmentType>,
@@ -1175,6 +1280,10 @@ const state = reactive({
     },
   ],
 })
+
+const setUserSignature = (file: string) => {
+  userSignature.value = file
+}
 
 const {
   mutate: updatePaymentHistory,
@@ -1220,6 +1329,7 @@ const {
 
 onMounted(() => {
   state.isApplicationValid = Boolean(applicationStore.completeApplication.id)
+  //handleEditSignature(false)
 
   const transactionId = route.query.transactionId
   const successful = route.query.successful
@@ -1897,6 +2007,48 @@ const { mutate: makePayment, isLoading: isMakePaymentLoading } = useMutation({
   },
 })
 
+const {
+  isLoading: isUploadSignatureDocumentLoading,
+  mutate: uploadSignatureDocument,
+} = useMutation(
+  ['uploadSignatureDocument'],
+  async () => await postUploadSignatureFile(signatureForm, 'signature'),
+  {
+    onSuccess: async () => {
+      const uploadDoc: UploadedDocType = {
+        documentType: 'Signature',
+        name: 'Signature',
+        uploadedBy: applicationStore.completeApplication.application.userEmail,
+        uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
+      }
+
+      if (applicationStore.completeApplication.application.uploadedDocuments) {
+        applicationStore.completeApplication.application.uploadedDocuments =
+          applicationStore.completeApplication.application.uploadedDocuments.filter(
+            document => {
+              return document.documentType !== 'Signature'
+            }
+          )
+      } else {
+        applicationStore.completeApplication.application.uploadedDocuments = []
+      }
+
+      applicationStore.completeApplication.application.uploadedDocuments.push(
+        uploadDoc
+      )
+
+      handleShowUploadSuccessSnackbar()
+    },
+    onError: () => {
+      handleShowUploadFailureSnackbar()
+    },
+  }
+)
+
+const isSignaturePadEmpty = computed(() => {
+  return signaturePad.value?.isEmpty()
+})
+
 function handlePayment() {
   makePayment()
 }
@@ -2172,6 +2324,33 @@ function handleShowWithdrawDialog() {
   state.withdrawDialog = true
 }
 
+function handleShowModifySignatureDialog() {
+  state.modifySignatureDialog = true
+
+  nextTick(() => {
+    const canvas = document.getElementById('signature') as HTMLCanvasElement
+
+    signaturePad.value = new SignaturePad(canvas, {
+      backgroundColor: 'rgba(0, 0, 0, 0)',
+      minDistance: 5,
+    })
+
+    // if (applicationStore.completeApplication.application.uploadedDocuments) {
+    //   const signature = getUserSignatureApi()
+    //   const image = new Image()
+
+    //   image.src = userSignature.value
+    //   image.onload = () => {
+    //     signaturePad.value?.fromDataURL(userSignature.value, {
+    //       ratio: 1,
+    //       width: image.width,
+    //       height: image.height,
+    //     })
+    //   }
+    // }
+  })
+}
+
 function handleShowRenewDialog() {
   state.renewDialog = true
 }
@@ -2317,6 +2496,16 @@ function showReviewDialog() {
   }
 }
 
+function handleShowUploadSuccessSnackbar() {
+  state.showUploadSuccessSnackbar = true
+  updateMutation.mutate()
+}
+
+function handleShowUploadFailureSnackbar() {
+  state.showUploadFailureSnackbar = true
+  updateMutation.mutate()
+}
+
 function acceptChanges() {
   applicationStore.completeApplication.application.flaggedForCustomerReview =
     false
@@ -2330,6 +2519,40 @@ function acceptChanges() {
 
 function cancelChanges() {
   reviewDialog.value = false
+}
+
+async function postUploadSignatureFile(data: FormData, target: string) {
+  await axios.post(
+    `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${target}`,
+    data
+  )
+}
+
+async function getUserSignatureApi() {
+  const res = await axios.get(Endpoints.GET_DOCUMENT_FILE_ENDPOINT)
+  const imageResponse = await axios.get(
+    `${Endpoints.GET_DOCUMENT_FILE_ENDPOINT}?applicantFileName=Signature`
+  )
+
+  if (imageResponse?.data) setUserSignature(imageResponse.data)
+
+  return res?.data || {}
+}
+
+async function handleSaveSignature() {
+  const canvas = document.getElementById('signature') as HTMLCanvasElement
+
+  canvas.toBlob(async blob => {
+    signatureForm.append('fileToUpload', blob as Blob)
+
+    uploadSignatureDocument()
+  })
+
+  //updateMutation.mutate()
+}
+
+function handleClearSignature() {
+  signaturePad.value?.clear()
 }
 
 function handleFileSubmit(fileSubmission: IFileSubmission) {

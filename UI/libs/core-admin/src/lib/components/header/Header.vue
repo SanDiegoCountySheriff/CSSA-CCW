@@ -292,7 +292,7 @@ function handleEditAdminUser(persist: boolean) {
     const canvas = document.getElementById('signature') as HTMLCanvasElement
 
     signaturePad.value = new SignaturePad(canvas, {
-      backgroundColor: 'white',
+      backgroundColor: 'rgb(0, 0, 0, 0)',
     })
 
     if (adminUserStore.adminUserSignature) {
