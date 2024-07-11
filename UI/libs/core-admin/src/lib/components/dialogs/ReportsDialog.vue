@@ -19,6 +19,7 @@
               <v-icon x-large> {{ icon }} </v-icon>
             </v-col>
           </v-row>
+
           <v-row>
             <v-col>
               {{ buttonText }}
@@ -29,6 +30,7 @@
     </template>
     <v-card>
       <v-card-title>{{ title }}</v-card-title>
+
       <v-card-text>
         {{ description }}
         <v-date-picker
@@ -38,6 +40,7 @@
           full-width
         ></v-date-picker>
       </v-card-text>
+
       <v-card-actions>
         <v-btn
           text
@@ -46,7 +49,9 @@
         >
           Close
         </v-btn>
+
         <v-spacer></v-spacer>
+
         <v-btn
           text
           color="primary"
