@@ -43,7 +43,7 @@
               style="color: red"
               class="subtitle-1"
               >If any of your contact information changes, please log in and
-              modify your application immediately.</span
+              update your application immediately.</span
             >
           </v-card-text>
           <v-card-text class="text-center">
