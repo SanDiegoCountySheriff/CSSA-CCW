@@ -20,6 +20,7 @@
           </v-card-title>
           <v-card-text class="text-center">
             <h2>Your application has been submitted!</h2>
+
             <p class="subtitle-1 mt-7">
               Thank you for completing your CCW application. Your submission was
               successful! {{ brandStore.getBrand.agencyName }} Licensing Staff
@@ -27,6 +28,17 @@
               the volume of applications submitted, it may be several months
               before staff contacts you.
             </p>
+
+            <p
+              v-if="!appConfigStore.appConfig.payBeforeSubmit"
+              class="subtitle-1"
+            >
+              <strong>
+                You will be notified at a later date when payment is
+                required.</strong
+              >
+            </p>
+
             <span
               style="color: red"
               class="subtitle-1"
@@ -54,11 +66,13 @@
 </template>
 
 <script setup lang="ts">
+import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useRouter } from 'vue-router/composables'
 
 const router = useRouter()
 const brandStore = useBrandStore()
+const appConfigStore = useAppConfigStore()
 
 const goToDashBoard = () => {
   router.push('/')

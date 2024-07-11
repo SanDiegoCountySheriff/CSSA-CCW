@@ -62,7 +62,13 @@
               :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
             >
               Review your information before submitting your renewal
-              application. You will be notified to pay at a later date.
+              application.
+            </span>
+            <span
+              v-if="!appConfigStore.appConfig.payBeforeSubmit"
+              :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
+            >
+              Licensing staff will contact you to pay at a later date
             </span>
           </v-alert>
         </v-row>
@@ -89,6 +95,12 @@
               You must choose an appointment in order to submit your
               application. You may reschedule or cancel your appointment at a
               later time.
+            </span>
+            <span
+              v-if="!appConfigStore.appConfig.payBeforeSubmit"
+              :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
+            >
+              Licensing staff will contact you to pay at a later date.
             </span>
           </v-alert>
         </v-row>
