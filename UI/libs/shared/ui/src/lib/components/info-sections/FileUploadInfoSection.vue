@@ -46,14 +46,6 @@
             </td>
             <td>
               <v-container ml-12>
-                <!-- <v-btn
-                  v-if="item.documentType === 'Signature'"
-                  color="primary"
-                  tonal
-                  @click="handleModifyDocument"
-                >
-                  {{ $t('Edit Signature') }}
-                </v-btn> -->
                 <ModifySignatureDialog
                   v-if="item.documentType === 'Signature'"
                 ></ModifySignatureDialog>
@@ -74,17 +66,14 @@ import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplicati
 import { useMutation } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
 // eslint-disable-next-line sort-imports
-import axios from 'axios'
-// eslint-disable-next-line sort-imports
 import Endpoints from '@shared-ui/api/endpoints'
 import FileUploadDialog from '@shared-ui/components/dialogs/FileUploadDialog.vue'
 import ModifySignatureDialog from '@shared-ui/components/dialogs/ModifySignatureDialog.vue'
+import axios from 'axios'
 import {
   formatDate,
   formatTime,
 } from '@shared-utils/formatters/defaultFormatters'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries, no-restricted-imports, sort-imports
-//import Routes from '@core-public/router/routes'
 
 interface IFileUploadInfoSection {
   uploadedDocuments: UploadedDocType[]

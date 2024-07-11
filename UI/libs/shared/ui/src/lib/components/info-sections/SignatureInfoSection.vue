@@ -27,14 +27,6 @@
             state.signature ? $t('Signature Uploaded') : $t('Missing Signature')
           }}
           <v-container ml-12>
-            <!-- <v-btn
-              v-if="state.signature"
-              color="primary"
-              tonal
-              @click="handleModifyDocument"
-            >
-              {{ $t('Edit Signature') }}
-            </v-btn> -->
             <ModifySignatureDialog
               v-if="state.signature"
             ></ModifySignatureDialog>
@@ -46,12 +38,8 @@
 </template>
 
 <script lang="ts" setup>
-import Endpoints from '@shared-ui/api/endpoints'
 import ModifySignatureDialog from '@shared-ui/components/dialogs/ModifySignatureDialog.vue'
-import axios from 'axios'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useMutation } from '@tanstack/vue-query'
-import { useRouter } from 'vue-router/composables'
 import { onMounted, reactive } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()
@@ -63,28 +51,6 @@ const state = reactive({
   files: [] as Array<{ formData; target }>,
 })
 
-const router = useRouter()
-
-const { mutate: updateMutation } = useMutation({
-  mutationFn: () => {
-    return applicationStore.updateApplication()
-  },
-  onSuccess: () => {
-    for (let item of applicationStore.completeApplication.application
-      .uploadedDocuments) {
-      switch (item.documentType.toLowerCase()) {
-        case 'signature':
-          state.signatureName = item.name
-          break
-        default:
-          break
-      }
-    }
-
-    state.files = []
-  },
-})
-
 onMounted(() => {
   applicationStore.completeApplication.application.uploadedDocuments.forEach(
     file => {
@@ -94,61 +60,6 @@ onMounted(() => {
     }
   )
 })
-
-function handleModifyDocument() {
-  applicationStore.completeApplication.application.uploadedDocuments.forEach(
-    file => {
-      if (file.documentType === 'Signature') {
-        deleteFile(file.name).then(() => {
-          viewSignatureSection()
-        })
-      }
-    }
-  )
-}
-
-function viewSignatureSection() {
-  router.push({
-    path: `/form`,
-    query: {
-      applicationId: state.application[0].id,
-      isComplete: state.application[0].application.isComplete.toString(),
-    },
-  })
-}
-
-async function deleteFile(name) {
-  const documentToDelete =
-    applicationStore.completeApplication.application.uploadedDocuments.find(
-      doc => doc.name === name
-    )
-
-  if (!documentToDelete) {
-    return
-  }
-
-  try {
-    await axios
-      .delete(
-        `${Endpoints.DELETE_DOCUMENT_FILE_PUBLIC_ENDPOINT}?applicantFileName=${name}`
-      )
-      .then(() => {
-        applicationStore.completeApplication.application.uploadedDocuments.pop()
-      })
-
-    const updatedDocuments =
-      applicationStore.completeApplication.application.uploadedDocuments.filter(
-        doc => doc.name !== name
-      )
-
-    applicationStore.completeApplication.application.uploadedDocuments =
-      updatedDocuments
-
-    updateMutation()
-    // eslint-disable-next-line no-empty
-  } finally {
-  }
-}
 </script>
 
 <style lang="scss">

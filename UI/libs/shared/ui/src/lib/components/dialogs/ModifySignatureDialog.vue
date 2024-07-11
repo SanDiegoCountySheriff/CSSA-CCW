@@ -111,31 +111,15 @@
 
 <script setup lang="ts">
 import { AppointmentType } from '../../../../../utils/src/lib/types/defaultTypes'
-//import { AppointmentType } from '@shared-utils/types/defaultTypes'
-//import Endpoints from '@shared-ui/api/endpoints'
 import Endpoints from '../../../lib/api/endpoints'
-//import Routes from '@core-public/router/routes'
 import Routes from '../../../../../../core-public/src/lib/router/routes'
 import SignaturePad from 'signature_pad'
-//import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import { UploadedDocType } from '../../../../../utils/src/lib/types/defaultTypes'
 import axios from 'axios'
-//import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useBrandStore } from '../../stores/brandStore'
-//import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useCompleteApplicationStore } from '../../stores/completeApplication'
-//import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { usePaymentStore } from '../../stores/paymentStore'
-//import { useThemeStore } from '@shared-ui/stores/themeStore'
 import { useThemeStore } from '../../stores/themeStore'
-// import {
-//   ApplicationStatus,
-//   ApplicationType,
-// } from '@shared-utils/types/defaultTypes'
-// import {
-//   CompleteApplication,
-//   PaymentType,
-// } from '@shared-utils/types/defaultTypes'
 import {
   ApplicationStatus,
   ApplicationType,
@@ -145,11 +129,6 @@ import {
 import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 import { useRoute, useRouter } from 'vue-router/composables'
-
-interface IFileSubmission {
-  file: File
-  fileType: string
-}
 
 const applicationStore = useCompleteApplicationStore()
 const paymentStore = usePaymentStore()
