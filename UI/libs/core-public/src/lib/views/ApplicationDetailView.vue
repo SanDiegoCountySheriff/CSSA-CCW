@@ -272,7 +272,9 @@
 
                 &nbsp;
 
-                <v-btn
+                <modifySignatureDialog></modifySignatureDialog>
+
+                <!-- <v-btn
                   v-if="showInitialWithdrawButton && canWithdrawApplication"
                   @click="handleShowModifySignatureDialog"
                   :disabled="
@@ -297,7 +299,7 @@
                   :disabled="isGetApplicationsLoading || isMakePaymentLoading"
                 >
                   Submit
-                </v-btn>
+                </v-btn> -->
               </v-col>
             </v-row>
 
@@ -1166,6 +1168,7 @@ import EmploymentInfoSection from '@shared-ui/components/info-sections/Employmen
 import Endpoints from '@shared-ui/api/endpoints'
 import FileUploadInfoSection from '@shared-ui/components/info-sections/FileUploadInfoSection.vue'
 import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue'
+import modifySignatureDialog from '@core-public/components/dialogs/ModifySignatureDialog.vue'
 import PaymentConfirmationDialog from '@core-public/components/dialogs/PaymentConfirmationDialog.vue'
 import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue'
 import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue'
