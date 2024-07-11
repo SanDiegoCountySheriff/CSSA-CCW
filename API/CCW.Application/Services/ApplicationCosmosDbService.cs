@@ -445,6 +445,33 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return results;
     }
 
+    public async Task<IEnumerable<SummarizedPermitApplicationReport>> GetPermitsByDateAsync(DateTime date, CancellationToken cancellationToken)
+    {
+        var queryString = @"SELECT a.Application, a.id, a.Application.OrderId, a.PaymentHistory, a.Application.PersonalInfo.FirstName, 
+                          a.Application.PersonalInfo.LastName, a.Application.AppointmentDateTime, a.Application.PersonalInfo.MiddleName,
+                          a.Application.PersonalInfo.Suffix, a.Application.DOB.BirthDate, a.Application.Aliases
+                          FROM applications a WHERE STARTSWITH(a.Application.AppointmentDateTime, @date)";
+
+        var parameterizedQuery = new QueryDefinition(query: queryString)
+            .WithParameter("@date", date.ToString("yyyy-MM-dd"));
+
+        var results = new List<SummarizedPermitApplicationReport>();
+
+        using FeedIterator<SummarizedPermitApplicationReport> iterator = _container.GetItemQueryIterator<SummarizedPermitApplicationReport>(
+            queryDefinition: parameterizedQuery
+        );
+        while (iterator.HasMoreResults)
+        {
+            FeedResponse<SummarizedPermitApplicationReport> response = await iterator.ReadNextAsync(cancellationToken);
+            foreach (var item in response)
+            {
+                results.Add(item);
+            }
+        }
+
+        return results;
+    }
+
     public async Task UpdateApplicationAsync(PermitApplication application, PermitApplication existingApplication, CancellationToken cancellationToken)
     {
         application.Application.Comments = existingApplication.Application.Comments;
@@ -544,6 +571,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             {
                 application.Application.ModifiedWeaponComplete = false;
                 application.Application.BackgroundCheck.Firearms = new BackgroundCheckItem();
+                application.Application.BackgroundCheck.SafetyCertificate = new BackgroundCheckItem();
             }
         }
 

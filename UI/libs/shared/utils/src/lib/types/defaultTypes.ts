@@ -705,6 +705,7 @@ export type CompleteApplication = {
     ciiNumber: string
     cost: CostType
     submittedToLicensingDateTime: string | null
+    modificationSubmittedToLicensingDateTime: string | null
     assignedTo: string | null
     flaggedForCustomerReview: boolean | null
     flaggedForLicensingReview: boolean | null
@@ -809,7 +810,7 @@ export type AppointmentManagement = {
   numberOfSlotsPerAppointment: number
   appointmentLength: number
   numberOfWeeksToCreate: number
-  breakLength: number | undefined
+  breakLength: number | undefined | null
   breakStartTime: string | null
   startDate: string
 }

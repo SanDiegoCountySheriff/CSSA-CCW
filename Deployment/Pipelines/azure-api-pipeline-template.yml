@@ -9,20 +9,21 @@ parameters:
       type: string
     - name: webAppSuffix
       type: string
+    - name: webAppPrefix
+      type: string
+    - name: rgPrefix
+      type: string
+    - name: rgEnvironment
+      type: string
 
 stages:
-    - stage: "Build_${{ parameters.environment }}"
-      displayName: "Build_${{ parameters.environment }}"
+    - stage: "Build"
+      displayName: "Build"
       jobs:
-          - deployment: "Build_Public_UI_Dev"
+          - deployment: "Build_API"
             variables:
-                ${{ if eq(parameters.environment, 'dev' )}}:
-                    environment: "ApprovalNotRequired"
-                ${{ else }}:
-                    environment: "ApprovalRequired"
-
                 projectToBuild: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}/CCW.${{ parameters.backendsvc }}.sln
-            environment: ${{ variables.environment }}
+            environment: ApprovalNotRequired
 
             strategy:
                 runOnce:
@@ -69,17 +70,9 @@ stages:
 
     - stage:
       jobs:
-          - job: Deploy_${{ parameters.environment }}
-            displayName: "Deploy_${{ parameters.environment }}"
+          - job: Deploy
+            displayName: "Deploy"
             variables:
-                ${{ if eq(parameters.environment, 'dev' )}}:
-                    webAppPrefix: "wa-sdsd-it-ccw"
-                    rgPrefix: "rg-sdsd-it-ccw"
-                    rgEnvironment: "dev"
-                ${{ else }}:
-                    webAppPrefix: "wa-sdsd-ccw"
-                    rgPrefix: "rg-sdsd-law-ccw"
-                    rgEnvironment: "prd"
                 artifactPath: "$(System.ArtifactsDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
                 webAppName: "$(webAppPrefix)-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsvc) }}-${{ lower(parameters.webAppSuffix) }}"
                 resourceGroupName: "$(rgPrefix)-$(rgEnvironment)-${{ lower(parameters.backendsuffix) }}"
@@ -92,7 +85,7 @@ stages:
                       scriptType: ps
                       scriptLocation: inlineScript
                       inlineScript: |
-                          if ('${{ parameters.environment }}' -eq 'p') {
+                          if ('${{ parameters.environment }}' -eq 'p' -or '${{ parameters.environment }}' -eq 'uat') {
                             $ErrorActionPreference = "Stop"
                                           
                             Write-Host "Installing Az.Resources"
@@ -156,7 +149,7 @@ stages:
                       scriptType: ps
                       scriptLocation: inlineScript
                       inlineScript: |
-                          if ('${{ parameters.environment }}' -eq 'p') {
+                          if ('${{ parameters.environment }}' -eq 'p' -or '${{ parameters.environment }}' -eq 'uat') {
                             $ErrorActionPreference = "Stop"
 
                             Write-Host "Changing directory"

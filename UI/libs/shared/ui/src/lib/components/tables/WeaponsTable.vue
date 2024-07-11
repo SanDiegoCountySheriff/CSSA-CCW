@@ -63,7 +63,7 @@
         </v-icon>
 
         <v-tooltip
-          v-if="!props.modifying"
+          v-if="!props.modifying || item.added"
           top
         >
           <template #activator="{ on, attrs }">
@@ -75,7 +75,7 @@
               class="mx-3"
               default
             >
-              mdi-pencil
+              mdi-pencil-box-outline
             </v-icon>
           </template>
 

@@ -1,10 +1,10 @@
 {
   "Authentication": {
-    "ClientId": "#{ClientId}#",
-    "AuthorityUrl": "#{AuthorityUrl}#",
-    "TenantId": "#{TenantId}#",
-    "KnownAuthorities": ["#{KnownAuthorities}#"],
-    "PrimaryDomain": "#{PrimaryDomain}#",
+    "ClientId": "#{PublicClientId}#",
+    "AuthorityUrl": "#{PublicAuthorityUrl}#",
+    "TenantId": "#{PublicTenantId}#",
+    "KnownAuthorities": ["#{PublicKnownAuthorities}#"],
+    "PrimaryDomain": "#{PublicPrimaryDomain}#",
     "LoginType": "#{LoginType}"
   },
   "Configuration": {
@@ -18,7 +18,7 @@
     "DefaultCounty": "#{DefaultCounty}#",
     "DisplayDebugger": "#{DisplayDebugger}#",
     "IsPaymentServiceAvailable": "#{IsPaymentServiceAvailable}#",
-    "ApplicationInsightsConnectionString": "#{ApplicationInsightsConnectionString}#"
+    "ApplicationInsightsConnectionString": "#{PublicApplicationInsightsConnectionString}#"
   },
   "Questions": {
     "one": 109,
