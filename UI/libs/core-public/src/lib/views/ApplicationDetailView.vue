@@ -1225,11 +1225,8 @@ const appointmentTime = ref('')
 const isRenewLoading = ref(false)
 const paymentSnackbar = ref(false)
 const queryClient = useQueryClient()
-const userSignature = ref('')
 const signaturePad = ref<SignaturePad>()
 const signatureForm = new FormData()
-const persistentDialog = ref(true)
-const showModifySignatureDialog = ref(false)
 
 const state = reactive({
   snackbar: false,
@@ -1281,10 +1278,6 @@ const state = reactive({
   ],
 })
 
-const setUserSignature = (file: string) => {
-  userSignature.value = file
-}
-
 const {
   mutate: updatePaymentHistory,
   isLoading: isUpdatePaymentHistoryLoading,
@@ -1329,7 +1322,6 @@ const {
 
 onMounted(() => {
   state.isApplicationValid = Boolean(applicationStore.completeApplication.id)
-  //handleEditSignature(false)
 
   const transactionId = route.query.transactionId
   const successful = route.query.successful
@@ -2334,20 +2326,6 @@ function handleShowModifySignatureDialog() {
       backgroundColor: 'rgba(0, 0, 0, 0)',
       minDistance: 5,
     })
-
-    // if (applicationStore.completeApplication.application.uploadedDocuments) {
-    //   const signature = getUserSignatureApi()
-    //   const image = new Image()
-
-    //   image.src = userSignature.value
-    //   image.onload = () => {
-    //     signaturePad.value?.fromDataURL(userSignature.value, {
-    //       ratio: 1,
-    //       width: image.width,
-    //       height: image.height,
-    //     })
-    //   }
-    // }
   })
 }
 
@@ -2528,17 +2506,6 @@ async function postUploadSignatureFile(data: FormData, target: string) {
   )
 }
 
-async function getUserSignatureApi() {
-  const res = await axios.get(Endpoints.GET_DOCUMENT_FILE_ENDPOINT)
-  const imageResponse = await axios.get(
-    `${Endpoints.GET_DOCUMENT_FILE_ENDPOINT}?applicantFileName=Signature`
-  )
-
-  if (imageResponse?.data) setUserSignature(imageResponse.data)
-
-  return res?.data || {}
-}
-
 async function handleSaveSignature() {
   const canvas = document.getElementById('signature') as HTMLCanvasElement
 
@@ -2547,8 +2514,6 @@ async function handleSaveSignature() {
 
     uploadSignatureDocument()
   })
-
-  //updateMutation.mutate()
 }
 
 function handleClearSignature() {
