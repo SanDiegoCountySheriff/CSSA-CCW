@@ -72,7 +72,7 @@
                     :button-text="'SID LETTER REPORT'"
                     description="Select which day to generate an SID Letter Report"
                     title="SID Letter Report"
-                    icon="mdi-graph-outline"
+                    icon="mdi-file-chart-outline"
                     text
                   >
                     <v-container>
