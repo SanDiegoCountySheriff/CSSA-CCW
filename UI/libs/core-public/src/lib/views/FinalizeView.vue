@@ -55,7 +55,6 @@
         >
           <v-alert
             type="info"
-            color="primary"
             outlined
           >
             <span
@@ -64,11 +63,22 @@
               Review your information before submitting your renewal
               application.
             </span>
+          </v-alert>
+        </v-row>
+
+        <v-row
+          v-if="isRenew && !appConfigStore.appConfig.payBeforeSubmit"
+          justify="center"
+          class="mt-3"
+        >
+          <v-alert
+            outlined
+            type="warning"
+          >
             <span
-              v-if="!appConfigStore.appConfig.payBeforeSubmit"
               :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
             >
-              Licensing staff will contact you to pay at a later date
+              Payment will requested after you application has been processed.
             </span>
           </v-alert>
         </v-row>
@@ -86,21 +96,31 @@
         >
           <v-alert
             type="info"
-            color="primary"
             outlined
           >
             <span
               :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
             >
-              You must choose an appointment in order to submit your
-              application. You may reschedule or cancel your appointment at a
-              later time.
+              Choose an appointment in order to submit your application. You may
+              reschedule or cancel your appointment after submission.
             </span>
+          </v-alert>
+        </v-row>
+
+        <v-row
+          v-if="!isRenew && !appConfigStore.appConfig.payBeforeSubmit"
+          justify="center"
+          class="mt-3"
+        >
+          <v-alert
+            type="warning"
+            outlined
+          >
             <span
-              v-if="!appConfigStore.appConfig.payBeforeSubmit"
               :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
             >
-              Licensing staff will contact you to pay at a later date.
+              Payment will be requested after your application has been
+              processed.
             </span>
           </v-alert>
         </v-row>

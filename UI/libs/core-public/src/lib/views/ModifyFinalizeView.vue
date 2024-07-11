@@ -13,10 +13,9 @@
             <v-alert
               type="info"
               outlined
-              color="primary"
             >
-              You will be asked to pay after a Licensing employee reviews your
-              modification application.
+              Payment will be requested once your application has been
+              processed.
             </v-alert>
           </v-row>
           <v-row justify="center">
