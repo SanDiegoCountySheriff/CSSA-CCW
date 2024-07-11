@@ -2043,9 +2043,9 @@ public class PdfService : IPdfService
     private static string BuildApplicantFullName(PermitApplication userApplication)
     {
         var personalInfo = userApplication.Application.PersonalInfo;
-        return string.Join(", ", new[]
+        return string.Join(" ", new[]
         {
-        personalInfo?.LastName,
+        personalInfo?.LastName + ",",
         personalInfo?.FirstName,
         personalInfo?.MiddleName,
         personalInfo?.Suffix
