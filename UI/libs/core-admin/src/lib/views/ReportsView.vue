@@ -26,12 +26,17 @@
                 class="d-flex justify-center"
               >
                 <v-card elevation="3">
-                  <v-btn
+                  <ReportsDialog
                     @click="handleAppointmentDialog"
-                    :color="$vuetify.theme.dark ? 'white' : 'primary'"
-                    :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
-                    :x-large="$vuetify.breakpoint.lgAndUp"
-                    :small="$vuetify.breakpoint.smAndDown"
+                    @generate="handleAppointmentExport"
+                    :button-color="$vuetify.theme.dark ? 'white' : 'primary'"
+                    :button-height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
+                    :button-x-large="$vuetify.breakpoint.lgAndUp"
+                    :button-small="$vuetify.breakpoint.smAndDown"
+                    :button-text="'APPOINTMENT REPORT'"
+                    description="Select which day to generate an appointment report"
+                    title="Appointment Report"
+                    icon="mdi-calendar"
                     text
                   >
                     <v-container>
@@ -47,7 +52,7 @@
                         </v-col>
                       </v-row>
                     </v-container>
-                  </v-btn>
+                  </ReportsDialog>
                 </v-card>
               </v-col>
 
@@ -57,12 +62,17 @@
                 class="d-flex justify-center"
               >
                 <v-card>
-                  <v-btn
+                  <ReportsDialog
                     @click="handleSIDDialog"
-                    :color="$vuetify.theme.dark ? 'white' : 'primary'"
-                    :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
-                    :x-large="$vuetify.breakpoint.lgAndUp"
-                    :small="$vuetify.breakpoint.smAndDown"
+                    @generate="handleSIDExport"
+                    :button-color="$vuetify.theme.dark ? 'white' : 'primary'"
+                    :button-height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
+                    :button-x-large="$vuetify.breakpoint.lgAndUp"
+                    :button-small="$vuetify.breakpoint.smAndDown"
+                    :button-text="'SID LETTER REPORT'"
+                    description="Select which day to generate an SID Letter Report"
+                    title="SID Letter Report"
+                    icon="mdi-graph-outline"
                     text
                   >
                     <v-container>
@@ -78,7 +88,7 @@
                         </v-col>
                       </v-row>
                     </v-container>
-                  </v-btn>
+                  </ReportsDialog>
                 </v-card>
               </v-col>
             </v-row>
@@ -94,81 +104,6 @@
                 </v-alert>
               </v-row>
             </v-col>
-
-            <v-dialog
-              v-model="appointmentDialog"
-              max-width="600px"
-            >
-              <v-card>
-                <v-card-title>Appointment Report</v-card-title>
-
-                <v-card-text>
-                  Select which day to generate an appointment report
-                  <v-date-picker
-                    v-model="selectedDate"
-                    class="mt-3 mb-3 rounded-lg"
-                    color="primary"
-                    full-width
-                  ></v-date-picker>
-                </v-card-text>
-
-                <v-card-actions>
-                  <v-btn
-                    color="primary"
-                    text
-                    @click="appointmentDialog = false"
-                  >
-                    Close
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="primary"
-                    text
-                    @click="handleAppointmentExport"
-                  >
-                    Generate Report
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-
-            <v-dialog
-              v-model="sidDialog"
-              max-width="600px"
-            >
-              <v-card>
-                <v-card-title>SID Letter Report</v-card-title>
-
-                <v-card-text>
-                  Select which day to generate an SID Letter report
-                  <v-date-picker
-                    v-model="selectedDate"
-                    class="mt-3 mb-3 rounded-lg"
-                    color="primary"
-                    full-width
-                  >
-                  </v-date-picker>
-                </v-card-text>
-
-                <v-card-actions>
-                  <v-btn
-                    color="primary"
-                    text
-                    @click="sidDialog = false"
-                  >
-                    Close
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="primary"
-                    text
-                    @click="handleSIDExport"
-                  >
-                    Generate Report
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
           </v-card-text>
         </template>
       </v-col>
@@ -177,30 +112,30 @@
 </template>
 
 <script setup lang="ts">
+import ReportsDialog from '@core-admin/components/dialogs/ReportsDialog.vue'
 import { ref } from 'vue'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 
 const permitStore = usePermitsStore()
-const selectedDate = ref('')
 
 const appointmentDialog = ref(false)
 const sidDialog = ref(false)
 
-async function handleAppointmentExport() {
-  const permitsData = await permitStore.getPermitsByDate(selectedDate.value)
+async function handleAppointmentExport(date: string) {
+  const permitsData = await permitStore.getPermitsByDate(date)
 
-  exportAppointmentCsv(permitsData)
+  exportAppointmentCsv(permitsData, date)
   appointmentDialog.value = false
 }
 
-async function handleSIDExport() {
-  const permitsData = await permitStore.getPermitsByDate(selectedDate.value)
+async function handleSIDExport(date: string) {
+  const permitsData = await permitStore.getPermitsByDate(date)
 
-  exportSID(permitsData)
+  exportSID(permitsData, date)
   sidDialog.value = false
 }
 
-function exportSID(data) {
+function exportSID(data, exportDate) {
   const csvRows: string[] = []
 
   const headers = [
@@ -280,14 +215,14 @@ function exportSID(data) {
 
     // eslint-disable-next-line node/no-unsupported-features/node-builtins
     link.href = URL.createObjectURL(blob)
-    link.setAttribute('download', `SID LETTER REPORT ${selectedDate.value}.csv`)
+    link.setAttribute('download', `SID LETTER REPORT ${exportDate}.csv`)
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
   }
 }
 
-function exportAppointmentCsv(data) {
+function exportAppointmentCsv(data, exportDate) {
   const csvRows: string[] = []
 
   const headers = ['paid', 'lastName', 'firstName', 'appointmentDateTime']
@@ -332,7 +267,7 @@ function exportAppointmentCsv(data) {
 
     // eslint-disable-next-line node/no-unsupported-features/node-builtins
     link.href = URL.createObjectURL(blob)
-    link.setAttribute('download', `APPOINTMENTS ${selectedDate.value}.csv`)
+    link.setAttribute('download', `APPOINTMENTS ${exportDate}.csv`)
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
