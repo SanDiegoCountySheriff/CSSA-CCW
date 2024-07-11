@@ -37,4 +37,5 @@ public class SummarizedPermitApplicationReport
     public ApplicationType ApplicationType { get; set; }
     public DateTimeOffset? AppointmentDateTime { get; set; }
     public List<Alias> Aliases { get; set; }
+    public string BirthDate { get; set; }
 }

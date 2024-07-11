@@ -17,4 +17,5 @@ public class SummarizedPermitApplicationReportResponseModel
     public ApplicationType ApplicationType { get; set; }
     public DateTime? AppointmentDateTime { get; set; }
     public List<Alias> Aliases { get; set; }
+    public string BirthDate { get; set; }
 }
