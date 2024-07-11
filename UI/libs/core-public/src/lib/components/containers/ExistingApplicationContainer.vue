@@ -118,6 +118,23 @@
             </v-col>
           </v-row>
 
+          <v-row>
+            <v-col>
+              <v-alert
+                type="warning"
+                outlined
+              >
+                <span
+                  :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
+                >
+                  Please upload only the front side of your drivers license. If
+                  you're also uploading your permit, include only the front
+                  side.
+                </span>
+              </v-alert>
+            </v-col>
+          </v-row>
+
           <v-row class="mb-6">
             <v-col
               cols="12"
@@ -162,7 +179,6 @@
               <v-alert
                 outlined
                 type="info"
-                color="primary"
               >
                 <span
                   :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
@@ -232,7 +248,6 @@
               <v-alert
                 outlined
                 type="info"
-                color="primary"
               >
                 <span
                   :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"

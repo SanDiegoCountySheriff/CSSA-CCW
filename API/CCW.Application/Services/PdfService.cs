@@ -2045,9 +2045,9 @@ public class PdfService : IPdfService
         var personalInfo = userApplication.Application.PersonalInfo;
         return string.Join(" ", new[]
         {
+        personalInfo?.LastName + ",",
         personalInfo?.FirstName,
         personalInfo?.MiddleName,
-        personalInfo?.LastName,
         personalInfo?.Suffix
         }.Where(name => !string.IsNullOrWhiteSpace(name)));
     }
