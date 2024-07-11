@@ -117,6 +117,19 @@
           </v-list-item>
 
           <v-list-item
+            v-if="authStore.auth.roles.includes('CCW-ADMIN-ROLE')"
+            :to="Routes.REPORTS_PATH"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-file-excel</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="text-left">
+              {{ $t('Reports') }}
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item
             :to="Routes.SETTINGS_ROUTE_PATH"
             link
           >

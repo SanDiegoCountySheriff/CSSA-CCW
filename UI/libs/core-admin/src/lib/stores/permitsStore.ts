@@ -195,6 +195,20 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return res?.data
   }
 
+  async function getPermitsByDate(date) {
+    try {
+      const res = await axios.get(Endpoints.GET_PERMITS_BY_DATE_ENDPOINT, {
+        params: { date },
+      })
+
+      return res.data.items
+    } catch (error) {
+      console.error('Error fetching permits by date:', error)
+
+      return []
+    }
+  }
+
   async function getAllPermitsSummary(
     signal: AbortSignal | undefined
   ): Promise<{
@@ -801,6 +815,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     setSearchResults,
     setPermitDetail,
     getAllPermitsApi,
+    getPermitsByDate,
     getPermitDetailApi,
     getPermitSearchApi,
     getHistoryApi,
