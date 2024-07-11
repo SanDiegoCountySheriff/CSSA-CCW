@@ -9,7 +9,7 @@
         isMakePaymentLoading
       "
       color="primary"
-      block
+      tonal
     >
       Modify Signature
     </v-btn>
@@ -110,24 +110,38 @@
 </template>
 
 <script setup lang="ts">
-import Endpoints from '@shared-ui/api/endpoints'
-import Routes from '@core-public/router/routes'
+import { AppointmentType } from '../../../../../utils/src/lib/types/defaultTypes'
+//import { AppointmentType } from '@shared-utils/types/defaultTypes'
+//import Endpoints from '@shared-ui/api/endpoints'
+import Endpoints from '../../../lib/api/endpoints'
+//import Routes from '@core-public/router/routes'
+import Routes from '../../../../../../core-public/src/lib/router/routes'
 import SignaturePad from 'signature_pad'
-import { UploadedDocType } from '@shared-utils/types/defaultTypes'
+//import { UploadedDocType } from '@shared-utils/types/defaultTypes'
+import { UploadedDocType } from '../../../../../utils/src/lib/types/defaultTypes'
 import axios from 'axios'
-import { useBrandStore } from '@shared-ui/stores/brandStore'
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { usePaymentStore } from '@shared-ui/stores/paymentStore'
-import { useThemeStore } from '@shared-ui/stores/themeStore'
+//import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useBrandStore } from '../../stores/brandStore'
+//import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useCompleteApplicationStore } from '../../stores/completeApplication'
+//import { usePaymentStore } from '@shared-ui/stores/paymentStore'
+import { usePaymentStore } from '../../stores/paymentStore'
+//import { useThemeStore } from '@shared-ui/stores/themeStore'
+import { useThemeStore } from '../../stores/themeStore'
+// import {
+//   ApplicationStatus,
+//   ApplicationType,
+// } from '@shared-utils/types/defaultTypes'
+// import {
+//   CompleteApplication,
+//   PaymentType,
+// } from '@shared-utils/types/defaultTypes'
 import {
   ApplicationStatus,
   ApplicationType,
-} from '@shared-utils/types/defaultTypes'
-import { AppointmentType } from '@shared-utils/types/defaultTypes'
-import {
   CompleteApplication,
   PaymentType,
-} from '@shared-utils/types/defaultTypes'
+} from '../../../../../utils/src/lib/types/defaultTypes'
 import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 import { useRoute, useRouter } from 'vue-router/composables'

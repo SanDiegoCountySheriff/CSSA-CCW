@@ -46,14 +46,17 @@
             </td>
             <td>
               <v-container ml-12>
-                <v-btn
+                <!-- <v-btn
                   v-if="item.documentType === 'Signature'"
                   color="primary"
                   tonal
                   @click="handleModifyDocument"
                 >
                   {{ $t('Edit Signature') }}
-                </v-btn>
+                </v-btn> -->
+                <ModifySignatureDialog
+                  v-if="item.documentType === 'Signature'"
+                ></ModifySignatureDialog>
               </v-container>
             </td>
           </template>
@@ -75,6 +78,7 @@ import axios from 'axios'
 // eslint-disable-next-line sort-imports
 import Endpoints from '@shared-ui/api/endpoints'
 import FileUploadDialog from '@shared-ui/components/dialogs/FileUploadDialog.vue'
+import ModifySignatureDialog from '@shared-ui/components/dialogs/ModifySignatureDialog.vue'
 import {
   formatDate,
   formatTime,

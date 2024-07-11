@@ -27,14 +27,17 @@
             state.signature ? $t('Signature Uploaded') : $t('Missing Signature')
           }}
           <v-container ml-12>
-            <v-btn
+            <!-- <v-btn
               v-if="state.signature"
               color="primary"
               tonal
               @click="handleModifyDocument"
             >
               {{ $t('Edit Signature') }}
-            </v-btn>
+            </v-btn> -->
+            <ModifySignatureDialog
+              v-if="state.signature"
+            ></ModifySignatureDialog>
           </v-container>
         </v-banner>
       </v-col>
@@ -44,6 +47,7 @@
 
 <script lang="ts" setup>
 import Endpoints from '@shared-ui/api/endpoints'
+import ModifySignatureDialog from '@shared-ui/components/dialogs/ModifySignatureDialog.vue'
 import axios from 'axios'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'

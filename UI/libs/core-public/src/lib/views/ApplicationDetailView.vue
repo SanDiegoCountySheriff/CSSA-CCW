@@ -272,34 +272,7 @@
 
                 &nbsp;
 
-                <modifySignatureDialog></modifySignatureDialog>
-
-                <!-- <v-btn
-                  v-if="showInitialWithdrawButton && canWithdrawApplication"
-                  @click="handleShowModifySignatureDialog"
-                  :disabled="
-                    isGetApplicationsLoading ||
-                    !canWithdrawApplication ||
-                    isMakePaymentLoading
-                  "
-                  color="primary"
-                  block
-                >
-                  Modify Signature
-                </v-btn>
-
-                <v-btn
-                  v-else-if="
-                    applicationStore.completeApplication.application.status ===
-                    ApplicationStatus.Withdrawn
-                  "
-                  color="primary"
-                  block
-                  @click="handleSubmit"
-                  :disabled="isGetApplicationsLoading || isMakePaymentLoading"
-                >
-                  Submit
-                </v-btn> -->
+                <!-- <ModifySignatureDialog></ModifySignatureDialog> -->
               </v-col>
             </v-row>
 
@@ -891,86 +864,6 @@
     </v-dialog>
 
     <v-dialog
-      v-model="state.modifySignatureDialog"
-      max-width="600"
-    >
-      <v-card :loading="isUploadSignatureDocumentLoading">
-        <v-card-title> Edit Signature </v-card-title>
-
-        <v-card-title>Signature</v-card-title>
-
-        <v-card-text>
-          <v-card
-            light
-            flat
-            width="555px"
-            height="105px"
-            outlined
-            style="border: solid 2px black"
-          >
-            <canvas
-              width="550px"
-              height="100px"
-              id="signature"
-              class="signature"
-            ></canvas>
-          </v-card>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-btn
-            color="primary"
-            @click="handleClearSignature"
-          >
-            Clear Signature
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn
-            :valid="!isSignaturePadEmpty"
-            color="primary"
-            @click="handleSaveSignature"
-          >
-            Save
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-snackbar
-      v-model="state.showUploadFailureSnackbar"
-      color="primary"
-    >
-      The signature modification failed. Please contact us if this error
-      continues.
-      <template #action="{ attrs }">
-        <v-btn
-          text
-          v-bind="attrs"
-          @click="state.showUploadFailureSnackbar = false"
-        >
-          Ok
-        </v-btn>
-      </template>
-    </v-snackbar>
-
-    <v-snackbar
-      v-model="state.showUploadSuccessSnackbar"
-      color="primary"
-    >
-      Your signature was successfully modified. Please inform Licensing so your
-      application can continue processing.
-      <template #action="{ attrs }">
-        <v-btn
-          text
-          v-bind="attrs"
-          @click="state.showUploadSuccessSnackbar = false"
-        >
-          Ok
-        </v-btn>
-      </template>
-    </v-snackbar>
-
-    <v-dialog
       v-model="state.renewDialog"
       max-width="600"
     >
@@ -1168,14 +1061,13 @@ import EmploymentInfoSection from '@shared-ui/components/info-sections/Employmen
 import Endpoints from '@shared-ui/api/endpoints'
 import FileUploadInfoSection from '@shared-ui/components/info-sections/FileUploadInfoSection.vue'
 import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue'
-import modifySignatureDialog from '@core-public/components/dialogs/ModifySignatureDialog.vue'
+import ModifySignatureDialog from '@core-public/components/dialogs/ModifySignatureDialog.vue'
 import PaymentConfirmationDialog from '@core-public/components/dialogs/PaymentConfirmationDialog.vue'
 import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue'
 import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue'
 import QualifyingQuestionsInfoSection from '@shared-ui/components/info-sections/QualifyingQuestionsInfoSection.vue'
 import Routes from '@core-public/router/routes'
 import SignatureInfoSection from '@shared-ui/components/info-sections/SignatureInfoSection.vue'
-import SignaturePad from 'signature_pad'
 import SpouseAddressInfoSection from '@shared-ui/components/info-sections/SpouseAddressInfoSection.vue'
 import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
@@ -1203,7 +1095,7 @@ import {
   CompleteApplication,
   PaymentType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, nextTick, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { useRoute, useRouter } from 'vue-router/composables'
 
@@ -1228,8 +1120,6 @@ const appointmentTime = ref('')
 const isRenewLoading = ref(false)
 const paymentSnackbar = ref(false)
 const queryClient = useQueryClient()
-const signaturePad = ref<SignaturePad>()
-const signatureForm = new FormData()
 
 const state = reactive({
   snackbar: false,
@@ -1239,9 +1129,6 @@ const state = reactive({
   confirmSubmissionDialog: false,
   rescheduling: false,
   withdrawDialog: false,
-  modifySignatureDialog: false,
-  showUploadFailureSnackbar: false,
-  showUploadSuccessSnackbar: false,
   renewDialog: false,
   appointmentDialog: false,
   appointments: [] as Array<AppointmentType>,
@@ -2002,48 +1889,6 @@ const { mutate: makePayment, isLoading: isMakePaymentLoading } = useMutation({
   },
 })
 
-const {
-  isLoading: isUploadSignatureDocumentLoading,
-  mutate: uploadSignatureDocument,
-} = useMutation(
-  ['uploadSignatureDocument'],
-  async () => await postUploadSignatureFile(signatureForm, 'signature'),
-  {
-    onSuccess: async () => {
-      const uploadDoc: UploadedDocType = {
-        documentType: 'Signature',
-        name: 'Signature',
-        uploadedBy: applicationStore.completeApplication.application.userEmail,
-        uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
-      }
-
-      if (applicationStore.completeApplication.application.uploadedDocuments) {
-        applicationStore.completeApplication.application.uploadedDocuments =
-          applicationStore.completeApplication.application.uploadedDocuments.filter(
-            document => {
-              return document.documentType !== 'Signature'
-            }
-          )
-      } else {
-        applicationStore.completeApplication.application.uploadedDocuments = []
-      }
-
-      applicationStore.completeApplication.application.uploadedDocuments.push(
-        uploadDoc
-      )
-
-      handleShowUploadSuccessSnackbar()
-    },
-    onError: () => {
-      handleShowUploadFailureSnackbar()
-    },
-  }
-)
-
-const isSignaturePadEmpty = computed(() => {
-  return signaturePad.value?.isEmpty()
-})
-
 function handlePayment() {
   makePayment()
 }
@@ -2319,19 +2164,6 @@ function handleShowWithdrawDialog() {
   state.withdrawDialog = true
 }
 
-function handleShowModifySignatureDialog() {
-  state.modifySignatureDialog = true
-
-  nextTick(() => {
-    const canvas = document.getElementById('signature') as HTMLCanvasElement
-
-    signaturePad.value = new SignaturePad(canvas, {
-      backgroundColor: 'rgba(0, 0, 0, 0)',
-      minDistance: 5,
-    })
-  })
-}
-
 function handleShowRenewDialog() {
   state.renewDialog = true
 }
@@ -2477,16 +2309,6 @@ function showReviewDialog() {
   }
 }
 
-function handleShowUploadSuccessSnackbar() {
-  state.showUploadSuccessSnackbar = true
-  updateMutation.mutate()
-}
-
-function handleShowUploadFailureSnackbar() {
-  state.showUploadFailureSnackbar = true
-  updateMutation.mutate()
-}
-
 function acceptChanges() {
   applicationStore.completeApplication.application.flaggedForCustomerReview =
     false
@@ -2500,27 +2322,6 @@ function acceptChanges() {
 
 function cancelChanges() {
   reviewDialog.value = false
-}
-
-async function postUploadSignatureFile(data: FormData, target: string) {
-  await axios.post(
-    `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${target}`,
-    data
-  )
-}
-
-async function handleSaveSignature() {
-  const canvas = document.getElementById('signature') as HTMLCanvasElement
-
-  canvas.toBlob(async blob => {
-    signatureForm.append('fileToUpload', blob as Blob)
-
-    uploadSignatureDocument()
-  })
-}
-
-function handleClearSignature() {
-  signaturePad.value?.clear()
 }
 
 function handleFileSubmit(fileSubmission: IFileSubmission) {
