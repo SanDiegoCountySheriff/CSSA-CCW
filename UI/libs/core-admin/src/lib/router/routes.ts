@@ -43,4 +43,8 @@ export default class Routes {
   static get EXISTING_APPLICANTS_PATH() {
     return `/existing-applicants`
   }
+
+  static get REPORTS_PATH() {
+    return `/reports`
+  }
 }
