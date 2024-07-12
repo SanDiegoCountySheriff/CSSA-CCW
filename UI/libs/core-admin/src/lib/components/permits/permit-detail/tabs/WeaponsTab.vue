@@ -12,22 +12,47 @@
         />
       </v-card-title>
 
+      <v-template
+        v-if="
+          permitStore.getPermitDetail.application.modifiedWeaponComplete !==
+          null
+        "
+      >
+        <v-row>
+          <v-col
+            cols="12"
+            class="pr-7"
+          >
+            <v-alert
+              class="ml-4"
+              border="left"
+              color="blue"
+              text
+              type="info"
+            >
+              Please review the following weapon modification(s).
+            </v-alert>
+          </v-col>
+        </v-row>
+      </v-template>
       <v-card-text>
-        <WeaponsTable
-          :weapons="items"
-          :readonly="readonly"
-          :edit-enable="!readonly"
-          :modifying="
-            permitStore.getPermitDetail.application.modifiedWeaponComplete !==
-            null
-          "
-          @delete-weapon="deleteWeapon"
-          @handle-edit-weapon="handleEditWeapon"
-          @save-weapon="handleSaveWeapon"
-          @modify-delete-weapon="deleteWeapon"
-          @undo-delete-weapon="handleUndoDeleteWeapon"
-          @undo-add-weapon="handleUndoAddWeapon"
-        />
+        <v-row>
+          <WeaponsTable
+            :weapons="items"
+            :readonly="readonly"
+            :edit-enable="!readonly"
+            :modifying="
+              permitStore.getPermitDetail.application.modifiedWeaponComplete !==
+              null
+            "
+            @delete-weapon="deleteWeapon"
+            @handle-edit-weapon="handleEditWeapon"
+            @save-weapon="handleSaveWeapon"
+            @modify-delete-weapon="deleteWeapon"
+            @undo-delete-weapon="handleUndoDeleteWeapon"
+            @undo-add-weapon="handleUndoAddWeapon"
+          />
+        </v-row>
 
         <template
           v-if="
@@ -35,39 +60,57 @@
             null
           "
         >
-          <v-btn
-            @click="handleOpenPdf"
-            color="primary"
-            class="mr-3"
-          >
-            <v-icon left>mdi-file-document-check</v-icon>
-            Check Documents
-          </v-btn>
+          <v-row>
+            <v-col>
+              <v-btn
+                @click="handleOpenPdf"
+                color="primary"
+                class="mr-3"
+                outlined
+              >
+                <v-icon left>mdi-file-document-check</v-icon>
+                Check Document
+              </v-btn>
+            </v-col>
 
-          <v-btn
-            v-if="
-              !permitStore.getPermitDetail.application.modifiedWeaponComplete
-            "
-            @click="onApproveWeaponChange"
-            color="primary"
-          >
-            <v-icon left> mdi-check </v-icon>
-            Approve
-          </v-btn>
+            <v-col>
+              <v-btn
+                v-if="
+                  !permitStore.getPermitDetail.application
+                    .modifiedWeaponComplete
+                "
+                @click="onApproveWeaponChange"
+                color="primary"
+                style="float: right"
+              >
+                <v-icon
+                  left
+                  color="green"
+                >
+                  mdi-check
+                </v-icon>
+                Approve
+              </v-btn>
 
-          <v-btn
-            :disabled="
-              permitStore.getPermitDetail.application.status ===
-              ApplicationStatus['Modification Approved']
-            "
-            v-else
-            @click="onUndoApproveWeaponChange"
-            color="primary"
-          >
-            <v-icon left> mdi-undo </v-icon>
-            Undo Approve
-          </v-btn>
+              <v-btn
+                :disabled="
+                  permitStore.getPermitDetail.application.status ===
+                  ApplicationStatus['Modification Approved']
+                "
+                v-else
+                @click="onUndoApproveWeaponChange"
+                color="primary"
+                style="float: right"
+              >
+                <v-icon left> mdi-undo </v-icon>
+                Undo Approve
+              </v-btn>
+            </v-col>
+          </v-row>
         </template>
+        <v-row>
+          <v-col></v-col>
+        </v-row>
       </v-card-text>
     </v-card>
   </div>
