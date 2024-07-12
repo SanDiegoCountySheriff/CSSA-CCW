@@ -1,5 +1,8 @@
 <template>
-  <v-container>
+  <v-container
+    class="d-flex align-center justify-center"
+    style="height: 75vh"
+  >
     <v-row
       justify="center"
       align="center"
@@ -46,7 +49,7 @@
             offset-sm="0"
           >
             <v-card-text
-              class="left mt-1 ml-2"
+              class="left ml-2"
               style="line-height: 2.5"
             >
               <ol>
@@ -104,6 +107,7 @@ const goToDashBoard = () => {
 
 .custom-alert {
   height: 50px;
+
   display: flex;
   align-items: center;
   justify-content: center;
