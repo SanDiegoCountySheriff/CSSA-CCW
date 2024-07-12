@@ -11,7 +11,10 @@
 
     <v-template
       v-if="
-        permitStore.getPermitDetail.application.modifiedNameComplete !== null
+        permitStore.getPermitDetail.application.modifiedNameComplete !== null ||
+        permitStore.getPermitDetail.application.modifiedWeaponComplete !==
+          null ||
+        permitStore.getPermitDetail.application.modifiedAddressComplete !== null
       "
     >
       <v-row>
