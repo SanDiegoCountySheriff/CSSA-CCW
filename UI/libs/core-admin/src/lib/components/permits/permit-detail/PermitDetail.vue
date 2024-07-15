@@ -3,12 +3,20 @@
 <template>
   <v-container fluid>
     <v-row v-if="permitStore.viewingHistorical">
-      <v-col>
+      <v-col class="pb-0">
         <v-alert
-          type="warning"
+          class="mb-1"
+          type="info"
           outlined
         >
-          Application Audit View
+          Application Audit View. This application audit history was created
+          {{
+            permitStore.permitDetail.historicalDate
+              ? new Date(
+                  permitStore.permitDetail.historicalDate
+                ).toLocaleString()
+              : ''
+          }}
         </v-alert>
       </v-col>
     </v-row>

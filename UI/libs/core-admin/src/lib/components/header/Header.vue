@@ -84,7 +84,8 @@
                 text
                 @click="handleViewHistoricalApplication(item.id)"
               >
-                {{ new Date(item.historicalDate).toLocaleDateString() }}
+                {{ new Date(item.historicalDate).toLocaleDateString() }} -
+                {{ ApplicationType[item.applicationType] }}
               </v-btn>
             </v-list-item>
           </v-list>
@@ -239,6 +240,7 @@ import { useAuthStore } from '@shared-ui/stores/auth'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
+  ApplicationType,
   HistoricalApplicationSummary,
   UploadedDocType,
 } from '@shared-utils/types/defaultTypes'

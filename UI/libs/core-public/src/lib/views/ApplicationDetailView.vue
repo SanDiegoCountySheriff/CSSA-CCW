@@ -2140,16 +2140,7 @@ function handleModifyApplication() {
 }
 
 async function handleRenewApplication() {
-  const historicalApplication: CompleteApplication = {
-    ...applicationStore.getCompleteApplication,
-  }
-
-  await addHistoricalApplicationPublic(historicalApplication)
-
-  isRenewLoading.value = true
   const application = applicationStore.completeApplication.application
-
-  application.renewalNumber += 1
 
   if (!isRenew.value) {
     switch (application.applicationType) {
@@ -2173,6 +2164,16 @@ async function handleRenewApplication() {
         break
     }
   }
+
+  const historicalApplication: CompleteApplication = {
+    ...applicationStore.getCompleteApplication,
+  }
+
+  await addHistoricalApplicationPublic(historicalApplication)
+
+  isRenewLoading.value = true
+
+  application.renewalNumber += 1
 
   applicationStore.completeApplication.application.cost = {
     new: {

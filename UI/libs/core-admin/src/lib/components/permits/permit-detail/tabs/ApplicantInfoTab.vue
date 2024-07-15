@@ -88,6 +88,7 @@
           <v-row>
             <v-col cols="3">
               <v-btn
+                :disabled="readonly"
                 @click="handleOpenPdf"
                 color="primary"
                 outlined
@@ -106,6 +107,7 @@
                 v-if="
                   !permitStore.getPermitDetail.application.modifiedNameComplete
                 "
+                :disabled="readonly"
                 @click="onApproveNameChange"
                 color="primary"
                 style="float: right"
@@ -123,6 +125,7 @@
                 v-if="
                   permitStore.getPermitDetail.application.modifiedNameComplete
                 "
+                :disabled="readonly"
                 @click="onUndoApproveNameChange"
                 color="primary"
                 style="float: right"

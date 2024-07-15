@@ -1,3 +1,4 @@
+using CCW.Common.Enums;
 using Newtonsoft.Json;
 
 namespace CCW.Application.ResponseModels;

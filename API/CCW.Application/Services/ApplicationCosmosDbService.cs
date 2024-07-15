@@ -141,7 +141,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
     public async Task<PermitApplication> GetHistoricalApplication(string id, CancellationToken cancellationToken)
     {
-        var queryString =   "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated FROM applications a WHERE a.id = @id Order by a.Application.OrderId DESC";
+        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated, a.HistoricalDate FROM applications a WHERE a.id = @id Order by a.Application.OrderId DESC";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
             .WithParameter("@id", id);
@@ -445,7 +445,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
     public async Task<List<HistoricalApplicationSummary>> GetHistoricalApplicationSummary(string orderId, CancellationToken cancellationToken)
     {
-        var queryString = "SELECT c.id, c.HistoricalDate FROM c WHERE c.Application.OrderId = @orderId";
+        var queryString = "SELECT c.id, c.HistoricalDate, c.Application.ApplicationType FROM c WHERE c.Application.OrderId = @orderId";
         var query = new QueryDefinition(queryString).WithParameter("@orderId", orderId);
 
         var result = new List<HistoricalApplicationSummary>();
