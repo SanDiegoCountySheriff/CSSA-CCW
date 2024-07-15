@@ -308,6 +308,11 @@ export type RefundRequest = {
   reason: string | null | undefined
 }
 
+export type HistoricalApplicationSummary = {
+  id: string
+  historicalDate: string
+}
+
 export type PersonalInfoType = {
   lastName: string
   firstName: string

@@ -34,4 +34,6 @@ public interface IApplicationCosmosDbService
     Task<List<string>> GetEmailsAsync(PermitsOptions options, CancellationToken cancellationToken);
     Task<bool> MatchUserInformation(string idNumber, string dateOfBirth, CancellationToken cancellationToken);
     Task WithdrawRenewal(string userId, CancellationToken cancellationToken);
+    Task<int> GetApplicationHistoricalCount(string orderId, CancellationToken cancellationToken);
+    Task<List<HistoricalApplicationSummary>> GetHistoricalApplicationSummary(string orderId, CancellationToken cancellationToken);
 }

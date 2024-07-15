@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace CCW.Application.Models;
+namespace CCW.Application.ResponseModels;
 
 public class HistoryResponseModel
 {

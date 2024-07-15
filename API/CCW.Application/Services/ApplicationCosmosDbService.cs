@@ -396,6 +396,47 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return (results, count);
     }
 
+    public async Task<int> GetApplicationHistoricalCount(string orderId, CancellationToken cancellationToken)
+    {
+        var queryString = "SELECT VALUE Count(1) FROM c WHERE c.Application.OrderId = @orderId";
+        var parameterizedQuery = new QueryDefinition(queryString).WithParameter("@orderId", orderId);
+
+        using FeedIterator<int> filteredFeed = _container.GetItemQueryIterator<int>(
+            queryDefinition: parameterizedQuery
+        );
+
+        if (filteredFeed.HasMoreResults)
+        {
+            var result = await filteredFeed.ReadNextAsync();
+
+            return result.Resource.FirstOrDefault();
+        }
+
+        return 0;
+    }
+
+    public async Task<List<HistoricalApplicationSummary>> GetHistoricalApplicationSummary(string orderId, CancellationToken cancellationToken)
+    {
+        var queryString = "SELECT c.id, c.HistoricalDate FROM c WHERE c.Application.OrderId = @orderId";
+        var query = new QueryDefinition(queryString).WithParameter("@orderId", orderId);
+
+        var result = new List<HistoricalApplicationSummary>();
+
+        using FeedIterator<HistoricalApplicationSummary> feedIterator = _historicalContainer.GetItemQueryIterator<HistoricalApplicationSummary>(queryDefinition: query);
+
+        if (feedIterator.HasMoreResults)
+        {
+            var response = await feedIterator.ReadNextAsync();
+
+            foreach (var item in response)
+            {
+                result.Add(item);
+            }
+        }
+
+        return result;
+    }
+
     public async Task<IEnumerable<SummarizedPermitApplication>> SearchApplicationsAsync(string searchValue,
         CancellationToken cancellationToken)
     {

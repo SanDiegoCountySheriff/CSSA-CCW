@@ -55,6 +55,35 @@
           <v-icon left>mdi-email-outline</v-icon>
           Send Email
         </v-btn>
+
+        <v-menu
+          offset-y
+          @input="getHistoricalApplicationSummary"
+        >
+          <template #activator="{ on, attrs }">
+            <v-btn
+              :loading="isGetHistoricalApplicationSummaryLoading"
+              v-bind="attrs"
+              v-on="on"
+              color="white"
+              text
+            >
+              <v-icon left>mdi-history</v-icon>
+              {{ historicalButtonText }}
+            </v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item
+              v-for="(item, index) in historicalApplications"
+              :key="index"
+            >
+              <v-list-item-title>
+                {{ new Date(item.historicalDate).toLocaleDateString() }}
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </template>
 
       <v-dialog
@@ -189,11 +218,14 @@ import { MsalBrowser } from '@shared-ui/api/auth/authentication'
 import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import SignaturePad from 'signature_pad'
 import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue'
-import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import {
+  HistoricalApplicationSummary,
+  UploadedDocType,
+} from '@shared-utils/types/defaultTypes'
 import { computed, inject, nextTick, onMounted, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
@@ -211,6 +243,7 @@ const form = new FormData()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 const text = ref('')
 const snackbar = ref(false)
+const historicalApplications = ref<Array<HistoricalApplicationSummary>>()
 
 interface IHeaderProps {
   drawerShowing: boolean
@@ -242,6 +275,15 @@ const { isLoading: isCreateAdminUserLoading, mutate: createAdminUser } =
       },
     }
   )
+
+const {
+  isLoading: isGetHistoricalApplicationSummaryLoading,
+  mutate: getHistoricalApplications,
+} = useMutation(['historicalApplicationSummary'], (orderId: string) => {
+  return permitsStore.getHistoricalApplicationSummary(orderId).then(res => {
+    historicalApplications.value = res
+  })
+})
 
 const {
   isLoading: isUploadAdminUserDocumentLoading,
@@ -283,8 +325,20 @@ onMounted(async () => {
 
 const emit = defineEmits(['on-expand-menu'])
 
+const historicalButtonText = computed(() => {
+  return `${permitsStore.historicalApplicationCount} Audit${
+    permitsStore.historicalApplicationCount === 1 ? '' : 's'
+  }`
+})
+
 async function signOut() {
   msalInstance.value.logOut()
+}
+
+function getHistoricalApplicationSummary(event) {
+  if (event) {
+    getHistoricalApplications(permitsStore.permitDetail.application.orderId)
+  }
 }
 
 function handleEditAdminUser(persist: boolean) {
