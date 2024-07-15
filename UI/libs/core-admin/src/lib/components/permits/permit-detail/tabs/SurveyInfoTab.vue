@@ -744,6 +744,7 @@
           <v-col class="text-left">
             {{ $t('QUESTION-TWELVE') }}
           </v-col>
+
           <v-col>
             <v-row align="center">
               <v-radio-group
@@ -815,6 +816,7 @@
                     :disabled="readonly"
                   ></v-text-field>
                 </template>
+
                 <v-date-picker
                   v-model="
                     permitStore.getPermitDetail.application.qualifyingQuestions
@@ -827,6 +829,7 @@
                 </v-date-picker>
               </v-menu>
             </v-col>
+
             <v-col
               cols="12"
               md="3"
@@ -842,6 +845,7 @@
                 :rules="[v => !!v || $t('Violation is required')]"
               ></v-text-field>
             </v-col>
+
             <v-col
               cols="12"
               md="3"
@@ -857,6 +861,7 @@
                 label="Agency"
               ></v-text-field>
             </v-col>
+
             <v-col
               cols="12"
               md="3"
@@ -890,6 +895,7 @@
             >
               <v-icon left>mdi-plus</v-icon>Add
             </v-btn>
+
             <v-btn
               @click="removeTrafficViolation"
               color="primary"
@@ -1933,6 +1939,7 @@
           <v-col class="text-left">
             {{ $t('LEGACY-QUESTION-EIGHT') }}
           </v-col>
+
           <v-col>
             <v-row align="center">
               <v-radio-group
@@ -2004,6 +2011,7 @@
                     :disabled="readonly"
                   ></v-text-field>
                 </template>
+
                 <v-date-picker
                   v-model="
                     permitStore.getPermitDetail.application
@@ -2017,6 +2025,7 @@
                 </v-date-picker>
               </v-menu>
             </v-col>
+
             <v-col
               cols="12"
               md="3"
@@ -2034,6 +2043,7 @@
                 :rules="[v => !!v || $t('Violation is required')]"
               ></v-text-field>
             </v-col>
+
             <v-col
               cols="12"
               md="3"
@@ -2051,6 +2061,7 @@
                 label="Agency"
               ></v-text-field>
             </v-col>
+
             <v-col
               cols="12"
               md="3"
@@ -2086,6 +2097,7 @@
             >
               <v-icon left>mdi-plus</v-icon>Add
             </v-btn>
+
             <v-btn
               @click="removeLegacyTrafficViolation"
               color="primary"
