@@ -744,6 +744,7 @@
           <v-col class="text-left">
             {{ $t('QUESTION-TWELVE') }}
           </v-col>
+
           <v-col>
             <v-row align="center">
               <v-radio-group
@@ -751,6 +752,7 @@
                   permitStore.getPermitDetail.application.qualifyingQuestions
                     .questionTwelve.selected
                 "
+                @change="handleChangeQuestionTwelve"
                 :disabled="readonly"
                 row
               >
@@ -772,73 +774,139 @@
           </v-col>
         </v-row>
 
+        <template
+          v-if="
+            permitStore.getPermitDetail.application.qualifyingQuestions
+              .questionTwelve.selected
+          "
+        >
+          <v-row
+            class="mx-5"
+            v-for="index of permitStore.getPermitDetail.application
+              .qualifyingQuestions.questionTwelve.trafficViolations?.length"
+            :key="index"
+          >
+            <v-col
+              cols="12"
+              md="3"
+            >
+              <v-menu
+                v-model="menu[index]"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
+                <template #activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="
+                      permitStore.getPermitDetail.application
+                        .qualifyingQuestions.questionTwelve.trafficViolations[
+                        index - 1
+                      ].date
+                    "
+                    :label="$t('Date')"
+                    :rules="[v => !!v || $t('Date is required')]"
+                    dense
+                    outlined
+                    hint="YYYY-MM-DD format"
+                    prepend-inner-icon="mdi-calendar"
+                    v-bind="attrs"
+                    v-on="on"
+                    :disabled="readonly"
+                  ></v-text-field>
+                </template>
+
+                <v-date-picker
+                  v-model="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionTwelve.trafficViolations[index - 1].date
+                  "
+                  color="primary"
+                  no-title
+                  scrollable
+                >
+                </v-date-picker>
+              </v-menu>
+            </v-col>
+
+            <v-col
+              cols="12"
+              md="3"
+            >
+              <v-text-field
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionTwelve.trafficViolations[index - 1].violation
+                "
+                dense
+                outlined
+                label="Violation/Accident"
+                :rules="[v => !!v || $t('Violation is required')]"
+              ></v-text-field>
+            </v-col>
+
+            <v-col
+              cols="12"
+              md="3"
+            >
+              <v-text-field
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionTwelve.trafficViolations[index - 1].agency
+                "
+                :rules="[v => !!v || $t('Agency is required')]"
+                dense
+                outlined
+                label="Agency"
+              ></v-text-field>
+            </v-col>
+
+            <v-col
+              cols="12"
+              md="3"
+            >
+              <v-text-field
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionTwelve.trafficViolations[index - 1].citationNumber
+                "
+                :rules="[v => !!v || $t('Citation number is required')]"
+                dense
+                outlined
+                label="Citation Number"
+                hint="If unknown please enter unknown"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </template>
+
         <v-row
           v-if="
             permitStore.getPermitDetail.application.qualifyingQuestions
               .questionTwelve.selected
           "
         >
-          <template
-            v-for="(violation, index) of permitStore.getPermitDetail.application
-              .qualifyingQuestions.questionTwelve.trafficViolations"
-          >
-            <v-row :key="index">
-              <v-col cols="3">
-                <v-text-field
-                  v-model="violation.date"
-                  :readonly="readonly"
-                  label="Date"
-                  outlined
-                ></v-text-field>
-              </v-col>
+          <v-col>
+            <v-btn
+              @click="addTrafficViolation"
+              color="primary"
+              class="mr-3 ml-5"
+            >
+              <v-icon left>mdi-plus</v-icon>Add
+            </v-btn>
 
-              <v-col cols="3">
-                <v-text-field
-                  v-model="violation.agency"
-                  :readonly="readonly"
-                  label="Agency"
-                  outlined
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="3">
-                <v-text-field
-                  v-model="violation.violation"
-                  :readonly="readonly"
-                  label="Violation/Accident"
-                  outlined
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="3">
-                <v-text-field
-                  v-model="violation.citationNumber"
-                  :readonly="readonly"
-                  label="Citation Number"
-                  outlined
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </template>
-
-          <v-row
-            v-if="
-              permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionTwelve.trafficViolationsExplanation
-            "
-          >
-            <v-col>
-              <v-textarea
-                v-model="
-                  permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionTwelve.trafficViolationsExplanation
-                "
-                :readonly="readonly"
-                label="Traffic Violations Explanation"
-              >
-              </v-textarea>
-            </v-col>
-          </v-row>
+            <v-btn
+              @click="removeTrafficViolation"
+              color="primary"
+              :disabled="
+                permitStore.getPermitDetail.application.qualifyingQuestions
+                  .questionTwelve.trafficViolations?.length < 2
+              "
+            >
+              <v-icon left>mdi-minus</v-icon>Remove
+            </v-btn>
+          </v-col>
         </v-row>
 
         <v-row align="center">
@@ -1871,6 +1939,7 @@
           <v-col class="text-left">
             {{ $t('LEGACY-QUESTION-EIGHT') }}
           </v-col>
+
           <v-col>
             <v-row align="center">
               <v-radio-group
@@ -1878,6 +1947,7 @@
                   permitStore.getPermitDetail.application
                     .legacyQualifyingQuestions.questionEight.selected
                 "
+                @change="handleChangeQuestionEight"
                 :disabled="readonly"
                 row
               >
@@ -1899,74 +1969,167 @@
           </v-col>
         </v-row>
 
+        <template
+          v-if="
+            permitStore.getPermitDetail.application.legacyQualifyingQuestions
+              .questionEight.selected
+          "
+        >
+          <v-row
+            class="mx-5"
+            v-for="index of permitStore.getPermitDetail.application
+              .legacyQualifyingQuestions.questionEight.trafficViolations
+              ?.length"
+            :key="index"
+          >
+            <v-col
+              cols="12"
+              md="3"
+            >
+              <v-menu
+                v-model="menu[index]"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
+                <template #activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="
+                      permitStore.getPermitDetail.application
+                        .legacyQualifyingQuestions.questionEight
+                        .trafficViolations[index - 1].date
+                    "
+                    :label="$t('Date')"
+                    :rules="[v => !!v || $t('Date is required')]"
+                    dense
+                    outlined
+                    hint="YYYY-MM-DD format"
+                    prepend-inner-icon="mdi-calendar"
+                    v-bind="attrs"
+                    v-on="on"
+                    :disabled="readonly"
+                  ></v-text-field>
+                </template>
+
+                <v-date-picker
+                  v-model="
+                    permitStore.getPermitDetail.application
+                      .legacyQualifyingQuestions.questionEight
+                      .trafficViolations[index - 1].date
+                  "
+                  color="primary"
+                  no-title
+                  scrollable
+                >
+                </v-date-picker>
+              </v-menu>
+            </v-col>
+
+            <v-col
+              cols="12"
+              md="3"
+            >
+              <v-text-field
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionEight.trafficViolations[
+                    index - 1
+                  ].violation
+                "
+                dense
+                outlined
+                label="Violation/Accident"
+                :rules="[v => !!v || $t('Violation is required')]"
+              ></v-text-field>
+            </v-col>
+
+            <v-col
+              cols="12"
+              md="3"
+            >
+              <v-text-field
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionEight.trafficViolations[
+                    index - 1
+                  ].agency
+                "
+                :rules="[v => !!v || $t('Agency is required')]"
+                dense
+                outlined
+                label="Agency"
+              ></v-text-field>
+            </v-col>
+
+            <v-col
+              cols="12"
+              md="3"
+            >
+              <v-text-field
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .legacyQualifyingQuestions.questionEight.trafficViolations[
+                    index - 1
+                  ].citationNumber
+                "
+                :rules="[v => !!v || $t('Citation number is required')]"
+                dense
+                outlined
+                label="Citation Number"
+                hint="If unknown please enter unknown"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </template>
+
         <v-row
           v-if="
             permitStore.getPermitDetail.application.legacyQualifyingQuestions
               .questionEight.selected
           "
         >
-          <template
-            v-for="(violation, index) of permitStore.getPermitDetail.application
-              .legacyQualifyingQuestions.questionEight.trafficViolations"
-          >
-            <v-row :key="index">
-              <v-col cols="3">
-                <v-text-field
-                  v-model="violation.date"
-                  :readonly="readonly"
-                  label="Date"
-                  outlined
-                ></v-text-field>
-              </v-col>
+          <v-col>
+            <v-btn
+              @click="addLegacyTrafficViolation"
+              color="primary"
+              class="mr-3 ml-5"
+            >
+              <v-icon left>mdi-plus</v-icon>Add
+            </v-btn>
 
-              <v-col cols="3">
-                <v-text-field
-                  v-model="violation.agency"
-                  :readonly="readonly"
-                  label="Agency"
-                  outlined
-                ></v-text-field>
-              </v-col>
+            <v-btn
+              @click="removeLegacyTrafficViolation"
+              color="primary"
+              :disabled="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionEight.trafficViolations
+                  ?.length < 2
+              "
+            >
+              <v-icon left>mdi-minus</v-icon>Remove
+            </v-btn>
+          </v-col>
+        </v-row>
 
-              <v-col cols="3">
-                <v-text-field
-                  v-model="violation.violation"
-                  :readonly="readonly"
-                  label="Violation/Accident"
-                  outlined
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="3">
-                <v-text-field
-                  v-model="violation.citationNumber"
-                  :readonly="readonly"
-                  label="Citation Number"
-                  outlined
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </template>
-
-          <v-row
-            v-if="
-              permitStore.getPermitDetail.application.legacyQualifyingQuestions
-                .questionEight.trafficViolationsExplanation
-            "
-          >
-            <v-col>
-              <v-textarea
-                v-model="
-                  permitStore.getPermitDetail.application
-                    .legacyQualifyingQuestions.questionEight
-                    .trafficViolationsExplanation
-                "
-                :readonly="readonly"
-                label="Traffic Violations Explanation"
-              >
-              </v-textarea>
-            </v-col>
-          </v-row>
+        <v-row
+          v-if="
+            permitStore.getPermitDetail.application.legacyQualifyingQuestions
+              .questionEight.trafficViolationsExplanation
+          "
+        >
+          <v-col>
+            <v-textarea
+              v-model="
+                permitStore.getPermitDetail.application
+                  .legacyQualifyingQuestions.questionEight
+                  .trafficViolationsExplanation
+              "
+              :readonly="readonly"
+              label="Traffic Violations Explanation"
+            >
+            </v-textarea>
+          </v-col>
         </v-row>
 
         <v-row align="center">
@@ -2524,16 +2687,91 @@ import QualifyingQuestionTwelveDialog from '@core-admin/components/dialogs/Quali
 import QualifyingQuestionTwoDialog from '@core-admin/components/dialogs/QualifyingQuestionTwoDialog.vue'
 import ReviewDialog from '@core-admin/components/dialogs/ReviewDialog.vue'
 import SaveButton from './SaveButton.vue'
-import { inject } from 'vue'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { inject, ref } from 'vue'
 
 const emit = defineEmits(['on-save'])
 
 const permitStore = usePermitsStore()
 const readonly = inject<boolean>('readonly')
+const menu = ref([false])
 
 function handleSave() {
   emit('on-save', 'Qualifying Questions')
+}
+
+function addTrafficViolation() {
+  menu.value.push(false)
+  permitStore.getPermitDetail.application.qualifyingQuestions?.questionTwelve.trafficViolations.push(
+    {
+      date: '',
+      violation: '',
+      agency: '',
+      citationNumber: '',
+    }
+  )
+}
+
+function removeTrafficViolation() {
+  menu.value.pop()
+  permitStore.getPermitDetail.application.qualifyingQuestions?.questionTwelve.trafficViolations.pop()
+}
+
+function handleChangeQuestionTwelve() {
+  if (
+    permitStore.getPermitDetail.application.qualifyingQuestions?.questionTwelve
+      .selected
+  ) {
+    permitStore.getPermitDetail.application.qualifyingQuestions?.questionTwelve.trafficViolations.push(
+      {
+        date: '',
+        violation: '',
+        agency: '',
+        citationNumber: '',
+      }
+    )
+  } else if (permitStore.getPermitDetail.application.qualifyingQuestions) {
+    permitStore.getPermitDetail.application.qualifyingQuestions.questionTwelve.trafficViolations =
+      []
+  }
+}
+
+function addLegacyTrafficViolation() {
+  menu.value.push(false)
+  permitStore.getPermitDetail.application.legacyQualifyingQuestions?.questionEight.trafficViolations.push(
+    {
+      date: '',
+      violation: '',
+      agency: '',
+      citationNumber: '',
+    }
+  )
+}
+
+function removeLegacyTrafficViolation() {
+  menu.value.pop()
+  permitStore.getPermitDetail.application.legacyQualifyingQuestions?.questionEight.trafficViolations.pop()
+}
+
+function handleChangeQuestionEight() {
+  if (
+    permitStore.getPermitDetail.application.legacyQualifyingQuestions
+      ?.questionEight.selected
+  ) {
+    permitStore.getPermitDetail.application.legacyQualifyingQuestions?.questionEight.trafficViolations.push(
+      {
+        date: '',
+        violation: '',
+        agency: '',
+        citationNumber: '',
+      }
+    )
+  } else if (
+    permitStore.getPermitDetail.application.legacyQualifyingQuestions
+  ) {
+    permitStore.getPermitDetail.application.legacyQualifyingQuestions.questionEight.trafficViolations =
+      []
+  }
 }
 </script>
 
