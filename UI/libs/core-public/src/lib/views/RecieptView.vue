@@ -18,68 +18,58 @@
             </v-icon>
           </v-card-title>
           <v-card-text class="text-center mb-12">
-            <h2
-              class="mb-10"
-              style="color: black"
+            <h1
+              class="mb-13"
+              style="color: black; line-height: 2"
               :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
             >
               Your application has been submitted!
-            </h2>
-            <p
-              class="subtitle-1"
-              style="color: black"
-              :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
-            >
-              Thank you for completing your CCW application. The Licensing Staff
-              will see you at your appointment.
-            </p>
-            <v-row><v-col></v-col></v-row>
+            </h1>
             <v-row justify="center">
-              <v-col
-                cols="5"
-                class="mr-5"
-              >
+              <v-col md="6">
                 <v-sheet
                   outlined
                   rounded
                   color="info"
-                  class="ml-6"
                 >
                   <v-card flat>
                     <v-card-title class="justify-center">
                       <v-icon
                         left
                         color="blue"
-                        >mdi-information</v-icon
                       >
+                        mdi-information
+                      </v-icon>
                       <v-span
+                        class="mt-1"
                         text="info"
                         :class="
                           themeStore.getThemeConfig.isDark ? 'white--text' : ''
                         "
-                        >Please read the following:
+                      >
+                        Please read the following:
                       </v-span>
                     </v-card-title>
                     <v-card-text>
                       <ol
                         class="mb-2"
-                        style="color: black; text-align: left"
+                        style="color: black; text-align: left; line-height: 2"
                         :class="
                           themeStore.getThemeConfig.isDark ? 'white--text' : ''
                         "
                       >
-                        <li style="font-size: 0.975rem">
+                        <li style="font-size: 1.1rem">
                           If any of your contact information
                           <strong>changes</strong>, please log in and
                           <strong>update</strong> your application
                           <strong>immediately</strong>.
                         </li>
-                        <li style="font-size: 0.975rem">
-                          You can view the <strong>status</strong> of your
-                          application by logging in and pressing the
+                        <li style="font-size: 1.1rem">
+                          You can view your application
+                          <strong>status</strong> by logging in and pressing the
                           <strong>"View Application"</strong> button.
                         </li>
-                        <li style="font-size: 0.975rem">
+                        <li style="font-size: 1.1rem">
                           You will be <strong>notified</strong> when
                           <strong>payment</strong> is due.
                         </li>
@@ -87,6 +77,18 @@
                     </v-card-text>
                   </v-card>
                 </v-sheet>
+                <v-row justify="center">
+                  <p
+                    class="mt-15"
+                    style="color: black; font-size: 1.17rem; line-height: 2"
+                    :class="
+                      themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                    "
+                  >
+                    Thank you for completing your CCW application. The Licensing
+                    Staff will see you at your appointment.
+                  </p>
+                </v-row>
               </v-col>
             </v-row>
           </v-card-text>
@@ -95,6 +97,7 @@
               <v-card-text class="left">
                 <v-row justify="center">
                   <v-btn
+                    large
                     color="primary"
                     @click="goToDashBoard"
                   >
@@ -123,4 +126,3 @@ const goToDashBoard = () => {
   router.push('/')
 }
 </script>
-<style lang="scss"></style>
