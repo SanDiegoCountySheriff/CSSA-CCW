@@ -1725,7 +1725,8 @@ const isLicenseExpired = computed(() => {
 })
 
 const updateWithoutRouteMutation = useMutation({
-  mutationFn: applicationStore.updateApplication,
+  mutationFn: (updateReason: string) =>
+    applicationStore.updateApplication(updateReason),
   onSuccess: () => {
     fileUploadLoading.value = false
   },
@@ -1740,7 +1741,8 @@ const { mutate: withdrawRenewal, isLoading: isWithdrawRenewLoading } =
   })
 
 const updateMutation = useMutation({
-  mutationFn: applicationStore.updateApplication,
+  mutationFn: (updateReason: string) =>
+    applicationStore.updateApplication(updateReason),
   onSuccess: () => {
     router.push({
       path: Routes.APPLICATION_DETAIL_ROUTE,
@@ -1764,7 +1766,8 @@ const {
   isLoading: isUpdateApplicationLoading,
   mutateAsync: updateApplication,
 } = useMutation({
-  mutationFn: applicationStore.updateApplication,
+  mutationFn: (updateReason: string) =>
+    applicationStore.updateApplication(updateReason),
 })
 
 const { isLoading: isRefundRequestLoading, mutateAsync: requestRefund } =
@@ -1774,7 +1777,8 @@ const { isLoading: isRefundRequestLoading, mutateAsync: requestRefund } =
   })
 
 const renewMutation = useMutation({
-  mutationFn: applicationStore.updateApplication,
+  mutationFn: (updateReason: string) =>
+    applicationStore.updateApplication(updateReason),
   onSuccess: async () => {
     await queryClient.invalidateQueries(['getApplicationsByUser'])
     isRenewLoading.value = false
@@ -2067,7 +2071,7 @@ async function handleConfirmWithdrawModification() {
   applicationStore.completeApplication.application.currentStep = 1
   applicationStore.completeApplication.application.modificationNumber += 1
 
-  await updateApplication()
+  await updateApplication('Withdraw Modification')
 }
 
 function handleContinueApplication() {
@@ -2115,7 +2119,7 @@ function handleUpdateApplication() {
 
   applicationStore.completeApplication.application.currentStep = 1
   applicationStore.completeApplication.application.isUpdatingApplication = true
-  applicationStore.updateApplication()
+  applicationStore.updateApplication('Next Step')
 }
 
 function handleModifyApplication() {
@@ -2208,7 +2212,7 @@ async function handleRenewApplication() {
 
   resetDocuments()
   resetAgreements()
-  renewMutation.mutate()
+  renewMutation.mutate('Submit Renewal')
 }
 
 function handleWithdrawApplication() {
@@ -2224,7 +2228,7 @@ function handleWithdrawApplication() {
   applicationStore.completeApplication.application.status =
     ApplicationStatus.Withdrawn
   applicationStore.completeApplication.application.appointmentId = null
-  updateMutation.mutate()
+  updateMutation.mutate('Withdraw Application')
 }
 
 function handleSubmit() {
@@ -2244,7 +2248,7 @@ function handleConfirmSubmit() {
   applicationStore.completeApplication.application.submittedToLicensingDateTime =
     new Date().toISOString()
 
-  updateMutation.mutate()
+  updateMutation.mutate('Submit Application')
   state.confirmSubmissionDialog = false
 }
 
@@ -2267,7 +2271,7 @@ function handleConfirmCancelAppointment() {
   applicationStore.completeApplication.application.submittedToLicensingDateTime =
     null
   applicationStore.completeApplication.application.isComplete = false
-  updateMutation.mutate()
+  updateMutation.mutate('Cancel Appointment')
   state.cancelAppointmentDialog = false
 }
 
@@ -2295,7 +2299,17 @@ function toggleAppointmentComplete(time: string) {
   state.snackbar = true
   state.appointmentDialog = false
   state.rescheduling = false
-  applicationStore.updateApplication()
+
+  const updateReason = applicationStore.completeApplication.application
+    .appointmentDateTime
+    ? new Date(
+        applicationStore.completeApplication.application.appointmentDateTime
+      ).toLocaleString()
+    : 'Reschedule Appointment'
+
+  applicationStore.updateApplication(
+    `Reschedule Appointment from ${updateReason}`
+  )
 }
 
 function showReviewDialog() {
@@ -2437,7 +2451,7 @@ function acceptChanges() {
   applicationStore.completeApplication.application.flaggedForLicensingReview =
     true
 
-  updateMutation.mutate()
+  updateMutation.mutate('Update Qualifying Questions Flag')
 
   reviewDialog.value = false
 }
@@ -2498,7 +2512,9 @@ function handleFileSubmit(fileSubmission: IFileSubmission) {
     uploadDoc
   )
 
-  updateWithoutRouteMutation.mutate()
+  updateWithoutRouteMutation.mutate(
+    `Upload ${fileSubmission.fileType}, ${documentName}`
+  )
 }
 
 function convertToQualifyingQuestionStandard(item) {

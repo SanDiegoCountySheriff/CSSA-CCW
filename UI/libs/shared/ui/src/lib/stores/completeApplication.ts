@@ -120,9 +120,12 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     }
   }
 
-  async function updateApplication() {
+  async function updateApplication(updateReason: string) {
     const res = await axios
-      .put(Endpoints.PUT_UPDATE_PERMIT_ENDPOINT, completeApplication)
+      .put(
+        `${Endpoints.PUT_UPDATE_PERMIT_ENDPOINT}?updateReason=${updateReason}`,
+        completeApplication
+      )
       .catch(err => {
         console.warn(err)
 

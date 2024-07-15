@@ -416,7 +416,7 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "B2CUsers")]
     [Route("updateApplication")]
     [HttpPut]
-    public async Task<IActionResult> UpdateApplication([FromBody] UserPermitApplicationRequestModel application)
+    public async Task<IActionResult> UpdateApplication([FromBody] UserPermitApplicationRequestModel application, string updateReason)
     {
         GetUserId(out string userId);
 
@@ -436,6 +436,18 @@ public class PermitApplicationController : ControllerBase
             if (application.Application.PersonalInfo.Ssn.ToLower().Contains("xxx"))
             {
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
+            }
+
+            if (updateReason != "Next Step")
+            {
+                var history = new History()
+                {
+                    Change = updateReason,
+                    ChangeDateTimeUtc = DateTimeOffset.UtcNow,
+                    ChangeMadeBy = "Customer Action",
+                };
+
+                existingApplication.History = existingApplication.History.Append(history).ToArray();
             }
 
             await _applicationCosmosDbService.UpdateApplicationAsync(_mapper.Map<PermitApplication>(application), existingApplication, cancellationToken: default);

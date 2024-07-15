@@ -3,14 +3,13 @@ using CCW.Common.Enums;
 using CCW.Common.Models;
 using CCW.Common.ResponseModels;
 using Microsoft.Azure.Cosmos;
-using Newtonsoft.Json;
 using static CCW.Application.Controllers.PermitApplicationController;
 
 namespace CCW.Application.Services;
 
 public class ApplicationCosmosDbService : IApplicationCosmosDbService
 {
-    private static Random random = new Random();
+    private static readonly Random random = new();
     private readonly Container _container;
     private readonly Container _historicalContainer;
     private readonly Container _legacyContainer;
@@ -31,6 +30,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     {
         application.Application.OrderId = GetPrefixLetter() + GetGeneratedTime() + RandomString();
         PermitApplication createdItem = await _container.CreateItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
+
         return createdItem;
     }
 
@@ -39,6 +39,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         application.Id = Guid.NewGuid();
         application.HistoricalDate = DateTimeOffset.UtcNow;
         PermitApplication createdItem = await _historicalContainer.CreateItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
+
         return createdItem;
     }
 
@@ -53,6 +54,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         application.Application.ReferenceNotes = existingApplication.Application.ReferenceNotes;
 
         PermitApplication createdItem = await _historicalContainer.CreateItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
+
         return createdItem;
     }
 
@@ -165,7 +167,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             if (!string.IsNullOrEmpty(application.Application.PersonalInfo.Ssn))
             {
                 string ssn = application.Application.PersonalInfo.Ssn;
-                string maskedSsn = new string('X', ssn.Length - 4) + ssn.Substring(ssn.Length - 4);
+                string maskedSsn = string.Concat(new string('X', ssn.Length - 4), ssn.AsSpan(ssn.Length - 4));
                 application.Application.PersonalInfo.Ssn = maskedSsn;
             }
 
@@ -432,6 +434,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             queryDefinition: parameterizedQuery
         );
         var results = new List<SummarizedPermitApplication>();
+
         if (filteredFeed.HasMoreResults)
         {
             FeedResponse<SummarizedPermitApplication> response = await filteredFeed.ReadNextAsync(cancellationToken);
@@ -442,6 +445,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             return response.Resource;
 
         }
+
         return results;
     }
 
@@ -460,9 +464,11 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         using FeedIterator<SummarizedPermitApplicationReport> iterator = _container.GetItemQueryIterator<SummarizedPermitApplicationReport>(
             queryDefinition: parameterizedQuery
         );
+
         while (iterator.HasMoreResults)
         {
             FeedResponse<SummarizedPermitApplicationReport> response = await iterator.ReadNextAsync(cancellationToken);
+
             foreach (var item in response)
             {
                 results.Add(item);
@@ -580,7 +586,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
     public async Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken)
     {
-        var response = await _container.UpsertItemAsync(application);
+        await _container.UpsertItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
     }
 
     public async Task DeleteUserApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken)
@@ -646,14 +652,23 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
         if (existingApplication != null)
         {
-            await _container.DeleteItemAsync<PermitApplication>(existingApplication.Id.ToString(), new PartitionKey(existingApplication.UserId));
+            await _container.DeleteItemAsync<PermitApplication>(existingApplication.Id.ToString(), new PartitionKey(existingApplication.UserId), cancellationToken: default);
         }
 
         if (historicalApplication != null)
         {
-            await _container.CreateItemAsync(historicalApplication, new PartitionKey(userId));
+            var history = new History()
+            {
+                Change = "Withdraw Renewal",
+                ChangeDateTimeUtc = DateTimeOffset.UtcNow,
+                ChangeMadeBy = "Customer Action"
+            };
 
-            await _historicalContainer.DeleteItemAsync<PermitApplication>(historicalApplication.Id.ToString(), new PartitionKey(userId));
+            historicalApplication.History = historicalApplication.History.Append(history).ToArray();
+
+            await _container.CreateItemAsync(historicalApplication, new PartitionKey(userId), cancellationToken: default);
+
+            await _historicalContainer.DeleteItemAsync<PermitApplication>(historicalApplication.Id.ToString(), new PartitionKey(userId), cancellationToken: default);
         }
     }
 
@@ -714,7 +729,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return result;
     }
 
-    private string GetGeneratedTime()
+    private static string GetGeneratedTime()
     {
         var result = DateTime.Now.ToString("yy") + DateTime.Now.ToString("MM") + DateTime.Now.ToString("dd")
                      + DateTime.Now.ToString("HH") + DateTime.Now.ToString("mm") + DateTime.Now.ToString("ss");
@@ -726,10 +741,11 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     {
         string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         int num = random.Next(0, chars.Length);
+
         return chars[num];
     }
 
-    private string RandomString()
+    private static string RandomString()
     {
         var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         var stringChars = new char[3];
@@ -742,7 +758,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return new String(stringChars);
     }
 
-    private QueryDefinition GetQueryDefinition(PermitsOptions options, bool forCount = false)
+    private static QueryDefinition GetQueryDefinition(PermitsOptions options, bool forCount = false)
     {
         var offset = 0;
 
@@ -865,7 +881,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return queryDefinition;
     }
 
-    private QueryDefinition GetLegacyQueryDefinition(PermitsOptions options, bool forCount = false, bool getEmails = false)
+    private static QueryDefinition GetLegacyQueryDefinition(PermitsOptions options, bool forCount = false, bool getEmails = false)
     {
         var offset = 0;
 
@@ -884,6 +900,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         {
             select = "SELECT VALUE a.Application.UserEmail FROM a";
         }
+
         var where = "WHERE (a.Application.IsComplete = true OR a.Application.IsComplete = false) AND a.IsMatchUpdated = false ";
         var order = "";
         var limit = "OFFSET @offset LIMIT @itemsPerPage";
