@@ -1813,14 +1813,11 @@ const { mutate: makePayment, isLoading: isMakePaymentLoading } = useMutation({
             applicationStore.completeApplication.application.cost.new
               .standard ?? brandStore.brand.cost.new.standard
         } else {
-          window.console.log('this one')
           paymentType =
             PaymentType['CCW Application Issuance Payment'].toString()
-          window.console.log(paymentType)
           cost =
             applicationStore.completeApplication.application.cost.issuance ??
             brandStore.brand.cost.issuance
-          window.console.log(cost)
         }
 
         break
@@ -2140,16 +2137,7 @@ function handleModifyApplication() {
 }
 
 async function handleRenewApplication() {
-  const historicalApplication: CompleteApplication = {
-    ...applicationStore.getCompleteApplication,
-  }
-
-  await addHistoricalApplicationPublic(historicalApplication)
-
-  isRenewLoading.value = true
   const application = applicationStore.completeApplication.application
-
-  application.renewalNumber += 1
 
   if (!isRenew.value) {
     switch (application.applicationType) {
@@ -2173,6 +2161,16 @@ async function handleRenewApplication() {
         break
     }
   }
+
+  const historicalApplication: CompleteApplication = {
+    ...applicationStore.getCompleteApplication,
+  }
+
+  await addHistoricalApplicationPublic(historicalApplication)
+
+  isRenewLoading.value = true
+
+  application.renewalNumber += 1
 
   applicationStore.completeApplication.application.cost = {
     new: {

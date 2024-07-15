@@ -7,6 +7,7 @@
   >
     <template #activator="{ on, attrs }">
       <v-btn
+        :loading="loading"
         v-on="on"
         v-bind="attrs"
         color="white"
@@ -89,6 +90,14 @@ import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useMutation, useQuery } from '@tanstack/vue-query'
+
+interface PaymentDialogProps {
+  loading: boolean
+}
+
+const props = withDefaults(defineProps<PaymentDialogProps>(), {
+  loading: false,
+})
 
 const state = reactive({
   dialog: false,

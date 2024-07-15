@@ -1,5 +1,6 @@
 using AutoMapper;
 using CCW.Application.Models;
+using CCW.Application.ResponseModels;
 using CCW.Application.Services.Contracts;
 using CCW.Common.Enums;
 using CCW.Common.Models;
@@ -200,13 +201,51 @@ public class PermitApplicationController : ControllerBase
         {
             var result = await _applicationCosmosDbService.GetUserLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, isLegacy, cancellationToken: default);
 
-            return (result != null) ? Ok(_mapper.Map<PermitApplicationResponseModel>(result)) : NotFound();
+            var historicalCount = await _applicationCosmosDbService.GetApplicationHistoricalCount(result.Application.OrderId, cancellationToken: default);
+
+            return (result != null) ? Ok(new { PermitApplicationResponseModel = _mapper.Map<PermitApplicationResponseModel>(result), HistoricalCount = historicalCount }) : NotFound();
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
             return NotFound("An error occur while trying to retrieve specific user permit application.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("getHistoricalApplication")]
+    public async Task<IActionResult> GetHistoricalApplication(string id)
+    {
+        try
+        {
+            PermitApplication result = await _applicationCosmosDbService.GetHistoricalApplication(id, cancellationToken: default);
+
+            return (result != null) ? Ok(_mapper.Map<PermitApplicationResponseModel>(result)) : NotFound();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to retrieve specific user historical permit application.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("getHistoricalApplicationSummary")]
+    public async Task<IActionResult> GetHistoricalApplicationSummary(string orderId)
+    {
+        try
+        {
+            List<HistoricalApplicationSummary> result = await _applicationCosmosDbService.GetHistoricalApplicationSummary(orderId, cancellationToken: default);
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to retrieve historical application summary");
         }
     }
 

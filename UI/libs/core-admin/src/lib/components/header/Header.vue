@@ -20,11 +20,11 @@
         </v-btn>
 
         <v-btn
-          text
-          color="white"
-          large
           v-if="authStore.getAuthState.isAuthenticated"
           @click="handleEditAdminUser(false)"
+          color="white"
+          large
+          text
         >
           {{ authStore.getAuthState.userName }}
           <v-icon
@@ -37,23 +37,69 @@
       </template>
 
       <template v-if="permitsStore.viewingPermitDetail">
-        <PaymentDialog />
+        <PaymentDialog :loading="isHistoricalApplicationLoading" />
 
         <FileUploadDialog
-          :loading="isFetching"
+          :loading="isFetching || isHistoricalApplicationLoading"
           :eight-hour-safety-input="false"
           @get-file-from-dialog="onFileChanged"
           title="Upload"
         />
 
         <v-btn
-          color="white"
+          :loading="isHistoricalApplicationLoading"
           :href="`mailto:${permitsStore.getPermitDetail.application.userEmail}`"
+          color="white"
           target="_blank"
           text
         >
           <v-icon left>mdi-email-outline</v-icon>
           Send Email
+        </v-btn>
+
+        <v-menu
+          v-if="!permitsStore.viewingHistorical"
+          offset-y
+          @input="getHistoricalApplicationSummary"
+        >
+          <template #activator="{ on, attrs }">
+            <v-btn
+              :loading="isGetHistoricalApplicationSummaryLoading"
+              v-bind="attrs"
+              v-on="on"
+              color="white"
+              text
+            >
+              <v-icon left>mdi-history</v-icon>
+              {{ historicalButtonText }}
+            </v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item
+              v-for="(item, index) in historicalApplications"
+              :key="index"
+            >
+              <v-btn
+                text
+                @click="handleViewHistoricalApplication(item.id)"
+              >
+                {{ new Date(item.historicalDate).toLocaleDateString() }} -
+                {{ ApplicationType[item.applicationType] }}
+              </v-btn>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
+        <v-btn
+          v-else
+          :loading="isHistoricalApplicationLoading"
+          @click="handleBack"
+          color="white"
+          text
+        >
+          <v-icon left>mdi-arrow-left</v-icon>
+          Back
         </v-btn>
       </template>
 
@@ -189,13 +235,17 @@ import { MsalBrowser } from '@shared-ui/api/auth/authentication'
 import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import SignaturePad from 'signature_pad'
 import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue'
-import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import {
+  ApplicationType,
+  HistoricalApplicationSummary,
+  UploadedDocType,
+} from '@shared-utils/types/defaultTypes'
 import { computed, inject, nextTick, onMounted, ref, watch } from 'vue'
-import { useMutation, useQuery } from '@tanstack/vue-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 
 const authStore = useAuthStore()
 const documentsStore = useDocumentsStore()
@@ -211,6 +261,7 @@ const form = new FormData()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 const text = ref('')
 const snackbar = ref(false)
+const historicalApplications = ref<Array<HistoricalApplicationSummary>>()
 
 interface IHeaderProps {
   drawerShowing: boolean
@@ -231,6 +282,8 @@ const allowedExtension = [
   '.pdf',
 ]
 
+const queryClient = useQueryClient()
+
 const { isLoading: isCreateAdminUserLoading, mutate: createAdminUser } =
   useMutation(
     ['createAdminUser'],
@@ -242,6 +295,33 @@ const { isLoading: isCreateAdminUserLoading, mutate: createAdminUser } =
       },
     }
   )
+
+const {
+  isLoading: isHistoricalApplicationLoading,
+  mutate: getHistoricalApplicationDetail,
+} = useMutation(['historicalPermitDetail'], (id: string) => {
+  permitsStore.viewingHistorical = true
+
+  return permitsStore.getHistoricalPermitDetailApi(id)
+})
+
+function handleViewHistoricalApplication(id: string) {
+  getHistoricalApplicationDetail(id)
+}
+
+async function handleBack() {
+  await queryClient.invalidateQueries(['permitDetail'])
+  permitsStore.viewingHistorical = false
+}
+
+const {
+  isLoading: isGetHistoricalApplicationSummaryLoading,
+  mutate: getHistoricalApplications,
+} = useMutation(['historicalApplicationSummary'], (orderId: string) => {
+  return permitsStore.getHistoricalApplicationSummary(orderId).then(res => {
+    historicalApplications.value = res
+  })
+})
 
 const {
   isLoading: isUploadAdminUserDocumentLoading,
@@ -283,8 +363,20 @@ onMounted(async () => {
 
 const emit = defineEmits(['on-expand-menu'])
 
+const historicalButtonText = computed(() => {
+  return `${permitsStore.historicalApplicationCount} Audit${
+    permitsStore.historicalApplicationCount === 1 ? '' : 's'
+  }`
+})
+
 async function signOut() {
   msalInstance.value.logOut()
+}
+
+function getHistoricalApplicationSummary(event) {
+  if (event) {
+    getHistoricalApplications(permitsStore.permitDetail.application.orderId)
+  }
 }
 
 function handleEditAdminUser(persist: boolean) {

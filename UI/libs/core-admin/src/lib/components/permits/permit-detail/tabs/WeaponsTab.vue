@@ -63,6 +63,7 @@
           <v-row>
             <v-col>
               <v-btn
+                :disabled="readonly"
                 @click="handleOpenPdf"
                 color="primary"
                 class="mr-3"
@@ -79,6 +80,7 @@
                   !permitStore.getPermitDetail.application
                     .modifiedWeaponComplete
                 "
+                :disabled="readonly"
                 @click="onApproveWeaponChange"
                 color="primary"
                 style="float: right"
@@ -95,7 +97,7 @@
               <v-btn
                 :disabled="
                   permitStore.getPermitDetail.application.status ===
-                  ApplicationStatus['Modification Approved']
+                    ApplicationStatus['Modification Approved'] || readonly
                 "
                 v-else
                 @click="onUndoApproveWeaponChange"
