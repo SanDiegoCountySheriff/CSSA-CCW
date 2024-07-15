@@ -59,7 +59,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionOne
+                  .updateInformation
               "
             >
               <v-radio
@@ -224,7 +227,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionTwo
+                  .updateInformation
               "
             >
               <v-radio
@@ -366,7 +372,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionThree
+                  .updateInformation
               "
             >
               <v-radio
@@ -500,7 +509,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionFour
+                  .updateInformation
               "
             >
               <v-radio
@@ -636,7 +648,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionFive
+                  .updateInformation
               "
             >
               <v-radio
@@ -771,7 +786,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionSix
+                  .updateInformation
               "
             >
               <v-radio
@@ -903,7 +921,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionSeven
+                  .updateInformation
               "
             >
               <v-radio
@@ -1039,7 +1060,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionEight
+                  .updateInformation
               "
             >
               <v-radio
@@ -1174,7 +1198,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionNine
+                  .updateInformation
               "
             >
               <v-radio
@@ -1313,7 +1340,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionTen
+                  .updateInformation
               "
             >
               <v-radio
@@ -1447,7 +1477,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionEleven
+                  .updateInformation
               "
             >
               <v-radio
@@ -1584,7 +1617,10 @@
               @change="handleChangeQuestionTwelve"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionTwelve
+                  .updateInformation
               "
             >
               <v-radio
@@ -1801,7 +1837,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionThirteen
+                  .updateInformation
               "
             >
               <v-radio
@@ -1937,7 +1976,10 @@
                   .selected !== null,
               ]"
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionFourteen
+                  .updateInformation
               "
             >
               <v-radio
@@ -2073,7 +2115,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionFifteen
+                  .updateInformation
               "
             >
               <v-radio
@@ -2214,7 +2259,10 @@
               "
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionSixteen
+                  .updateInformation
               "
             >
               <v-radio
@@ -2350,7 +2398,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionSeventeen
+                  .updateInformation
               "
             >
               <v-radio
@@ -2488,7 +2539,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionEighteen
+                  .updateInformation
               "
             >
               <v-radio
@@ -2624,7 +2678,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionNineteen
+                  .updateInformation
               "
             >
               <v-radio
@@ -2760,7 +2817,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionTwenty
+                  .updateInformation
               "
             >
               <v-radio
@@ -2895,7 +2955,10 @@
               ]"
               row
               :disabled="
-                isRenew && !model.application.isRenewingWithLegacyQuestions
+                isRenew &&
+                !model.application.isRenewingWithLegacyQuestions &&
+                !model.application.qualifyingQuestions.questionTwentyOne
+                  .updateInformation
               "
             >
               <v-radio
