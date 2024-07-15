@@ -214,6 +214,24 @@ public class PermitApplicationController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
+    [HttpGet("getHistoricalApplication")]
+    public async Task<IActionResult> GetHistoricalApplication(string id)
+    {
+        try
+        {
+            PermitApplication result = await _applicationCosmosDbService.GetHistoricalApplication(id, cancellationToken: default);
+
+            return (result != null) ? Ok(_mapper.Map<PermitApplicationResponseModel>(result)) : NotFound();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to retrieve specific user historical permit application.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("getHistoricalApplicationSummary")]
     public async Task<IActionResult> GetHistoricalApplicationSummary(string orderId)
     {

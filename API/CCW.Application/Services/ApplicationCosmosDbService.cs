@@ -139,6 +139,34 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return null!;
     }
 
+    public async Task<PermitApplication> GetHistoricalApplication(string id, CancellationToken cancellationToken)
+    {
+        var queryString =   "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated FROM applications a WHERE a.id = @id Order by a.Application.OrderId DESC";
+
+        var parameterizedQuery = new QueryDefinition(query: queryString)
+            .WithParameter("@id", id);
+
+        using FeedIterator<PermitApplication> filteredFeed = _historicalContainer.GetItemQueryIterator<PermitApplication>(queryDefinition: parameterizedQuery);
+
+        if (filteredFeed.HasMoreResults)
+        {
+            FeedResponse<PermitApplication> response = await filteredFeed.ReadNextAsync(cancellationToken);
+
+            var application = response.Resource.FirstOrDefault();
+
+            if (!string.IsNullOrEmpty(application.Application.PersonalInfo.Ssn))
+            {
+                string ssn = application.Application.PersonalInfo.Ssn;
+                string maskedSsn = string.Concat(new string('X', ssn.Length - 4), ssn.AsSpan(ssn.Length - 4));
+                application.Application.PersonalInfo.Ssn = maskedSsn;
+            }
+
+            return application;
+        }
+
+        return null!;
+    }
+
     public async Task<PermitApplication> GetUserLastApplicationAsync(string userEmailOrOrderId, bool isOrderId,
         bool isComplete, bool isLegacy, CancellationToken cancellationToken)
     {

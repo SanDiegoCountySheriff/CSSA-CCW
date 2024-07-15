@@ -36,4 +36,5 @@ public interface IApplicationCosmosDbService
     Task WithdrawRenewal(string userId, CancellationToken cancellationToken);
     Task<int> GetApplicationHistoricalCount(string orderId, CancellationToken cancellationToken);
     Task<List<HistoricalApplicationSummary>> GetHistoricalApplicationSummary(string orderId, CancellationToken cancellationToken);
+    Task<PermitApplication> GetHistoricalApplication(string id, CancellationToken cancellationToken);
 }

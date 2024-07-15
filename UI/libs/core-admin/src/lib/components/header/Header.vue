@@ -20,11 +20,11 @@
         </v-btn>
 
         <v-btn
-          text
-          color="white"
-          large
           v-if="authStore.getAuthState.isAuthenticated"
           @click="handleEditAdminUser(false)"
+          color="white"
+          large
+          text
         >
           {{ authStore.getAuthState.userName }}
           <v-icon
@@ -37,18 +37,19 @@
       </template>
 
       <template v-if="permitsStore.viewingPermitDetail">
-        <PaymentDialog />
+        <PaymentDialog :loading="isHistoricalApplicationLoading" />
 
         <FileUploadDialog
-          :loading="isFetching"
+          :loading="isFetching || isHistoricalApplicationLoading"
           :eight-hour-safety-input="false"
           @get-file-from-dialog="onFileChanged"
           title="Upload"
         />
 
         <v-btn
-          color="white"
+          :loading="isHistoricalApplicationLoading"
           :href="`mailto:${permitsStore.getPermitDetail.application.userEmail}`"
+          color="white"
           target="_blank"
           text
         >
@@ -57,6 +58,7 @@
         </v-btn>
 
         <v-menu
+          v-if="!permitsStore.viewingHistorical"
           offset-y
           @input="getHistoricalApplicationSummary"
         >
@@ -78,12 +80,26 @@
               v-for="(item, index) in historicalApplications"
               :key="index"
             >
-              <v-list-item-title>
+              <v-btn
+                text
+                @click="handleViewHistoricalApplication(item.id)"
+              >
                 {{ new Date(item.historicalDate).toLocaleDateString() }}
-              </v-list-item-title>
+              </v-btn>
             </v-list-item>
           </v-list>
         </v-menu>
+
+        <v-btn
+          v-else
+          :loading="isHistoricalApplicationLoading"
+          @click="handleBack"
+          color="white"
+          text
+        >
+          <v-icon left>mdi-arrow-left</v-icon>
+          Back
+        </v-btn>
       </template>
 
       <v-dialog
@@ -227,7 +243,7 @@ import {
   UploadedDocType,
 } from '@shared-utils/types/defaultTypes'
 import { computed, inject, nextTick, onMounted, ref, watch } from 'vue'
-import { useMutation, useQuery } from '@tanstack/vue-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 
 const authStore = useAuthStore()
 const documentsStore = useDocumentsStore()
@@ -264,6 +280,8 @@ const allowedExtension = [
   '.pdf',
 ]
 
+const queryClient = useQueryClient()
+
 const { isLoading: isCreateAdminUserLoading, mutate: createAdminUser } =
   useMutation(
     ['createAdminUser'],
@@ -275,6 +293,24 @@ const { isLoading: isCreateAdminUserLoading, mutate: createAdminUser } =
       },
     }
   )
+
+const {
+  isLoading: isHistoricalApplicationLoading,
+  mutate: getHistoricalApplicationDetail,
+} = useMutation(['historicalPermitDetail'], (id: string) => {
+  permitsStore.viewingHistorical = true
+
+  return permitsStore.getHistoricalPermitDetailApi(id)
+})
+
+function handleViewHistoricalApplication(id: string) {
+  getHistoricalApplicationDetail(id)
+}
+
+async function handleBack() {
+  await queryClient.invalidateQueries(['permitDetail'])
+  permitsStore.viewingHistorical = false
+}
 
 const {
   isLoading: isGetHistoricalApplicationSummaryLoading,

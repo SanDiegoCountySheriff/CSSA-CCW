@@ -40,6 +40,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   const searchResults = ref([])
   const brandStore = useBrandStore()
   const historicalApplicationCount = ref(0)
+  const viewingHistorical = ref(false)
 
   const getPermits = computed(() => permits.value)
   const getSearchResults = computed(() => searchResults.value)
@@ -793,6 +794,18 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return []
   }
 
+  async function getHistoricalPermitDetailApi(id: string) {
+    const res = await axios.get(
+      `${Endpoints.GET_HISTORICAL_APPLICATION_ENDPOINT}?id=${id}`
+    )
+
+    if (res?.data) {
+      setPermitDetail(res?.data)
+    }
+
+    return []
+  }
+
   async function getPermitSsn(id: string) {
     const res = await axios
       .get(Endpoints.GET_PERMIT_SSN_ENDPOINT, {
@@ -825,6 +838,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     assignedApplicationsSummary,
     viewingPermitDetail,
     historicalApplicationCount,
+    viewingHistorical,
     setPermits,
     setOpenPermits,
     setSearchResults,
@@ -854,5 +868,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getEmails,
     addApplicationHistory,
     getHistoricalApplicationSummary,
+    getHistoricalPermitDetailApi,
   }
 })

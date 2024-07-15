@@ -2,15 +2,27 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <v-container fluid>
+    <v-row v-if="permitStore.viewingHistorical">
+      <v-col>
+        <v-alert
+          type="warning"
+          outlined
+        >
+          Application Audit View
+        </v-alert>
+      </v-col>
+    </v-row>
+
     <v-row>
       <v-col cols="12">
         <PermitCard1 />
       </v-col>
     </v-row>
+
     <v-row>
       <v-col cols="12">
         <PermitCard2
-          :is-loading="isLoading"
+          :is-loading="isLoading || isFetching"
           :user-photo="state.userPhoto"
           @refetch="refetch"
           @on-check-name="handleCheckName"
@@ -27,7 +39,7 @@
         class="pt-0 pr-0"
       >
         <v-card
-          :loading="isUpdatePermitLoading || isLoading"
+          :loading="isUpdatePermitLoading || isLoading || isFetching"
           min-height="500"
           outlined
         >
@@ -47,8 +59,8 @@
               {{ item }}
             </v-tab>
             <v-progress-linear
-              :active="isLoading"
-              :indeterminate="isLoading"
+              :active="isLoading || isFetching"
+              :indeterminate="isLoading || isFetching"
               absolute
               bottom
               color="primary"
@@ -59,7 +71,7 @@
 
           <v-tabs-items
             v-model="state.tab"
-            v-if="!isLoading"
+            v-if="!isLoading && !isFetching"
           >
             <v-tab-item
               v-for="(item, index) in state.items"
@@ -77,7 +89,7 @@
         cols="4"
         class="pt-0"
       >
-        <PermitStatus :is-loading="isLoading" />
+        <PermitStatus :is-loading="isLoading || isFetching" />
       </v-col>
     </v-row>
 
@@ -180,6 +192,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   permitStore.viewingPermitDetail = false
+  permitStore.viewingHistorical = false
 })
 
 const { refetch: getPortrait } = useQuery(
@@ -197,14 +210,19 @@ const { refetch: getPortrait } = useQuery(
   }
 )
 
-const { isLoading, refetch } = useQuery(
+const { isLoading, isFetching, refetch } = useQuery(
   ['permitDetail'],
   () =>
     permitStore.getPermitDetailApi(route.params.orderId, route.params.isLegacy),
-  { refetchOnMount: 'always', onSuccess: () => getPortrait() }
+  {
+    refetchOnMount: 'always',
+    onSuccess: () => getPortrait(),
+  }
 )
 
-const readonly = computed(() => Boolean(route.params.isLegacy))
+const readonly = computed(
+  () => Boolean(route.params.isLegacy) || permitStore.viewingHistorical
+)
 
 provide('readonly', readonly)
 
