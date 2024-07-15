@@ -1813,14 +1813,11 @@ const { mutate: makePayment, isLoading: isMakePaymentLoading } = useMutation({
             applicationStore.completeApplication.application.cost.new
               .standard ?? brandStore.brand.cost.new.standard
         } else {
-          window.console.log('this one')
           paymentType =
             PaymentType['CCW Application Issuance Payment'].toString()
-          window.console.log(paymentType)
           cost =
             applicationStore.completeApplication.application.cost.issuance ??
             brandStore.brand.cost.issuance
-          window.console.log(cost)
         }
 
         break
