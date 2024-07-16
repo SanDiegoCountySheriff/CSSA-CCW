@@ -84,7 +84,12 @@
                 text
                 @click="handleViewHistoricalApplication(item.id)"
               >
-                {{ new Date(item.historicalDate).toLocaleDateString() }} -
+                {{
+                  item.historicalDate
+                    ? new Date(item.historicalDate).toLocaleDateString()
+                    : 'Import'
+                }}
+                -
                 {{ ApplicationType[item.applicationType] }}
               </v-btn>
             </v-list-item>
