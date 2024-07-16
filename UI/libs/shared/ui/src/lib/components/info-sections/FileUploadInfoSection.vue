@@ -54,6 +54,22 @@
             </td>
           </template>
         </v-data-table>
+        <v-container
+          v-if="!uploadedDocuments.some(x => x.documentType === 'Signature')"
+        >
+          <v-alert
+            color="warning"
+            type="warning"
+            outlined
+          >
+            <span
+              :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
+            >
+              You have not yet uploaded a signature.
+            </span>
+            <ModifySignatureDialog></ModifySignatureDialog>
+          </v-alert>
+        </v-container>
       </v-card-text>
     </v-card>
   </v-container>
@@ -65,6 +81,7 @@ import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import { reactive } from 'vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 // eslint-disable-next-line sort-imports
 import FileUploadDialog from '@shared-ui/components/dialogs/FileUploadDialog.vue'
 import ModifySignatureDialog from '@shared-ui/components/dialogs/ModifySignatureDialog.vue'
@@ -103,6 +120,8 @@ const state = reactive({
 withDefaults(defineProps<IFileUploadInfoSection>(), {
   enableEightHourSafetyCourseButton: false,
 })
+
+const themeStore = useThemeStore()
 
 const headers = [
   { text: 'Name', value: 'name' },
