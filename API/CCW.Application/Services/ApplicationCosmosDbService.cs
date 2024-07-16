@@ -429,7 +429,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         var queryString = "SELECT VALUE Count(1) FROM c WHERE c.Application.OrderId = @orderId";
         var parameterizedQuery = new QueryDefinition(queryString).WithParameter("@orderId", orderId);
 
-        using FeedIterator<int> filteredFeed = _container.GetItemQueryIterator<int>(
+        using FeedIterator<int> filteredFeed = _historicalContainer.GetItemQueryIterator<int>(
             queryDefinition: parameterizedQuery
         );
 
