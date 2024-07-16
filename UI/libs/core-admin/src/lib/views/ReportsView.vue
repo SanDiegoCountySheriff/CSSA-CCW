@@ -167,44 +167,46 @@ function exportSID(data, exportDate) {
   })
 
   for (const row of data) {
-    const values = headers
-      .map(header => {
-        let value = row[header.dataKey]
+    if (row.status === 4) {
+      const values = headers
+        .map(header => {
+          let value = row[header.dataKey]
 
-        if (value === null || value === undefined) {
-          value = ''
-        }
+          if (value === null || value === undefined) {
+            value = ''
+          }
 
-        if (header.dataKey === 'aliases') {
-          value =
-            Array.isArray(value) && value.length > 0
-              ? value
-                  .map(alias => {
-                    const aliasParts = [
-                      alias.prevLastName || '',
-                      alias.prevFirstName || '',
-                      alias.prevMiddleName || '',
-                    ]
-                      .filter(part => part)
-                      .join(', ')
+          if (header.dataKey === 'aliases') {
+            value =
+              Array.isArray(value) && value.length > 0
+                ? value
+                    .map(alias => {
+                      const aliasParts = [
+                        alias.prevLastName || '',
+                        alias.prevFirstName || '',
+                        alias.prevMiddleName || '',
+                      ]
+                        .filter(part => part)
+                        .join(', ')
 
-                    return aliasParts
-                  })
-                  .join('; ')
-              : 'NONE'
-        }
+                      return aliasParts
+                    })
+                    .join('; ')
+                : 'NONE'
+          }
 
-        if (typeof value === 'string') {
-          value = value.toUpperCase()
-        }
+          if (typeof value === 'string') {
+            value = value.toUpperCase()
+          }
 
-        return typeof value === 'string'
-          ? `"${value.replace(/"/g, '""')}"`
-          : value
-      })
-      .join(',')
+          return typeof value === 'string'
+            ? `"${value.replace(/"/g, '""')}"`
+            : value
+        })
+        .join(',')
 
-    csvRows.push(values)
+      csvRows.push(values)
+    }
   }
 
   const csvContent = csvRows.join('\n')
