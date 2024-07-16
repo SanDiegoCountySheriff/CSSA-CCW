@@ -4,6 +4,7 @@ using CCW.Application;
 using CCW.Application.Services;
 using CCW.Application.Services.Contracts;
 using CCW.Common.AuthorizationPolicies;
+using CCW.Common.Services.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Azure.Cosmos;
@@ -25,6 +26,7 @@ builder.Services.AddSingleton<IUserProfileCosmosDbService>(
     InitializeUserProfileCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
 builder.Services.AddSingleton<IAppointmentCosmosDbService>(
     InitializeAppointmentCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
+builder.Services.AddSingleton<IEmailService, EmailService>();
 
 builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<IDocumentAzureStorage, DocumentAzureStorage>();

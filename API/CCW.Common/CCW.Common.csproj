@@ -6,7 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Graph" Version="5.56.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
