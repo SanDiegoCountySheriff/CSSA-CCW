@@ -8,7 +8,7 @@
         v-model="stepIndex.step"
         non-linear
         class="stepper"
-        @change="updateMutation"
+        @change="updateMutation('Next Step')"
         :alt-labels="$vuetify.breakpoint.lgAndDown"
       >
         <v-stepper-header
@@ -157,7 +157,7 @@
       <v-expansion-panels
         v-model="expansionStep"
         accordion
-        @change="updateMutation"
+        @change="updateMutation('Next Step')"
       >
         <v-expansion-panel>
           <v-expansion-panel-header @click.native="stepIndex.step = 1">
