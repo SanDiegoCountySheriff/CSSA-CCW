@@ -593,7 +593,7 @@ export enum ApplicationType {
 
 export type HistoricalApplicationSummary = {
   id: string
-  historicalDate: string
+  historicalDate: string | null
   applicationType: ApplicationType
 }
 
