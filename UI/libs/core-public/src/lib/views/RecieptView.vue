@@ -85,7 +85,7 @@
                   >
                     Thank you for completing your CCW renewal/modification
                     application. The Licensing Staff will notify you of their
-                    evaluation.
+                    verdict.
                   </p>
                   <p
                     v-else
