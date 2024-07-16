@@ -26,10 +26,11 @@
           {{
             state.signature ? $t('Signature Uploaded') : $t('Missing Signature')
           }}
-          <v-container ml-12>
-            <ModifySignatureDialog
-              v-if="state.signature"
-            ></ModifySignatureDialog>
+          <v-container
+            ml-12
+            v-if="state.signature"
+          >
+            <ModifySignatureDialog></ModifySignatureDialog>
           </v-container>
         </v-banner>
       </v-col>

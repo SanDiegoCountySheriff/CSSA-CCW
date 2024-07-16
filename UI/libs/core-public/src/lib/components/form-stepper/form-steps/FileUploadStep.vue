@@ -266,18 +266,21 @@ import DocumentInfoSection from '@shared-ui/components/info-sections/DocumentInf
 import Endpoints from '@shared-ui/api/endpoints'
 import FileUploadContainer from '@core-public/components/containers/FileUploadContainer.vue'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import axios from 'axios'
 import {
   ApplicationStatus,
+  ApplicationType,
+  CompleteApplication,
   UploadedDocType,
 } from '@shared-utils/types/defaultTypes'
-import axios from 'axios'
+// import axios from 'axios'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
-import {
-  ApplicationType,
-  CompleteApplication,
-} from '@shared-utils/types/defaultTypes'
+// import {
+//   ApplicationType,
+//   CompleteApplication,
+// } from '@shared-utils/types/defaultTypes'
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()
@@ -316,7 +319,7 @@ const state = reactive({
   reserve: '',
   employment: '',
   eightHourSafetyCourse: '',
-  signature: '',
+  //signature: '',
   uploadSuccessful: true,
 })
 
@@ -512,9 +515,9 @@ const { mutate: updateMutation } = useMutation({
         case 'eighthoursafetycourse':
           state.eightHourSafetyCourse = item.name
           break
-        case 'signature':
-          state.signature = item.name
-          break
+        // case 'signature':
+        //   state.signature = item.name
+        //   break
         default:
           break
       }
@@ -707,9 +710,9 @@ onMounted(() => {
       case 'eighthoursafetycourse':
         state.eightHourSafetyCourse = item.name
         break
-      case 'signature':
-        state.signature = item.name
-        break
+      // case 'signature':
+      //   state.signature = item.name
+      //   break
       default:
         break
     }

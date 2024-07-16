@@ -152,7 +152,6 @@
         @continue="handleContinue"
         @save="handleSave"
         @save-match="handleSaveMatch"
-        @modify="handleModifySignature"
         v-on="$listeners"
       />
     </v-container>
@@ -202,13 +201,13 @@
           >
             {{ $t('Clear Signature') }}
           </v-btn>
-          <v-btn
+          <!-- <v-btn
             color="primary"
             text
             @click="handleModifySignature"
           >
             {{ $t('Modify Signature') }}
-          </v-btn>
+          </v-btn> -->
         </v-col>
       </v-row>
 
@@ -220,7 +219,6 @@
         @continue="handleContinue"
         @save="handleSave"
         @save-match="handleSaveMatch"
-        @modify="handleModifySignature"
         v-on="$listeners"
       />
     </v-container>
@@ -334,13 +332,13 @@ const isSignaturePadEmpty = computed(() => {
   return signaturePad.value?.isEmpty()
 })
 
-const isSignatureMinLength = computed(() => {
-  const points = signaturePad.value?.toData()
-  // eslint-disable-next-line prefer-spread
-  const pointCount = [].concat.apply([], points).length
+// const isSignatureMinLength = computed(() => {
+//   const points = signaturePad.value?.toData()
+//   // eslint-disable-next-line prefer-spread
+//   const pointCount = [].concat.apply([], points).length
 
-  return points && pointCount >= 2
-})
+//   return points && pointCount >= 2
+// })
 
 const isFalseInfoAgreed = computed(() => {
   return applicationStore.completeApplication.application.agreements
@@ -490,84 +488,84 @@ function setAgreedDate(agreedDateKey) {
   }
 }
 
-function handleContinueWithoutUpload() {
-  applicationStore.completeApplication.application.currentStep = 8
-  applicationStore.updateApplication()
-  router.push({
-    path: Routes.FINALIZE_ROUTE_PATH,
-    query: {
-      applicationId: applicationStore.completeApplication.id,
-      isComplete:
-        applicationStore.completeApplication.application.isComplete.toString(),
-    },
-  })
-}
+// function handleContinueWithoutUpload() {
+//   applicationStore.completeApplication.application.currentStep = 8
+//   applicationStore.updateApplication()
+//   router.push({
+//     path: Routes.FINALIZE_ROUTE_PATH,
+//     query: {
+//       applicationId: applicationStore.completeApplication.id,
+//       isComplete:
+//         applicationStore.completeApplication.application.isComplete.toString(),
+//     },
+//   })
+// }
 
-const { mutate: updateMutation } = useMutation({
-  mutationFn: () => {
-    return applicationStore.updateApplication()
-  },
-  onSuccess: () => {
-    for (let item of applicationStore.completeApplication.application
-      .uploadedDocuments) {
-      switch (item.documentType.toLowerCase()) {
-        case 'signature':
-          state.signature = item.name
-          break
-        default:
-          break
-      }
-    }
+// const { mutate: updateMutation } = useMutation({
+//   mutationFn: () => {
+//     return applicationStore.updateApplication()
+//   },
+//   onSuccess: () => {
+//     for (let item of applicationStore.completeApplication.application
+//       .uploadedDocuments) {
+//       switch (item.documentType.toLowerCase()) {
+//         case 'signature':
+//           state.signature = item.name
+//           break
+//         default:
+//           break
+//       }
+//     }
 
-    state.file = {}
-  },
-  onError: () => {
-    state.submitted = false
-  },
-})
+//     state.file = {}
+//   },
+//   onError: () => {
+//     state.submitted = false
+//   },
+// })
 
-function handleModifySignature() {
-  applicationStore.completeApplication.application.uploadedDocuments.forEach(
-    file => {
-      if (file.documentType === 'Signature') {
-        deleteFile(file.name)
-      }
-    }
-  )
-}
+// function handleModifySignature() {
+//   applicationStore.completeApplication.application.uploadedDocuments.forEach(
+//     file => {
+//       if (file.documentType === 'Signature') {
+//         deleteFile(file.name)
+//       }
+//     }
+//   )
+// }
 
-async function deleteFile(name) {
-  const documentToDelete =
-    applicationStore.completeApplication.application.uploadedDocuments.find(
-      doc => doc.name === name
-    )
+// async function deleteFile(name) {
+//   const documentToDelete =
+//     applicationStore.completeApplication.application.uploadedDocuments.find(
+//       doc => doc.name === name
+//     )
 
-  if (!documentToDelete) {
-    return
-  }
+//   if (!documentToDelete) {
+//     return
+//   }
 
-  try {
-    await axios
-      .delete(
-        `${Endpoints.DELETE_DOCUMENT_FILE_PUBLIC_ENDPOINT}?applicantFileName=${name}`
-      )
-      .then(() => {
-        applicationStore.completeApplication.application.uploadedDocuments.pop()
-      })
+//   try {
+//     await axios
+//       .delete(
+//         `${Endpoints.DELETE_DOCUMENT_FILE_PUBLIC_ENDPOINT}?applicantFileName=${name}`
+//       )
+//       .then(() => {
+//         applicationStore.completeApplication.application.uploadedDocuments.pop()
+//       })
 
-    const updatedDocuments =
-      applicationStore.completeApplication.application.uploadedDocuments.filter(
-        doc => doc.name !== name
-      )
+//     const updatedDocuments =
+//       applicationStore.completeApplication.application.uploadedDocuments.filter(
+//         doc => doc.name !== name
+//       )
 
-    applicationStore.completeApplication.application.uploadedDocuments =
-      updatedDocuments
+//     applicationStore.completeApplication.application.uploadedDocuments =
+//       updatedDocuments
 
-    updateMutation()
-    // eslint-disable-next-line no-empty
-  } finally {
-  }
-}
+//     updateMutation()
+//     // eslint-disable-next-line no-empty
+//   } finally {
+//   }
+// }
 
 watch(
   [isSignaturePadEmpty, isFalseInfoAgreed, isConditionsForIssuanceAgreed],

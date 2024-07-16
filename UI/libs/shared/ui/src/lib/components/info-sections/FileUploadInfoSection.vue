@@ -45,10 +45,11 @@
               }}
             </td>
             <td>
-              <v-container ml-12>
-                <ModifySignatureDialog
-                  v-if="item.documentType === 'Signature'"
-                ></ModifySignatureDialog>
+              <v-container
+                ml-12
+                v-if="item.documentType === 'Signature'"
+              >
+                <ModifySignatureDialog></ModifySignatureDialog>
               </v-container>
             </td>
           </template>
@@ -64,12 +65,9 @@ import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import { reactive } from 'vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
-import { useRouter } from 'vue-router/composables'
 // eslint-disable-next-line sort-imports
-import Endpoints from '@shared-ui/api/endpoints'
 import FileUploadDialog from '@shared-ui/components/dialogs/FileUploadDialog.vue'
 import ModifySignatureDialog from '@shared-ui/components/dialogs/ModifySignatureDialog.vue'
-import axios from 'axios'
 import {
   formatDate,
   formatTime,
@@ -82,7 +80,6 @@ interface IFileUploadInfoSection {
   enableEightHourSafetyCourseButton: boolean
 }
 
-const router = useRouter()
 const applicationStore = useCompleteApplicationStore()
 
 const state = reactive({
@@ -168,59 +165,4 @@ const { mutate: updateMutation } = useMutation({
     state.files = []
   },
 })
-
-function handleModifyDocument() {
-  applicationStore.completeApplication.application.uploadedDocuments.forEach(
-    file => {
-      if (file.documentType === 'Signature') {
-        deleteFile(file.name).then(() => {
-          viewSignatureSection()
-        })
-      }
-    }
-  )
-}
-
-function viewSignatureSection() {
-  router.push({
-    path: `/form`,
-    query: {
-      applicationId: state.application[0].id,
-      isComplete: state.application[0].application.isComplete.toString(),
-    },
-  })
-}
-
-async function deleteFile(name) {
-  const documentToDelete =
-    applicationStore.completeApplication.application.uploadedDocuments.find(
-      doc => doc.name === name
-    )
-
-  if (!documentToDelete) {
-    return
-  }
-
-  try {
-    await axios
-      .delete(
-        `${Endpoints.DELETE_DOCUMENT_FILE_PUBLIC_ENDPOINT}?applicantFileName=${name}`
-      )
-      .then(() => {
-        applicationStore.completeApplication.application.uploadedDocuments.pop()
-      })
-
-    const updatedDocuments =
-      applicationStore.completeApplication.application.uploadedDocuments.filter(
-        doc => doc.name !== name
-      )
-
-    applicationStore.completeApplication.application.uploadedDocuments =
-      updatedDocuments
-
-    updateMutation()
-    // eslint-disable-next-line no-empty
-  } finally {
-  }
-}
 </script>

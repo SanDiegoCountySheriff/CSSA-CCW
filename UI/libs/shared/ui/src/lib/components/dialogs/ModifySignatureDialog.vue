@@ -3,11 +3,7 @@
     <v-btn
       v-if="showInitialWithdrawButton && canWithdrawApplication"
       @click="handleShowModifySignatureDialog"
-      :disabled="
-        isGetApplicationsLoading ||
-        !canWithdrawApplication ||
-        isMakePaymentLoading
-      "
+      :disabled="isGetApplicationsLoading || !canWithdrawApplication"
       color="primary"
       tonal
     >
@@ -22,7 +18,7 @@
       color="primary"
       block
       @click="handleSubmit"
-      :disabled="isGetApplicationsLoading || isMakePaymentLoading"
+      :disabled="isGetApplicationsLoading"
     >
       Submit
     </v-btn>
@@ -110,30 +106,44 @@
 </template>
 
 <script setup lang="ts">
-import { AppointmentType } from '../../../../../utils/src/lib/types/defaultTypes'
+//import { AppointmentType } from '../../../../../utils/src/lib/types/defaultTypes'
 import Endpoints from '../../../lib/api/endpoints'
-import Routes from '../../../../../../core-public/src/lib/router/routes'
+//import Routes from '../../../../../../core-public/src/lib/router/routes'
 import SignaturePad from 'signature_pad'
-import { UploadedDocType } from '../../../../../utils/src/lib/types/defaultTypes'
 import axios from 'axios'
-import { useBrandStore } from '../../stores/brandStore'
 import { useCompleteApplicationStore } from '../../stores/completeApplication'
 import { usePaymentStore } from '../../stores/paymentStore'
-import { useThemeStore } from '../../stores/themeStore'
 import {
   ApplicationStatus,
   ApplicationType,
+  AppointmentType,
   CompleteApplication,
-  PaymentType,
-} from '../../../../../utils/src/lib/types/defaultTypes'
+  UploadedDocType,
+} from '@shared-utils/types/defaultTypes'
+// import Endpoints from '../../../lib/api/endpoints'
+//import Routes from '../../../../../../core-public/src/lib/router/routes'
+// import Routes from '@core-public/router/routes'
+// import SignaturePad from 'signature_pad'
+//import { UploadedDocType } from '../../../../../utils/src/lib/types/defaultTypes'
+//import axios from 'axios'
+//import { useBrandStore } from '../../stores/brandStore'
+// import { useCompleteApplicationStore } from '../../stores/completeApplication'
+//import { usePaymentStore } from '../../stores/paymentStore'
+//import { useThemeStore } from '../../stores/themeStore'
+// import {
+//   ApplicationStatus,
+//   ApplicationType,
+//   CompleteApplication,
+//   PaymentType,
+// } from '../../../../../utils/src/lib/types/defaultTypes'
 import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 import { useRoute, useRouter } from 'vue-router/composables'
 
 const applicationStore = useCompleteApplicationStore()
 const paymentStore = usePaymentStore()
-const brandStore = useBrandStore()
-const themeStore = useThemeStore()
+//const brandStore = useBrandStore()
+//const themeStore = useThemeStore()
 const router = useRouter()
 const route = useRoute()
 const paymentSnackbar = ref(false)
@@ -314,7 +324,7 @@ const updateMutation = useMutation({
   mutationFn: applicationStore.updateApplication,
   onSuccess: () => {
     router.push({
-      path: Routes.APPLICATION_DETAIL_ROUTE,
+      path: `/application-details`,
       query: {
         applicationId: state.application[0].id,
       },
@@ -323,195 +333,195 @@ const updateMutation = useMutation({
   onError: () => null,
 })
 
-const { mutate: makePayment, isLoading: isMakePaymentLoading } = useMutation({
-  mutationFn: () => {
-    let cost: number
-    let paymentType: string
-    let livescanAmount: number | null | undefined
+// const { mutate: makePayment, isLoading: isMakePaymentLoading } = useMutation({
+//   mutationFn: () => {
+//     let cost: number
+//     let paymentType: string
+//     let livescanAmount: number | null | undefined
 
-    switch (applicationStore.completeApplication.application.applicationType) {
-      case ApplicationType.Standard:
-        if (
-          applicationStore.completeApplication.application
-            .readyForInitialPayment
-        ) {
-          paymentType =
-            PaymentType['CCW Application Initial Payment'].toString()
-          livescanAmount =
-            applicationStore.completeApplication.application.cost
-              .standardLivescanFee ?? brandStore.brand.cost.standardLivescanFee
-          cost =
-            applicationStore.completeApplication.application.cost.new
-              .standard ?? brandStore.brand.cost.new.standard
-        } else {
-          window.console.log('this one')
-          paymentType =
-            PaymentType['CCW Application Issuance Payment'].toString()
-          window.console.log(paymentType)
-          cost =
-            applicationStore.completeApplication.application.cost.issuance ??
-            brandStore.brand.cost.issuance
-          window.console.log(cost)
-        }
+//     switch (applicationStore.completeApplication.application.applicationType) {
+//       case ApplicationType.Standard:
+//         if (
+//           applicationStore.completeApplication.application
+//             .readyForInitialPayment
+//         ) {
+//           paymentType =
+//             PaymentType['CCW Application Initial Payment'].toString()
+//           livescanAmount =
+//             applicationStore.completeApplication.application.cost
+//               .standardLivescanFee ?? brandStore.brand.cost.standardLivescanFee
+//           cost =
+//             applicationStore.completeApplication.application.cost.new
+//               .standard ?? brandStore.brand.cost.new.standard
+//         } else {
+//           window.console.log('this one')
+//           paymentType =
+//             PaymentType['CCW Application Issuance Payment'].toString()
+//           window.console.log(paymentType)
+//           cost =
+//             applicationStore.completeApplication.application.cost.issuance ??
+//             brandStore.brand.cost.issuance
+//           window.console.log(cost)
+//         }
 
-        break
+//         break
 
-      case ApplicationType.Judicial:
-        if (
-          applicationStore.completeApplication.application
-            .readyForInitialPayment
-        ) {
-          paymentType =
-            PaymentType['CCW Application Initial Judicial Payment'].toString()
-          livescanAmount =
-            applicationStore.completeApplication.application.cost
-              .judicialLivescanFee ?? brandStore.brand.cost.judicialLivescanFee
-          cost =
-            applicationStore.completeApplication.application.cost.new
-              .judicial ?? brandStore.brand.cost.new.judicial
-        } else {
-          paymentType =
-            PaymentType['CCW Application Issuance Payment'].toString()
-          cost =
-            applicationStore.completeApplication.application.cost.issuance ??
-            brandStore.brand.cost.issuance
-        }
+//       case ApplicationType.Judicial:
+//         if (
+//           applicationStore.completeApplication.application
+//             .readyForInitialPayment
+//         ) {
+//           paymentType =
+//             PaymentType['CCW Application Initial Judicial Payment'].toString()
+//           livescanAmount =
+//             applicationStore.completeApplication.application.cost
+//               .judicialLivescanFee ?? brandStore.brand.cost.judicialLivescanFee
+//           cost =
+//             applicationStore.completeApplication.application.cost.new
+//               .judicial ?? brandStore.brand.cost.new.judicial
+//         } else {
+//           paymentType =
+//             PaymentType['CCW Application Issuance Payment'].toString()
+//           cost =
+//             applicationStore.completeApplication.application.cost.issuance ??
+//             brandStore.brand.cost.issuance
+//         }
 
-        break
+//         break
 
-      case ApplicationType.Reserve:
-        if (
-          applicationStore.completeApplication.application
-            .readyForInitialPayment
-        ) {
-          paymentType =
-            PaymentType['CCW Application Initial Reserve Payment'].toString()
-          livescanAmount =
-            applicationStore.completeApplication.application.cost
-              .reserveLivescanFee ?? brandStore.brand.cost.reserveLivescanFee
-          cost =
-            applicationStore.completeApplication.application.cost.new.reserve ??
-            brandStore.brand.cost.new.reserve
-        } else {
-          paymentType =
-            PaymentType['CCW Application Issuance Payment'].toString()
-          cost =
-            applicationStore.completeApplication.application.cost.issuance ??
-            brandStore.brand.cost.issuance
-        }
+//       case ApplicationType.Reserve:
+//         if (
+//           applicationStore.completeApplication.application
+//             .readyForInitialPayment
+//         ) {
+//           paymentType =
+//             PaymentType['CCW Application Initial Reserve Payment'].toString()
+//           livescanAmount =
+//             applicationStore.completeApplication.application.cost
+//               .reserveLivescanFee ?? brandStore.brand.cost.reserveLivescanFee
+//           cost =
+//             applicationStore.completeApplication.application.cost.new.reserve ??
+//             brandStore.brand.cost.new.reserve
+//         } else {
+//           paymentType =
+//             PaymentType['CCW Application Issuance Payment'].toString()
+//           cost =
+//             applicationStore.completeApplication.application.cost.issuance ??
+//             brandStore.brand.cost.issuance
+//         }
 
-        break
+//         break
 
-      case ApplicationType.Employment:
-        if (
-          applicationStore.completeApplication.application
-            .readyForInitialPayment
-        ) {
-          paymentType =
-            PaymentType['CCW Application Initial Employment Payment'].toString()
-          livescanAmount =
-            applicationStore.completeApplication.application.cost
-              .employmentLivescanFee ??
-            brandStore.brand.cost.employmentLivescanFee
-          cost =
-            applicationStore.completeApplication.application.cost.new
-              .employment ?? brandStore.brand.cost.new.employment
-        } else {
-          paymentType =
-            PaymentType['CCW Application Issuance Payment'].toString()
-          cost =
-            applicationStore.completeApplication.application.cost.issuance ??
-            brandStore.brand.cost.issuance
-        }
+//       case ApplicationType.Employment:
+//         if (
+//           applicationStore.completeApplication.application
+//             .readyForInitialPayment
+//         ) {
+//           paymentType =
+//             PaymentType['CCW Application Initial Employment Payment'].toString()
+//           livescanAmount =
+//             applicationStore.completeApplication.application.cost
+//               .employmentLivescanFee ??
+//             brandStore.brand.cost.employmentLivescanFee
+//           cost =
+//             applicationStore.completeApplication.application.cost.new
+//               .employment ?? brandStore.brand.cost.new.employment
+//         } else {
+//           paymentType =
+//             PaymentType['CCW Application Issuance Payment'].toString()
+//           cost =
+//             applicationStore.completeApplication.application.cost.issuance ??
+//             brandStore.brand.cost.issuance
+//         }
 
-        break
+//         break
 
-      case ApplicationType['Renew Standard']:
-        paymentType = PaymentType['CCW Application Renewal Payment'].toString()
-        cost =
-          applicationStore.completeApplication.application.cost.renew
-            .standard ?? brandStore.brand.cost.renew.standard
-        break
+//       case ApplicationType['Renew Standard']:
+//         paymentType = PaymentType['CCW Application Renewal Payment'].toString()
+//         cost =
+//           applicationStore.completeApplication.application.cost.renew
+//             .standard ?? brandStore.brand.cost.renew.standard
+//         break
 
-      case ApplicationType['Renew Judicial']:
-        paymentType =
-          PaymentType['CCW Application Renewal Judicial Payment'].toString()
-        cost =
-          applicationStore.completeApplication.application.cost.renew
-            .judicial ?? brandStore.brand.cost.renew.judicial
-        break
+//       case ApplicationType['Renew Judicial']:
+//         paymentType =
+//           PaymentType['CCW Application Renewal Judicial Payment'].toString()
+//         cost =
+//           applicationStore.completeApplication.application.cost.renew
+//             .judicial ?? brandStore.brand.cost.renew.judicial
+//         break
 
-      case ApplicationType['Renew Reserve']:
-        paymentType =
-          PaymentType['CCW Application Renewal Reserve Payment'].toString()
-        cost =
-          applicationStore.completeApplication.application.cost.renew.reserve ??
-          brandStore.brand.cost.renew.reserve
-        break
+//       case ApplicationType['Renew Reserve']:
+//         paymentType =
+//           PaymentType['CCW Application Renewal Reserve Payment'].toString()
+//         cost =
+//           applicationStore.completeApplication.application.cost.renew.reserve ??
+//           brandStore.brand.cost.renew.reserve
+//         break
 
-      case ApplicationType['Renew Employment']:
-        paymentType =
-          PaymentType['CCW Application Renewal Employment Payment'].toString()
-        cost =
-          applicationStore.completeApplication.application.cost.renew
-            .employment ?? brandStore.brand.cost.renew.employment
-        break
+//       case ApplicationType['Renew Employment']:
+//         paymentType =
+//           PaymentType['CCW Application Renewal Employment Payment'].toString()
+//         cost =
+//           applicationStore.completeApplication.application.cost.renew
+//             .employment ?? brandStore.brand.cost.renew.employment
+//         break
 
-      case ApplicationType['Modify Standard']:
-        paymentType =
-          PaymentType['CCW Application Modification Payment'].toString()
-        cost =
-          applicationStore.completeApplication.application.cost.modify ??
-          brandStore.brand.cost.modify
-        break
+//       case ApplicationType['Modify Standard']:
+//         paymentType =
+//           PaymentType['CCW Application Modification Payment'].toString()
+//         cost =
+//           applicationStore.completeApplication.application.cost.modify ??
+//           brandStore.brand.cost.modify
+//         break
 
-      case ApplicationType['Modify Judicial']:
-        paymentType =
-          PaymentType[
-            'CCW Application Modification Judicial Payment'
-          ].toString()
-        cost =
-          applicationStore.completeApplication.application.cost.modify ??
-          brandStore.brand.cost.modify
-        break
+//       case ApplicationType['Modify Judicial']:
+//         paymentType =
+//           PaymentType[
+//             'CCW Application Modification Judicial Payment'
+//           ].toString()
+//         cost =
+//           applicationStore.completeApplication.application.cost.modify ??
+//           brandStore.brand.cost.modify
+//         break
 
-      case ApplicationType['Modify Reserve']:
-        paymentType =
-          PaymentType['CCW Application Modification Reserve Payment'].toString()
-        cost =
-          applicationStore.completeApplication.application.cost.modify ??
-          brandStore.brand.cost.modify
-        break
+//       case ApplicationType['Modify Reserve']:
+//         paymentType =
+//           PaymentType['CCW Application Modification Reserve Payment'].toString()
+//         cost =
+//           applicationStore.completeApplication.application.cost.modify ??
+//           brandStore.brand.cost.modify
+//         break
 
-      case ApplicationType['Modify Employment']:
-        paymentType =
-          PaymentType[
-            'CCW Application Modification Employment Payment'
-          ].toString()
-        cost =
-          applicationStore.completeApplication.application.cost.modify ??
-          brandStore.brand.cost.modify
-        break
+//       case ApplicationType['Modify Employment']:
+//         paymentType =
+//           PaymentType[
+//             'CCW Application Modification Employment Payment'
+//           ].toString()
+//         cost =
+//           applicationStore.completeApplication.application.cost.modify ??
+//           brandStore.brand.cost.modify
+//         break
 
-      default:
-        paymentType = PaymentType['CCW Application Initial Payment'].toString()
-        cost =
-          applicationStore.completeApplication.application.cost.new.standard ??
-          brandStore.brand.cost.new.standard
-    }
+//       default:
+//         paymentType = PaymentType['CCW Application Initial Payment'].toString()
+//         cost =
+//           applicationStore.completeApplication.application.cost.new.standard ??
+//           brandStore.brand.cost.new.standard
+//     }
 
-    return paymentStore.getPayment(
-      applicationStore.completeApplication.id,
-      cost,
-      livescanAmount,
-      applicationStore.completeApplication.application.orderId,
-      paymentType
-    )
-  },
-  onError: () => {
-    paymentSnackbar.value = true
-  },
-})
+//     return paymentStore.getPayment(
+//       applicationStore.completeApplication.id,
+//       cost,
+//       livescanAmount,
+//       applicationStore.completeApplication.application.orderId,
+//       paymentType
+//     )
+//   },
+//   onError: () => {
+//     paymentSnackbar.value = true
+//   },
+// })
 
 const {
   isLoading: isUploadSignatureDocumentLoading,
