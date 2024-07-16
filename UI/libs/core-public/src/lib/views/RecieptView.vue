@@ -5,11 +5,7 @@
       align="center"
     >
       <v-col>
-        <v-card
-          flat
-          height="700px"
-
-        >
+        <v-card flat>
           <v-card-title class="justify-center mt-10">
             <v-icon
               large
