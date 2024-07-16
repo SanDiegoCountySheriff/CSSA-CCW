@@ -8,6 +8,7 @@
         <v-card
           flat
           height="700px"
+
         >
           <v-card-title class="justify-center mt-10">
             <v-icon
@@ -79,8 +80,21 @@
                 </v-sheet>
                 <v-row justify="center">
                   <p
+                    v-if="isRenewOrModify"
                     class="mt-15"
-                    style="color: black; font-size: 1.17rem; line-height: 2"
+                    style="color: black; font-size: 1.1rem; line-height: 2"
+                    :class="
+                      themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                    "
+                  >
+                    Thank you for completing your CCW renewal/modification
+                    application. The Licensing Staff will notify you of their
+                    evaluation.
+                  </p>
+                  <p
+                    v-else
+                    class="mt-15"
+                    style="color: black; font-size: 1.11rem; line-height: 2"
                     :class="
                       themeStore.getThemeConfig.isDark ? 'white--text' : ''
                     "
@@ -114,15 +128,38 @@
 </template>
 
 <script setup lang="ts">
-import { useThemeStore } from '@shared-ui/stores/themeStore'
+import {
+  ApplicationType,
+  CompleteApplication,
+} from '@shared-utils/types/defaultTypes'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
+import { computed } from 'vue'
 
 const router = useRouter()
 const brandStore = useBrandStore()
 const themeStore = useThemeStore()
+const completeApplication = useCompleteApplicationStore()
 
 const goToDashBoard = () => {
   router.push('/')
 }
+
+const isRenewOrModify = computed(() => {
+  const applicationType =
+    completeApplication.getCompleteApplication.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment'] ||
+    applicationType === ApplicationType['Modify Standard'] ||
+    applicationType === ApplicationType['Modify Reserve'] ||
+    applicationType === ApplicationType['Modify Judicial'] ||
+    applicationType === ApplicationType['Modify Employment']
+  )
+})
 </script>
