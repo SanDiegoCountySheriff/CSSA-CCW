@@ -599,12 +599,25 @@
             {{ numberOfDaysUntilRenewalIsActive }} days
           </v-card-title>
 
+          <v-card-title
+            v-if="
+              isRenewalActive &&
+              applicationStore.completeApplication.isMatchUpdated === false
+            "
+            class="justify-center"
+          >
+            You can begin your renewal after verifying your information
+          </v-card-title>
+
           <v-spacer />
 
           <v-card-text>
             <v-row>
               <v-col
-                v-if="isRenewalActive"
+                v-if="
+                  isRenewalActive &&
+                  applicationStore.completeApplication.isMatchUpdated !== false
+                "
                 cols="12"
               >
                 <v-btn
