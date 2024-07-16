@@ -83,9 +83,8 @@
                       themeStore.getThemeConfig.isDark ? 'white--text' : ''
                     "
                   >
-                    Thank you for completing your CCW renewal/modification
-                    application. The Licensing Staff will notify you of their
-                    verdict.
+                    Thank you for completing your CCW application. The Licensing
+                    staff will notify you once they have processed your request.
                   </p>
                   <p
                     v-else
@@ -96,7 +95,7 @@
                     "
                   >
                     Thank you for completing your CCW application. The Licensing
-                    Staff will see you at your appointment.
+                    staff will see you at your appointment.
                   </p>
                 </v-row>
               </v-col>
