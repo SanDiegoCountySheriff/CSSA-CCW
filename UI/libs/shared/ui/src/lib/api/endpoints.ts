@@ -209,6 +209,18 @@ export default class Endpoints {
     }/application/v1/permitapplication/withdrawRenewal`
   }
 
+  static get GET_HISTORICAL_APPLICATION_SUMMARY_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getHistoricalApplicationSummary`
+  }
+
+  static get GET_HISTORICAL_APPLICATION_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getHistoricalApplication`
+  }
+
   /********APPOINTMENTS******************/
 
   static get GET_APPOINTMENTS_ENDPOINT() {

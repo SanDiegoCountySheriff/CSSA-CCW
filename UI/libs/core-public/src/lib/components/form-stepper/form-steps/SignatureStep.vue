@@ -244,6 +244,7 @@ const state = reactive({
   uploading: false,
   isMatching: false,
 })
+const updateReason = 'Next Step'
 
 const model = computed({
   get: () => props.value,
@@ -307,7 +308,7 @@ const { mutate: fileMutation, isLoading } = useMutation({
   onSuccess: () => {
     if (!state.isMatching) {
       model.value.application.currentStep = 10
-      applicationStore.updateApplication()
+      applicationStore.updateApplication(updateReason)
       router.push({
         path: Routes.FINALIZE_ROUTE_PATH,
         query: {
@@ -431,7 +432,7 @@ function setAgreedDate(agreedDateKey) {
 
 function handleContinueWithoutUpload() {
   applicationStore.completeApplication.application.currentStep = 8
-  applicationStore.updateApplication()
+  applicationStore.updateApplication(updateReason)
   router.push({
     path: Routes.FINALIZE_ROUTE_PATH,
     query: {

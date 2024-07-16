@@ -118,8 +118,8 @@ onMounted(() => {
 
 const { isLoading: isUpdateApplicationLoading, mutate: updateMutation } =
   useMutation({
-    mutationFn: () => {
-      return applicationStore.updateApplication()
+    mutationFn: (updateReason: string) => {
+      return applicationStore.updateApplication(updateReason)
     },
     onSuccess: () => {
       router.push(Routes.RECEIPT_PATH)
@@ -154,7 +154,7 @@ const fileMutation = useMutation({
     applicationStore.completeApplication.application.modificationSubmittedToLicensingDateTime =
       new Date().toISOString()
 
-    updateMutation()
+    updateMutation('Submit Modification')
   },
   onError: () => {
     uploading.value = false

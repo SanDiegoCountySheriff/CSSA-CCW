@@ -20,7 +20,7 @@
         v-model="stepIndex.step"
         non-linear
         class="stepper"
-        @change="updateMutation"
+        @change="updateMutation('Next Step')"
         :alt-labels="$vuetify.breakpoint.lgAndDown"
       >
         <v-stepper-header
@@ -253,7 +253,7 @@
       <v-expansion-panels
         v-model="expansionStep"
         accordion
-        @change="updateMutation"
+        @change="updateMutation('Next Step')"
       >
         <v-expansion-panel>
           <v-expansion-panel-header
@@ -532,8 +532,8 @@ const expansionStep = computed({
 })
 
 const { isLoading, mutate: updateMutation } = useMutation({
-  mutationFn: () => {
-    return applicationStore.updateApplication()
+  mutationFn: (updateReason: string) => {
+    return applicationStore.updateApplication(updateReason)
   },
 })
 
@@ -547,7 +547,7 @@ const { refetch } = useQuery(
 
 const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
   mutationKey: ['saveMutation'],
-  mutationFn: () => {
+  mutationFn: (updateReason: string) => {
     if (
       applicationStore.completeApplication.application.isUpdatingApplication
     ) {
@@ -555,7 +555,7 @@ const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
         false
     }
 
-    return applicationStore.updateApplication()
+    return applicationStore.updateApplication(updateReason)
   },
   onSuccess: () => {
     refetch()
@@ -602,7 +602,7 @@ function handleSave(isMatching = false) {
     applicationStore.completeApplication.application.currentStep = 1
   }
 
-  saveMutation()
+  saveMutation('Next Step')
 }
 
 function handleContinue() {
@@ -611,7 +611,7 @@ function handleContinue() {
       stepIndex.step + 1
   }
 
-  updateMutation()
+  updateMutation('Next Step')
   window.scrollTo(0, 0)
   stepIndex.previousStep = stepIndex.step
   stepIndex.step += 1
@@ -623,7 +623,7 @@ function handlePrevious() {
       stepIndex.step - 1
   }
 
-  updateMutation()
+  updateMutation('Next Step')
   window.scrollTo(0, 0)
   stepIndex.previousStep = stepIndex.step
   stepIndex.step -= 1

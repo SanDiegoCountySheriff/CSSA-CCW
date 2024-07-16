@@ -1,7 +1,7 @@
 using CCW.Common.Enums;
 using CCW.Common.Models;
 
-namespace CCW.Application.Models;
+namespace CCW.Application.ResponseModels;
 
 public class SummarizedPermitApplicationReportResponseModel
 {
