@@ -522,7 +522,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     {
         var queryString = @"SELECT a.Application, a.id, a.Application.OrderId, a.PaymentHistory, a.Application.PersonalInfo.FirstName, 
                           a.Application.PersonalInfo.LastName, a.Application.AppointmentDateTime, a.Application.PersonalInfo.MiddleName,
-                          a.Application.PersonalInfo.Suffix, a.Application.DOB.BirthDate, a.Application.Aliases
+                          a.Application.PersonalInfo.Suffix, a.Application.DOB.BirthDate, a.Application.Aliases, a.Application.Status
                           FROM applications a WHERE STARTSWITH(a.Application.AppointmentDateTime, @date)";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
