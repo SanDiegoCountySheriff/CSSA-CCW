@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <div>
     <v-btn
       v-if="showInitialWithdrawButton && canWithdrawApplication"
       @click="handleShowModifySignatureDialog"
@@ -7,7 +7,7 @@
       color="primary"
       tonal
     >
-      Modify Signature
+      {{ title }}
     </v-btn>
 
     <v-btn
@@ -102,7 +102,7 @@
         </v-btn>
       </template>
     </v-snackbar>
-  </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -121,6 +121,14 @@ import {
 import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 import { useRoute, useRouter } from 'vue-router/composables'
+
+interface IModifySignatureDialog {
+  title: string
+}
+
+const props = withDefaults(defineProps<IModifySignatureDialog>(), {
+  title: 'Modify Signature',
+})
 
 const applicationStore = useCompleteApplicationStore()
 const paymentStore = usePaymentStore()
@@ -317,7 +325,7 @@ const {
   mutate: uploadSignatureDocument,
 } = useMutation(
   ['uploadSignatureDocument'],
-  async () => await postUploadSignatureFile(signatureForm, 'signature'),
+  async () => await postUploadSignatureFile(signatureForm, 'Signature'),
   {
     onSuccess: async () => {
       const uploadDoc: UploadedDocType = {

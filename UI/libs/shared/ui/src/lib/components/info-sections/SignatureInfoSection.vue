@@ -4,7 +4,7 @@
     class="info-section-container rounded"
   >
     <v-banner class="sub-header font-weight-bold text-left my-5 pl-0">
-      {{ $t(' Signature  ') }}
+      {{ $t('Signature') }}
     </v-banner>
     <v-row>
       <v-col
@@ -13,7 +13,6 @@
       >
         <v-banner
           rounded
-          single-line
           class="text-left"
         >
           <v-icon
@@ -27,7 +26,14 @@
             state.signature ? $t('Signature Uploaded') : $t('Missing Signature')
           }}
           <v-container ml-12>
-            <ModifySignatureDialog></ModifySignatureDialog>
+            <ModifySignatureDialog
+              v-if="state.signature"
+              title="Modify Signature"
+            ></ModifySignatureDialog>
+            <ModifySignatureDialog
+              v-else
+              title="Add Signature"
+            ></ModifySignatureDialog>
           </v-container>
         </v-banner>
       </v-col>
@@ -38,6 +44,7 @@
 <script lang="ts" setup>
 import ModifySignatureDialog from '@shared-ui/components/dialogs/ModifySignatureDialog.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useMutation } from '@tanstack/vue-query'
 import { onMounted, reactive } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()

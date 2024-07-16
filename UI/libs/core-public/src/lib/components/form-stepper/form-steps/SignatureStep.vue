@@ -376,7 +376,7 @@ async function handleContinue() {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   image.toBlob(blob => {
-    const file = new File([blob], 'signature.png', { type: 'image/png' })
+    const file = new File([blob], 'Signature.png', { type: 'image/png' })
     const form = new FormData()
 
     form.append('fileToUpload', file)
@@ -398,7 +398,7 @@ async function handleSaveMatch() {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   image.toBlob(blob => {
-    const file = new File([blob], 'signature.png', { type: 'image/png' })
+    const file = new File([blob], 'Signature.png', { type: 'image/png' })
     const form = new FormData()
 
     form.append('fileToUpload', file)
