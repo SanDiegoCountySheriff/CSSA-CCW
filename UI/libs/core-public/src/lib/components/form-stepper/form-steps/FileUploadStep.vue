@@ -314,7 +314,6 @@ const state = reactive({
   reserve: '',
   employment: '',
   eightHourSafetyCourse: '',
-  //signature: '',
   uploadSuccessful: true,
 })
 
@@ -510,9 +509,6 @@ const { mutate: updateMutation } = useMutation({
         case 'eighthoursafetycourse':
           state.eightHourSafetyCourse = item.name
           break
-        // case 'signature':
-        //   state.signature = item.name
-        //   break
         default:
           break
       }
@@ -705,9 +701,6 @@ onMounted(() => {
       case 'eighthoursafetycourse':
         state.eightHourSafetyCourse = item.name
         break
-      // case 'signature':
-      //   state.signature = item.name
-      //   break
       default:
         break
     }
