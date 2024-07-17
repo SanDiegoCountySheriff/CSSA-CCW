@@ -4,7 +4,7 @@
     class="info-section-container rounded"
   >
     <v-banner class="sub-header font-weight-bold text-left my-5 pl-0">
-      {{ $t(' Signature  ') }}
+      {{ $t('Signature') }}
     </v-banner>
     <v-row>
       <v-col
@@ -13,7 +13,6 @@
       >
         <v-banner
           rounded
-          single-line
           class="text-left"
         >
           <v-icon
@@ -26,6 +25,18 @@
           {{
             state.signature ? $t('Signature Uploaded') : $t('Missing Signature')
           }}
+          <v-container ml-12>
+            <ModifySignatureDialog
+              v-if="state.signature"
+              v-on="$listeners"
+              title="Modify Signature"
+            ></ModifySignatureDialog>
+            <ModifySignatureDialog
+              v-else
+              title="Add Signature"
+              v-on="$listeners"
+            ></ModifySignatureDialog>
+          </v-container>
         </v-banner>
       </v-col>
     </v-row>
@@ -33,16 +44,20 @@
 </template>
 
 <script lang="ts" setup>
+import ModifySignatureDialog from '@shared-ui/components/dialogs/ModifySignatureDialog.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { onMounted, reactive } from 'vue'
+import { onUpdated, reactive } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()
 
 const state = reactive({
   signature: false,
+  signatureName: '',
+  application: [applicationStore.completeApplication],
+  files: [] as Array<{ formData; target }>,
 })
 
-onMounted(() => {
+onUpdated(() => {
   applicationStore.completeApplication.application.uploadedDocuments.forEach(
     file => {
       if (file.documentType === 'Signature') {
