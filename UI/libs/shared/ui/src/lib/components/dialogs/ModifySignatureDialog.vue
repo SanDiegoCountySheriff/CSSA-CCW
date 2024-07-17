@@ -90,8 +90,7 @@
       v-model="state.showUploadSuccessSnackbar"
       color="primary"
     >
-      Your signature was successfully modified. Please inform Licensing so your
-      application can continue processing.
+      Your signature was successfully updated.
       <template #action="{ attrs }">
         <v-btn
           text

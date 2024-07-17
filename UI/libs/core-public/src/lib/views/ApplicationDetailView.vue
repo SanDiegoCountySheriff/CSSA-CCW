@@ -291,6 +291,19 @@
                 >
                   Withdraw
                 </v-btn>
+
+                <v-btn
+                  v-else-if="
+                    applicationStore.completeApplication.application.status ===
+                    ApplicationStatus.Withdrawn
+                  "
+                  color="primary"
+                  block
+                  @click="handleSubmit"
+                  :disabled="isGetApplicationsLoading || isMakePaymentLoading"
+                >
+                  Submit
+                </v-btn>
               </v-col>
             </v-row>
 
