@@ -228,7 +228,7 @@
 
 <script setup lang="ts">
 import ContactDialog from '@core-public/components/dialogs/ContactDialog.vue'
-import { MsalBrowser } from '@shared-ui/api/auth/authentication'
+import { MsalBrowser } from '@core-public/api/auth/authentication'
 import PriceInfoDialog from '@core-public/components/dialogs/PriceInfoDialog.vue'
 import Routes from '@core-public/router/routes'
 import StartHereDialog from '@core-public/components/dialogs/StartHereDialog.vue'

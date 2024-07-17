@@ -60,10 +60,10 @@ export type AppConfigType = {
   displayDebugger: boolean
   isPaymentServiceAvailable: boolean
   environmentName: string
-  refreshTime: number
   questions: QuestionsConfig
   payBeforeSubmit: boolean
   applicationInsightsConnectionString: string
+  scope: string
 }
 
 export type AppearanceInfoType = {

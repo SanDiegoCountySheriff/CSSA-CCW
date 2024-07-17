@@ -1,4 +1,4 @@
-import { MsalBrowser } from '@shared-ui/api/auth/authentication'
+import { MsalBrowser } from '@core-public/api/auth/authentication'
 import axios from 'axios'
 import { useAuthStore } from '@shared-ui/stores/auth'
 
@@ -14,9 +14,7 @@ export default async function interceptors(msalInstance: MsalBrowser) {
 
     let token: string | undefined = ''
 
-    if (msalInstance.isAuthenticated()) {
-      token = await msalInstance.acquireToken()
-    }
+    token = await msalInstance.acquireToken()
 
     if (req.headers) {
       req.headers.Authorization = `Bearer ${token}`
@@ -24,17 +22,4 @@ export default async function interceptors(msalInstance: MsalBrowser) {
 
     return req
   })
-
-  axios.interceptors.response.use(
-    async res => {
-      return res
-    },
-    async error => {
-      if (error.response.status === 401) {
-        await msalInstance.acquireToken()
-      }
-
-      return Promise.reject(error)
-    }
-  )
 }

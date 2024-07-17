@@ -62,7 +62,6 @@ export type AdminAppConfigType = {
   displayDebugger: boolean
   environmentName: string
   loginType: string
-  refreshTime: number
   applicationInsightsConnectionString: string
 }
 

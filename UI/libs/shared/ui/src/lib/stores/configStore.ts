@@ -22,9 +22,9 @@ export const useAppConfigStore = defineStore('ConfigStore', () => {
     displayDebugger: false,
     isPaymentServiceAvailable: false,
     environmentName: '',
-    refreshTime: 0,
     payBeforeSubmit: false,
     applicationInsightsConnectionString: '',
+    scope: '',
     questions: {
       one: 109,
       two: 545,

@@ -1,6 +1,6 @@
 import PublicApp from './PublicApp.vue'
 import Vue from 'vue'
-import { getMsalInstance } from '@shared-ui/api/auth/authentication'
+import { getMsalInstance } from '@core-public/api/auth/authentication'
 import interceptors from '@core-public/api/interceptors'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import wb from './registerServiceWorker'
