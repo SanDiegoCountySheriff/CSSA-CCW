@@ -2520,7 +2520,7 @@ function handleFileSubmit(fileSubmission: IFileSubmission) {
 
 function handleSignatureSubmit() {
   fileUploadLoading.value = true
-  updateWithoutRouteMutation.mutate()
+  updateWithoutRouteMutation.mutate('Updated Signature')
 }
 
 function convertToQualifyingQuestionStandard(item) {

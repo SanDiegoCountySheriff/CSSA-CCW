@@ -35,8 +35,6 @@
             title="Upload"
             :eight-hour-safety-input="false"
             :enable-button="enableButton"
-            :eight-hour-safety-input="false"
-            title="Upload"
             class="ml-4"
           />
         </template>
@@ -74,9 +72,7 @@
 <script lang="ts" setup>
 import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
-import { reactive } from 'vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useMutation } from '@tanstack/vue-query'
 // eslint-disable-next-line sort-imports
 import FileUploadDialog from '@shared-ui/components/dialogs/FileUploadDialog.vue'
 import ModifySignatureDialog from '@shared-ui/components/dialogs/ModifySignatureDialog.vue'
@@ -94,24 +90,6 @@ interface IFileUploadInfoSection {
 
 const applicationStore = useCompleteApplicationStore()
 
-const state = reactive({
-  files: [] as Array<{ formData; target }>,
-  driverLicense: '',
-  proofResidence: '',
-  proofResidence2: '',
-  military: '',
-  citizenship: '',
-  supporting: [] as Array<string>,
-  nameChange: '',
-  judicial: '',
-  reserve: '',
-  employment: '',
-  eightHourSafetyCourse: '',
-  signature: '',
-  uploadSuccessful: true,
-  application: [applicationStore.completeApplication],
-})
-
 withDefaults(defineProps<IFileUploadInfoSection>(), {
   enableEightHourSafetyCourseButton: false,
 })
@@ -124,57 +102,4 @@ const headers = [
     value: 'uploadedDateTimeUtc',
   },
 ]
-
-const { mutate: updateMutation } = useMutation({
-  mutationFn: () => {
-    return applicationStore.updateApplication()
-  },
-  onSuccess: () => {
-    for (let item of applicationStore.completeApplication.application
-      .uploadedDocuments) {
-      switch (item.documentType.toLowerCase()) {
-        case 'driverlicense':
-          state.driverLicense = item.name
-          break
-        case 'proofresidency':
-          state.proofResidence = item.name
-          break
-        case 'proofresidency2':
-          state.proofResidence2 = item.name
-          break
-        case 'militarydoc':
-          state.military = item.name
-          break
-        case 'citizenship':
-          state.citizenship = item.name
-          break
-        case 'supporting':
-          state.supporting.push(item.name)
-          break
-        case 'namechange':
-          state.nameChange = item.name
-          break
-        case 'judicial':
-          state.judicial = item.name
-          break
-        case 'reserve':
-          state.reserve = item.name
-          break
-        case 'employment':
-          state.employment = item.name
-          break
-        case 'eighthoursafetycourse':
-          state.eightHourSafetyCourse = item.name
-          break
-        case 'signature':
-          state.signature = item.name
-          break
-        default:
-          break
-      }
-    }
-
-    state.files = []
-  },
-})
 </script>

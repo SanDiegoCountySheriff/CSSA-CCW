@@ -383,12 +383,12 @@ function handleShowModifySignatureDialog() {
 function handleShowUploadSuccessSnackbar() {
   emit('on-signature-submit')
   state.showUploadSuccessSnackbar = true
-  updateMutationWithoutRouting.mutate()
+  updateMutationWithoutRouting.mutate('Updated Signature')
 }
 
 function handleShowUploadFailureSnackbar() {
   state.showUploadFailureSnackbar = true
-  updateMutationWithoutRouting.mutate()
+  updateMutationWithoutRouting.mutate('Failed to update Signature')
 }
 
 async function postUploadSignatureFile(data: FormData, target: string) {
