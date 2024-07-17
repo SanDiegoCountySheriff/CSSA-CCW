@@ -32,6 +32,8 @@
           ></ModifySignatureDialog>
           <FileUploadDialog
             v-on="$listeners"
+            title="Upload"
+            :eight-hour-safety-input="false"
             :enable-button="enableButton"
             class="ml-4"
           />
@@ -56,6 +58,7 @@
               >
                 <ModifySignatureDialog
                   title="Modify Signature"
+                  v-on="$listeners"
                 ></ModifySignatureDialog>
               </v-container>
             </td>

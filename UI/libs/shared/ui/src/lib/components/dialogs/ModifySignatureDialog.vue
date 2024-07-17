@@ -111,6 +111,7 @@ import SignaturePad from 'signature_pad'
 import axios from 'axios'
 import { useCompleteApplicationStore } from '../../stores/completeApplication'
 import { usePaymentStore } from '../../stores/paymentStore'
+import { useRoute } from 'vue-router/composables'
 import {
   ApplicationStatus,
   ApplicationType,
@@ -120,7 +121,6 @@ import {
 } from '@shared-utils/types/defaultTypes'
 import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
-import { useRoute, useRouter } from 'vue-router/composables'
 
 interface IModifySignatureDialog {
   title: string
@@ -132,10 +132,10 @@ const props = withDefaults(defineProps<IModifySignatureDialog>(), {
 
 const applicationStore = useCompleteApplicationStore()
 const paymentStore = usePaymentStore()
-const router = useRouter()
 const route = useRoute()
 const signaturePad = ref<SignaturePad>()
 const signatureForm = new FormData()
+const emit = defineEmits(['on-signature-submit'])
 
 const state = reactive({
   snackbar: false,
@@ -307,15 +307,10 @@ const canWithdrawApplication = computed(() => {
   )
 })
 
-const updateMutation = useMutation({
+const updateMutationWithoutRouting = useMutation({
   mutationFn: applicationStore.updateApplication,
   onSuccess: () => {
-    router.push({
-      path: `/application-details`,
-      query: {
-        applicationId: state.application[0].id,
-      },
-    })
+    state.modifySignatureDialog = false
   },
   onError: () => null,
 })
@@ -350,11 +345,9 @@ const {
         uploadDoc
       )
 
-      state.modifySignatureDialog = false
       handleShowUploadSuccessSnackbar()
     },
     onError: () => {
-      state.modifySignatureDialog = false
       handleShowUploadFailureSnackbar()
     },
   }
@@ -388,13 +381,14 @@ function handleShowModifySignatureDialog() {
 }
 
 function handleShowUploadSuccessSnackbar() {
+  emit('on-signature-submit')
   state.showUploadSuccessSnackbar = true
-  updateMutation.mutate()
+  updateMutationWithoutRouting.mutate()
 }
 
 function handleShowUploadFailureSnackbar() {
   state.showUploadFailureSnackbar = true
-  updateMutation.mutate()
+  updateMutationWithoutRouting.mutate()
 }
 
 async function postUploadSignatureFile(data: FormData, target: string) {

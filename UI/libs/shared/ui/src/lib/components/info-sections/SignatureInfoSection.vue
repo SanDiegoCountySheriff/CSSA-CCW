@@ -28,11 +28,13 @@
           <v-container ml-12>
             <ModifySignatureDialog
               v-if="state.signature"
+              v-on="$listeners"
               title="Modify Signature"
             ></ModifySignatureDialog>
             <ModifySignatureDialog
               v-else
               title="Add Signature"
+              v-on="$listeners"
             ></ModifySignatureDialog>
           </v-container>
         </v-banner>
@@ -44,8 +46,7 @@
 <script lang="ts" setup>
 import ModifySignatureDialog from '@shared-ui/components/dialogs/ModifySignatureDialog.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useMutation } from '@tanstack/vue-query'
-import { onMounted, reactive } from 'vue'
+import { onUpdated, reactive } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()
 
@@ -56,7 +57,7 @@ const state = reactive({
   files: [] as Array<{ formData; target }>,
 })
 
-onMounted(() => {
+onUpdated(() => {
   applicationStore.completeApplication.application.uploadedDocuments.forEach(
     file => {
       if (file.documentType === 'Signature') {
