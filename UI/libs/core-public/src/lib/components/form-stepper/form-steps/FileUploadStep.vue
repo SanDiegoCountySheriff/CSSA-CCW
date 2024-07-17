@@ -509,6 +509,8 @@ const { mutate: updateMutation } = useMutation({
         case 'eighthoursafetycourse':
           state.eightHourSafetyCourse = item.name
           break
+        case 'signature':
+          break
         default:
           break
       }
@@ -700,6 +702,8 @@ onMounted(() => {
         break
       case 'eighthoursafetycourse':
         state.eightHourSafetyCourse = item.name
+        break
+      case 'signature':
         break
       default:
         break
