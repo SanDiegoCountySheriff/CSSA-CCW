@@ -11,10 +11,10 @@ public class EmailService : IEmailService
 
     public EmailService(string tenantId, string clientId, string clientSecret) 
     {
- 
+
         var options = new TokenCredentialOptions
         {
-            AuthorityHost = AzureAuthorityHosts.AzureGovernment
+            AuthorityHost = AzureAuthorityHosts.AzurePublicCloud
         };
             
         var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret, options);
@@ -50,6 +50,6 @@ public class EmailService : IEmailService
             SaveToSentItems = true
         };
 
-        await _graphClient.Users["USER_EMAIl"].SendMail.PostAsync(sendMailBody);
+        await _graphClient.Users["USER_EMAIL"].SendMail.PostAsync(sendMailBody);
     }
 }
