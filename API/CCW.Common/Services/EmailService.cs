@@ -9,9 +9,15 @@ public class EmailService : IEmailService
 {
     private readonly GraphServiceClient _graphClient;
 
-    public EmailService() 
+    public EmailService(string tenantId, string clientId, string clientSecret) 
     {
-        var clientSecretCredential = new ClientSecretCredential("TENANT_ID", "client_id", "CLIENT_SECRET");
+ 
+        var options = new TokenCredentialOptions
+        {
+            AuthorityHost = AzureAuthorityHosts.AzureGovernment
+        };
+            
+        var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret, options);
 
         _graphClient = new GraphServiceClient(clientSecretCredential);
     }
@@ -44,6 +50,6 @@ public class EmailService : IEmailService
             SaveToSentItems = true
         };
 
-        await _graphClient.Users["USER_ID"].SendMail.PostAsync(sendMailBody);
+        await _graphClient.Users["USER_EMAIl"].SendMail.PostAsync(sendMailBody);
     }
 }

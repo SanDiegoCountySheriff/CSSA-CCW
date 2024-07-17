@@ -27,7 +27,8 @@ builder.Services.AddSingleton<IUserProfileCosmosDbService>(
     InitializeUserProfileCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
 builder.Services.AddSingleton<IAppointmentCosmosDbService>(
     InitializeAppointmentCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
-builder.Services.AddSingleton<IEmailService, EmailService>();
+builder.Services.AddSingleton<IEmailService>(
+    InitializeEmailServiceInstance(builder.Configuration.GetSection("Graph"), client).GetAwaiter().GetResult());
 
 builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<IDocumentAzureStorage, DocumentAzureStorage>();
@@ -223,6 +224,18 @@ static async Task<AdminCosmosDbService> InitializeAdminCosmosClientInstanceAsync
     var cosmosDbService = new AdminCosmosDbService(client, databaseName, containerName);
 
     return cosmosDbService;
+}
+
+static Task<EmailService> InitializeEmailServiceInstance(
+    IConfigurationSection configurationSection, SecretClient secretClient)
+{
+    var tenantId = configurationSection["TenantId"];
+    var clientId = configurationSection["ClientId"];
+    var clientSecret = configurationSection["ClientSecret"];
+
+    var emailService = new EmailService(tenantId, clientId, clientSecret);
+
+    return Task.FromResult(emailService);
 }
 
 static async Task<UserProfileCosmosDbService> InitializeUserProfileCosmosClientInstanceAsync(

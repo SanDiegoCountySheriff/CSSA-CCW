@@ -5,6 +5,7 @@ using CCW.Application.Services.Contracts;
 using CCW.Common.Enums;
 using CCW.Common.Models;
 using CCW.Common.ResponseModels;
+using CCW.Common.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,7 @@ public class PermitApplicationController : ControllerBase
     private readonly IPdfService _pdfService;
     private readonly ILogger<PermitApplicationController> _logger;
     private readonly IMapper _mapper;
+    private readonly IEmailService _emailService;
 
     public PermitApplicationController(
         IDocumentAzureStorage documentService,
@@ -29,7 +31,9 @@ public class PermitApplicationController : ControllerBase
         IAppointmentCosmosDbService appointmentCosmosDbService,
         IPdfService pdfService,
         ILogger<PermitApplicationController> logger,
-        IMapper mapper
+        IMapper mapper,
+        IEmailService emailService
+
         )
     {
         _documentService = documentService;
@@ -39,6 +43,7 @@ public class PermitApplicationController : ControllerBase
         _pdfService = pdfService;
         _logger = logger;
         _mapper = mapper;
+        _emailService = emailService;
     }
 
     [Authorize(Policy = "B2CUsers")]
@@ -792,6 +797,8 @@ public class PermitApplicationController : ControllerBase
             {
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
             }
+
+            await _emailService.SendEmailAsync(application.Application.UserEmail, "test", "Test");
 
             await _applicationCosmosDbService.UpdateUserApplicationAsync(_mapper.Map<PermitApplication>(application), cancellationToken: default);
 
