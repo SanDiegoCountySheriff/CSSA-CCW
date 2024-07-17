@@ -1,26 +1,12 @@
 <template>
   <div>
     <v-btn
-      v-if="showInitialWithdrawButton && canWithdrawApplication"
       @click="handleShowModifySignatureDialog"
       :disabled="isGetApplicationsLoading || !canWithdrawApplication"
       color="primary"
       tonal
     >
       {{ title }}
-    </v-btn>
-
-    <v-btn
-      v-else-if="
-        applicationStore.completeApplication.application.status ===
-        ApplicationStatus.Withdrawn
-      "
-      color="primary"
-      block
-      @click="handleSubmit"
-      :disabled="isGetApplicationsLoading"
-    >
-      Submit
     </v-btn>
 
     <v-dialog
@@ -73,8 +59,7 @@
       v-model="state.showUploadFailureSnackbar"
       color="primary"
     >
-      The signature modification failed. Please contact us if this error
-      continues.
+      The signature upload failed. Please contact us if this error continues.
       <template #action="{ attrs }">
         <v-btn
           text
@@ -109,16 +94,12 @@ import Endpoints from '../../../lib/api/endpoints'
 import SignaturePad from 'signature_pad'
 import axios from 'axios'
 import { useCompleteApplicationStore } from '../../stores/completeApplication'
-import { usePaymentStore } from '../../stores/paymentStore'
-import { useRoute } from 'vue-router/composables'
 import {
   ApplicationStatus,
-  ApplicationType,
-  AppointmentType,
   CompleteApplication,
   UploadedDocType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, nextTick, onMounted, reactive, ref } from 'vue'
+import { computed, nextTick, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 interface IModifySignatureDialog {
@@ -130,8 +111,6 @@ const props = withDefaults(defineProps<IModifySignatureDialog>(), {
 })
 
 const applicationStore = useCompleteApplicationStore()
-const paymentStore = usePaymentStore()
-const route = useRoute()
 const signaturePad = ref<SignaturePad>()
 const signatureForm = new FormData()
 const emit = defineEmits(['on-signature-submit'])
@@ -139,130 +118,11 @@ const emit = defineEmits(['on-signature-submit'])
 const state = reactive({
   snackbar: false,
   isApplicationValid: false,
-  cancelAppointmentDialog: false,
   invalidSubmissionDialog: false,
   confirmSubmissionDialog: false,
-  rescheduling: false,
-  withdrawDialog: false,
   modifySignatureDialog: false,
   showUploadFailureSnackbar: false,
   showUploadSuccessSnackbar: false,
-  renewDialog: false,
-  appointmentDialog: false,
-  appointments: [] as Array<AppointmentType>,
-  appointmentsLoaded: false,
-  application: [applicationStore.completeApplication],
-  headers: [
-    {
-      text: 'ORDER ID',
-      align: 'start',
-      sortable: false,
-      value: 'orderId',
-    },
-    {
-      text: 'COMPLETED',
-      value: 'completed',
-    },
-    {
-      text: 'CURRENT STATUS',
-      value: 'status',
-    },
-    {
-      text: 'APPOINTMENT STATUS',
-      value: 'appointmentStatus',
-    },
-    {
-      text: 'APPOINTMENT DATE',
-      value: 'appointmentDate',
-    },
-    {
-      text: 'CURRENT STEP',
-      value: 'step',
-    },
-    {
-      text: 'APPLICATION TYPE',
-      value: 'type',
-    },
-  ],
-})
-
-const {
-  mutate: updatePaymentHistory,
-  isLoading: isUpdatePaymentHistoryLoading,
-} = useMutation({
-  mutationFn: ({
-    transactionId,
-    successful,
-    amount,
-    paymentType,
-    transactionDateTime,
-    hmac,
-    applicationId,
-  }: {
-    transactionId: string
-    successful: boolean
-    amount: number
-    paymentType: string
-    transactionDateTime: string
-    hmac: string
-    applicationId: string
-  }) => {
-    return paymentStore.updatePaymentHistory(
-      transactionId,
-      successful,
-      amount,
-      paymentType,
-      transactionDateTime,
-      hmac,
-      applicationId
-    )
-  },
-  onSuccess: () =>
-    applicationStore
-      .getCompleteApplicationFromApi(
-        applicationStore.completeApplication.id,
-        Boolean(route.query.isComplete)
-      )
-      .then(res => {
-        applicationStore.setCompleteApplication(res)
-      }),
-})
-
-onMounted(() => {
-  state.isApplicationValid = Boolean(applicationStore.completeApplication.id)
-
-  const transactionId = route.query.transactionId
-  const successful = route.query.successful
-  const amount = route.query.amount
-  const hmac = route.query.hmac
-  const paymentType = route.query.paymentType
-  const applicationId = route.query.applicationId
-  let transactionDateTime = route.query.transactionDateTime
-
-  if (typeof transactionDateTime === 'string') {
-    transactionDateTime = transactionDateTime.replace(':', '%3A')
-    transactionDateTime = transactionDateTime.replace(':', '%3A')
-  }
-
-  if (
-    typeof transactionId === 'string' &&
-    typeof successful === 'string' &&
-    typeof amount === 'string' &&
-    typeof paymentType === 'string' &&
-    typeof transactionDateTime === 'string' &&
-    typeof hmac === 'string' &&
-    typeof applicationId === 'string'
-  ) {
-    updatePaymentHistory({
-      transactionId,
-      successful: Boolean(successful),
-      amount: Number(amount),
-      paymentType,
-      transactionDateTime,
-      hmac,
-      applicationId,
-    })
-  }
 })
 
 const { isLoading: isGetApplicationsLoading } = useQuery(
@@ -275,25 +135,6 @@ const { isLoading: isGetApplicationsLoading } = useQuery(
     },
   }
 )
-
-const showInitialWithdrawButton = computed(() => {
-  return (
-    applicationStore.completeApplication.application.status !==
-      ApplicationStatus.Withdrawn &&
-    applicationStore.completeApplication.application.status !==
-      ApplicationStatus.Incomplete &&
-    applicationStore.completeApplication.application.status !==
-      ApplicationStatus['Permit Delivered'] &&
-    applicationStore.completeApplication.application.applicationType !==
-      ApplicationType['Modify Employment'] &&
-    applicationStore.completeApplication.application.applicationType !==
-      ApplicationType['Modify Judicial'] &&
-    applicationStore.completeApplication.application.applicationType !==
-      ApplicationType['Modify Reserve'] &&
-    applicationStore.completeApplication.application.applicationType !==
-      ApplicationType['Modify Standard']
-  )
-})
 
 const canWithdrawApplication = computed(() => {
   return (
@@ -355,16 +196,6 @@ const {
 const isSignaturePadEmpty = computed(() => {
   return signaturePad.value?.isEmpty()
 })
-
-function handleSubmit() {
-  if (
-    applicationStore.completeApplication.application.appointmentStatus === 1
-  ) {
-    state.invalidSubmissionDialog = true
-  } else {
-    state.confirmSubmissionDialog = true
-  }
-}
 
 function handleShowModifySignatureDialog() {
   state.modifySignatureDialog = true
