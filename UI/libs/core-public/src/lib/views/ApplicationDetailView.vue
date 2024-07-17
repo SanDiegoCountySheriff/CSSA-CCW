@@ -839,7 +839,9 @@
               />
             </v-tab-item>
             <v-tab-item>
-              <SignatureInfoSection />
+              <SignatureInfoSection
+                @on-signature-submit="handleSignatureSubmit"
+              />
             </v-tab-item>
           </v-tabs-items>
         </v-card>
@@ -1096,7 +1098,7 @@
       color="primary"
       persistent
     >
-      {{ $t('There was a problem processing the payment, please try again.') }}
+      {{ $t('There was a problem processing the payment. Please try again.') }}
       <v-btn
         @click="paymentSnackbar = !paymentSnackbar"
         icon
@@ -1743,6 +1745,7 @@ const updateWithoutRouteMutation = useMutation({
   onSuccess: () => {
     fileUploadLoading.value = false
   },
+  onError: () => null,
 })
 
 const { mutate: withdrawRenewal, isLoading: isWithdrawRenewLoading } =
@@ -2526,6 +2529,11 @@ function handleFileSubmit(fileSubmission: IFileSubmission) {
   updateWithoutRouteMutation.mutate(
     `Upload ${fileSubmission.fileType}, ${documentName}`
   )
+}
+
+function handleSignatureSubmit() {
+  fileUploadLoading.value = true
+  updateWithoutRouteMutation.mutate('Updated Signature')
 }
 
 function convertToQualifyingQuestionStandard(item) {
