@@ -3,6 +3,8 @@ using Azure.Identity;
 using Microsoft.Graph.Models;
 using Microsoft.Graph.Users.Item.SendMail;
 using CCW.Common.Services.Contracts;
+
+namespace CCW.Common.Services;
 public class EmailService : IEmailService
 {
     private readonly GraphServiceClient _graphClient;
