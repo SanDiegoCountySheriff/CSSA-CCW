@@ -73,7 +73,11 @@
             hide-details
           >
             <template #label>
-              {{ !isMobile ? 'By checking this box, I agree to the ' : '' }}
+              {{
+                !isMobile
+                  ? 'By checking this box, I agree that I have not provided any '
+                  : 'Provided no'
+              }}
               <a
                 href="#"
                 @click.stop
@@ -116,8 +120,8 @@
           <v-card
             light
             flat
-            :width="$vuetify.breakpoint.mdAndUp ? '605px' : ''"
-            height="105px"
+            :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
+            height="100px"
             outlined
             style="border: solid 2px black"
           >
@@ -128,66 +132,6 @@
               class="signature"
             ></canvas>
           </v-card>
-        </v-col>
-
-        <v-col
-          cols="12"
-          class="text-center"
-        >
-          <v-btn
-            color="primary"
-            text
-            @click="handleClearSignature"
-          >
-            {{ $t('Clear Signature') }}
-          </v-btn>
-        </v-col>
-      </v-row>
-
-      <FormButtonContainer
-        :valid="!isSignaturePadEmpty"
-        :loading="state.uploading || isLoading || loading"
-        :all-steps-complete="props.allStepsComplete"
-        :is-final-step="true"
-        @continue="handleContinue"
-        @save="handleSave"
-        @save-match="handleSaveMatch"
-        v-on="$listeners"
-      />
-    </v-container>
-
-    <v-container v-else>
-      <v-row justify="center">
-        <v-card-title>
-          {{ $t('Signature Uploaded') }}
-        </v-card-title>
-
-        <v-col
-          cols="12"
-          class="d-flex align-center justify-center"
-        >
-          <v-container style="max-width: 600px">
-            <v-row
-              v-if="
-                !applicationStore.completeApplication.application
-                  .isUpdatingApplication && !state.isMatching
-              "
-              justify="center"
-            >
-              <v-alert
-                v-if="!isRenew"
-                color="success"
-                type="success"
-                outlined
-              >
-                <span
-                  :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
-                >
-                  You have already uploaded a signature.
-                </span>
-              </v-alert>
-            </v-row>
-          </v-container>
         </v-col>
 
         <v-col
@@ -235,6 +179,19 @@
             and time in order to submit to Licensing.
           </span>
         </v-alert>
+      </v-row>
+
+      <v-row justify="center">
+        <FormButtonContainer
+          v-if="state.previousSignature"
+          :valid="true"
+          :loading="state.uploading || isLoading || loading"
+          :all-steps-complete="props.allStepsComplete"
+          :is-final-step="true"
+          @continue="handleContinueWithoutUpload"
+          @save="handleSave"
+          v-on="$listeners"
+        />
       </v-row>
     </v-container>
   </div>
@@ -287,6 +244,7 @@ const state = reactive({
   uploading: false,
   isMatching: false,
 })
+const updateReason = 'Next Step'
 
 const model = computed({
   get: () => props.value,
@@ -310,8 +268,7 @@ onMounted(() => {
       const canvas = document.getElementById('signature') as HTMLCanvasElement
 
       signaturePad.value = new SignaturePad(canvas, {
-        backgroundColor: 'rgba(0, 0, 0, 0)',
-        minDistance: 5,
+        backgroundColor: 'rgba(255, 255, 255, 0)',
       })
     })
   }
@@ -351,7 +308,7 @@ const { mutate: fileMutation, isLoading } = useMutation({
   onSuccess: () => {
     if (!state.isMatching) {
       model.value.application.currentStep = 10
-      applicationStore.updateApplication()
+      applicationStore.updateApplication(updateReason)
       router.push({
         path: Routes.FINALIZE_ROUTE_PATH,
         query: {
@@ -376,7 +333,7 @@ async function handleContinue() {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   image.toBlob(blob => {
-    const file = new File([blob], 'Signature.png', { type: 'image/png' })
+    const file = new File([blob], 'signature.png', { type: 'image/png' })
     const form = new FormData()
 
     form.append('fileToUpload', file)
@@ -398,7 +355,7 @@ async function handleSaveMatch() {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   image.toBlob(blob => {
-    const file = new File([blob], 'Signature.png', { type: 'image/png' })
+    const file = new File([blob], 'signature.png', { type: 'image/png' })
     const form = new FormData()
 
     form.append('fileToUpload', file)
@@ -473,6 +430,19 @@ function setAgreedDate(agreedDateKey) {
   }
 }
 
+function handleContinueWithoutUpload() {
+  applicationStore.completeApplication.application.currentStep = 8
+  applicationStore.updateApplication(updateReason)
+  router.push({
+    path: Routes.FINALIZE_ROUTE_PATH,
+    query: {
+      applicationId: applicationStore.completeApplication.id,
+      isComplete:
+        applicationStore.completeApplication.application.isComplete.toString(),
+    },
+  })
+}
+
 watch(
   [isSignaturePadEmpty, isFalseInfoAgreed, isConditionsForIssuanceAgreed],
   newValues => {
@@ -488,10 +458,3 @@ watch(
   }
 )
 </script>
-
-<style lang="scss" scoped>
-.signature {
-  border: black;
-  border-radius: 5px;
-}
-</style>

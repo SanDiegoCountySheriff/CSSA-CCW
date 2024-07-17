@@ -204,9 +204,8 @@
 
           <v-card-text class="text-center">
             <v-row>
-              <v-col>
+              <v-col v-if="modificationReadyForApproval">
                 <v-btn
-                  v-if="modificationReadyForApproval"
                   :disabled="readonly"
                   @click="handleApproveModification"
                   color="primary"
@@ -216,9 +215,23 @@
                   <v-icon left>mdi-check-bold</v-icon>
                   Approve Modification
                 </v-btn>
+              </v-col>
 
+              <v-col v-if="modificationReadyForApproval">
+                <v-btn
+                  :disabled="readonly"
+                  @click="handleDenyModification"
+                  color="primary"
+                  block
+                  small
+                >
+                  <v-icon left>mdi-close-thick</v-icon>
+                  Deny Modification
+                </v-btn>
+              </v-col>
+
+              <v-col v-if="modificationMissingChecklistItems">
                 <v-alert
-                  v-if="modificationMissingChecklistItems"
                   :disabled="readonly"
                   color="primary"
                   type="info"
@@ -233,13 +246,15 @@
                     Approve Checklist Items Next
                   </span>
                 </v-alert>
-
+              </v-col>
+              <v-col
+                v-if="
+                  permitStore.getPermitDetail.application.status ===
+                  ApplicationStatus['Modification Approved']
+                "
+              >
                 <FinishModificationDialog
                   :disabled="!isModificationPaymentComplete"
-                  v-if="
-                    permitStore.getPermitDetail.application.status ===
-                    ApplicationStatus['Modification Approved']
-                  "
                   @handle-finish-modification="handleFinishModification"
                 />
               </v-col>
@@ -581,47 +596,7 @@
               <v-col
                 v-if="
                   permitStore.getPermitDetail.application.status ===
-                    ApplicationStatus.Submitted &&
-                  !permitStore.getPermitDetail.application
-                    .readyForInitialPayment &&
-                  !isInitialPaymentComplete &&
-                  !isRenew &&
-                  !isModify
-                "
-              >
-                <ReadyForPaymentDialog
-                  @on-ready-for-payment="handleReadyForInitialPayment"
-                />
-              </v-col>
-
-              <v-col
-                v-else-if="
-                  !permitStore.getPermitDetail.application
-                    .readyForRenewalPayment &&
-                  !isRenewalPaymentComplete &&
-                  isRenew
-                "
-              >
-                <ReadyForPaymentDialog
-                  @on-ready-for-payment="handleReadyForRenewalPayment"
-                />
-              </v-col>
-
-              <v-col
-                v-else-if="
-                  !permitStore.getPermitDetail.application
-                    .readyForModificationPayment &&
-                  !isModificationPaymentComplete &&
-                  isModify
-                "
-              >
-                <ReadyForPaymentDialog
-                  @on-ready-for-payment="handleReadyForModificationPayment"
-                />
-              </v-col>
-
-              <v-col
-                v-else-if="
+                    ApplicationStatus.Approved &&
                   !permitStore.getPermitDetail.application
                     .readyForIssuancePayment &&
                   !isIssuancePaymentComplete &&
@@ -858,18 +833,26 @@
             Review Survey Details
           </v-card-title>
 
-          <v-card-title
-            v-else-if="waitingForPayment"
-            class="justify-center"
-          >
-            <v-icon
-              color="error"
-              class="mr-2"
-            >
-              mdi-alert
-            </v-icon>
-            Waiting for Customer Payment
-          </v-card-title>
+          <template v-else-if="waitingForPayment">
+            <v-card-title class="justify-center">
+              <v-icon
+                color="error"
+                class="mr-2"
+              >
+                mdi-alert
+              </v-icon>
+              Waiting for Customer Payment
+            </v-card-title>
+
+            <v-card-text>
+              <v-alert
+                v-if="isPaymentUnverified"
+                type="warning"
+              >
+                There is an unverified payment in the payment history
+              </v-alert>
+            </v-card-text>
+          </template>
 
           <v-card-title
             v-else
@@ -925,6 +908,72 @@
 
           <v-card-text>
             <v-row>
+              <v-col
+                v-if="
+                  permitStore.getPermitDetail.application.status ===
+                    ApplicationStatus.Submitted &&
+                  !permitStore.getPermitDetail.application
+                    .readyForInitialPayment &&
+                  !isInitialPaymentComplete &&
+                  !isRenew &&
+                  !isModify
+                "
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForInitialPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else-if="
+                  permitStore.getPermitDetail.application.status ===
+                    ApplicationStatus.Submitted &&
+                  !permitStore.getPermitDetail.application
+                    .readyForInitialPayment &&
+                  isInitialPaymentComplete &&
+                  !isRenew &&
+                  !isModify
+                "
+              >
+                <v-btn
+                  @click="handleAppointmentComplete"
+                  color="warning"
+                  small
+                  block
+                >
+                  <v-icon left>mdi-calendar-check</v-icon>
+                  Appointment Complete
+                </v-btn>
+              </v-col>
+
+              <v-col
+                v-else-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForRenewalPayment &&
+                  !isRenewalPaymentComplete &&
+                  isRenew
+                "
+                cols="12"
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForRenewalPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForModificationPayment &&
+                  !isModificationPaymentComplete &&
+                  isModify
+                "
+                cols="12"
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-payment="handleReadyForModificationPayment"
+                />
+              </v-col>
+
               <v-col cols="12">
                 <v-menu offset-y>
                   <template #activator="{ on }">
@@ -1279,6 +1328,26 @@ const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
     }),
 })
 
+async function handleDenyModification() {
+  const historicalApplication: CompleteApplication = {
+    ...permitStore.getPermitDetail,
+  }
+
+  const app = permitStore.getPermitDetail.application
+
+  await addHistoricalApplication(historicalApplication)
+
+  app.status = ApplicationStatus['Modification Denied']
+
+  changed.value = 'Application Status - Modification Denied'
+
+  app.modifiedAddressComplete = null
+  app.modifiedNameComplete = null
+  app.modifiedWeaponComplete = null
+
+  updatePermitDetails()
+}
+
 async function handleApproveModification() {
   const historicalApplication: CompleteApplication = {
     ...permitStore.getPermitDetail,
@@ -1294,52 +1363,39 @@ async function handleApproveModification() {
 
   if (app.personalInfo.modifiedFirstName) {
     app.personalInfo.firstName = app.personalInfo.modifiedFirstName
-    app.personalInfo.modifiedFirstName = ''
   }
 
   if (app.personalInfo.modifiedMiddleName) {
     app.personalInfo.middleName = app.personalInfo.modifiedMiddleName
-    app.personalInfo.modifiedMiddleName = ''
   }
 
   if (app.personalInfo.modifiedLastName) {
     app.personalInfo.lastName = app.personalInfo.modifiedLastName
-    app.personalInfo.modifiedLastName = ''
   }
-
-  app.modifiedNameComplete = null
 
   if (app.modifiedAddress.streetAddress) {
     app.currentAddress.streetAddress = app.modifiedAddress.streetAddress
-    app.modifiedAddress.streetAddress = ''
   }
 
   if (app.modifiedAddress.city) {
     app.currentAddress.city = app.modifiedAddress.city
-    app.modifiedAddress.city = ''
   }
 
   if (app.modifiedAddress.state) {
     app.currentAddress.state = app.modifiedAddress.state
-    app.modifiedAddress.state = ''
   }
 
   if (app.modifiedAddress.zip) {
     app.currentAddress.zip = app.modifiedAddress.zip
-    app.modifiedAddress.zip = ''
   }
 
   if (app.modifiedAddress.county) {
     app.currentAddress.county = app.modifiedAddress.county
-    app.modifiedAddress.county = ''
   }
 
   if (app.modifiedAddress.country) {
     app.currentAddress.country = app.modifiedAddress.country
-    app.modifiedAddress.country = ''
   }
-
-  app.modifiedAddressComplete = null
 
   for (const weapon of app.modifyAddWeapons) {
     weapon.added = undefined
@@ -1347,20 +1403,33 @@ async function handleApproveModification() {
     app.weapons.push(weapon)
   }
 
-  app.modifyAddWeapons = []
-
   for (const weapon of app.modifyDeleteWeapons) {
     app.weapons = app.weapons.filter(w => {
       return w.serialNumber !== weapon.serialNumber
     })
   }
 
-  app.modifyDeleteWeapons = []
-  app.modifiedWeaponComplete = null
   app.currentStep = 1
-  app.modificationNumber += 1
 
   updatePermitDetails()
+}
+
+function resetDocuments() {
+  const uploadedDocuments =
+    permitStore.getPermitDetail.application.uploadedDocuments
+  const documentTypesToReset = ['ModifyAddress', 'ModifyWeapons', 'ModifyName']
+
+  const filesToDelete = uploadedDocuments.filter(file => {
+    return documentTypesToReset.includes(file.documentType)
+  })
+
+  filesToDelete.forEach(file => {
+    const index = uploadedDocuments.indexOf(file)
+
+    uploadedDocuments.splice(index, 1)
+  })
+
+  permitStore.getPermitDetail.application.uploadedDocuments = uploadedDocuments
 }
 
 function handleApproveRenewal() {
@@ -1375,6 +1444,17 @@ function handleApproveRenewal() {
 async function handleFinishModification() {
   const app = permitStore.getPermitDetail.application
 
+  app.personalInfo.modifiedFirstName = ''
+  app.personalInfo.modifiedMiddleName = ''
+  app.personalInfo.modifiedLastName = ''
+  app.modifiedAddress.streetAddress = ''
+  app.modifiedAddress.city = ''
+  app.modifiedAddress.state = ''
+  app.modifiedAddress.zip = ''
+  app.modifiedAddress.county = ''
+  app.modifyAddWeapons = []
+  app.modifyDeleteWeapons = []
+
   app.status = ApplicationStatus['Permit Delivered']
 
   changed.value = 'Modification - Permit Delivered'
@@ -1382,7 +1462,13 @@ async function handleFinishModification() {
   app.applicationType = getOriginalApplicationTypeModification(
     app.applicationType
   )
+  app.modificationNumber += 1
 
+  app.modifiedNameComplete = null
+  app.modifiedAddressComplete = null
+  app.modifiedWeaponComplete = null
+
+  resetDocuments()
   updatePermitDetails()
 }
 
@@ -1424,6 +1510,12 @@ const waitingForPayment = computed(() => {
       true ||
     permitStore.getPermitDetail.application.readyForIssuancePayment === true
   )
+})
+
+const isPaymentUnverified = computed(() => {
+  return permitStore.getPermitDetail.paymentHistory.find(ph => {
+    return ph.verified === false
+  })
 })
 
 const modificationReadyForApproval = computed(() => {
@@ -1780,7 +1872,7 @@ function handleCheckIn() {
 
 function handleAssignApplication(name: string) {
   permitStore.getPermitDetail.application.assignedTo = name
-  changed.value = 'Assigned User to Application'
+  changed.value = `Assigned User ${name} to Application`
   updatePermitDetails()
 }
 
@@ -1905,6 +1997,13 @@ async function handleSaveReschedule(reschedule) {
 function handleReadyForInitialPayment() {
   changed.value = 'Marked ready for initial payment'
   permitStore.getPermitDetail.application.readyForInitialPayment = true
+  updatePermitDetails()
+}
+
+function handleAppointmentComplete() {
+  changed.value = 'Marked appointment complete'
+  permitStore.getPermitDetail.application.status =
+    ApplicationStatus['Appointment Complete']
   updatePermitDetails()
 }
 

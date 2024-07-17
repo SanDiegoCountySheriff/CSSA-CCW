@@ -120,9 +120,12 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     }
   }
 
-  async function updateApplication() {
+  async function updateApplication(updateReason: string) {
     const res = await axios
-      .put(Endpoints.PUT_UPDATE_PERMIT_ENDPOINT, completeApplication)
+      .put(
+        `${Endpoints.PUT_UPDATE_PERMIT_ENDPOINT}?updateReason=${updateReason}`,
+        completeApplication
+      )
       .catch(err => {
         console.warn(err)
 
@@ -153,6 +156,12 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     return false
   }
 
+  async function withdrawRenewal() {
+    const res = await axios.post(Endpoints.WITHDRAW_RENEWAL_ENDPOINT)
+
+    return res?.data
+  }
+
   return {
     addHistoricalApplicationPublic,
     allUserApplications,
@@ -167,5 +176,6 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     updateApplication,
     getAgreementPdf,
     matchUserInformation,
+    withdrawRenewal,
   }
 })

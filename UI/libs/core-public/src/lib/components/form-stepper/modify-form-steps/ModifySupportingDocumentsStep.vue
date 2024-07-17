@@ -185,8 +185,8 @@ const { mutate: fileMutation } = useMutation({
 })
 
 const { mutate: updateMutation } = useMutation({
-  mutationFn: () => {
-    return applicationStore.updateApplication()
+  mutationFn: (updateReason: string) => {
+    return applicationStore.updateApplication(updateReason)
   },
   onSuccess: () => {
     for (let item of props.application.application.uploadedDocuments) {
@@ -286,7 +286,7 @@ async function deleteFile(name) {
     applicationStore.completeApplication.application.uploadedDocuments =
       updatedDocuments
 
-    updateMutation()
+    updateMutation(`Delete file ${name} before upload`)
 
     validateForm()
   } finally {
@@ -345,7 +345,7 @@ async function handleFileUpload() {
 
   documentTypes.forEach(type => (loadingStates[type.split('-')[0]] = false))
 
-  updateMutation()
+  updateMutation('Upload documents')
 }
 
 watch(valid, (newValue, oldValue) => {

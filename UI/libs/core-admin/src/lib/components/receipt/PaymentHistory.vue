@@ -188,6 +188,52 @@ function handleConfirm(
   paymentHistory.transactionId = transactionId
   paymentHistory.verified = true
 
+  if (
+    paymentHistory.paymentType ===
+      PaymentType['CCW Application Initial Payment'] ||
+    paymentHistory.paymentType ===
+      PaymentType['CCW Application Initial Judicial Payment'] ||
+    paymentHistory.paymentType ===
+      PaymentType['CCW Application Initial Reserve Payment'] ||
+    paymentHistory.paymentType ===
+      PaymentType['CCW Application Initial Employent Payment']
+  ) {
+    permitStore.permitDetail.application.readyForInitialPayment = false
+  }
+
+  if (
+    paymentHistory.paymentType ===
+      PaymentType['CCW Application Modification Payment'] ||
+    paymentHistory.paymentType ===
+      PaymentType['CCW Application Modification Judicial Payment'] ||
+    paymentHistory.paymentType ===
+      PaymentType['CCW Application Modification Reserve Payment'] ||
+    paymentHistory.paymentType ===
+      PaymentType['CCW Application Modification Employment Payment']
+  ) {
+    permitStore.permitDetail.application.readyForModificationPayment = false
+  }
+
+  if (
+    paymentHistory.paymentType ===
+      PaymentType['CCW Application Renewal Payment'] ||
+    paymentHistory.paymentType ===
+      PaymentType['CCW Application Renewal Reserve Payment'] ||
+    paymentHistory.paymentType ===
+      PaymentType['CCW Application Renewal Judicial Payment'] ||
+    paymentHistory.paymentType ===
+      PaymentType['CCW Application Renewal Employment Payment']
+  ) {
+    permitStore.permitDetail.application.readyForRenewalPayment = false
+  }
+
+  if (
+    paymentHistory.paymentType ===
+    PaymentType['CCW Application Issuance Payment']
+  ) {
+    permitStore.permitDetail.application.readyForIssuancePayment = false
+  }
+
   emit('verify-transaction')
 }
 </script>

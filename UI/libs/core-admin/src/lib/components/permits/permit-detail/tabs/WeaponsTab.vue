@@ -12,19 +12,47 @@
         />
       </v-card-title>
 
+      <v-template
+        v-if="
+          permitStore.getPermitDetail.application.modifiedWeaponComplete !==
+          null
+        "
+      >
+        <v-row>
+          <v-col
+            cols="12"
+            class="pr-7"
+          >
+            <v-alert
+              class="ml-4"
+              border="left"
+              color="blue"
+              text
+              type="info"
+            >
+              Please review the following weapon modification(s).
+            </v-alert>
+          </v-col>
+        </v-row>
+      </v-template>
       <v-card-text>
-        <WeaponsTable
-          :weapons="items"
-          :edit-enable="!readonly"
-          :readonly="readonly"
-          :modifying="
-            permitStore.getPermitDetail.application.modifiedWeaponComplete !==
-            null
-          "
-          @delete-weapon="deleteWeapon"
-          @handle-edit-weapon="handleEditWeapon"
-          @save-weapon="handleSaveWeapon"
-        />
+        <v-row>
+          <WeaponsTable
+            :weapons="items"
+            :readonly="readonly"
+            :edit-enable="!readonly"
+            :modifying="
+              permitStore.getPermitDetail.application.modifiedWeaponComplete !==
+              null
+            "
+            @delete-weapon="deleteWeapon"
+            @handle-edit-weapon="handleEditWeapon"
+            @save-weapon="handleSaveWeapon"
+            @modify-delete-weapon="deleteWeapon"
+            @undo-delete-weapon="handleUndoDeleteWeapon"
+            @undo-add-weapon="handleUndoAddWeapon"
+          />
+        </v-row>
 
         <template
           v-if="
@@ -32,35 +60,59 @@
             null
           "
         >
-          <v-btn
-            @click="handleOpenPdf"
-            color="primary"
-            class="mr-3"
-          >
-            <v-icon left>mdi-file-document-check</v-icon>
-            Check Documents
-          </v-btn>
+          <v-row>
+            <v-col>
+              <v-btn
+                :disabled="readonly"
+                @click="handleOpenPdf"
+                color="primary"
+                class="mr-3"
+                outlined
+              >
+                <v-icon left>mdi-file-document-check</v-icon>
+                Check Document
+              </v-btn>
+            </v-col>
 
-          <v-btn
-            v-if="
-              !permitStore.getPermitDetail.application.modifiedWeaponComplete
-            "
-            @click="onApproveWeaponChange"
-            color="primary"
-          >
-            <v-icon left> mdi-check </v-icon>
-            Approve
-          </v-btn>
+            <v-col>
+              <v-btn
+                v-if="
+                  !permitStore.getPermitDetail.application
+                    .modifiedWeaponComplete
+                "
+                :disabled="readonly"
+                @click="onApproveWeaponChange"
+                color="primary"
+                style="float: right"
+              >
+                <v-icon
+                  left
+                  color="green"
+                >
+                  mdi-check
+                </v-icon>
+                Approve
+              </v-btn>
 
-          <v-btn
-            v-else
-            @click="onUndoApproveWeaponChange"
-            color="primary"
-          >
-            <v-icon left> mdi-undo </v-icon>
-            Undo Approve
-          </v-btn>
+              <v-btn
+                :disabled="
+                  permitStore.getPermitDetail.application.status ===
+                    ApplicationStatus['Modification Approved'] || readonly
+                "
+                v-else
+                @click="onUndoApproveWeaponChange"
+                color="primary"
+                style="float: right"
+              >
+                <v-icon left> mdi-undo </v-icon>
+                Undo Approve
+              </v-btn>
+            </v-col>
+          </v-row>
         </template>
+        <v-row>
+          <v-col></v-col>
+        </v-row>
       </v-card-text>
     </v-card>
   </div>
@@ -68,7 +120,10 @@
 
 <script setup lang="ts">
 import SaveButton from './SaveButton.vue'
-import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
+import {
+  ApplicationStatus,
+  WeaponInfoType,
+} from '@shared-utils/types/defaultTypes'
 import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue'
 import { openPdf } from '@core-admin/components/composables/openDocuments'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -86,7 +141,11 @@ const items = computed(() => {
     itemArray.push({ ...weapon })
   }
 
-  if (permitStore.getPermitDetail.application.modifyAddWeapons) {
+  if (
+    permitStore.getPermitDetail.application.modifyAddWeapons &&
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Modification Approved']
+  ) {
     for (const weapon of permitStore.getPermitDetail.application
       .modifyAddWeapons) {
       const item = { ...weapon, added: true }
@@ -95,7 +154,11 @@ const items = computed(() => {
     }
   }
 
-  if (permitStore.getPermitDetail.application.modifyDeleteWeapons) {
+  if (
+    permitStore.getPermitDetail.application.modifyDeleteWeapons &&
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Modification Approved']
+  ) {
     for (const weapon of permitStore.getPermitDetail.application
       .modifyDeleteWeapons) {
       const index = itemArray.findIndex(
@@ -115,17 +178,66 @@ const items = computed(() => {
 })
 
 function handleEditWeapon(data) {
-  set(permitStore.getPermitDetail.application.weapons, data.index, {
-    ...data.value,
-  })
+  const originalSerialNumber = items.value[data.index]?.serialNumber
+
+  if (data.value.added) {
+    const index =
+      permitStore.getPermitDetail.application.modifyAddWeapons.findIndex(
+        weapon => weapon.serialNumber === originalSerialNumber
+      )
+
+    if (index !== -1) {
+      set(permitStore.getPermitDetail.application.modifyAddWeapons, index, {
+        ...data.value,
+      })
+    }
+  } else {
+    set(permitStore.getPermitDetail.application.weapons, data.index, {
+      ...data.value,
+    })
+  }
+}
+
+function handleUndoDeleteWeapon(weapon: WeaponInfoType) {
+  permitStore.getPermitDetail.application.modifyDeleteWeapons =
+    permitStore.getPermitDetail.application.modifyDeleteWeapons.filter(w => {
+      return w.serialNumber !== weapon.serialNumber
+    })
+}
+
+function handleUndoAddWeapon(weapon: WeaponInfoType) {
+  const index =
+    permitStore.getPermitDetail.application.modifyAddWeapons.findIndex(
+      w => w.serialNumber === weapon.serialNumber
+    )
+
+  if (index !== -1) {
+    permitStore.getPermitDetail.application.modifyAddWeapons.splice(index, 1)
+  }
 }
 
 function handleSaveWeapon(weapon: WeaponInfoType) {
-  permitStore.getPermitDetail.application.weapons.push(weapon)
+  if (
+    permitStore.getPermitDetail.application.modifiedWeaponComplete !== null &&
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Modification Approved']
+  ) {
+    permitStore.getPermitDetail.application.modifyAddWeapons.push(weapon)
+  } else {
+    permitStore.getPermitDetail.application.weapons.push(weapon)
+  }
 }
 
 function deleteWeapon(index) {
-  permitStore.getPermitDetail.application.weapons.splice(index, 1)
+  if (
+    permitStore.getPermitDetail.application.modifiedWeaponComplete !== null &&
+    permitStore.getPermitDetail.application.status !==
+      ApplicationStatus['Modification Approved']
+  ) {
+    permitStore.getPermitDetail.application.modifyDeleteWeapons.push(index)
+  } else {
+    permitStore.getPermitDetail.application.weapons.splice(index, 1)
+  }
 }
 
 function handleSave() {

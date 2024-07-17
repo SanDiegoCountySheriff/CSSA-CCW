@@ -101,6 +101,12 @@ export default class Endpoints {
     }/application/v1/permitapplication/getAllPermitsSummary`
   }
 
+  static get GET_PERMITS_BY_DATE_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getPermitsByDate`
+  }
+
   static get GET_ALL_LEGACY_APPLICATIONS_ENDPOINT() {
     return `${
       useAppConfigStore().appConfig.applicationApiBaseUrl
@@ -195,6 +201,24 @@ export default class Endpoints {
     return `${
       useAppConfigStore().appConfig.applicationApiBaseUrl
     }/application/v1/permitapplication/matchUserInformation`
+  }
+
+  static get WITHDRAW_RENEWAL_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/withdrawRenewal`
+  }
+
+  static get GET_HISTORICAL_APPLICATION_SUMMARY_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getHistoricalApplicationSummary`
+  }
+
+  static get GET_HISTORICAL_APPLICATION_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getHistoricalApplication`
   }
 
   /********APPOINTMENTS******************/

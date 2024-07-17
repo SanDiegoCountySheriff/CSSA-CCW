@@ -357,8 +357,6 @@ const { isFetching, isLoading } = useQuery(
   () => appointmentsStore.getAvailableAppointments(true),
   {
     onSuccess: (data: Array<AppointmentType>) => {
-      const currentOffset = new Date().getTimezoneOffset() / 60
-
       const uniqueData = data.reduce(
         (result, currentObj) => {
           const key = `${currentObj.start}-${currentObj.end}`
@@ -393,20 +391,7 @@ const { isFetching, isLoading } = useQuery(
 
       uniqueData.forEach(event => {
         const start = new Date(event.start)
-
-        if (currentOffset !== start.getTimezoneOffset() / 60) {
-          const correctedOffset = currentOffset - start.getTimezoneOffset() / 60
-
-          start.setTime(start.getTime() - correctedOffset * 60 * 60 * 1000)
-        }
-
         const end = new Date(event.end)
-
-        if (currentOffset !== end.getTimezoneOffset() / 60) {
-          const correctedOffset = currentOffset - end.getTimezoneOffset() / 60
-
-          end.setTime(end.getTime() - correctedOffset * 60 * 60 * 1000)
-        }
 
         if (event.slots) {
           event.name = `${event.slots} slot${event.slots > 1 ? 's' : ''} left`
@@ -418,6 +403,7 @@ const { isFetching, isLoading } = useQuery(
 
       state.appointments = uniqueData
     },
+    refetchOnMount: 'always',
   }
 )
 
@@ -506,8 +492,8 @@ onMounted(() => {
 })
 
 const { isLoading: isUpdateLoading, mutate: updateMutation } = useMutation({
-  mutationFn: () => {
-    return completeApplicationStore.updateApplication()
+  mutationFn: (updateReason: string) => {
+    return completeApplicationStore.updateApplication(updateReason)
   },
   onSuccess: () => {
     router.push(Routes.RECEIPT_PATH)
@@ -532,7 +518,7 @@ async function handleSubmit() {
     completeApplicationStore.completeApplication.isMatchUpdated = true
   }
 
-  updateMutation()
+  updateMutation('Submit Application')
 }
 
 function toggleAppointmentComplete() {

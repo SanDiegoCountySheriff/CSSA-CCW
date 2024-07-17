@@ -548,6 +548,7 @@ export enum ApplicationStatus {
   'Waiting For Customer',
   'Modification Approved',
   'Renewal Approved',
+  'Modification Denied',
 }
 
 export enum PaymentType {
@@ -588,6 +589,12 @@ export enum ApplicationType {
   'Duplicate Reserve',
   'Duplicate Judicial',
   'Duplicate Employment',
+}
+
+export type HistoricalApplicationSummary = {
+  id: string
+  historicalDate: string | null
+  applicationType: ApplicationType
 }
 
 export type AssignedApplicationSummary = {
@@ -704,6 +711,7 @@ export type CompleteApplication = {
     ciiNumber: string
     cost: CostType
     submittedToLicensingDateTime: string | null
+    modificationSubmittedToLicensingDateTime: string | null
     assignedTo: string | null
     flaggedForCustomerReview: boolean | null
     flaggedForLicensingReview: boolean | null
@@ -723,6 +731,7 @@ export type CompleteApplication = {
   }
   history: Array<HistoryType>
   paymentHistory: Array<PaymentHistoryType>
+  historicalDate: string | null | undefined
   userId: string
   id: string
   isMatchUpdated: boolean | null
@@ -789,6 +798,7 @@ export type BrandType = {
   agencyEyeColors: EyeColor[]
   daysBeforeActiveRenewal: number
   numberOfModificationsBetweenRenewals: number
+  licensingManager: string
 }
 
 export type AgencyDocumentsType = {
@@ -807,7 +817,7 @@ export type AppointmentManagement = {
   numberOfSlotsPerAppointment: number
   appointmentLength: number
   numberOfWeeksToCreate: number
-  breakLength: number | undefined
+  breakLength: number | undefined | null
   breakStartTime: string | null
   startDate: string
 }

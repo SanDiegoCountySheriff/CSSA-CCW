@@ -11,7 +11,7 @@
           :loading="props.loading"
           @click="handlePreviousStep"
           color="primary"
-          class="mr-3"
+          :class="$vuetify.breakpoint.xs ? 'mr-3 mb-3' : 'mr-3'"
           outlined
         >
           <v-icon

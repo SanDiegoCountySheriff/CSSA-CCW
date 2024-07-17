@@ -23,4 +23,5 @@ public enum ApplicationStatus
     WaitingForCustomer = 18,
     ModificationApproved = 19,
     RenewalApproved = 20,
+    ModificationDenied = 21,
 }

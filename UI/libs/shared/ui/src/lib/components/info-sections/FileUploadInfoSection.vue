@@ -35,6 +35,8 @@
             title="Upload"
             :eight-hour-safety-input="false"
             :enable-button="enableButton"
+            :eight-hour-safety-input="false"
+            title="Upload"
             class="ml-4"
           />
         </template>

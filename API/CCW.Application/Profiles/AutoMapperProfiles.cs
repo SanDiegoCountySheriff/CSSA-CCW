@@ -1,6 +1,8 @@
 using AutoMapper;
 using CCW.Application.Models;
+using CCW.Application.ResponseModels;
 using CCW.Common.Models;
+using CCW.Common.ResponseModels;
 
 namespace CCW.Application.Profiles;
 
@@ -19,5 +21,6 @@ public class AutoMapperProfiles : Profile
         CreateMap<PermitApplication, PermitApplicationResponseModel>();
         CreateMap<SummarizedPermitApplication, SummarizedPermitApplicationResponseModel>();
         CreateMap<History, HistoryResponseModel>();
+        CreateMap<HistoricalApplicationSummary, HistoricalApplicationSummaryResponseModel>();
     }
 }

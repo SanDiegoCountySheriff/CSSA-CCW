@@ -1,5 +1,6 @@
 using AutoMapper;
 using CCW.Application.Models;
+using CCW.Application.ResponseModels;
 using CCW.Application.Services.Contracts;
 using CCW.Common.Enums;
 using CCW.Common.Models;
@@ -200,13 +201,51 @@ public class PermitApplicationController : ControllerBase
         {
             var result = await _applicationCosmosDbService.GetUserLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, isLegacy, cancellationToken: default);
 
-            return (result != null) ? Ok(_mapper.Map<PermitApplicationResponseModel>(result)) : NotFound();
+            var historicalCount = await _applicationCosmosDbService.GetApplicationHistoricalCount(result.Application.OrderId, cancellationToken: default);
+
+            return (result != null) ? Ok(new { PermitApplicationResponseModel = _mapper.Map<PermitApplicationResponseModel>(result), HistoricalCount = historicalCount }) : NotFound();
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
             return NotFound("An error occur while trying to retrieve specific user permit application.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("getHistoricalApplication")]
+    public async Task<IActionResult> GetHistoricalApplication(string id)
+    {
+        try
+        {
+            PermitApplication result = await _applicationCosmosDbService.GetHistoricalApplication(id, cancellationToken: default);
+
+            return (result != null) ? Ok(_mapper.Map<PermitApplicationResponseModel>(result)) : NotFound();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to retrieve specific user historical permit application.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("getHistoricalApplicationSummary")]
+    public async Task<IActionResult> GetHistoricalApplicationSummary(string orderId)
+    {
+        try
+        {
+            List<HistoricalApplicationSummary> result = await _applicationCosmosDbService.GetHistoricalApplicationSummary(orderId, cancellationToken: default);
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to retrieve historical application summary");
         }
     }
 
@@ -348,6 +387,30 @@ public class PermitApplicationController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
+    [HttpGet("getPermitsByDate")]
+    public async Task<IActionResult> GetPermitsByDate([FromQuery] DateTime date)
+    {
+        try
+        {
+            var permits = await _applicationCosmosDbService.GetPermitsByDateAsync(date, cancellationToken: default);
+
+            var response = new SummaryReportResponse()
+            {
+                Items = permits.ToList(),
+                Total = permits.Count(),
+            };
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            var originalException = ex.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occurred while trying to retrieve permits.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("getEmails")]
     public async Task<IActionResult> GetEmails([FromQuery] PermitsOptions options)
     {
@@ -392,7 +455,7 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "B2CUsers")]
     [Route("updateApplication")]
     [HttpPut]
-    public async Task<IActionResult> UpdateApplication([FromBody] UserPermitApplicationRequestModel application)
+    public async Task<IActionResult> UpdateApplication([FromBody] UserPermitApplicationRequestModel application, string updateReason)
     {
         GetUserId(out string userId);
 
@@ -412,6 +475,18 @@ public class PermitApplicationController : ControllerBase
             if (application.Application.PersonalInfo.Ssn.ToLower().Contains("xxx"))
             {
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
+            }
+
+            if (updateReason != "Next Step")
+            {
+                var history = new History()
+                {
+                    Change = updateReason,
+                    ChangeDateTimeUtc = DateTimeOffset.UtcNow,
+                    ChangeMadeBy = "Customer Action",
+                };
+
+                existingApplication.History = existingApplication.History.Append(history).ToArray();
             }
 
             await _applicationCosmosDbService.UpdateApplicationAsync(_mapper.Map<PermitApplication>(application), existingApplication, cancellationToken: default);
@@ -511,6 +586,27 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "B2CUsers")]
+    [Route("withdrawRenewal")]
+    [HttpPost]
+    public async Task<IActionResult> WithdrawRenewal()
+    {
+        try
+        {
+            GetUserId(out string userId);
+
+            await _applicationCosmosDbService.WithdrawRenewal(userId, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occurred while trying to withdraw the renewal.");
+        }
+    }
+
     [Authorize(Policy = "AADUsers")]
     [HttpPost("undoMatchApplication")]
     public async Task<IActionResult> UndoMatchApplication(string applicationId)
@@ -582,7 +678,7 @@ public class PermitApplicationController : ControllerBase
                     Status = AppointmentStatus.Scheduled,
                     Name = user.FirstName + " " + user.LastName,
                     Permit = application.Application.OrderId,
-                    IsManuallyCreated = true,
+                    IsManuallyCreated = false,
                     UserId = user.Id,
                 };
 
@@ -1041,6 +1137,12 @@ public class PermitApplicationController : ControllerBase
     public class SummaryResponse
     {
         public List<SummarizedPermitApplication> Items { get; set; }
+        public int Total { get; set; }
+    }
+
+    public class SummaryReportResponse
+    {
+        public List<SummarizedPermitApplicationReport> Items { get; set; }
         public int Total { get; set; }
     }
 

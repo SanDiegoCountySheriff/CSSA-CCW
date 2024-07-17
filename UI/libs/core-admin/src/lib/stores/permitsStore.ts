@@ -39,6 +39,8 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   const viewingPermitDetail = ref(false)
   const searchResults = ref([])
   const brandStore = useBrandStore()
+  const historicalApplicationCount = ref(0)
+  const viewingHistorical = ref(false)
 
   const getPermits = computed(() => permits.value)
   const getSearchResults = computed(() => searchResults.value)
@@ -193,6 +195,20 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     assignedApplicationsSummary.value = res?.data
 
     return res?.data
+  }
+
+  async function getPermitsByDate(date) {
+    try {
+      const res = await axios.get(Endpoints.GET_PERMITS_BY_DATE_ENDPOINT, {
+        params: { date },
+      })
+
+      return res.data.items
+    } catch (error) {
+      console.error('Error fetching permits by date:', error)
+
+      return []
+    }
   }
 
   async function getAllPermitsSummary(
@@ -413,7 +429,8 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     )
 
     orderIds.set(orderId, res?.data || {})
-    setPermitDetail(res?.data)
+    setPermitDetail(res?.data.permitApplicationResponseModel)
+    historicalApplicationCount.value = res?.data.historicalCount
 
     return res?.data || {}
   }
@@ -765,6 +782,30 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return res?.data || {}
   }
 
+  async function getHistoricalApplicationSummary(orderId: string) {
+    const res = await axios.get(
+      `${Endpoints.GET_HISTORICAL_APPLICATION_SUMMARY_ENDPOINT}?orderId=${orderId}`
+    )
+
+    if (res?.data) {
+      return res.data
+    }
+
+    return []
+  }
+
+  async function getHistoricalPermitDetailApi(id: string) {
+    const res = await axios.get(
+      `${Endpoints.GET_HISTORICAL_APPLICATION_ENDPOINT}?id=${id}`
+    )
+
+    if (res?.data) {
+      setPermitDetail(res?.data)
+    }
+
+    return []
+  }
+
   async function getPermitSsn(id: string) {
     const res = await axios
       .get(Endpoints.GET_PERMIT_SSN_ENDPOINT, {
@@ -796,11 +837,14 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     summaryCount,
     assignedApplicationsSummary,
     viewingPermitDetail,
+    historicalApplicationCount,
+    viewingHistorical,
     setPermits,
     setOpenPermits,
     setSearchResults,
     setPermitDetail,
     getAllPermitsApi,
+    getPermitsByDate,
     getPermitDetailApi,
     getPermitSearchApi,
     getHistoryApi,
@@ -823,5 +867,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     undoMatchApplication,
     getEmails,
     addApplicationHistory,
+    getHistoricalApplicationSummary,
+    getHistoricalPermitDetailApi,
   }
 })

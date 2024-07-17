@@ -224,7 +224,7 @@
                   class="mr-2"
                   @click="editHairColor(item)"
                 >
-                  mdi-pencil
+                  mdi-pencil-box-outline
                 </v-icon>
 
                 <v-icon
@@ -342,7 +342,7 @@
                   class="mr-2"
                   @click="editEyeColor(item)"
                 >
-                  mdi-pencil
+                  mdi-pencil-box-outline
                 </v-icon>
 
                 <v-icon
