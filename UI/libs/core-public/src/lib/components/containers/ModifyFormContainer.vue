@@ -8,7 +8,7 @@
         v-model="stepIndex.step"
         non-linear
         class="stepper"
-        @change="updateMutation"
+        @change="updateMutation('Next Step')"
         :alt-labels="$vuetify.breakpoint.lgAndDown"
       >
         <v-stepper-header
@@ -157,7 +157,7 @@
       <v-expansion-panels
         v-model="expansionStep"
         accordion
-        @change="updateMutation"
+        @change="updateMutation('Next Step')"
       >
         <v-expansion-panel>
           <v-expansion-panel-header @click.native="stepIndex.step = 1">
@@ -322,17 +322,17 @@ const { isLoading: isGetApplicationLoading, isRefetching } = useQuery(
 
 const { isLoading: isUpdateApplicationLoading, mutate: updateMutation } =
   useMutation({
-    mutationFn: () => {
+    mutationFn: (updateReason: string) => {
       applicationStore.completeApplication.application.currentStep =
         stepIndex.step
 
-      return applicationStore.updateApplication()
+      return applicationStore.updateApplication(updateReason)
     },
   })
 
 const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
-  mutationFn: () => {
-    return applicationStore.updateApplication()
+  mutationFn: (updateReason: string) => {
+    return applicationStore.updateApplication(updateReason)
   },
   onSuccess: () => {
     router.push('/')
@@ -355,26 +355,26 @@ function handleSaveName(name) {
     name.lastName
   applicationStore.completeApplication.application.currentStep = 1
 
-  saveMutation()
+  saveMutation('Next Step')
 }
 
 function handleSaveAddress(address) {
   applicationStore.completeApplication.application.modifiedAddress = address
   applicationStore.completeApplication.application.currentStep = 2
 
-  saveMutation()
+  saveMutation('Next Step')
 }
 
 function handleSaveWeapon() {
   applicationStore.completeApplication.application.currentStep = 3
 
-  saveMutation()
+  saveMutation('Next Step')
 }
 
 function handleSaveFile() {
   applicationStore.completeApplication.application.currentStep = 4
 
-  saveMutation()
+  saveMutation('Next Step')
 }
 
 function handleContinueName(name) {
@@ -386,7 +386,7 @@ function handleContinueName(name) {
     name.lastName
   applicationStore.completeApplication.application.currentStep = 3
 
-  updateMutation()
+  updateMutation('Next Step')
 
   stepIndex.previousStep = stepIndex.step
   stepIndex.step += 1
@@ -396,7 +396,7 @@ function handleContinueAddress(address) {
   applicationStore.completeApplication.application.modifiedAddress = address
   applicationStore.completeApplication.application.currentStep = 2
 
-  updateMutation()
+  updateMutation('Next Step')
 
   stepIndex.previousStep = stepIndex.step
   stepIndex.step += 1
@@ -405,7 +405,7 @@ function handleContinueAddress(address) {
 function handleContinueWeapon() {
   applicationStore.completeApplication.application.currentStep = 4
 
-  updateMutation()
+  updateMutation('Next Step')
 
   stepIndex.previousStep = stepIndex.step
   stepIndex.step += 1
@@ -414,7 +414,7 @@ function handleContinueWeapon() {
 function handleContinueFile() {
   applicationStore.completeApplication.application.currentStep = 5
 
-  updateMutation()
+  updateMutation('Next Step')
 
   router.push('/ModifyFinalize')
 }
@@ -427,7 +427,7 @@ function handlePreviousStep() {
 function handleAddWeapon(weapon: WeaponInfoType) {
   applicationStore.completeApplication.application.modifyAddWeapons.push(weapon)
 
-  updateMutation()
+  updateMutation('Next Step')
 }
 
 function handleDeleteWeapon(weapon: WeaponInfoType) {
@@ -435,7 +435,7 @@ function handleDeleteWeapon(weapon: WeaponInfoType) {
     weapon
   )
 
-  updateMutation()
+  updateMutation('Next Step')
 }
 
 function handleUndoAddWeapon(weapon: WeaponInfoType) {
@@ -451,7 +451,7 @@ function handleUndoAddWeapon(weapon: WeaponInfoType) {
     )
   }
 
-  updateMutation()
+  updateMutation('Next Step')
 }
 
 function handleUndoDeleteWeapon(weapon: WeaponInfoType) {
@@ -462,7 +462,7 @@ function handleUndoDeleteWeapon(weapon: WeaponInfoType) {
       }
     )
 
-  updateMutation()
+  updateMutation('Next Step')
 }
 
 function handleUpdateStepOneValid(value: boolean) {
@@ -490,7 +490,7 @@ watch(modifyingName, newValue => {
     applicationStore.completeApplication.application.personalInfo.modifiedMiddleName =
       ''
 
-    updateMutation()
+    updateMutation('Next Step')
   }
 })
 
@@ -505,7 +505,7 @@ watch(modifyingAddress, newValue => {
       zip: '',
     }
 
-    updateMutation()
+    updateMutation('Next Step')
   }
 })
 </script>

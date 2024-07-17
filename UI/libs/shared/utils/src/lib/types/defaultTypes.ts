@@ -591,6 +591,12 @@ export enum ApplicationType {
   'Duplicate Employment',
 }
 
+export type HistoricalApplicationSummary = {
+  id: string
+  historicalDate: string | null
+  applicationType: ApplicationType
+}
+
 export type AssignedApplicationSummary = {
   orderId: string
   name: string
@@ -725,6 +731,7 @@ export type CompleteApplication = {
   }
   history: Array<HistoryType>
   paymentHistory: Array<PaymentHistoryType>
+  historicalDate: string | null | undefined
   userId: string
   id: string
   isMatchUpdated: boolean | null

@@ -1,16 +1,12 @@
 <template>
-  <v-container>
+  <v-container class="align-center justify-center">
     <v-row
       justify="center"
       align="center"
     >
-      <v-col
-        cols="12"
-        sm="8"
-        md="6"
-      >
-        <v-card class="elevation-1 pa-5">
-          <v-card-title class="justify-center">
+      <v-col>
+        <v-card flat>
+          <v-card-title class="justify-center mt-10">
             <v-icon
               large
               color="success"
@@ -18,47 +14,108 @@
               mdi-check-circle
             </v-icon>
           </v-card-title>
-          <v-card-text class="text-center">
-            <h2>Your application has been submitted!</h2>
-
-            <p class="subtitle-1 mt-7">
-              Thank you for completing your CCW application. Your submission was
-              successful! {{ brandStore.getBrand.agencyName }} Licensing Staff
-              will contact you once the application has been reviewed. Due to
-              the volume of applications submitted, it may be several months
-              before staff contacts you.
-            </p>
-
-            <p
-              v-if="!appConfigStore.appConfig.payBeforeSubmit"
-              class="subtitle-1"
+          <v-card-text class="text-center mb-12">
+            <h1
+              class="mb-13"
+              style="color: black; line-height: 2"
+              :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
             >
-              <strong>
-                You will be notified at a later date when payment is
-                required.</strong
-              >
-            </p>
-
-            <span
-              style="color: red"
-              class="subtitle-1"
-              >If any of your contact information changes, please log in and
-              update your application immediately.</span
-            >
+              Your application has been submitted!
+            </h1>
+            <v-row justify="center">
+              <v-col md="6">
+                <v-sheet
+                  outlined
+                  rounded
+                  color="info"
+                >
+                  <v-card flat>
+                    <v-card-title class="justify-center">
+                      <v-icon
+                        left
+                        color="blue"
+                      >
+                        mdi-information
+                      </v-icon>
+                      <v-span
+                        class="mt-1"
+                        text="info"
+                        :class="
+                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                        "
+                      >
+                        Please read the following:
+                      </v-span>
+                    </v-card-title>
+                    <v-card-text>
+                      <ol
+                        class="mb-2"
+                        style="color: black; text-align: left; line-height: 2"
+                        :class="
+                          themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                        "
+                      >
+                        <li style="font-size: 1.1rem">
+                          If any of your contact information
+                          <strong>changes</strong>, please log in and
+                          <strong>update</strong> your application
+                          <strong>immediately</strong>.
+                        </li>
+                        <li style="font-size: 1.1rem">
+                          You can view your application
+                          <strong>status</strong> by logging in and pressing the
+                          <strong>"View Application"</strong> button.
+                        </li>
+                        <li style="font-size: 1.1rem">
+                          You will be <strong>notified</strong> when
+                          <strong>payment</strong> is due.
+                        </li>
+                      </ol>
+                    </v-card-text>
+                  </v-card>
+                </v-sheet>
+                <v-row justify="center">
+                  <p
+                    v-if="isRenewOrModify"
+                    class="mt-15"
+                    style="color: black; font-size: 1.1rem; line-height: 2"
+                    :class="
+                      themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                    "
+                  >
+                    Thank you for completing your CCW application. The Licensing
+                    staff will notify you once they have processed your request.
+                  </p>
+                  <p
+                    v-else
+                    class="mt-15"
+                    style="color: black; font-size: 1.11rem; line-height: 2"
+                    :class="
+                      themeStore.getThemeConfig.isDark ? 'white--text' : ''
+                    "
+                  >
+                    Thank you for completing your CCW application. The Licensing
+                    staff will see you at your appointment.
+                  </p>
+                </v-row>
+              </v-col>
+            </v-row>
           </v-card-text>
-          <v-card-text class="text-center">
-            <p>
-              You can view the status of your application by logging in and
-              pressing the "View Application" button.
-            </p>
-            <v-btn
-              color="primary"
-              class="mt-5"
-              @click="goToDashBoard"
-            >
-              Back To Home
-            </v-btn>
-          </v-card-text>
+          <v-row>
+            <v-col>
+              <v-card-text class="left">
+                <v-row justify="center">
+                  <v-btn
+                    large
+                    color="primary"
+                    @click="goToDashBoard"
+                  >
+                    Back To Home
+                  </v-btn>
+                </v-row>
+              </v-card-text>
+            </v-col>
+          </v-row>
         </v-card>
       </v-col>
     </v-row>
@@ -66,15 +123,33 @@
 </template>
 
 <script setup lang="ts">
-import { useAppConfigStore } from '@shared-ui/stores/configStore'
-import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { ApplicationType } from '@shared-utils/types/defaultTypes'
+import { computed } from 'vue'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 
 const router = useRouter()
-const brandStore = useBrandStore()
-const appConfigStore = useAppConfigStore()
+const themeStore = useThemeStore()
+const completeApplication = useCompleteApplicationStore()
 
 const goToDashBoard = () => {
   router.push('/')
 }
+
+const isRenewOrModify = computed(() => {
+  const applicationType =
+    completeApplication.getCompleteApplication.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment'] ||
+    applicationType === ApplicationType['Modify Standard'] ||
+    applicationType === ApplicationType['Modify Reserve'] ||
+    applicationType === ApplicationType['Modify Judicial'] ||
+    applicationType === ApplicationType['Modify Employment']
+  )
+})
 </script>

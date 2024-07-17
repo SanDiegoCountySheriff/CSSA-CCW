@@ -85,7 +85,7 @@ stages:
                       scriptType: ps
                       scriptLocation: inlineScript
                       inlineScript: |
-                          if ('${{ parameters.environment }}' -eq 'p' -or '${{ parameters.environment }}' -eq 'uat') {
+                          if ('${{ parameters.environment }}' -eq 'p' -or '${{ parameters.environment }}' -eq 'uat-u') {
                             $ErrorActionPreference = "Stop"
                                           
                             Write-Host "Installing Az.Resources"
@@ -149,7 +149,7 @@ stages:
                       scriptType: ps
                       scriptLocation: inlineScript
                       inlineScript: |
-                          if ('${{ parameters.environment }}' -eq 'p' -or '${{ parameters.environment }}' -eq 'uat') {
+                          if ('${{ parameters.environment }}' -eq 'p' -or '${{ parameters.environment }}' -eq 'uat-u') {
                             $ErrorActionPreference = "Stop"
 
                             Write-Host "Changing directory"

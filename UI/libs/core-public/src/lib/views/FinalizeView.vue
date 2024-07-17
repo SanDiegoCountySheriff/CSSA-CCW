@@ -435,6 +435,7 @@ const { isFetching, isLoading } = useQuery(
 
       state.appointments = uniqueData
     },
+    refetchOnMount: 'always',
   }
 )
 
@@ -523,8 +524,8 @@ onMounted(() => {
 })
 
 const { isLoading: isUpdateLoading, mutate: updateMutation } = useMutation({
-  mutationFn: () => {
-    return completeApplicationStore.updateApplication()
+  mutationFn: (updateReason: string) => {
+    return completeApplicationStore.updateApplication(updateReason)
   },
   onSuccess: () => {
     router.push(Routes.RECEIPT_PATH)
@@ -549,7 +550,7 @@ async function handleSubmit() {
     completeApplicationStore.completeApplication.isMatchUpdated = true
   }
 
-  updateMutation()
+  updateMutation('Submit Application')
 }
 
 function toggleAppointmentComplete() {
