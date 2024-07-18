@@ -78,7 +78,8 @@
             <span
               :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
             >
-              Payment will be requested after you application has been reviewed.
+              Payment will be requested after your application has been
+              reviewed.
             </span>
           </v-alert>
         </v-row>
