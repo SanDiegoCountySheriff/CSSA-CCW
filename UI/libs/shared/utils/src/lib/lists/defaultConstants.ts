@@ -487,7 +487,7 @@ export const defaultPermitState: CompleteApplication = {
     readyForInitialPayment: false,
     readyForRenewalPayment: false,
     readyForIssuancePayment: false,
-    originalStatus: null,
+    originalStatus: 0,
     ninetyDayCountdownPaused: false,
     ninetyDayCountdownPausedDate: null,
     flaggedForCustomerReview: false,
