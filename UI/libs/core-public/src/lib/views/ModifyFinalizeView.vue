@@ -14,8 +14,7 @@
               type="info"
               outlined
             >
-              Payment will be requested once your application has been
-              processed.
+              Payment will be requested once your application has been reviewed.
             </v-alert>
           </v-row>
           <v-row justify="center">

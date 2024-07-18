@@ -78,7 +78,7 @@
             <span
               :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
             >
-              Payment will requested after you application has been processed.
+              Payment will be requested after you application has been reviewed.
             </span>
           </v-alert>
         </v-row>
@@ -120,7 +120,7 @@
               :class="themeStore.getThemeConfig.isDark ? 'white--text' : ''"
             >
               Payment will be requested after your application has been
-              processed.
+              reviewed.
             </span>
           </v-alert>
         </v-row>
