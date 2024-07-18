@@ -23,6 +23,7 @@ public class PermitApplicationController : ControllerBase
     private readonly ILogger<PermitApplicationController> _logger;
     private readonly IMapper _mapper;
     private readonly IEmailService _emailService;
+    private readonly IAdminCosmosDbService _adminCosmosDbService;
 
     public PermitApplicationController(
         IDocumentAzureStorage documentService,
@@ -32,7 +33,8 @@ public class PermitApplicationController : ControllerBase
         IPdfService pdfService,
         ILogger<PermitApplicationController> logger,
         IMapper mapper,
-        IEmailService emailService
+        IEmailService emailService,
+        IAdminCosmosDbService adminCosmosDbService
 
         )
     {
@@ -44,6 +46,7 @@ public class PermitApplicationController : ControllerBase
         _logger = logger;
         _mapper = mapper;
         _emailService = emailService;
+        _adminCosmosDbService = adminCosmosDbService;
     }
 
     [Authorize(Policy = "B2CUsers")]
@@ -788,6 +791,8 @@ public class PermitApplicationController : ControllerBase
 
             var existingApplication = await _applicationCosmosDbService.GetUserApplicationAsync(application.Id.ToString(), cancellationToken: default);
 
+            var adminResponse = await _adminCosmosDbService.GetAgencyProfileSettingsAsync(cancellationToken: default);
+
             if (existingApplication == null)
             {
                 return NotFound("Permit application cannot be found.");
@@ -798,7 +803,7 @@ public class PermitApplicationController : ControllerBase
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
             }
 
-            await _emailService.SendEmailAsync(application.Application.UserEmail, "test", "Test");
+            // await _emailService.SendEmailAsync(application.Application.UserEmail, "CCW Pro Test", "This is a test message!!!", adminResponse.AgencyEmail);
 
             await _applicationCosmosDbService.UpdateUserApplicationAsync(_mapper.Map<PermitApplication>(application), cancellationToken: default);
 

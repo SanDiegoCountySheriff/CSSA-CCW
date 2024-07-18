@@ -22,7 +22,7 @@ public class EmailService : IEmailService
         _graphClient = new GraphServiceClient(clientSecretCredential);
     }
 
-    public async Task SendEmailAsync(string toEmail, string subject, string body)
+    public async Task SendEmailAsync(string toEmail, string subject, string body, string licensingEmail)
     {
         var message = new Message
         {
@@ -47,9 +47,9 @@ public class EmailService : IEmailService
         var sendMailBody = new SendMailPostRequestBody
         {
             Message = message,
-            SaveToSentItems = true
+            SaveToSentItems = false
         };
 
-        await _graphClient.Users["USER_EMAIL"].SendMail.PostAsync(sendMailBody);
+        await _graphClient.Users[licensingEmail].SendMail.PostAsync(sendMailBody);
     }
 }
