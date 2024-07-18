@@ -124,10 +124,10 @@
 
 <script setup lang="ts">
 import { ApplicationType } from '@shared-utils/types/defaultTypes'
+import { computed } from 'vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
-import { computed } from 'vue'
 
 const router = useRouter()
 const themeStore = useThemeStore()
