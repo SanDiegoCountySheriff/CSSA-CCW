@@ -21,18 +21,15 @@ public class PdfService : IPdfService
 {
     private readonly IDocumentAzureStorage _documentService;
     private readonly IUserProfileCosmosDbService _userProfileCosmosDbService;
-    private readonly IApplicationCosmosDbService _applicationCosmosDbService;
     private readonly IAdminCosmosDbService _adminCosmosDbService;
 
     public PdfService(
         IDocumentAzureStorage documentService,
-        IApplicationCosmosDbService applicationCosmosDbService,
         IUserProfileCosmosDbService userProfileCosmosDbService,
         IAdminCosmosDbService adminCosmosDbService)
     {
         _documentService = documentService;
         _userProfileCosmosDbService = userProfileCosmosDbService;
-        _applicationCosmosDbService = applicationCosmosDbService;
         _adminCosmosDbService = adminCosmosDbService;
     }
 

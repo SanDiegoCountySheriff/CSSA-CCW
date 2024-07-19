@@ -2,29 +2,33 @@ using CCW.Application.Services.Contracts;
 using CCW.Common.Enums;
 using CCW.Common.Models;
 using CCW.Common.ResponseModels;
+using CCW.Common.Services;
 using Microsoft.Azure.Cosmos;
-using Newtonsoft.Json;
 using static CCW.Application.Controllers.PermitApplicationController;
 
 namespace CCW.Application.Services;
 
 public class ApplicationCosmosDbService : IApplicationCosmosDbService
 {
+    private readonly IHttpContextAccessor _contextAccessor;
+    private readonly IDatabaseContainerResolver _databaseContainerResolver;
     private static Random random = new Random();
     private readonly Container _container;
     private readonly Container _historicalContainer;
     private readonly Container _legacyContainer;
 
     public ApplicationCosmosDbService(
-        CosmosClient cosmosDbClient,
-        string databaseName,
-        string containerName,
-        string legacyContainerName,
-        string historicalContainerName)
+        IHttpContextAccessor contextAccessor,
+        IDatabaseContainerResolver databaseContainerResolver)
     {
-        _container = cosmosDbClient.GetContainer(databaseName, containerName);
-        _historicalContainer = cosmosDbClient.GetContainer(databaseName, historicalContainerName);
-        _legacyContainer = cosmosDbClient.GetContainer(databaseName, legacyContainerName);
+        _contextAccessor = contextAccessor;
+        _databaseContainerResolver = databaseContainerResolver;
+
+        var tenantId = _contextAccessor.HttpContext.Items["TenantId"] != null ? _contextAccessor.HttpContext.Items["TenantId"].ToString() : "";
+
+        _container = _databaseContainerResolver.GetContainer(tenantId, "applications");
+        _historicalContainer = _databaseContainerResolver.GetContainer(tenantId, "historical-applications");
+        _legacyContainer = _databaseContainerResolver.GetContainer(tenantId, "legacy-applications");
     }
 
     public async Task<PermitApplication> AddAsync(PermitApplication application, CancellationToken cancellationToken)

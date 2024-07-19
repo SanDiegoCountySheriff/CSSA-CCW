@@ -1,7 +1,7 @@
 using Azure.Storage.Blobs;
-using CCW.Document.Services.Contracts;
+using CCW.Common.Services.Contracts;
 
-namespace CCW.Document.Services;
+namespace CCW.Common.Services;
 
 public class StorageContainerResolver : IStorageContainerResolver
 {
