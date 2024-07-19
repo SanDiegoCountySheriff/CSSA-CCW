@@ -2,7 +2,7 @@ using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.WindowsAzure.Storage.Blob;
 
-namespace CCW.Document.Services;
+namespace CCW.Document.Services.Contracts;
 
 public interface IAzureStorage
 {
@@ -16,7 +16,7 @@ public interface IAzureStorage
 
     Task UploadAgencyLogoAsync(IFormFile file, string saveAsFileName, CancellationToken cancellationToken);
 
-    Task<string> DownloadAgencyLogoAsync(string agencyLogoName, CancellationToken cancellationToken);
+    Task<string> DownloadAgencyLogoAsync(string tenantId, string agencyLogoName, CancellationToken cancellationToken);
 
     Task DeleteAgencyLogoAsync(string agencyLogoName, CancellationToken cancellationToken);
 

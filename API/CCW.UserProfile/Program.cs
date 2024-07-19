@@ -1,6 +1,7 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using CCW.Common.AuthorizationPolicies;
+using CCW.Common.Services;
 using CCW.UserProfile;
 using CCW.UserProfile.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -12,12 +13,16 @@ using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddHttpContextAccessor();
+
 var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault:VaultUri").Value),
     credential: new DefaultAzureCredential());
 
-builder.Services.AddSingleton<ICosmosDbService>(
-    InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
+builder.Services.AddSingleton<IDatabaseContainerResolver>(InitializeDatabaseContainerResolver(builder.Configuration.GetSection("CosmosDb"),
+    builder.Configuration.GetSection("TenantDatabaseNameResolution"),
+    client).GetAwaiter().GetResult());
+
+builder.Services.AddScoped<ICosmosDbService, CosmosDbService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
@@ -122,7 +127,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Login CCW",
+        Title = "UserProfile CCW",
         Version = "v1"
     });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -178,41 +183,44 @@ app.UseHealthChecks("/health");
 app.UseCors();
 
 app.UseAuthorization();
+app.UseTenantMiddleware();
 app.MapControllers();
 
 app.Run();
 
 
-static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
-    IConfigurationSection configurationSection, SecretClient secretClient)
+static async Task<DatabaseContainerResolver> InitializeDatabaseContainerResolver(
+    IConfigurationSection configurationSection,
+    IConfigurationSection tenantSection,
+    SecretClient secretClient
+)
 {
     var databaseName = configurationSection["DatabaseName"];
     var adminUsersContainerName = configurationSection["AdminUsersContainerName"];
     var usersContainerName = configurationSection["UsersContainerName"];
+    CosmosClientOptions clientOptions = new CosmosClientOptions();
 #if DEBUG
     var key = configurationSection["CosmosDbEmulatorConnectionString"];
+    clientOptions.WebProxy = new WebProxy()
+    {
+        BypassProxyOnLocal = true,
+    };
 #else
     var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
 #endif
-    CosmosClientOptions clientOptions = new CosmosClientOptions();
-    var client = new CosmosClient(
-        key,
-        new CosmosClientOptions()
-        {
-            AllowBulkExecution = true,
-#if DEBUG
-            WebProxy = new WebProxy()
-            {
-                BypassProxyOnLocal = true
-            }
-#endif
-        });
+    var client = new CosmosClient(key, clientOptions);
+    var tenants = tenantSection.GetChildren().ToDictionary(x => x.Key, x => x.Value);
+    var databases = new Dictionary<string, Database>();
 
-    var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
-    await database.Database.CreateContainerIfNotExistsAsync(adminUsersContainerName, "/id");
-    await database.Database.CreateContainerIfNotExistsAsync(usersContainerName, "/id");
-    var cosmosDbService = new CosmosDbService(client, databaseName, adminUsersContainerName, usersContainerName);
-    return cosmosDbService;
+    foreach (var tenant in tenants)
+    {
+        var database = await client.CreateDatabaseIfNotExistsAsync($"{databaseName}-{tenant.Value}");
+        await database.Database.CreateContainerIfNotExistsAsync(adminUsersContainerName, "/id");
+        await database.Database.CreateContainerIfNotExistsAsync(usersContainerName, "/id");
+        databases.Add(tenant.Key, database);
+    }
+
+    return new DatabaseContainerResolver(databases);
 }
 
 Task AuthenticationFailed(AuthenticationFailedContext arg)

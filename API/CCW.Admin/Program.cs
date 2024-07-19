@@ -3,6 +3,8 @@ using Azure.Security.KeyVault.Secrets;
 using CCW.Admin;
 using CCW.Admin.Services;
 using CCW.Common.AuthorizationPolicies;
+using CCW.Common.Services;
+using CCW.Common.Services.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Azure.Cosmos;
@@ -12,12 +14,18 @@ using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddHttpContextAccessor();
+
 var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault:VaultUri").Value),
     credential: new DefaultAzureCredential());
 
-builder.Services.AddSingleton<ICosmosDbService>(
-    InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
+builder.Services.AddSingleton<IDatabaseContainerResolver>(InitializeDatabaseContainerResolver(builder.Configuration.GetSection("CosmosDb"),
+    builder.Configuration.GetSection("TenantDatabaseNameResolution"),
+    client).GetAwaiter().GetResult());
+
+builder.Services.AddScoped<ICosmosDbService, CosmosDbService>();
+
+builder.Services.AddSingleton<ITenantIdResolver>(InitializeTenantIdResolver(builder.Configuration.GetSection("TenantIdResolution")));
 
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -158,12 +166,16 @@ app.UseHealthChecks("/health");
 app.UseCors();
 
 app.UseAuthorization();
+app.UseTenantMiddleware();
 app.MapControllers();
 
 app.Run();
 
-static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
-    IConfigurationSection configurationSection, SecretClient secretClient)
+static async Task<DatabaseContainerResolver> InitializeDatabaseContainerResolver(
+    IConfigurationSection configurationSection,
+    IConfigurationSection tenantSection,
+    SecretClient secretClient
+)
 {
     var databaseName = configurationSection["DatabaseName"];
     var containerName = configurationSection["ContainerName"];
@@ -178,10 +190,24 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
 #endif
     var client = new CosmosClient(key, clientOptions);
-    var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
-    await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
-    var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
-    return cosmosDbService;
+    var tenants = tenantSection.GetChildren().ToDictionary(x => x.Key, x => x.Value);
+    var databases = new Dictionary<string, Database>();
+
+    foreach (var tenant in tenants)
+    {
+        var database = await client.CreateDatabaseIfNotExistsAsync($"{databaseName}-{tenant.Value}");
+        await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
+        databases.Add(tenant.Key, database);
+    }
+
+    return new DatabaseContainerResolver(databases);
+}
+
+static TenantIdResolver InitializeTenantIdResolver(IConfigurationSection configurationSection)
+{
+    var tenantIds = configurationSection.GetChildren().ToDictionary(x => x.Key, x => x.Value);
+
+    return new TenantIdResolver(tenantIds);
 }
 
 Task AuthenticationFailed(AuthenticationFailedContext arg)

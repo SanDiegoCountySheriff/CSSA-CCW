@@ -3,6 +3,7 @@ using CCW.Admin.Services;
 using CCW.Common.Models;
 using CCW.Common.RequestModels;
 using CCW.Common.ResponseModels;
+using CCW.Common.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,16 +17,19 @@ public class SystemSettingsController : ControllerBase
     private readonly ICosmosDbService _cosmosDbService;
     private readonly IMapper _mapper;
     private readonly ILogger<SystemSettingsController> _logger;
+    private readonly ITenantIdResolver _tenantIdResolver;
 
     public SystemSettingsController(
         ICosmosDbService cosmosDbService,
         IMapper mapper,
-        ILogger<SystemSettingsController> logger
+        ILogger<SystemSettingsController> logger,
+        ITenantIdResolver tenantIdResolver
         )
     {
         _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
         _mapper = mapper;
         _logger = logger;
+        _tenantIdResolver = tenantIdResolver;
     }
 
     [HttpGet("get")]
@@ -33,7 +37,9 @@ public class SystemSettingsController : ControllerBase
     {
         try
         {
-            var response = await _cosmosDbService.GetSettingsAsync(cancellationToken: default);
+            var tenantId = GetTenantId(HttpContext);
+
+            var response = await _cosmosDbService.GetSettingsAsync(tenantId, cancellationToken: default);
 
             return response != null ? Ok(_mapper.Map<AgencyProfileSettingsResponseModel>(response)) : NotFound();
 
@@ -65,5 +71,19 @@ public class SystemSettingsController : ControllerBase
             _logger.LogError(originalException, originalException.Message);
             return NotFound("An error occur while trying to retrieve agency settings.");
         }
+    }
+
+    private string GetTenantId(HttpContext context)
+    {
+        var referrer = context.Request.Headers.Referer.ToString().Split("/")[2].Split(".")[0];
+
+        if (referrer.Contains(':'))
+        {
+            referrer = referrer.Split(":")[1];
+        }
+
+        var tenantId = _tenantIdResolver.GetTenantId(referrer);
+
+        return tenantId;
     }
 }

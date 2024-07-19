@@ -1,5 +1,6 @@
 using Azure.Storage.Blobs.Models;
-using CCW.Document.Services;
+using CCW.Common.Services.Contracts;
+using CCW.Document.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,18 +12,20 @@ public class DocumentController : ControllerBase
 {
     private readonly IAzureStorage _azureStorage;
     private readonly ILogger<DocumentController> _logger;
+    private readonly ITenantIdResolver _tenantIdResolver;
 
     private readonly string[] _allowedFileTypes = new[] { "image/jpeg", "image/png", "application/pdf", "multipart/form-data" };
 
     public DocumentController(
         IAzureStorage azureStorage,
-        ILogger<DocumentController> logger
+        ILogger<DocumentController> logger,
+        ITenantIdResolver tenantIdResolver
     )
     {
         _azureStorage = azureStorage;
         _logger = logger;
+        _tenantIdResolver = tenantIdResolver;
     }
-
 
     [Authorize(Policy = "B2CUsers")]
     [HttpPost("uploadApplicantFile", Name = "uploadApplicantFile")]
@@ -54,7 +57,6 @@ public class DocumentController : ControllerBase
             return NotFound("An error occur while trying to upload applicant file.");
         }
     }
-
 
     [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadUserApplicantFile", Name = "uploadUserApplicantFile")]
@@ -161,7 +163,6 @@ public class DocumentController : ControllerBase
             return NotFound("An error occur while trying to upload admin user file.");
         }
     }
-
 
     [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadAgencyFile", Name = "uploadAgencyFile")]
@@ -554,7 +555,6 @@ public class DocumentController : ControllerBase
         }
     }
 
-
     [HttpGet("downloadAgencyLogo", Name = "downloadAgencyLogo")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -563,7 +563,9 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            var result = await _azureStorage.DownloadAgencyLogoAsync("agency_logo", cancellationToken: cancellationToken);
+            var tenantId = GetTenantId(HttpContext);
+
+            var result = await _azureStorage.DownloadAgencyLogoAsync(tenantId, "agency_logo", cancellationToken: cancellationToken);
 
             return Ok(result);
         }
@@ -583,7 +585,9 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            var result = await _azureStorage.DownloadAgencyLogoAsync("agency_landing_page_image", cancellationToken: cancellationToken);
+            var tenantId = GetTenantId(HttpContext);
+
+            var result = await _azureStorage.DownloadAgencyLogoAsync(tenantId, "agency_landing_page_image", cancellationToken: cancellationToken);
 
             return Ok(result);
         }
@@ -603,7 +607,9 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            var result = await _azureStorage.DownloadAgencyLogoAsync("agency_home_page_image", cancellationToken: cancellationToken);
+            var tenantId = GetTenantId(HttpContext);
+
+            var result = await _azureStorage.DownloadAgencyLogoAsync(tenantId, "agency_home_page_image", cancellationToken: cancellationToken);
 
             return Ok(result);
         }
@@ -624,7 +630,9 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            var result = await _azureStorage.DownloadAgencyLogoAsync("agency_sheriff_signature_image", cancellationToken: cancellationToken);
+            var tenantId = GetTenantId(HttpContext);
+
+            var result = await _azureStorage.DownloadAgencyLogoAsync(tenantId, "agency_sheriff_signature_image", cancellationToken: cancellationToken);
 
             return Ok(result);
         }
@@ -656,7 +664,6 @@ public class DocumentController : ControllerBase
             return NotFound("An error occur while trying to delete agency logo.");
         }
     }
-
 
     [Authorize(Policy = "AADUsers")]
     [HttpDelete("deleteApplicantFile", Name = "deleteApplicantFile")]
@@ -734,5 +741,19 @@ public class DocumentController : ControllerBase
         {
             throw new ArgumentNullException("userId", "Invalid token.");
         }
+    }
+
+    private string GetTenantId(HttpContext context)
+    {
+        var referrer = context.Request.Headers.Referer.ToString().Split("/")[2].Split(".")[0];
+
+        if (referrer.Contains(':'))
+        {
+            referrer = referrer.Split(":")[1];
+        }
+
+        var tenantId = _tenantIdResolver.GetTenantId(referrer);
+
+        return tenantId;
     }
 }
