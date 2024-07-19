@@ -39,8 +39,16 @@
         <v-row>
           <WeaponsTable
             :weapons="items"
-            :readonly="readonly"
-            :edit-enable="!readonly"
+            :readonly="
+              readonly ||
+              permitStore.getPermitDetail.application.status ===
+                ApplicationStatus['Modification Approved']
+            "
+            :edit-enable="
+              !readonly &&
+              permitStore.getPermitDetail.application.status !==
+                ApplicationStatus['Modification Approved']
+            "
             :modifying="
               permitStore.getPermitDetail.application.modifiedWeaponComplete !==
               null
@@ -95,10 +103,6 @@
               </v-btn>
 
               <v-btn
-                :disabled="
-                  permitStore.getPermitDetail.application.status ===
-                    ApplicationStatus['Modification Approved'] || readonly
-                "
                 v-else
                 @click="onUndoApproveWeaponChange"
                 color="primary"
@@ -251,6 +255,12 @@ function onApproveWeaponChange() {
 
 function onUndoApproveWeaponChange() {
   permitStore.getPermitDetail.application.modifiedWeaponComplete = false
+
+  if (permitStore.getPermitDetail.application.originalStatus !== 0) {
+    permitStore.getPermitDetail.application.status =
+      permitStore.getPermitDetail.application.originalStatus
+  }
+
   emit('on-save', 'Undo approved weapon change')
 }
 
