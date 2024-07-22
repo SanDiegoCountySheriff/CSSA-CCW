@@ -256,7 +256,10 @@ function onApproveWeaponChange() {
 function onUndoApproveWeaponChange() {
   permitStore.getPermitDetail.application.modifiedWeaponComplete = false
 
-  if (permitStore.getPermitDetail.application.originalStatus !== 0) {
+  if (
+    permitStore.getPermitDetail.application.originalStatus !== 0 &&
+    permitStore.getPermitDetail.application.originalStatus !== null
+  ) {
     permitStore.getPermitDetail.application.status =
       permitStore.getPermitDetail.application.originalStatus
   }

@@ -474,7 +474,10 @@ function onApproveNameChange() {
 function onUndoApproveNameChange() {
   permitStore.getPermitDetail.application.modifiedNameComplete = false
 
-  if (permitStore.getPermitDetail.application.originalStatus !== 0) {
+  if (
+    permitStore.getPermitDetail.application.originalStatus !== 0 &&
+    permitStore.getPermitDetail.application.originalStatus !== null
+  ) {
     permitStore.getPermitDetail.application.status =
       permitStore.getPermitDetail.application.originalStatus
   }
