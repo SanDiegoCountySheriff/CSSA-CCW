@@ -554,7 +554,7 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
                             nextDay.Offset
                         );
 
-                        var adjustedAppointmentDay = TimeZoneInfo.ConvertTime(nextAppointmentDay, pstTimeZone);
+                        var offset = TimeZoneInfo.ConvertTime(nextAppointmentDay, pstTimeZone).Offset;
 
                         var correctedAppointmentStart = new DateTimeOffset(
                             nextDay.Year,
@@ -563,17 +563,19 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
                             startTime.Hours,
                             startTime.Minutes,
                             startTime.Seconds,
-                            adjustedAppointmentDay.Offset
+                            offset
                         );
 
+                        var endHours = startTime.Minutes == 30 ? startTime.Hours + 1 : startTime.Hours;
+
                         var correctedAppointmentEnd = new DateTimeOffset(
-                            adjustedAppointmentDay.Year,
-                            adjustedAppointmentDay.Month,
-                            adjustedAppointmentDay.Day,
-                            startTime.Hours,
-                            startTime.Minutes,
+                            nextDay.Year,
+                            nextDay.Month,
+                            nextDay.Day,
+                            endHours,
+                            startTime.Minutes + appointmentManagement.AppointmentLength,
                             startTime.Seconds,
-                            adjustedAppointmentDay.Offset
+                            offset
                         );
 
                         var appointmentStartTime = correctedAppointmentStart.ToUniversalTime();
