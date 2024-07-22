@@ -210,7 +210,7 @@
         >
           <FileUploadContainer
             :accepted-formats="'image/png, image/jpeg, application/pdf'"
-            :document-label="'Firearm Safety Proficiency Certificate'"
+            :document-label="'Firearm Safety Certificate'"
             :is-loading="loadingStates.EightHourSafetyCourse"
             @file-opening="loadingStates.EightHourSafetyCourse = true"
             @file-opened="loadingStates.EightHourSafetyCourse = false"

@@ -1357,6 +1357,8 @@ async function handleApproveModification() {
 
   await addHistoricalApplication(historicalApplication)
 
+  app.originalStatus = app.status
+
   app.status = ApplicationStatus['Modification Approved']
 
   changed.value = 'Application Status - Modification Approved'
@@ -1454,6 +1456,7 @@ async function handleFinishModification() {
   app.modifiedAddress.county = ''
   app.modifyAddWeapons = []
   app.modifyDeleteWeapons = []
+  app.originalStatus = 0
 
   app.status = ApplicationStatus['Permit Delivered']
 

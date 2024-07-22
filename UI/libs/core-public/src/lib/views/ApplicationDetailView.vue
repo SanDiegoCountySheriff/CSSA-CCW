@@ -331,7 +331,7 @@
                   "
                   @click="handleUpdateApplication"
                 >
-                  Update
+                  Update Application Information
                 </v-btn>
 
                 <ConfirmDialog

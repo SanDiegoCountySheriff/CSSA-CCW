@@ -697,7 +697,7 @@ export type CompleteApplication = {
     workInformation: WorkInformationType
     currentStep: number
     status: ApplicationStatus
-    originalStatus: ApplicationStatus | null
+    originalStatus: ApplicationStatus
     appointmentStatus: AppointmentStatus | null
     appointmentDateTime: string | null
     appointmentId: string | null
