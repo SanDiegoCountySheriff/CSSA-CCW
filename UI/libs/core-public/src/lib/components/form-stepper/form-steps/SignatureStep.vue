@@ -190,6 +190,7 @@
           :is-final-step="true"
           @continue="handleContinueWithoutUpload"
           @save="handleSave"
+          @save-match="handleSaveMatchPreviousSignature"
           v-on="$listeners"
         />
       </v-row>
@@ -364,6 +365,12 @@ async function handleSaveMatch() {
 
     fileMutation()
   })
+}
+
+function handleSaveMatchPreviousSignature() {
+  state.isMatching = true
+
+  emit('handle-save', true)
 }
 
 function handleSave() {
