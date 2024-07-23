@@ -1,6 +1,5 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using CCW.Common.AuthorizationPolicies;
 using CCW.Common.Services;
 using CCW.UserProfile;
 using CCW.UserProfile.Services;
@@ -25,9 +24,6 @@ builder.Services.AddSingleton<IDatabaseContainerResolver>(InitializeDatabaseCont
 builder.Services.AddScoped<ICosmosDbService, CosmosDbService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
-builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
     .AddAuthentication()
@@ -90,40 +86,33 @@ builder.Services
             .AddAuthenticationSchemes(authenticationSchemes.ToArray())
             .Build());
 
-        options.AddPolicy("RequireAdminOnly",
-            policy =>
-            {
-                policy.RequireRole("CCW-ADMIN-ROLE");
-                policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
-                policy.RequireAuthenticatedUser();
-                policy.AddAuthenticationSchemes("aad");
-                policy.Build();
-            });
-
-        options.AddPolicy("RequireSystemAdminOnly", policy =>
+        options.AddPolicy("RequireAdminOnly",policy =>
         {
-            policy.RequireRole("CCW-SYSTEM-ADMINS-ROLE");
-            policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
+            policy.RequireRole("CCW-ADMIN-ROLE");
             policy.RequireAuthenticatedUser();
             policy.AddAuthenticationSchemes("aad");
             policy.Build();
         });
 
-        options.AddPolicy("RequireAdminOrSystemAdminOnly",
-            policy =>
-            {
-                policy.RequireRole(new string[] { "CCW-ADMIN-ROLE", "CCW-SYSTEM-ADMINS-ROLE" });
-                policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
-                policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
-                policy.RequireAuthenticatedUser();
-                policy.AddAuthenticationSchemes("aad");
-                policy.Build();
-            });
+        options.AddPolicy("RequireSystemAdminOnly", policy =>
+        {
+            policy.RequireRole("CCW-SYSTEM-ADMINS-ROLE");
+            policy.RequireAuthenticatedUser();
+            policy.AddAuthenticationSchemes("aad");
+            policy.Build();
+        });
+
+        options.AddPolicy("RequireAdminOrSystemAdminOnly", policy =>
+        {
+            policy.RequireRole(new string[] { "CCW-ADMIN-ROLE", "CCW-SYSTEM-ADMINS-ROLE" });
+            policy.RequireAuthenticatedUser();
+            policy.AddAuthenticationSchemes("aad");
+            policy.Build();
+        });
 
         options.AddPolicy("RequireProcessorOnly", policy =>
         {
             policy.RequireRole("CCW-PROCESSORS-ROLE");
-            policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
             policy.RequireAuthenticatedUser();
             policy.AddAuthenticationSchemes("aad");
             policy.Build();
@@ -131,9 +120,7 @@ builder.Services
     });
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -199,7 +186,6 @@ app.UseTenantMiddleware();
 app.MapControllers();
 
 app.Run();
-
 
 static async Task<DatabaseContainerResolver> InitializeDatabaseContainerResolver(
     IConfigurationSection configurationSection,

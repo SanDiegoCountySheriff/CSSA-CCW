@@ -2,7 +2,6 @@ using Azure.Core.Pipeline;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Azure.Storage.Blobs;
-using CCW.Common.AuthorizationPolicies;
 using CCW.Common.Services;
 using CCW.Common.Services.Contracts;
 using CCW.Document;
@@ -22,9 +21,6 @@ builder.Services.AddHttpContextAccessor();
 var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault:VaultUri").Value),
     credential: new DefaultAzureCredential());
 
-builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 builder.Services.AddSingleton<IStorageContainerResolver>(
     InitializeStorageContainerResolver(
         builder.Configuration.GetSection("Storage"),
@@ -34,6 +30,8 @@ builder.Services.AddSingleton<IStorageContainerResolver>(
     .GetResult());
 
 builder.Services.AddSingleton<ITenantIdResolver>(InitializeTenantIdResolver(builder.Configuration.GetSection("TenantIdResolution")));
+
+builder.Services.AddScoped<IAzureStorage, AzureStorage>();
 
 builder.Services
     .AddAuthentication()
@@ -96,31 +94,23 @@ builder.Services
             .AddAuthenticationSchemes(authenticationSchemes.ToArray())
             .Build());
 
-        options.AddPolicy("RequireAdminOnly",
-            policy =>
-            {
-                policy.RequireRole("CCW-ADMIN-ROLE");
-                policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
-            });
+        options.AddPolicy("RequireAdminOnly", policy =>
+        {
+            policy.RequireRole("CCW-ADMIN-ROLE");
+        });
 
         options.AddPolicy("RequireSystemAdminOnly", policy =>
         {
             policy.RequireRole("CCW-SYSTEM-ADMINS-ROLE");
-            policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
         });
 
         options.AddPolicy("RequireProcessorOnly", policy =>
         {
             policy.RequireRole("CCW-PROCESSORS-ROLE");
-            policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
         });
     });
 
-//Add services to the container.
-builder.Services.AddScoped<IAzureStorage, AzureStorage>();
 builder.Services.AddControllers();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
@@ -162,10 +152,6 @@ builder.Services.AddCors(policyBuilder =>
 );
 
 builder.Services.AddHealthChecks();
-builder.Services.AddAzureClients(clientBuilder =>
-{
-    clientBuilder.AddBlobServiceClient(builder.Configuration["StorageConnectionString:blob"], preferMsi: true);
-});
 
 var app = builder.Build();
 

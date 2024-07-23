@@ -1,6 +1,5 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using CCW.Common.AuthorizationPolicies;
 using CCW.Common.Services;
 using CCW.Payment;
 using CCW.Payment.Services;
@@ -22,11 +21,7 @@ builder.Services.AddSingleton<IDatabaseContainerResolver>(InitializeDatabaseCont
     builder.Configuration.GetSection("TenantDatabaseNameResolution"),
     client).GetAwaiter().GetResult());
 
-builder.Services.AddScoped<ICosmosDbService,CosmosDbService>();
-
-builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
+builder.Services.AddScoped<ICosmosDbService, CosmosDbService>();
 
 builder.Services
     .AddAuthentication()
@@ -89,29 +84,23 @@ builder.Services
             .AddAuthenticationSchemes(authenticationSchemes.ToArray())
             .Build());
 
-        options.AddPolicy("RequireAdminOnly",
-            policy =>
-            {
-                policy.RequireRole("CCW-ADMIN-ROLE");
-                policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
-            });
+        options.AddPolicy("RequireAdminOnly", policy =>
+        {
+            policy.RequireRole("CCW-ADMIN-ROLE");
+        });
 
         options.AddPolicy("RequireSystemAdminOnly", policy =>
         {
             policy.RequireRole("CCW-SYSTEM-ADMINS-ROLE");
-            policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
         });
 
         options.AddPolicy("RequireProcessorOnly", policy =>
         {
             policy.RequireRole("CCW-PROCESSORS-ROLE");
-            policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
         });
     });
 
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
@@ -156,12 +145,10 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 app.UseSwagger(o =>
 {
     o.RouteTemplate = Constants.AppName + "/swagger/{documentname}/swagger.json";
 });
-
 
 app.UseSwaggerUI(options =>
 {
@@ -170,7 +157,6 @@ app.UseSwaggerUI(options =>
 
     options.EnableTryItOutByDefault();
 });
-
 
 app.UseHealthChecks("/health");
 

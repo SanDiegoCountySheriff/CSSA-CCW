@@ -1,6 +1,5 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using CCW.Common.AuthorizationPolicies;
 using CCW.Common.Services;
 using CCW.Schedule;
 using CCW.Schedule.Services;
@@ -27,9 +26,6 @@ builder.Services.AddScoped<IAppointmentCosmosDbService, AppointmentCosmosDbServi
 builder.Services.AddScoped<IApplicationCosmosDbService, ApplicationCosmosDbService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
-builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
     .AddAuthentication()
@@ -92,28 +88,23 @@ builder.Services
             .AddAuthenticationSchemes(authenticationSchemes.ToArray())
             .Build());
 
-        options.AddPolicy("RequireAdminOnly",
-            policy =>
-            {
-                policy.RequireRole("CCW-ADMIN-ROLE");
-                policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
-            });
+        options.AddPolicy("RequireAdminOnly", policy =>
+        {
+            policy.RequireRole("CCW-ADMIN-ROLE");
+        });
 
         options.AddPolicy("RequireSystemAdminOnly", policy =>
         {
             policy.RequireRole("CCW-SYSTEM-ADMINS-ROLE");
-            policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
         });
 
         options.AddPolicy("RequireProcessorOnly", policy =>
         {
             policy.RequireRole("CCW-PROCESSORS-ROLE");
-            policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
         });
     });
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
@@ -174,7 +165,6 @@ app.UseSwaggerUI(options =>
 app.UseHealthChecks("/health");
 
 app.UseCors();
-
 
 app.UseAuthorization();
 app.UseTenantMiddleware();
