@@ -18,7 +18,7 @@ public class TenantMiddleware
             tenantId = context.User.Claims.Where(c => c.Type == "iss").Select(c => c.Value.Split("/")[3]).FirstOrDefault();
         }
 
-        context.Items["TenantId"] = tenantId;
+        context.Items["TenantId"] = tenantId.Replace("-", "_");
 
         await _requestDelegate(context);
     }
