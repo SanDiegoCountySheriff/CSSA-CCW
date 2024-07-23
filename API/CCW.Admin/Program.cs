@@ -2,7 +2,8 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using CCW.Admin;
 using CCW.Admin.Services;
-using CCW.Common.AuthorizationPolicies;
+using CCW.Common.Services;
+using CCW.Common.Services.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Azure.Cosmos;
@@ -12,18 +13,20 @@ using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddHttpContextAccessor();
+
 var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault:VaultUri").Value),
     credential: new DefaultAzureCredential());
 
-builder.Services.AddSingleton<ICosmosDbService>(
-    InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
+builder.Services.AddSingleton<IDatabaseContainerResolver>(InitializeDatabaseContainerResolver(builder.Configuration.GetSection("CosmosDb"),
+    builder.Configuration.GetSection("TenantDatabaseNameResolution"),
+    client).GetAwaiter().GetResult());
+
+builder.Services.AddScoped<ICosmosDbService, CosmosDbService>();
+
+builder.Services.AddSingleton<ITenantIdResolver>(InitializeTenantIdResolver(builder.Configuration.GetSection("TenantIdResolution")));
 
 builder.Services.AddAutoMapper(typeof(Program));
-
-builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
     .AddAuthentication()
@@ -39,20 +42,32 @@ builder.Services
         {
             OnAuthenticationFailed = AuthenticationFailed,
         };
-    })
-    .AddJwtBearer("b2c", o =>
-    {
-        o.Authority = builder.Configuration.GetSection("JwtBearerB2C:Authority").Value;
-        o.SaveToken = true;
-        o.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidAudiences = new List<string> { builder.Configuration.GetSection("JwtBearerB2C:ValidAudiences").Value }
-        };
-        o.Events = new JwtBearerEvents
-        {
-            OnAuthenticationFailed = AuthenticationFailed,
-        };
     });
+
+var b2cAuthoritiesSection = builder.Configuration.GetSection("JwtBearerB2C").GetChildren();
+var authenticationSchemes = new List<string>();
+
+foreach (var configurationSection in b2cAuthoritiesSection)
+{
+    var authorities = configurationSection.GetChildren().ToDictionary(x => x.Key, x => x.Value);
+
+    builder.Services.AddAuthentication()
+            .AddJwtBearer(configurationSection.Key, o =>
+            {
+                o.Authority = authorities["Authority"];
+                o.SaveToken = true;
+                o.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidAudiences = new List<string> { authorities["ValidAudiences"] }
+                };
+                o.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = AuthenticationFailed,
+                };
+            });
+
+    authenticationSchemes.Add(configurationSection.Key);
+}
 
 builder.Services
     .AddAuthorization(options =>
@@ -71,31 +86,26 @@ builder.Services
 
         options.AddPolicy("B2CUsers", new AuthorizationPolicyBuilder()
             .RequireAuthenticatedUser()
-            .AddAuthenticationSchemes("b2c")
+            .AddAuthenticationSchemes(authenticationSchemes.ToArray())
             .Build());
 
-        options.AddPolicy("RequireAdminOnly",
-            policy =>
-            {
-                policy.RequireRole("CCW-ADMIN-ROLE");
-                policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
-            });
+        options.AddPolicy("RequireAdminOnly", policy =>
+        {
+            policy.RequireRole("CCW-ADMIN-ROLE");
+        });
 
         options.AddPolicy("RequireSystemAdminOnly", policy =>
         {
             policy.RequireRole("CCW-SYSTEM-ADMINS-ROLE");
-            policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
         });
 
         options.AddPolicy("RequireProcessorOnly", policy =>
         {
             policy.RequireRole("CCW-PROCESSORS-ROLE");
-            policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
         });
     });
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
@@ -158,12 +168,16 @@ app.UseHealthChecks("/health");
 app.UseCors();
 
 app.UseAuthorization();
+app.UseTenantMiddleware();
 app.MapControllers();
 
 app.Run();
 
-static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
-    IConfigurationSection configurationSection, SecretClient secretClient)
+static async Task<DatabaseContainerResolver> InitializeDatabaseContainerResolver(
+    IConfigurationSection configurationSection,
+    IConfigurationSection tenantSection,
+    SecretClient secretClient
+)
 {
     var databaseName = configurationSection["DatabaseName"];
     var containerName = configurationSection["ContainerName"];
@@ -174,14 +188,29 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     {
         BypassProxyOnLocal = true,
     };
+    clientOptions.ConnectionMode = ConnectionMode.Gateway;
 #else
     var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
 #endif
     var client = new CosmosClient(key, clientOptions);
-    var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
-    await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
-    var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
-    return cosmosDbService;
+    var tenants = tenantSection.GetChildren().ToDictionary(x => x.Key, x => x.Value);
+    var databases = new Dictionary<string, Database>();
+
+    foreach (var tenant in tenants)
+    {
+        var database = await client.CreateDatabaseIfNotExistsAsync($"{databaseName}-{tenant.Value}");
+        await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
+        databases.Add(tenant.Key, database);
+    }
+
+    return new DatabaseContainerResolver(databases);
+}
+
+static TenantIdResolver InitializeTenantIdResolver(IConfigurationSection configurationSection)
+{
+    var tenantIds = configurationSection.GetChildren().ToDictionary(x => x.Key, x => x.Value);
+
+    return new TenantIdResolver(tenantIds);
 }
 
 Task AuthenticationFailed(AuthenticationFailedContext arg)

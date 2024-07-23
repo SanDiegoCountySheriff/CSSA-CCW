@@ -23,14 +23,20 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useQuery } from '@tanstack/vue-query'
 
 const authStore = useAuthStore()
 const appointmentsStore = useAppointmentsStore()
+const isAuthenticated = computed(() => authStore.getAuthState.isAuthenticated)
 
-const { data, isLoading } = useQuery(['getNextAvailableAppointment'], () =>
-  appointmentsStore.getNextAvailableAppointment()
+const { data, isLoading } = useQuery(
+  ['getNextAvailableAppointment'],
+  () => appointmentsStore.getNextAvailableAppointment(),
+  {
+    enabled: isAuthenticated,
+  }
 )
 </script>

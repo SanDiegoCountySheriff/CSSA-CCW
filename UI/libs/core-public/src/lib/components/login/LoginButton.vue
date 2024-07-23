@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { MsalBrowser } from '@shared-ui/api/auth/authentication'
+import { MsalBrowser } from '@core-public/api/auth/authentication'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { inject, ref } from 'vue'
 

@@ -1,22 +1,32 @@
 using CCW.Application.Services.Contracts;
 using CCW.Common.Models;
+using CCW.Common.Services;
 using Microsoft.Azure.Cosmos;
 
 namespace CCW.Application.Services;
 
 public class UserProfileCosmosDbService : IUserProfileCosmosDbService
 {
-    private readonly Container _container;
+    private readonly IHttpContextAccessor _contextAccessor;
+    private readonly IDatabaseContainerResolver _databaseContainerResolver;
+    private readonly Container _adminUserContainer;
     private readonly Container _userContainer;
 
     public UserProfileCosmosDbService(
-        CosmosClient cosmosDbClient,
-        string databaseName,
-        string containerName,
-        string userContainerName)
+        IHttpContextAccessor contextAccessor,
+        IDatabaseContainerResolver databaseContainerResolver,
+        IConfiguration configuration
+    )
     {
-        _container = cosmosDbClient.GetContainer(databaseName, containerName);
-        _userContainer = cosmosDbClient.GetContainer(databaseName, userContainerName);
+        _contextAccessor = contextAccessor;
+        _databaseContainerResolver = databaseContainerResolver;
+
+        var tenantId = _contextAccessor.HttpContext.Items["TenantId"] != null ? _contextAccessor.HttpContext.Items["TenantId"].ToString() : "";
+        var adminUserContainerName = configuration.GetSection("CosmosDb").GetSection("UserProfileContainerName").Value;
+        var userContainerName = configuration.GetSection("CosmosDb").GetSection("UserContainerName").Value;
+
+        _adminUserContainer = _databaseContainerResolver.GetContainer(tenantId, adminUserContainerName);
+        _userContainer = _databaseContainerResolver.GetContainer(tenantId, userContainerName);
     }
 
     public async Task<AdminUser> GetAdminUserProfileAsync(string licensingUserName, CancellationToken cancellationToken)
@@ -26,7 +36,7 @@ public class UserProfileCosmosDbService : IUserProfileCosmosDbService
         var parameterizedQuery = new QueryDefinition(query: queryString)
             .WithParameter("@adminUserId", licensingUserName);
 
-        using FeedIterator<AdminUser> filteredFeed = _container.GetItemQueryIterator<AdminUser>(
+        using FeedIterator<AdminUser> filteredFeed = _adminUserContainer.GetItemQueryIterator<AdminUser>(
             queryDefinition: parameterizedQuery,
             requestOptions: new QueryRequestOptions() { PartitionKey = new PartitionKey(licensingUserName) }
         );

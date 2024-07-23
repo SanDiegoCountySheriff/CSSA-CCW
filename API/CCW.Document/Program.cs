@@ -1,17 +1,36 @@
-using CCW.Common.AuthorizationPolicies;
+using Azure.Core.Pipeline;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Storage.Blobs;
+using CCW.Common.Services;
+using CCW.Common.Services.Contracts;
 using CCW.Document;
 using CCW.Document.Services;
+using CCW.Document.Services.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Microsoft.Extensions.Azure;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
+builder.Services.AddHttpContextAccessor();
+
+var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault:VaultUri").Value),
+    credential: new DefaultAzureCredential());
+
+builder.Services.AddSingleton<IStorageContainerResolver>(
+    InitializeStorageContainerResolver(
+        builder.Configuration.GetSection("Storage"),
+        builder.Configuration.GetSection("TenantStorageNameResolution"),
+        client)
+    .GetAwaiter()
+    .GetResult());
+
+builder.Services.AddSingleton<ITenantIdResolver>(InitializeTenantIdResolver(builder.Configuration.GetSection("TenantIdResolution")));
+
+builder.Services.AddScoped<IAzureStorage, AzureStorage>();
 
 builder.Services
     .AddAuthentication()
@@ -27,20 +46,32 @@ builder.Services
         {
             OnAuthenticationFailed = AuthenticationFailed,
         };
-    })
-    .AddJwtBearer("b2c", o =>
-    {
-        o.Authority = builder.Configuration.GetSection("JwtBearerB2C:Authority").Value;
-        o.SaveToken = true;
-        o.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidAudiences = new List<string> { builder.Configuration.GetSection("JwtBearerB2C:ValidAudiences").Value }
-        };
-        o.Events = new JwtBearerEvents
-        {
-            OnAuthenticationFailed = AuthenticationFailed,
-        };
     });
+
+var b2cAuthoritiesSection = builder.Configuration.GetSection("JwtBearerB2C").GetChildren();
+var authenticationSchemes = new List<string>();
+
+foreach (var configurationSection in b2cAuthoritiesSection)
+{
+    var authorities = configurationSection.GetChildren().ToDictionary(x => x.Key, x => x.Value);
+
+    builder.Services.AddAuthentication()
+            .AddJwtBearer(configurationSection.Key, o =>
+            {
+                o.Authority = authorities["Authority"];
+                o.SaveToken = true;
+                o.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidAudiences = new List<string> { authorities["ValidAudiences"] }
+                };
+                o.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = AuthenticationFailed,
+                };
+            });
+
+    authenticationSchemes.Add(configurationSection.Key);
+}
 
 builder.Services
     .AddAuthorization(options =>
@@ -59,34 +90,26 @@ builder.Services
 
         options.AddPolicy("B2CUsers", new AuthorizationPolicyBuilder()
             .RequireAuthenticatedUser()
-            .AddAuthenticationSchemes("b2c")
+            .AddAuthenticationSchemes(authenticationSchemes.ToArray())
             .Build());
 
-        options.AddPolicy("RequireAdminOnly",
-            policy =>
-            {
-                policy.RequireRole("CCW-ADMIN-ROLE");
-                policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
-            });
+        options.AddPolicy("RequireAdminOnly", policy =>
+        {
+            policy.RequireRole("CCW-ADMIN-ROLE");
+        });
 
         options.AddPolicy("RequireSystemAdminOnly", policy =>
         {
             policy.RequireRole("CCW-SYSTEM-ADMINS-ROLE");
-            policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
         });
 
         options.AddPolicy("RequireProcessorOnly", policy =>
         {
             policy.RequireRole("CCW-PROCESSORS-ROLE");
-            policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
         });
     });
 
-//Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddSingleton<IAzureStorage, AzureStorage>();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
@@ -128,10 +151,6 @@ builder.Services.AddCors(policyBuilder =>
 );
 
 builder.Services.AddHealthChecks();
-builder.Services.AddAzureClients(clientBuilder =>
-{
-    clientBuilder.AddBlobServiceClient(builder.Configuration["StorageConnectionString:blob"], preferMsi: true);
-});
 
 var app = builder.Build();
 
@@ -153,9 +172,91 @@ app.UseHealthChecks("/health");
 app.UseCors();
 
 app.UseAuthorization();
+app.UseTenantMiddleware();
 app.MapControllers();
 
 app.Run();
+
+async Task<StorageContainerResolver> InitializeStorageContainerResolver(
+    IConfigurationSection configurationSection,
+    IConfigurationSection tenantSection,
+    SecretClient secretClient)
+{
+    var agencyContainerName = configurationSection.GetSection("AgencyContainerName").Value;
+    var publicContainerName = configurationSection.GetSection("PublicContainerName").Value;
+    var adminUserContainerName = configurationSection.GetSection("AdminUserContainerName").Value;
+    var adminApplicationContainerName = configurationSection.GetSection("AdminApplicationContainerName").Value;
+
+#if DEBUG
+    var storageConnection = configurationSection.GetSection("LocalConnectionString").Value;
+#else
+    var storageConnection = client.GetSecret("storage-ct-connection-primary").Value.Value;
+#endif
+
+    var handler = new HttpClientHandler()
+    {
+        Proxy = new WebProxy()
+        {
+            BypassProxyOnLocal = true
+        }
+    };
+    var blobClientOptions = new BlobClientOptions()
+    {
+        Transport = new HttpClientTransport(handler)
+    };
+
+    var blobContainers = new Dictionary<string, BlobContainerClient>();
+
+    var tenants = tenantSection.GetChildren().ToDictionary(x => x.Key, x => x.Value);
+
+    foreach (var tenant in tenants)
+    {
+#if DEBUG
+        var agencyContainer = new BlobContainerClient(storageConnection, $"{agencyContainerName}-{tenant.Value}", blobClientOptions);
+#else
+        var agencyContainer = new BlobContainerClient(storageConnection, $"{agencyContainerName}-{tenant.Value}");
+#endif
+        await agencyContainer.CreateIfNotExistsAsync();
+
+        blobContainers.Add($"{tenant.Key}-{agencyContainerName}", agencyContainer);
+
+#if DEBUG
+        var publicContainer = new BlobContainerClient(storageConnection, $"{publicContainerName}-{tenant.Value}", blobClientOptions);
+#else
+        var publicContainer = new BlobContainerClient(storageConnection, $"{publicContainerName}-{tenant.Value}");
+#endif
+        await publicContainer.CreateIfNotExistsAsync();
+
+        blobContainers.Add($"{tenant.Key}-{publicContainerName}", publicContainer);
+
+#if DEBUG
+        var adminUserContainer = new BlobContainerClient(storageConnection, $"{adminUserContainerName}-{tenant.Value}", blobClientOptions);
+#else
+        var adminUserContainer = new BlobContainerClient(storageConnection, $"{adminUserContainerName}-{tenant.Value}");
+#endif
+        await adminUserContainer.CreateIfNotExistsAsync();
+
+        blobContainers.Add($"{tenant.Key}-{adminUserContainerName}", adminUserContainer);
+
+#if DEBUG
+        var adminApplicationContainer = new BlobContainerClient(storageConnection, $"{adminApplicationContainerName}-{tenant.Value}", blobClientOptions);
+#else
+        var adminApplicationContainer = new BlobContainerClient(storageConnection, $"{adminApplicationContainerName}-{tenant.Value}");
+#endif
+        await adminApplicationContainer.CreateIfNotExistsAsync();
+
+        blobContainers.Add($"{tenant.Key}-{adminApplicationContainerName}", adminApplicationContainer);
+    }
+
+    return new StorageContainerResolver(blobContainers);
+}
+
+static TenantIdResolver InitializeTenantIdResolver(IConfigurationSection configurationSection)
+{
+    var tenantIds = configurationSection.GetChildren().ToDictionary(x => x.Key, x => x.Value);
+
+    return new TenantIdResolver(tenantIds);
+}
 
 Task AuthenticationFailed(AuthenticationFailedContext arg)
 {

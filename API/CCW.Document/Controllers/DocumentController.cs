@@ -1,5 +1,6 @@
 using Azure.Storage.Blobs.Models;
-using CCW.Document.Services;
+using CCW.Common.Services.Contracts;
+using CCW.Document.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,18 +12,20 @@ public class DocumentController : ControllerBase
 {
     private readonly IAzureStorage _azureStorage;
     private readonly ILogger<DocumentController> _logger;
+    private readonly ITenantIdResolver _tenantIdResolver;
 
     private readonly string[] _allowedFileTypes = new[] { "image/jpeg", "image/png", "application/pdf", "multipart/form-data" };
 
     public DocumentController(
         IAzureStorage azureStorage,
-        ILogger<DocumentController> logger
+        ILogger<DocumentController> logger,
+        ITenantIdResolver tenantIdResolver
     )
     {
         _azureStorage = azureStorage;
         _logger = logger;
+        _tenantIdResolver = tenantIdResolver;
     }
-
 
     [Authorize(Policy = "B2CUsers")]
     [HttpPost("uploadApplicantFile", Name = "uploadApplicantFile")]
@@ -54,7 +57,6 @@ public class DocumentController : ControllerBase
             return NotFound("An error occur while trying to upload applicant file.");
         }
     }
-
 
     [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadUserApplicantFile", Name = "uploadUserApplicantFile")]
@@ -162,7 +164,6 @@ public class DocumentController : ControllerBase
         }
     }
 
-
     [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadAgencyFile", Name = "uploadAgencyFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -237,14 +238,14 @@ public class DocumentController : ControllerBase
 
             var file = await _azureStorage.DownloadAdminUserFileAsync(adminUserFileName, cancellationToken: cancellationToken);
 
-            if (await file.ExistsAsync())
+            if (await file.ExistsAsync(cancellationToken))
             {
-                await file.DownloadToAsync(ms);
-                BlobProperties properties = await file.GetPropertiesAsync();
+                await file.DownloadToAsync(ms, cancellationToken);
+                BlobProperties properties = await file.GetPropertiesAsync(cancellationToken: cancellationToken);
 
                 if (properties.ContentType == "application/pdf")
                 {
-                    Stream blobStream = file.OpenReadAsync().Result;
+                    Stream blobStream = file.OpenReadAsync(cancellationToken: cancellationToken).Result;
 
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
@@ -281,14 +282,14 @@ public class DocumentController : ControllerBase
             MemoryStream ms = new MemoryStream();
 
             var file = await _azureStorage.DownloadAdminApplicationFileAsync(adminApplicationFileName, cancellationToken: cancellationToken);
-            if (await file.ExistsAsync())
+            if (await file.ExistsAsync(cancellationToken))
             {
-                await file.DownloadToAsync(ms);
-                BlobProperties properties = await file.GetPropertiesAsync();
+                await file.DownloadToAsync(ms, cancellationToken);
+                BlobProperties properties = await file.GetPropertiesAsync(cancellationToken: cancellationToken);
 
                 if (properties.ContentType == "application/pdf")
                 {
-                    Stream blobStream = file.OpenReadAsync().Result;
+                    Stream blobStream = file.OpenReadAsync(cancellationToken: cancellationToken).Result;
 
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
@@ -308,7 +309,7 @@ public class DocumentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to download user applicant file.");
+            return NotFound("An error occur while trying to download admin applicant file.");
         }
     }
 
@@ -330,21 +331,20 @@ public class DocumentController : ControllerBase
 
             var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
 
-            if (await file.ExistsAsync())
+            if (await file.ExistsAsync(cancellationToken))
             {
-                await file.DownloadToAsync(ms);
-                BlobProperties properties = await file.GetPropertiesAsync();
+                await file.DownloadToAsync(ms, cancellationToken);
+                BlobProperties properties = await file.GetPropertiesAsync(cancellationToken: cancellationToken);
 
                 if (properties.ContentType == "application/pdf")
                 {
-                    Stream blobStream = file.OpenReadAsync().Result;
+                    Stream blobStream = file.OpenReadAsync(cancellationToken: cancellationToken).Result;
 
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
                     return new FileStreamResult(blobStream, properties.ContentType);
                 }
-
 
                 var bytes = ms.ToArray();
                 var b64String = Convert.ToBase64String(bytes);
@@ -372,19 +372,18 @@ public class DocumentController : ControllerBase
     {
         try
         {
-
             MemoryStream ms = new MemoryStream();
 
             var file = await _azureStorage.DownloadAgencyFileAsync(agreementFileName, cancellationToken: cancellationToken);
 
-            if (await file.ExistsAsync())
+            if (await file.ExistsAsync(cancellationToken))
             {
-                await file.DownloadToAsync(ms);
-                BlobProperties properties = await file.GetPropertiesAsync();
+                await file.DownloadToAsync(ms, cancellationToken);
+                BlobProperties properties = await file.GetPropertiesAsync(cancellationToken: cancellationToken);
 
                 if (properties.ContentType == "application/pdf")
                 {
-                    Stream blobStream = file.OpenReadAsync().Result;
+                    Stream blobStream = file.OpenReadAsync(cancellationToken: cancellationToken).Result;
 
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
@@ -399,6 +398,7 @@ public class DocumentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
+
             return NotFound("An error occur while trying to download applicant file.");
         }
     }
@@ -485,12 +485,12 @@ public class DocumentController : ControllerBase
             var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
             if (await file.ExistsAsync(cancellationToken))
             {
-                await file.DownloadToAsync(ms);
-                BlobProperties properties = await file.GetPropertiesAsync();
+                await file.DownloadToAsync(ms, cancellationToken);
+                BlobProperties properties = await file.GetPropertiesAsync(cancellationToken: cancellationToken);
 
                 if (properties.ContentType == "application/pdf")
                 {
-                    Stream blobStream = file.OpenReadAsync().Result;
+                    Stream blobStream = file.OpenReadAsync(cancellationToken: cancellationToken).Result;
 
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
@@ -529,11 +529,11 @@ public class DocumentController : ControllerBase
             MemoryStream ms = new MemoryStream();
 
             var file = await _azureStorage.DownloadAgencyFileAsync(agencyFileName, cancellationToken: cancellationToken);
-            if (await file.ExistsAsync())
+            if (await file.ExistsAsync(cancellationToken))
             {
-                await file.DownloadToAsync(ms);
-                Stream blobStream = file.OpenReadAsync().Result;
-                BlobProperties properties = await file.GetPropertiesAsync();
+                await file.DownloadToAsync(ms, cancellationToken);
+                Stream blobStream = file.OpenReadAsync(cancellationToken: cancellationToken).Result;
+                BlobProperties properties = await file.GetPropertiesAsync(cancellationToken: cancellationToken);
 
                 if (properties.ContentType == "application/pdf")
                 {
@@ -554,7 +554,6 @@ public class DocumentController : ControllerBase
         }
     }
 
-
     [HttpGet("downloadAgencyLogo", Name = "downloadAgencyLogo")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -563,7 +562,9 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            var result = await _azureStorage.DownloadAgencyLogoAsync("agency_logo", cancellationToken: cancellationToken);
+            var tenantId = GetTenantId(HttpContext);
+
+            var result = await _azureStorage.DownloadAgencyLogoAsync(tenantId, "agency_logo", cancellationToken: cancellationToken);
 
             return Ok(result);
         }
@@ -583,7 +584,9 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            var result = await _azureStorage.DownloadAgencyLogoAsync("agency_landing_page_image", cancellationToken: cancellationToken);
+            var tenantId = GetTenantId(HttpContext);
+
+            var result = await _azureStorage.DownloadAgencyLogoAsync(tenantId, "agency_landing_page_image", cancellationToken: cancellationToken);
 
             return Ok(result);
         }
@@ -603,7 +606,9 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            var result = await _azureStorage.DownloadAgencyLogoAsync("agency_home_page_image", cancellationToken: cancellationToken);
+            var tenantId = GetTenantId(HttpContext);
+
+            var result = await _azureStorage.DownloadAgencyLogoAsync(tenantId, "agency_home_page_image", cancellationToken: cancellationToken);
 
             return Ok(result);
         }
@@ -624,7 +629,9 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            var result = await _azureStorage.DownloadAgencyLogoAsync("agency_sheriff_signature_image", cancellationToken: cancellationToken);
+            var tenantId = GetTenantId(HttpContext);
+
+            var result = await _azureStorage.DownloadAgencyLogoAsync(tenantId, "agency_sheriff_signature_image", cancellationToken: cancellationToken);
 
             return Ok(result);
         }
@@ -656,7 +663,6 @@ public class DocumentController : ControllerBase
             return NotFound("An error occur while trying to delete agency logo.");
         }
     }
-
 
     [Authorize(Policy = "AADUsers")]
     [HttpDelete("deleteApplicantFile", Name = "deleteApplicantFile")]
@@ -720,7 +726,7 @@ public class DocumentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to delete applicant file.");
+            return NotFound("An error occur while trying to delete admin applicant file.");
         }
     }
 
@@ -734,5 +740,19 @@ public class DocumentController : ControllerBase
         {
             throw new ArgumentNullException("userId", "Invalid token.");
         }
+    }
+
+    private string GetTenantId(HttpContext context)
+    {
+        var referrer = context.Request.Headers.Referer.ToString().Split("/")[2].Split(".")[0];
+
+        if (referrer.Contains(':'))
+        {
+            referrer = referrer.Split(":")[1];
+        }
+
+        var tenantId = _tenantIdResolver.GetTenantId(referrer);
+
+        return tenantId;
     }
 }

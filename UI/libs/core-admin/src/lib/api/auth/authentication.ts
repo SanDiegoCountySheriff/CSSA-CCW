@@ -13,6 +13,7 @@ export class MsalBrowser {
   private static instance: MsalBrowser
   private publicClientApplication: PublicClientApplication
   private authStore = useAuthStore()
+  private configStore = useAppConfigStore()
 
   private constructor(config: Configuration) {
     this.publicClientApplication = new PublicClientApplication(config)
@@ -46,7 +47,7 @@ export class MsalBrowser {
   }
 
   private static async fetchAuthConfig(): Promise<Configuration> {
-    const response = await axios.get(Endpoints.GET_CONFIG_ENDPOINT)
+    const response = await axios.get(`${Endpoints.GET_CONFIG_ENDPOINT}.json`)
 
     const msalConfig: Configuration = {
       auth: {
@@ -61,7 +62,6 @@ export class MsalBrowser {
       },
       system: {
         loadFrameTimeout: 60000,
-        tokenRenewalOffsetSeconds: 2700,
       },
     }
 
@@ -85,13 +85,13 @@ export class MsalBrowser {
       displayDebugger: response.data.Configuration.DisplayDebugger === 'True',
       environmentName:
         response.data.Configuration?.Environment.toUpperCase() || 'DEV',
-      refreshTime: response.data.Authentication.RefreshTimeInMinutes || 30,
       questions: response.data.Questions || {},
       isPaymentServiceAvailable:
         response.data.Configuration.IsPaymentServiceAvailable === 'True',
       payBeforeSubmit: response.data.Configuration.PayBeforeSubmit === 'True',
       applicationInsightsConnectionString:
         response.data.Configuration.ApplicationInsightsConnectionString,
+      scope: response.data.Authentication.Scope,
     }
 
     configStore.setAppConfig(config)
@@ -109,15 +109,8 @@ export class MsalBrowser {
   }
 
   async acquireToken() {
-    const account = this.publicClientApplication.getActiveAccount()
-
-    if (!account) {
-      return
-    }
-
     const silentRequest: SilentRequest = {
-      scopes: ['openid'],
-      account,
+      scopes: ['openid', this.configStore.appConfig.scope],
       forceRefresh: false,
     }
 
@@ -125,7 +118,7 @@ export class MsalBrowser {
       silentRequest
     )
 
-    return token.idToken
+    return token.accessToken
   }
 
   isAuthenticated() {

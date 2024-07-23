@@ -358,8 +358,8 @@ MigrationBackup/
 Thumbs.db
 
 # Config files
-UI/apps/admin/public/config.json
-UI/apps/public/public/config.json
+UI/apps/admin/public/config*
+UI/apps/public/public/config*
 UI/apps/admin/dist/*
 UI/apps/public/dist/*
 

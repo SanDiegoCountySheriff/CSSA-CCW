@@ -1,4 +1,5 @@
 using CCW.Common.Models;
+using CCW.Common.Services;
 using CCW.Schedule.Services.Contracts;
 using Microsoft.Azure.Cosmos;
 
@@ -6,14 +7,23 @@ namespace CCW.Schedule.Services;
 
 public class ApplicationCosmosDbService : IApplicationCosmosDbService
 {
+    private readonly IHttpContextAccessor _contextAccessor;
+    private readonly IDatabaseContainerResolver _databaseContainerResolver;
     private readonly Container _container;
 
     public ApplicationCosmosDbService(
-        CosmosClient cosmosDbClient,
-        string databaseName,
-        string containerName)
+        IHttpContextAccessor contextAccessor,
+        IDatabaseContainerResolver databaseContainerResolver,
+        IConfiguration configuration
+    )
     {
-        _container = cosmosDbClient.GetContainer(databaseName, containerName);
+        _contextAccessor = contextAccessor;
+        _databaseContainerResolver = databaseContainerResolver;
+
+        var tenantId = _contextAccessor.HttpContext.Items["TenantId"].ToString();
+        var applicationContainerName = configuration.GetSection("CosmosDb").GetSection("ApplicationContainerName").Value;
+
+        _container = _databaseContainerResolver.GetContainer(tenantId, applicationContainerName);
     }
 
     public async Task<PermitApplication> GetUserApplicationAsync(string applicationId, CancellationToken cancellationToken)

@@ -90,7 +90,7 @@
 import ActiveLicensesCard from '@core-admin/components/cards/ActiveLicensesCard.vue'
 import AssignedApplicationsCard from '@core-admin/components/cards/AssignedApplicationsCard.vue'
 import DeniedApplicationsCard from '@core-admin/components/cards/DeniedApplicationsCard.vue'
-import { MsalBrowser } from '@shared-ui/api/auth/authentication'
+import { MsalBrowser } from '@core-admin/api/auth/authentication'
 import NewAppointmentsCard from '@core-admin/components/cards/NewAppointmentsCard.vue'
 import NextAvailableAppointmentCard from '@core-admin/components/cards/NextAvailableAppointmentCard.vue'
 import PendingEmploymentApplicationsCard from '@core-admin/components/cards/PendingEmploymentApplicationsCard.vue'

@@ -63,7 +63,7 @@ import { useUserStore } from '@shared-ui/stores/userStore'
 import {
   MsalBrowser,
   getMsalInstance,
-} from '@shared-ui/api/auth/authentication'
+} from '@core-public/api/auth/authentication'
 import { computed, getCurrentInstance, onBeforeMount, provide, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 

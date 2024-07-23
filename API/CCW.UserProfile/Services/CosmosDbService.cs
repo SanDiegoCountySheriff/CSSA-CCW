@@ -1,4 +1,5 @@
 using CCW.Common.Models;
+using CCW.Common.Services;
 using Microsoft.Azure.Cosmos;
 using System.Net;
 using User = CCW.Common.Models.User;
@@ -7,16 +8,26 @@ namespace CCW.UserProfile.Services;
 
 public class CosmosDbService : ICosmosDbService
 {
-    private Container _adminUserContainer;
-    private Container _userContainer;
+    private readonly IHttpContextAccessor _contextAccessor;
+    private readonly IDatabaseContainerResolver _databaseContainerResolver;
+    private readonly Container _adminUserContainer;
+    private readonly Container _userContainer;
 
     public CosmosDbService(
-        CosmosClient cosmosDbClient,
-        string databaseName,
-        string adminUsersContainerName, string usersContainerName)
+        IHttpContextAccessor contextAccessor,
+        IDatabaseContainerResolver databaseContainerResolver,
+        IConfiguration configuration
+    )
     {
-        _adminUserContainer = cosmosDbClient.GetContainer(databaseName, adminUsersContainerName);
-        _userContainer = cosmosDbClient.GetContainer(databaseName, usersContainerName);
+        _contextAccessor = contextAccessor;
+        _databaseContainerResolver = databaseContainerResolver;
+
+        var tenantId = _contextAccessor.HttpContext.Items["TenantId"].ToString();
+        var adminUserContainerName = configuration.GetSection("CosmosDb").GetSection("AdminUsersContainerName").Value;
+        var userContainerName = configuration.GetSection("CosmosDb").GetSection("UsersContainerName").Value;
+
+        _adminUserContainer = _databaseContainerResolver.GetContainer(tenantId, adminUserContainerName);
+        _userContainer = _databaseContainerResolver.GetContainer(tenantId, userContainerName);
     }
 
     public async Task<AdminUser> AddAdminUserAsync(AdminUser adminUser, CancellationToken cancellationToken)

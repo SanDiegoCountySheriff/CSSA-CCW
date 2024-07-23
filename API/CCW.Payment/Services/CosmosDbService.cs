@@ -1,4 +1,5 @@
 using CCW.Common.Models;
+using CCW.Common.Services;
 using Microsoft.Azure.Cosmos;
 using System;
 
@@ -6,17 +7,26 @@ namespace CCW.Payment.Services;
 
 public class CosmosDbService : ICosmosDbService
 {
+    private readonly IHttpContextAccessor _contextAccessor;
+    private readonly IDatabaseContainerResolver _databaseContainerResolver;
     private readonly Container _container;
     private readonly Container _refundRequestContainer;
 
     public CosmosDbService(
-        CosmosClient cosmosDbClient,
-        string databaseName,
-        string containerName,
-        string refundRequestContainerName)
+        IHttpContextAccessor contextAccessor,
+        IDatabaseContainerResolver databaseContainerResolver,
+        IConfiguration configuration
+    )
     {
-        _container = cosmosDbClient.GetContainer(databaseName, containerName);
-        _refundRequestContainer = cosmosDbClient.GetContainer(databaseName, refundRequestContainerName);
+        _contextAccessor = contextAccessor;
+        _databaseContainerResolver = databaseContainerResolver;
+
+        var tenantId = _contextAccessor.HttpContext.Items["TenantId"].ToString();
+        var applicationContainerName = configuration.GetSection("CosmosDb").GetSection("ContainerName").Value;
+        var refundRequestContainerName = configuration.GetSection("CosmosDb").GetSection("RefundRequestContainerName").Value;
+
+        _container = _databaseContainerResolver.GetContainer(tenantId, applicationContainerName);
+        _refundRequestContainer = _databaseContainerResolver.GetContainer(tenantId, refundRequestContainerName);
     }
 
     public async Task<PermitApplication> GetAdminApplication(string applicationId)

@@ -1,9 +1,12 @@
+using Azure.Core.Pipeline;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using Azure.Storage.Blobs;
 using CCW.Application;
 using CCW.Application.Services;
 using CCW.Application.Services.Contracts;
-using CCW.Common.AuthorizationPolicies;
+using CCW.Common.Services;
+using CCW.Common.Services.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Azure.Cosmos;
@@ -13,27 +16,31 @@ using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddHttpContextAccessor();
+
 var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault:VaultUri").Value),
     credential: new DefaultAzureCredential());
 
-builder.Services.AddSingleton<IApplicationCosmosDbService>(
-    InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
-builder.Services.AddSingleton<IAdminCosmosDbService>(
-    InitializeAdminCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
-builder.Services.AddSingleton<IUserProfileCosmosDbService>(
-    InitializeUserProfileCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
-builder.Services.AddSingleton<IAppointmentCosmosDbService>(
-    InitializeAppointmentCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
+builder.Services.AddSingleton<IDatabaseContainerResolver>(InitializeDatabaseContainerResolver(builder.Configuration.GetSection("CosmosDb"),
+    builder.Configuration.GetSection("TenantDatabaseNameResolution"),
+    client).GetAwaiter().GetResult());
 
+builder.Services.AddSingleton<IStorageContainerResolver>(
+    InitializeStorageContainerResolver(
+        builder.Configuration.GetSection("Storage"),
+        builder.Configuration.GetSection("TenantStorageNameResolution"),
+        client)
+    .GetAwaiter()
+    .GetResult());
+
+builder.Services.AddScoped<IApplicationCosmosDbService, ApplicationCosmosDbService>();
+builder.Services.AddScoped<IAdminCosmosDbService, AdminCosmosDbService>();
+builder.Services.AddScoped<IUserProfileCosmosDbService, UserProfileCosmosDbService>();
+builder.Services.AddScoped<IAppointmentCosmosDbService, AppointmentCosmosDbService>();
 builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<IDocumentAzureStorage, DocumentAzureStorage>();
 
 builder.Services.AddAutoMapper(typeof(Program));
-
-builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
     .AddAuthentication()
@@ -49,21 +56,32 @@ builder.Services
         {
             OnAuthenticationFailed = AuthenticationFailed,
         };
-    })
-    .AddJwtBearer("b2c", o =>
-    {
-        o.Authority = builder.Configuration.GetSection("JwtBearerB2C:Authority").Value;
-        o.SaveToken = true;
-        o.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidAudiences = new List<string> { builder.Configuration.GetSection("JwtBearerB2C:ValidAudiences").Value }
-        };
-        o.Events = new JwtBearerEvents
-        {
-            OnAuthenticationFailed = AuthenticationFailed,
-        };
     });
 
+var b2cAuthoritiesSection = builder.Configuration.GetSection("JwtBearerB2C").GetChildren();
+var authenticationSchemes = new List<string>();
+
+foreach (var configurationSection in b2cAuthoritiesSection)
+{
+    var authorities = configurationSection.GetChildren().ToDictionary(x => x.Key, x => x.Value);
+
+    builder.Services.AddAuthentication()
+            .AddJwtBearer(configurationSection.Key, o =>
+            {
+                o.Authority = authorities["Authority"];
+                o.SaveToken = true;
+                o.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidAudiences = new List<string> { authorities["ValidAudiences"] }
+                };
+                o.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = AuthenticationFailed,
+                };
+            });
+
+    authenticationSchemes.Add(configurationSection.Key);
+}
 
 builder.Services
     .AddAuthorization(options =>
@@ -82,31 +100,26 @@ builder.Services
 
         options.AddPolicy("B2CUsers", new AuthorizationPolicyBuilder()
             .RequireAuthenticatedUser()
-            .AddAuthenticationSchemes("b2c")
+            .AddAuthenticationSchemes(authenticationSchemes.ToArray())
             .Build());
 
-        options.AddPolicy("RequireAdminOnly",
-            policy =>
-            {
-                policy.RequireRole("CCW-ADMIN-ROLE");
-                policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
-            });
+        options.AddPolicy("RequireAdminOnly", policy =>
+        {
+            policy.RequireRole("CCW-ADMIN-ROLE");
+        });
 
         options.AddPolicy("RequireSystemAdminOnly", policy =>
         {
             policy.RequireRole("CCW-SYSTEM-ADMINS-ROLE");
-            policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
         });
 
         options.AddPolicy("RequireProcessorOnly", policy =>
         {
             policy.RequireRole("CCW-PROCESSORS-ROLE");
-            policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
         });
     });
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
@@ -169,17 +182,23 @@ app.UseHealthChecks("/health");
 app.UseCors();
 
 app.UseAuthorization();
+app.UseTenantMiddleware();
 app.MapControllers();
 
 app.Run();
 
-static async Task<ApplicationCosmosDbService> InitializeCosmosClientInstanceAsync(
-    IConfigurationSection configurationSection, SecretClient secretClient)
+static async Task<DatabaseContainerResolver> InitializeDatabaseContainerResolver(
+    IConfigurationSection configurationSection,
+    IConfigurationSection tenantSection,
+    SecretClient secretClient
+)
 {
     var databaseName = configurationSection["DatabaseName"];
     var containerName = configurationSection["ContainerName"];
     var historicalContainerName = configurationSection["HistoricalContainerName"];
     var legacyContainerName = configurationSection["LegacyContainerName"];
+    var adminContainerName = configurationSection["AdminContainerName"];
+
     CosmosClientOptions clientOptions = new CosmosClientOptions();
 #if DEBUG
     var key = configurationSection["CosmosDbEmulatorConnectionString"];
@@ -187,101 +206,99 @@ static async Task<ApplicationCosmosDbService> InitializeCosmosClientInstanceAsyn
     {
         BypassProxyOnLocal = true,
     };
+    clientOptions.ConnectionMode = ConnectionMode.Gateway;
 #else
     var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
 #endif
     var client = new CosmosClient(key, clientOptions);
-    var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
-    await database.Database.CreateContainerIfNotExistsAsync(containerName, "/userId");
-    await database.Database.CreateContainerIfNotExistsAsync(historicalContainerName, "/userId");
-    await database.Database.CreateContainerIfNotExistsAsync(legacyContainerName, "/id");
-    var cosmosDbService = new ApplicationCosmosDbService(client, databaseName, containerName, legacyContainerName, historicalContainerName);
-    return cosmosDbService;
-}
+    var tenants = tenantSection.GetChildren().ToDictionary(x => x.Key, x => x.Value);
+    var databases = new Dictionary<string, Database>();
 
-static async Task<AdminCosmosDbService> InitializeAdminCosmosClientInstanceAsync(
-    IConfigurationSection configurationSection, SecretClient secretClient)
-{
-    var databaseName = configurationSection["AdminDatabaseName"];
-    var containerName = configurationSection["AdminContainerName"];
-    CosmosClientOptions clientOptions = new CosmosClientOptions();
-#if DEBUG
-    var key = configurationSection["CosmosDbEmulatorConnectionString"];
-    clientOptions.WebProxy = new WebProxy()
+    foreach (var tenant in tenants)
     {
-        BypassProxyOnLocal = true,
-    };
-#else
-    var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
-#endif
-    var client = new CosmosClient(key, clientOptions);
-    var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
-    await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
-    var cosmosDbService = new AdminCosmosDbService(client, databaseName, containerName);
+        var database = await client.CreateDatabaseIfNotExistsAsync($"{databaseName}-{tenant.Value}");
+        await database.Database.CreateContainerIfNotExistsAsync(containerName, "/userId");
+        await database.Database.CreateContainerIfNotExistsAsync(historicalContainerName, "/userId");
+        await database.Database.CreateContainerIfNotExistsAsync(legacyContainerName, "/id");
+        await database.Database.CreateContainerIfNotExistsAsync(adminContainerName, "/id");
+        databases.Add(tenant.Key, database);
+    }
 
-    return cosmosDbService;
+    return new DatabaseContainerResolver(databases);
 }
 
-static async Task<UserProfileCosmosDbService> InitializeUserProfileCosmosClientInstanceAsync(
-    IConfigurationSection configurationSection, SecretClient secretClient)
-{
-    var databaseName = configurationSection["UserProfileDatabaseName"];
-    var containerName = configurationSection["UserProfileContainerName"];
-    var userContainerName = configurationSection["UserContainerName"];
-    CosmosClientOptions clientOptions = new CosmosClientOptions();
-#if DEBUG
-    var key = configurationSection["CosmosDbEmulatorConnectionString"];
-    clientOptions.WebProxy = new WebProxy()
-    {
-        BypassProxyOnLocal = true,
-    };
-#else
-    var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
-#endif
-    var client = new CosmosClient(key, clientOptions);
-    var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
-    await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
-    await database.Database.CreateContainerIfNotExistsAsync(userContainerName, "/id");
-    var cosmosDbService = new UserProfileCosmosDbService(client, databaseName, containerName, userContainerName);
-
-    return cosmosDbService;
-}
-
-static async Task<AppointmentCosmosDbService> InitializeAppointmentCosmosClientInstanceAsync(
+async Task<StorageContainerResolver> InitializeStorageContainerResolver(
     IConfigurationSection configurationSection,
+    IConfigurationSection tenantSection,
     SecretClient secretClient)
 {
-    var appointmentDatabaseName = configurationSection["AppointmentDatabaseName"];
-    var appointmentContainerName = configurationSection["AppointmentContainerName"];
-    var appointmentManagementContainerName = configurationSection["AppointmentManagementContainerName"];
+    var agencyContainerName = configurationSection.GetSection("AgencyContainerName").Value;
+    var publicContainerName = configurationSection.GetSection("PublicContainerName").Value;
+    var adminUserContainerName = configurationSection.GetSection("AdminUserContainerName").Value;
+    var adminApplicationContainerName = configurationSection.GetSection("AdminApplicationContainerName").Value;
+
 #if DEBUG
-    var key = configurationSection["CosmosDbEmulatorConnectionString"];
+    var storageConnection = configurationSection.GetSection("LocalConnectionString").Value;
 #else
-    var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
+    var storageConnection = client.GetSecret("storage-ct-connection-primary").Value.Value;
 #endif
-    CosmosClientOptions clientOptions = new CosmosClientOptions();
-    var client = new CosmosClient(
-        key,
-        new CosmosClientOptions()
+
+    var handler = new HttpClientHandler()
+    {
+        Proxy = new WebProxy()
         {
-            AllowBulkExecution = true,
-            MaxRetryAttemptsOnRateLimitedRequests = 100,
-            MaxRetryWaitTimeOnRateLimitedRequests = TimeSpan.FromMinutes(5),
+            BypassProxyOnLocal = true
+        }
+    };
+    var blobClientOptions = new BlobClientOptions()
+    {
+        Transport = new HttpClientTransport(handler)
+    };
+
+    var blobContainers = new Dictionary<string, BlobContainerClient>();
+
+    var tenants = tenantSection.GetChildren().ToDictionary(x => x.Key, x => x.Value);
+
+    foreach (var tenant in tenants)
+    {
 #if DEBUG
-            WebProxy = new WebProxy()
-            {
-                BypassProxyOnLocal = true
-            },
+        var agencyContainer = new BlobContainerClient(storageConnection, $"{agencyContainerName}-{tenant.Value}", blobClientOptions);
+#else
+        var agencyContainer = new BlobContainerClient(storageConnection, $"{agencyContainerName}-{tenant.Value}");
 #endif
-        });
+        await agencyContainer.CreateIfNotExistsAsync();
 
-    var appointmentDatabase = await client.CreateDatabaseIfNotExistsAsync(appointmentDatabaseName);
-    await appointmentDatabase.Database.CreateContainerIfNotExistsAsync(appointmentContainerName, "/id");
-    await appointmentDatabase.Database.CreateContainerIfNotExistsAsync(appointmentManagementContainerName, "/id");
+        blobContainers.Add($"{tenant.Key}-{agencyContainerName}", agencyContainer);
 
-    var appointmentCosmosDbService = new AppointmentCosmosDbService(client, appointmentDatabaseName, appointmentContainerName, appointmentManagementContainerName);
+#if DEBUG
+        var publicContainer = new BlobContainerClient(storageConnection, $"{publicContainerName}-{tenant.Value}", blobClientOptions);
+#else
+        var publicContainer = new BlobContainerClient(storageConnection, $"{publicContainerName}-{tenant.Value}");
+#endif
+        await publicContainer.CreateIfNotExistsAsync();
 
-    return appointmentCosmosDbService;
+        blobContainers.Add($"{tenant.Key}-{publicContainerName}", publicContainer);
+
+#if DEBUG
+        var adminUserContainer = new BlobContainerClient(storageConnection, $"{adminUserContainerName}-{tenant.Value}", blobClientOptions);
+#else
+        var adminUserContainer = new BlobContainerClient(storageConnection, $"{adminUserContainerName}-{tenant.Value}");
+#endif
+        await adminUserContainer.CreateIfNotExistsAsync();
+
+        blobContainers.Add($"{tenant.Key}-{adminUserContainerName}", adminUserContainer);
+
+#if DEBUG
+        var adminApplicationContainer = new BlobContainerClient(storageConnection, $"{adminApplicationContainerName}-{tenant.Value}", blobClientOptions);
+#else
+        var adminApplicationContainer = new BlobContainerClient(storageConnection, $"{adminApplicationContainerName}-{tenant.Value}");
+#endif
+        await adminApplicationContainer.CreateIfNotExistsAsync();
+
+        blobContainers.Add($"{tenant.Key}-{adminApplicationContainerName}", adminApplicationContainer);
+    }
+
+    return new StorageContainerResolver(blobContainers);
 }
 
 Task AuthenticationFailed(AuthenticationFailedContext arg)

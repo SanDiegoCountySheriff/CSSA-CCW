@@ -185,7 +185,7 @@
 
 <script setup lang="ts">
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
-import { MsalBrowser } from '@shared-ui/api/auth/authentication'
+import { MsalBrowser } from '@core-admin/api/auth/authentication'
 import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import SignaturePad from 'signature_pad'
 import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue'

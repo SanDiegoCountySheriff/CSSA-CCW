@@ -1,21 +1,12 @@
-using Azure.Core.Pipeline;
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using CCW.Application.Services.Contracts;
-using System.Net;
+using CCW.Common.Services.Contracts;
 
 namespace CCW.Application.Services;
 
 public class DocumentAzureStorage : IDocumentAzureStorage
 {
-    private readonly string _storageConnection;
-    private readonly string _agencyContainerName;
-    private readonly string _publicContainerName;
-    private readonly string _adminUserContainerName;
-    private readonly string _adminApplicationContainerName;
-    private readonly BlobClientOptions _blobClientOptions;
     private readonly string _sheriffSignature;
     private readonly string _sheriffLogo;
     private readonly string _applicationTemplate;
@@ -26,9 +17,36 @@ public class DocumentAzureStorage : IDocumentAzureStorage
     private readonly string _liveScanTemplate;
     private readonly string _revocationLetterTemplate;
     private readonly string _adminSignatureFileName;
+    private readonly BlobContainerClient _agencyContainer;
+    private readonly BlobContainerClient _publicContainer;
+    private readonly BlobContainerClient _adminUserContainer;
+    private readonly BlobContainerClient _adminApplicationContainer;
+    private readonly IStorageContainerResolver _storageContainerResolver;
+    private readonly IHttpContextAccessor _contextAccessor;
 
-    public DocumentAzureStorage(IConfiguration configuration)
+    public DocumentAzureStorage(
+        IStorageContainerResolver storageContainerResolver,
+        IHttpContextAccessor contextAccessor,
+        IConfiguration configuration
+    )
     {
+        _storageContainerResolver = storageContainerResolver;
+        _contextAccessor = contextAccessor;
+
+        var tenantId = _contextAccessor.HttpContext.Items["TenantId"] != null ? _contextAccessor.HttpContext.Items["TenantId"].ToString() : "";
+        var agencyContainerName = configuration.GetSection("Storage").GetSection("AgencyContainerName").Value;
+        var publicContainerName = configuration.GetSection("Storage").GetSection("PublicContainerName").Value;
+        var adminUserContainerName = configuration.GetSection("Storage").GetSection("AdminUserContainerName").Value;
+        var adminApplicationContainerName = configuration.GetSection("Storage").GetSection("AdminApplicationContainerName").Value;
+
+        if (!string.IsNullOrEmpty(tenantId))
+        {
+            _agencyContainer = _storageContainerResolver.GetBlobContainer(tenantId, agencyContainerName);
+            _publicContainer = _storageContainerResolver.GetBlobContainer(tenantId, publicContainerName);
+            _adminUserContainer = _storageContainerResolver.GetBlobContainer(tenantId, adminUserContainerName);
+            _adminApplicationContainer = _storageContainerResolver.GetBlobContainer(tenantId, adminApplicationContainerName);
+        }
+
         var documentSettings = configuration.GetSection("DocumentApi");
         _sheriffSignature = documentSettings.GetSection("SheriffSignature").Value;
         _sheriffLogo = documentSettings.GetSection("SheriffLogo").Value;
@@ -40,53 +58,16 @@ public class DocumentAzureStorage : IDocumentAzureStorage
         _revocationLetterTemplate = documentSettings.GetSection("RevocationTemplateName").Value;
         _adminSignatureFileName = documentSettings.GetSection("AdminSignatureFileName").Value;
         _modificationTemplate = documentSettings.GetSection("AmendmentTemplateName").Value;
-
-        var client = new SecretClient(new Uri(configuration.GetSection("KeyVault:VaultUri").Value),
-            credential: new DefaultAzureCredential());
-#if DEBUG
-        _storageConnection = configuration.GetSection("Storage").GetSection("LocalConnectionString").Value;
-#else
-        _storageConnection = client.GetSecret("storage-ct-connection-primary").Value.Value;
-#endif
-        _agencyContainerName = configuration.GetSection("Storage").GetSection("AgencyContainerName").Value;
-        _publicContainerName = configuration.GetSection("Storage").GetSection("PublicContainerName").Value;
-        _adminUserContainerName = configuration.GetSection("Storage").GetSection("AdminUserContainerName").Value;
-        _adminApplicationContainerName = configuration.GetSection("Storage").GetSection("AdminApplicationContainerName").Value;
-        var handler = new HttpClientHandler()
-        {
-            Proxy = new WebProxy()
-            {
-                BypassProxyOnLocal = true
-            }
-        };
-        _blobClientOptions = new BlobClientOptions()
-        {
-            Transport = new HttpClientTransport(handler)
-        };
     }
 
     public async Task<Stream> GetAgreementPDF(string fileName, CancellationToken cancellationToken)
     {
-#if DEBUG
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
-#else
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
-#endif
-        await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-
-        return await container.GetBlobClient(fileName).OpenReadAsync(cancellationToken: cancellationToken);
+        return await _agencyContainer.GetBlobClient(fileName).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<byte[]> GetApplicantImageAsync(string fileName, CancellationToken cancellationToken)
     {
-#if DEBUG
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName, _blobClientOptions);
-#else
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName);
-#endif
-        await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-
-        var file = container.GetBlobClient(fileName);
+        var file = _publicContainer.GetBlobClient(fileName);
 
         using (var ms = new MemoryStream())
         {
@@ -97,64 +78,30 @@ public class DocumentAzureStorage : IDocumentAzureStorage
 
     public async Task<Stream> GetApplicationTemplateAsync(CancellationToken cancellationToken)
     {
-#if DEBUG
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
-#else
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
-#endif
-        await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-
-        return await container.GetBlobClient(_applicationTemplate).OpenReadAsync(cancellationToken: cancellationToken);
+        return await _agencyContainer.GetBlobClient(_applicationTemplate).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<Stream> GetLegacyApplicationTemplateAsync(CancellationToken cancellationToken)
     {
-#if DEBUG
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
-#else
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
-#endif
-        await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-
-        return await container.GetBlobClient(_legacyApplicationTemplate).OpenReadAsync(cancellationToken: cancellationToken);
+        return await _agencyContainer.GetBlobClient(_legacyApplicationTemplate).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<Stream> GetLiveScanTemplateAsync(CancellationToken cancellationToken)
     {
-#if DEBUG
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
-#else
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
-#endif
-        await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-
-        return await container.GetBlobClient(_liveScanTemplate).OpenReadAsync(cancellationToken: cancellationToken);
+        return await _agencyContainer.GetBlobClient(_liveScanTemplate).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<Stream> GetOfficialLicenseTemplateAsync(CancellationToken cancellationToken)
     {
-#if DEBUG
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
-#else
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
-#endif
-        await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-
-        return await container.GetBlobClient(_officialPermitTemplate).OpenReadAsync(cancellationToken: cancellationToken);
+        return await _agencyContainer.GetBlobClient(_officialPermitTemplate).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<byte[]> GetProcessorSignatureAsync(string processorUserName, CancellationToken cancellationToken)
     {
         var adminUserFileName = $"{processorUserName}_{_adminSignatureFileName}";
-#if DEBUG
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminUserContainerName, _blobClientOptions);
-#else
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminUserContainerName);
-#endif
-        await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
         BlobClient file;
 
-        file = container.GetBlobClient(adminUserFileName);
+        file = _adminUserContainer.GetBlobClient(adminUserFileName);
 
         using (var ms = new MemoryStream())
         {
@@ -165,73 +112,31 @@ public class DocumentAzureStorage : IDocumentAzureStorage
 
     public async Task<Stream> GetRevocationLetterTemplateAsync(CancellationToken cancellationToken)
     {
-#if DEBUG
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
-#else
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
-#endif
-        await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-
-        return await container.GetBlobClient(_revocationLetterTemplate).OpenReadAsync(cancellationToken: cancellationToken);
+        return await _agencyContainer.GetBlobClient(_revocationLetterTemplate).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<Stream> GetSheriffLogoAsync(CancellationToken cancellationToken)
     {
-#if DEBUG
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
-#else
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
-#endif
-        await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-
-        return await container.GetBlobClient(_sheriffLogo).OpenReadAsync(cancellationToken: cancellationToken);
+        return await _agencyContainer.GetBlobClient(_sheriffLogo).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<Stream> GetSheriffSignatureAsync(CancellationToken cancellationToken)
     {
-#if DEBUG
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
-#else
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
-#endif
-        await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-
-        return await container.GetBlobClient(_sheriffSignature).OpenReadAsync(cancellationToken: cancellationToken);
+        return await _agencyContainer.GetBlobClient(_sheriffSignature).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<Stream> GetUnofficialLicenseTemplateAsync(CancellationToken cancellationToken)
     {
-#if DEBUG
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
-#else
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
-#endif
-        await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-
-        return await container.GetBlobClient(_unofficialPermitTemplate).OpenReadAsync(cancellationToken: cancellationToken);
+        return await _agencyContainer.GetBlobClient(_unofficialPermitTemplate).OpenReadAsync(cancellationToken: cancellationToken);
     }
     public async Task<Stream> GetModificationTemplateAsync(CancellationToken cancellationToken)
     {
-#if DEBUG
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
-#else
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
-#endif
-        await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-
-        return await container.GetBlobClient(_modificationTemplate).OpenReadAsync(cancellationToken: cancellationToken);
+        return await _agencyContainer.GetBlobClient(_modificationTemplate).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task SaveAdminApplicationPdfAsync(FormFile fileToSave, string fileName, CancellationToken cancellationToken)
     {
-#if DEBUG
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminApplicationContainerName, _blobClientOptions);
-#else
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminApplicationContainerName);
-#endif
-        await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-
-        BlobClient blob = container.GetBlobClient(fileName);
+        BlobClient blob = _adminApplicationContainer.GetBlobClient(fileName);
 
         using (Stream file = fileToSave.OpenReadStream())
         {

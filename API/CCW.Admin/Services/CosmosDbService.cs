@@ -1,4 +1,5 @@
 using CCW.Common.Models;
+using CCW.Common.Services;
 using Microsoft.Azure.Cosmos;
 using System.Net;
 
@@ -6,22 +7,37 @@ namespace CCW.Admin.Services;
 
 public class CosmosDbService : ICosmosDbService
 {
+    private readonly IHttpContextAccessor _contextAccessor;
+    private readonly IDatabaseContainerResolver _databaseContainerResolver;
+    private readonly string _tenantId;
     private readonly Container _container;
 
     public CosmosDbService(
-        CosmosClient cosmosDbClient,
-        string databaseName,
-        string containerName)
+        IHttpContextAccessor contextAccessor,
+        IDatabaseContainerResolver databaseContainerResolver,
+        IConfiguration configuration
+    )
     {
-        _container = cosmosDbClient.GetContainer(databaseName, containerName);
+        _contextAccessor = contextAccessor;
+        _databaseContainerResolver = databaseContainerResolver;
+
+        _tenantId = _contextAccessor.HttpContext.Items["TenantId"] != null ? _contextAccessor.HttpContext.Items["TenantId"].ToString() : "";
+        var agencyContainerName = configuration.GetSection("CosmosDb").GetSection("ContainerName").Value;
+
+        if (!string.IsNullOrWhiteSpace(_tenantId))
+        {
+            _container = _databaseContainerResolver.GetContainer(_tenantId, agencyContainerName);
+        }
     }
 
-    public async Task<AgencyProfileSettings> GetSettingsAsync(CancellationToken cancellationToken)
+    public async Task<AgencyProfileSettings> GetSettingsAsync(string tenantId, CancellationToken cancellationToken)
     {
         try
         {
+            var container = _databaseContainerResolver.GetContainer(tenantId, "agency");
+
             var query = "SELECT * FROM agency";
-            using var feedIterator = CreateFeedIterator<AgencyProfileSettings>(_container, query);
+            using var feedIterator = CreateFeedIterator<AgencyProfileSettings>(container, query);
 
             if (feedIterator.HasMoreResults)
             {
@@ -45,7 +61,7 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task<AgencyProfileSettings> UpdateSettingsAsync(AgencyProfileSettings agencyProfile, CancellationToken cancellationToken)
     {
-        var storedProfile = await GetSettingsAsync(cancellationToken);
+        var storedProfile = await GetSettingsAsync(_tenantId, cancellationToken);
 
         if (storedProfile?.AgencyName == null)
         {

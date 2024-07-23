@@ -4,7 +4,7 @@ export default class Endpoints {
   /********CONFIG******************/
 
   static get GET_CONFIG_ENDPOINT() {
-    return '/config.json'
+    return '/config'
   }
 
   /********SYSTEM SETTINGS******************/

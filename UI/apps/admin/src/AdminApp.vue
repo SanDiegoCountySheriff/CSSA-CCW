@@ -63,7 +63,7 @@ import { useUserStore } from '@shared-ui/stores/userStore'
 import {
   MsalBrowser,
   getMsalInstance,
-} from '@shared-ui/api/auth/authentication'
+} from '@core-admin/api/auth/authentication'
 import {
   computed,
   getCurrentInstance,
@@ -99,9 +99,9 @@ const enableAllAdminUsers = computed(
     authStore.auth.roles.includes('CCW-ADMIN-ROLE') ||
     authStore.auth.roles.includes('CCW-SYSTEM-ADMINS-ROLE')
 )
-const enablePermitsEndpoints = computed(
-  () => isAuthenticated.value && validApiUrl.value
-)
+const enablePermitsEndpoints = computed(() => {
+  return isAuthenticated.value && validApiUrl.value
+})
 
 useQuery(['brandSetting'], brandStore.getBrandSettingApi, {
   enabled: validApiUrl,
@@ -115,7 +115,7 @@ const { isLoading: isRefundRequestLoading } = useQuery(
   ['getAllRefundRequests'],
   paymentStore.getAllRefundRequests,
   {
-    enabled: validApiUrl,
+    enabled: enablePermitsEndpoints,
   }
 )
 
@@ -123,7 +123,7 @@ const { isLoading: isGetUnmatchedUsersCountLoading } = useQuery(
   ['getUnmatchedUsers'],
   userStore.getUnmatchedUsers,
   {
-    enabled: validApiUrl,
+    enabled: enablePermitsEndpoints,
   }
 )
 

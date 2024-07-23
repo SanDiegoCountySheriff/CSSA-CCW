@@ -1,5 +1,6 @@
 using CCW.Common.Enums;
 using CCW.Common.Models;
+using CCW.Common.Services;
 using CCW.Schedule.Services.Contracts;
 using Microsoft.Azure.Cosmos;
 using PublicHoliday;
@@ -11,20 +12,29 @@ namespace CCW.Schedule.Services;
 
 public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 {
+    private readonly IHttpContextAccessor _contextAccessor;
+    private readonly IDatabaseContainerResolver _databaseContainerResolver;
     private readonly Container _container;
     private readonly Container _holidayContainer;
     private readonly Container _appointmentManagementContainer;
 
     public AppointmentCosmosDbService(
-        CosmosClient cosmosDbClient,
-        string databaseName,
-        string containerName,
-        string holidayContainerName,
-        string appointmentManagementContainerName)
+        IHttpContextAccessor contextAccessor,
+        IDatabaseContainerResolver databaseContainerResolver,
+        IConfiguration configuration
+    )
     {
-        _container = cosmosDbClient.GetContainer(databaseName, containerName);
-        _holidayContainer = cosmosDbClient.GetContainer(databaseName, holidayContainerName);
-        _appointmentManagementContainer = cosmosDbClient.GetContainer(databaseName, appointmentManagementContainerName);
+        _contextAccessor = contextAccessor;
+        _databaseContainerResolver = databaseContainerResolver;
+
+        var tenantId = _contextAccessor.HttpContext.Items["TenantId"].ToString();
+        var appointmentContainerName = configuration.GetSection("CosmosDb").GetSection("AppointmentContainerName").Value;
+        var holidayContainerName = configuration.GetSection("CosmosDb").GetSection("HolidayContainerName").Value;
+        var appointmentManagementContainerName = configuration.GetSection("CosmosDb").GetSection("AppointmentManagementContainerName").Value;
+
+        _container = _databaseContainerResolver.GetContainer(tenantId, appointmentContainerName);
+        _holidayContainer = _databaseContainerResolver.GetContainer(tenantId, holidayContainerName);
+        _appointmentManagementContainer = _databaseContainerResolver.GetContainer(tenantId, appointmentManagementContainerName);
     }
 
     public async Task AddAvailableTimesAsync(List<AppointmentWindow> appointments, CancellationToken cancellationToken)
