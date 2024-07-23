@@ -15,7 +15,8 @@ public class CosmosDbService : ICosmosDbService
 
     public CosmosDbService(
         IHttpContextAccessor contextAccessor,
-        IDatabaseContainerResolver databaseContainerResolver)
+        IDatabaseContainerResolver databaseContainerResolver
+    )
     {
         _contextAccessor = contextAccessor;
         _databaseContainerResolver = databaseContainerResolver;

@@ -205,6 +205,7 @@ static async Task<DatabaseContainerResolver> InitializeDatabaseContainerResolver
     {
         BypassProxyOnLocal = true,
     };
+    clientOptions.ConnectionMode = ConnectionMode.Gateway;
 #else
     var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
 #endif
