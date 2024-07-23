@@ -274,8 +274,7 @@ const isMovingUp = computed(() => {
     : ''
 
   return (
-    new Date(newAppointment).toLocaleDateString() <=
-    new Date(currentAppointment).toLocaleDateString()
+    new Date(newAppointment).getTime() <= new Date(currentAppointment).getTime()
   )
 })
 
