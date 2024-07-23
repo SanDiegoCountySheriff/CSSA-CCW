@@ -13,15 +13,17 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
     public ApplicationCosmosDbService(
         IHttpContextAccessor contextAccessor,
-        IDatabaseContainerResolver databaseContainerResolver
+        IDatabaseContainerResolver databaseContainerResolver,
+        IConfiguration configuration
     )
     {
         _contextAccessor = contextAccessor;
         _databaseContainerResolver = databaseContainerResolver;
 
         var tenantId = _contextAccessor.HttpContext.Items["TenantId"].ToString();
+        var applicationContainerName = configuration.GetSection("CosmosDb").GetSection("ApplicationContainerName").Value;
 
-        _container = _databaseContainerResolver.GetContainer(tenantId, "applications");
+        _container = _databaseContainerResolver.GetContainer(tenantId, applicationContainerName);
     }
 
     public async Task<PermitApplication> GetUserApplicationAsync(string applicationId, CancellationToken cancellationToken)

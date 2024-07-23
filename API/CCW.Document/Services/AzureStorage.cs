@@ -15,19 +15,24 @@ public class AzureStorage : IAzureStorage
     private readonly IStorageContainerResolver _storageContainerResolver;
     private readonly IHttpContextAccessor _contextAccessor;
 
-    public AzureStorage(IStorageContainerResolver storageContainerResolver, IHttpContextAccessor contextAccessor)
+    public AzureStorage(IStorageContainerResolver storageContainerResolver, IHttpContextAccessor contextAccessor, IConfiguration configuration)
     {
         _storageContainerResolver = storageContainerResolver;
         _contextAccessor = contextAccessor;
 
         var tenantId = _contextAccessor.HttpContext.Items["TenantId"] != null ? _contextAccessor.HttpContext.Items["TenantId"].ToString() : "";
 
+        var agencyContainerName = configuration.GetSection("Storage").GetSection("AgencyContainerName").Value;
+        var publicContainerName = configuration.GetSection("Storage").GetSection("PublicContainerName").Value;
+        var adminUserContainerName = configuration.GetSection("Storage").GetSection("AdminUserContainerName").Value;
+        var adminApplicationContainerName = configuration.GetSection("Storage").GetSection("AdminApplicationContainerName").Value;
+
         if (!string.IsNullOrEmpty(tenantId))
         {
-            _agencyContainer = _storageContainerResolver.GetBlobContainer(tenantId, "ccw-agency-documents");
-            _publicContainer = _storageContainerResolver.GetBlobContainer(tenantId, "ccw-public-documents");
-            _adminUserContainer = _storageContainerResolver.GetBlobContainer(tenantId, "ccw-admin-user-documents");
-            _adminApplicationContainer = _storageContainerResolver.GetBlobContainer(tenantId, "ccw-admin-application-documents");
+            _agencyContainer = _storageContainerResolver.GetBlobContainer(tenantId, agencyContainerName);
+            _publicContainer = _storageContainerResolver.GetBlobContainer(tenantId, publicContainerName);
+            _adminUserContainer = _storageContainerResolver.GetBlobContainer(tenantId, adminUserContainerName);
+            _adminApplicationContainer = _storageContainerResolver.GetBlobContainer(tenantId, adminApplicationContainerName);
         }
     }
 

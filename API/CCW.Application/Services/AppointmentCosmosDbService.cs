@@ -14,16 +14,19 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 
     public AppointmentCosmosDbService(
         IHttpContextAccessor contextAccessor,
-        IDatabaseContainerResolver databaseContainerResolver
+        IDatabaseContainerResolver databaseContainerResolver,
+        IConfiguration configuration
     )
     {
         _contextAccessor = contextAccessor;
         _databaseContainerResolver = databaseContainerResolver;
 
         var tenantId = _contextAccessor.HttpContext.Items["TenantId"] != null ? _contextAccessor.HttpContext.Items["TenantId"].ToString() : "";
+        var appointmentContainerName = configuration.GetSection("CosmosDb").GetSection("AppointmentContainerName").Value;
+        var appointmentManagementContainerName = configuration.GetSection("CosmosDb").GetSection("AppointmentManagementContainerName").Value;
 
-        _appointmentContainer = _databaseContainerResolver.GetContainer(tenantId, "appointments");
-        _appointmentManagementContainer = _databaseContainerResolver.GetContainer(tenantId, "appointment-management");
+        _appointmentContainer = _databaseContainerResolver.GetContainer(tenantId, appointmentContainerName);
+        _appointmentManagementContainer = _databaseContainerResolver.GetContainer(tenantId, appointmentManagementContainerName);
     }
 
     public async Task<AppointmentWindow> CreateAppointment(AppointmentWindow appointmentWindow, CancellationToken cancellationToken)

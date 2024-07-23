@@ -12,23 +12,28 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 {
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly IDatabaseContainerResolver _databaseContainerResolver;
-    private static Random random = new Random();
+    private readonly static Random random = new();
     private readonly Container _container;
     private readonly Container _historicalContainer;
     private readonly Container _legacyContainer;
 
     public ApplicationCosmosDbService(
         IHttpContextAccessor contextAccessor,
-        IDatabaseContainerResolver databaseContainerResolver)
+        IDatabaseContainerResolver databaseContainerResolver, 
+        IConfiguration configuration
+    )
     {
         _contextAccessor = contextAccessor;
         _databaseContainerResolver = databaseContainerResolver;
 
         var tenantId = _contextAccessor.HttpContext.Items["TenantId"] != null ? _contextAccessor.HttpContext.Items["TenantId"].ToString() : "";
+        var applicationContainerName = configuration.GetSection("CosmosDb").GetSection("ContainerName").Value;
+        var historicalApplicationContainerName = configuration.GetSection("CosmosDb").GetSection("HistoricalContainerName").Value;
+        var legacyApplicationContainerName = configuration.GetSection("CosmosDb").GetSection("LegacyContainerName").Value;
 
-        _container = _databaseContainerResolver.GetContainer(tenantId, "applications");
-        _historicalContainer = _databaseContainerResolver.GetContainer(tenantId, "historical-applications");
-        _legacyContainer = _databaseContainerResolver.GetContainer(tenantId, "legacy-applications");
+        _container = _databaseContainerResolver.GetContainer(tenantId, applicationContainerName);
+        _historicalContainer = _databaseContainerResolver.GetContainer(tenantId, historicalApplicationContainerName);
+        _legacyContainer = _databaseContainerResolver.GetContainer(tenantId, legacyApplicationContainerName);
     }
 
     public async Task<PermitApplication> AddAsync(PermitApplication application, CancellationToken cancellationToken)
@@ -584,7 +589,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
     public async Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken)
     {
-        var response = await _container.UpsertItemAsync(application);
+        await _container.UpsertItemAsync(application, cancellationToken: cancellationToken);
     }
 
     public async Task DeleteUserApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken)
@@ -650,14 +655,14 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
         if (existingApplication != null)
         {
-            await _container.DeleteItemAsync<PermitApplication>(existingApplication.Id.ToString(), new PartitionKey(existingApplication.UserId));
+            await _container.DeleteItemAsync<PermitApplication>(existingApplication.Id.ToString(), new PartitionKey(existingApplication.UserId), cancellationToken: cancellationToken);
         }
 
         if (historicalApplication != null)
         {
-            await _container.CreateItemAsync(historicalApplication, new PartitionKey(userId));
+            await _container.CreateItemAsync(historicalApplication, new PartitionKey(userId), cancellationToken: cancellationToken);
 
-            await _historicalContainer.DeleteItemAsync<PermitApplication>(historicalApplication.Id.ToString(), new PartitionKey(userId));
+            await _historicalContainer.DeleteItemAsync<PermitApplication>(historicalApplication.Id.ToString(), new PartitionKey(userId), cancellationToken: cancellationToken);
         }
     }
 
@@ -718,7 +723,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return result;
     }
 
-    private string GetGeneratedTime()
+    private static string GetGeneratedTime()
     {
         var result = DateTime.Now.ToString("yy") + DateTime.Now.ToString("MM") + DateTime.Now.ToString("dd")
                      + DateTime.Now.ToString("HH") + DateTime.Now.ToString("mm") + DateTime.Now.ToString("ss");
@@ -733,7 +738,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return chars[num];
     }
 
-    private string RandomString()
+    private static string RandomString()
     {
         var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         var stringChars = new char[3];
@@ -746,7 +751,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return new String(stringChars);
     }
 
-    private QueryDefinition GetQueryDefinition(PermitsOptions options, bool forCount = false)
+    private static QueryDefinition GetQueryDefinition(PermitsOptions options, bool forCount = false)
     {
         var offset = 0;
 
@@ -869,7 +874,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return queryDefinition;
     }
 
-    private QueryDefinition GetLegacyQueryDefinition(PermitsOptions options, bool forCount = false, bool getEmails = false)
+    private static QueryDefinition GetLegacyQueryDefinition(PermitsOptions options, bool forCount = false, bool getEmails = false)
     {
         var offset = 0;
 

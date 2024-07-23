@@ -20,17 +20,21 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 
     public AppointmentCosmosDbService(
         IHttpContextAccessor contextAccessor,
-        IDatabaseContainerResolver databaseContainerResolver
+        IDatabaseContainerResolver databaseContainerResolver,
+        IConfiguration configuration
     )
     {
         _contextAccessor = contextAccessor;
         _databaseContainerResolver = databaseContainerResolver;
 
         var tenantId = _contextAccessor.HttpContext.Items["TenantId"].ToString();
+        var appointmentContainerName = configuration.GetSection("CosmosDb").GetSection("AppointmentContainerName").Value;
+        var holidayContainerName = configuration.GetSection("CosmosDb").GetSection("HolidayContainerName").Value;
+        var appointmentManagementContainerName = configuration.GetSection("CosmosDb").GetSection("AppointmentManagementContainerName").Value;
 
-        _container = _databaseContainerResolver.GetContainer(tenantId, "appointments");
-        _holidayContainer = _databaseContainerResolver.GetContainer(tenantId, "holidays");
-        _appointmentManagementContainer = _databaseContainerResolver.GetContainer(tenantId, "appointment-management");
+        _container = _databaseContainerResolver.GetContainer(tenantId, appointmentContainerName);
+        _holidayContainer = _databaseContainerResolver.GetContainer(tenantId, holidayContainerName);
+        _appointmentManagementContainer = _databaseContainerResolver.GetContainer(tenantId, appointmentManagementContainerName);
     }
 
     public async Task AddAvailableTimesAsync(List<AppointmentWindow> appointments, CancellationToken cancellationToken)

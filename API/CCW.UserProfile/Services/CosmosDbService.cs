@@ -15,16 +15,19 @@ public class CosmosDbService : ICosmosDbService
 
     public CosmosDbService(
         IHttpContextAccessor contextAccessor,
-        IDatabaseContainerResolver databaseContainerResolver
+        IDatabaseContainerResolver databaseContainerResolver,
+        IConfiguration configuration
     )
     {
         _contextAccessor = contextAccessor;
         _databaseContainerResolver = databaseContainerResolver;
 
         var tenantId = _contextAccessor.HttpContext.Items["TenantId"].ToString();
+        var adminUserContainerName = configuration.GetSection("CosmosDb").GetSection("AdminUsersContainerName").Value;
+        var userContainerName = configuration.GetSection("CosmosDb").GetSection("UsersContainerName").Value;
 
-        _adminUserContainer = _databaseContainerResolver.GetContainer(tenantId, "admin-users");
-        _userContainer = _databaseContainerResolver.GetContainer(tenantId, "users");
+        _adminUserContainer = _databaseContainerResolver.GetContainer(tenantId, adminUserContainerName);
+        _userContainer = _databaseContainerResolver.GetContainer(tenantId, userContainerName);
     }
 
     public async Task<AdminUser> AddAdminUserAsync(AdminUser adminUser, CancellationToken cancellationToken)

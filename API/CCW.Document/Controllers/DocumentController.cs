@@ -238,14 +238,14 @@ public class DocumentController : ControllerBase
 
             var file = await _azureStorage.DownloadAdminUserFileAsync(adminUserFileName, cancellationToken: cancellationToken);
 
-            if (await file.ExistsAsync())
+            if (await file.ExistsAsync(cancellationToken))
             {
-                await file.DownloadToAsync(ms);
-                BlobProperties properties = await file.GetPropertiesAsync();
+                await file.DownloadToAsync(ms, cancellationToken);
+                BlobProperties properties = await file.GetPropertiesAsync(cancellationToken: cancellationToken);
 
                 if (properties.ContentType == "application/pdf")
                 {
-                    Stream blobStream = file.OpenReadAsync().Result;
+                    Stream blobStream = file.OpenReadAsync(cancellationToken: cancellationToken).Result;
 
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
@@ -282,14 +282,14 @@ public class DocumentController : ControllerBase
             MemoryStream ms = new MemoryStream();
 
             var file = await _azureStorage.DownloadAdminApplicationFileAsync(adminApplicationFileName, cancellationToken: cancellationToken);
-            if (await file.ExistsAsync())
+            if (await file.ExistsAsync(cancellationToken))
             {
-                await file.DownloadToAsync(ms);
-                BlobProperties properties = await file.GetPropertiesAsync();
+                await file.DownloadToAsync(ms, cancellationToken);
+                BlobProperties properties = await file.GetPropertiesAsync(cancellationToken: cancellationToken);
 
                 if (properties.ContentType == "application/pdf")
                 {
-                    Stream blobStream = file.OpenReadAsync().Result;
+                    Stream blobStream = file.OpenReadAsync(cancellationToken: cancellationToken).Result;
 
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
@@ -309,7 +309,7 @@ public class DocumentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to download user applicant file.");
+            return NotFound("An error occur while trying to download admin applicant file.");
         }
     }
 
@@ -331,21 +331,20 @@ public class DocumentController : ControllerBase
 
             var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
 
-            if (await file.ExistsAsync())
+            if (await file.ExistsAsync(cancellationToken))
             {
-                await file.DownloadToAsync(ms);
-                BlobProperties properties = await file.GetPropertiesAsync();
+                await file.DownloadToAsync(ms, cancellationToken);
+                BlobProperties properties = await file.GetPropertiesAsync(cancellationToken: cancellationToken);
 
                 if (properties.ContentType == "application/pdf")
                 {
-                    Stream blobStream = file.OpenReadAsync().Result;
+                    Stream blobStream = file.OpenReadAsync(cancellationToken: cancellationToken).Result;
 
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
                     return new FileStreamResult(blobStream, properties.ContentType);
                 }
-
 
                 var bytes = ms.ToArray();
                 var b64String = Convert.ToBase64String(bytes);
@@ -373,19 +372,18 @@ public class DocumentController : ControllerBase
     {
         try
         {
-
             MemoryStream ms = new MemoryStream();
 
             var file = await _azureStorage.DownloadAgencyFileAsync(agreementFileName, cancellationToken: cancellationToken);
 
-            if (await file.ExistsAsync())
+            if (await file.ExistsAsync(cancellationToken))
             {
-                await file.DownloadToAsync(ms);
-                BlobProperties properties = await file.GetPropertiesAsync();
+                await file.DownloadToAsync(ms, cancellationToken);
+                BlobProperties properties = await file.GetPropertiesAsync(cancellationToken: cancellationToken);
 
                 if (properties.ContentType == "application/pdf")
                 {
-                    Stream blobStream = file.OpenReadAsync().Result;
+                    Stream blobStream = file.OpenReadAsync(cancellationToken: cancellationToken).Result;
 
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
@@ -400,6 +398,7 @@ public class DocumentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
+
             return NotFound("An error occur while trying to download applicant file.");
         }
     }
@@ -486,12 +485,12 @@ public class DocumentController : ControllerBase
             var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
             if (await file.ExistsAsync(cancellationToken))
             {
-                await file.DownloadToAsync(ms);
-                BlobProperties properties = await file.GetPropertiesAsync();
+                await file.DownloadToAsync(ms, cancellationToken);
+                BlobProperties properties = await file.GetPropertiesAsync(cancellationToken: cancellationToken);
 
                 if (properties.ContentType == "application/pdf")
                 {
-                    Stream blobStream = file.OpenReadAsync().Result;
+                    Stream blobStream = file.OpenReadAsync(cancellationToken: cancellationToken).Result;
 
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
@@ -530,11 +529,11 @@ public class DocumentController : ControllerBase
             MemoryStream ms = new MemoryStream();
 
             var file = await _azureStorage.DownloadAgencyFileAsync(agencyFileName, cancellationToken: cancellationToken);
-            if (await file.ExistsAsync())
+            if (await file.ExistsAsync(cancellationToken))
             {
-                await file.DownloadToAsync(ms);
-                Stream blobStream = file.OpenReadAsync().Result;
-                BlobProperties properties = await file.GetPropertiesAsync();
+                await file.DownloadToAsync(ms, cancellationToken);
+                Stream blobStream = file.OpenReadAsync(cancellationToken: cancellationToken).Result;
+                BlobProperties properties = await file.GetPropertiesAsync(cancellationToken: cancellationToken);
 
                 if (properties.ContentType == "application/pdf")
                 {
@@ -727,7 +726,7 @@ public class DocumentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to delete applicant file.");
+            return NotFound("An error occur while trying to delete admin applicant file.");
         }
     }
 

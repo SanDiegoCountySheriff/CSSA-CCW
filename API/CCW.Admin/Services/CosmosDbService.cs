@@ -14,17 +14,19 @@ public class CosmosDbService : ICosmosDbService
 
     public CosmosDbService(
         IHttpContextAccessor contextAccessor,
-        IDatabaseContainerResolver databaseContainerResolver
+        IDatabaseContainerResolver databaseContainerResolver,
+        IConfiguration configuration
     )
     {
         _contextAccessor = contextAccessor;
         _databaseContainerResolver = databaseContainerResolver;
 
         _tenantId = _contextAccessor.HttpContext.Items["TenantId"] != null ? _contextAccessor.HttpContext.Items["TenantId"].ToString() : "";
+        var agencyContainerName = configuration.GetSection("CosmosDb").GetSection("ContainerName").Value;
 
         if (!string.IsNullOrWhiteSpace(_tenantId))
         {
-            _container = _databaseContainerResolver.GetContainer(_tenantId, "agency");
+            _container = _databaseContainerResolver.GetContainer(_tenantId, agencyContainerName);
         }
     }
 

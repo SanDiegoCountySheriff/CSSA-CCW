@@ -14,16 +14,19 @@ public class UserProfileCosmosDbService : IUserProfileCosmosDbService
 
     public UserProfileCosmosDbService(
         IHttpContextAccessor contextAccessor,
-        IDatabaseContainerResolver databaseContainerResolver
+        IDatabaseContainerResolver databaseContainerResolver,
+        IConfiguration configuration
     )
     {
         _contextAccessor = contextAccessor;
         _databaseContainerResolver = databaseContainerResolver;
 
         var tenantId = _contextAccessor.HttpContext.Items["TenantId"] != null ? _contextAccessor.HttpContext.Items["TenantId"].ToString() : "";
+        var adminUserContainerName = configuration.GetSection("CosmosDb").GetSection("UserProfileContainerName").Value;
+        var userContainerName = configuration.GetSection("CosmosDb").GetSection("UserContainerName").Value;
 
-        _adminUserContainer = _databaseContainerResolver.GetContainer(tenantId, "admin-users");
-        _userContainer = _databaseContainerResolver.GetContainer(tenantId, "users");
+        _adminUserContainer = _databaseContainerResolver.GetContainer(tenantId, adminUserContainerName);
+        _userContainer = _databaseContainerResolver.GetContainer(tenantId, userContainerName);
     }
 
     public async Task<AdminUser> GetAdminUserProfileAsync(string licensingUserName, CancellationToken cancellationToken)

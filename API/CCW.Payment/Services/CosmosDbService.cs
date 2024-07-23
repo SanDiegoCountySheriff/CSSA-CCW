@@ -14,16 +14,19 @@ public class CosmosDbService : ICosmosDbService
 
     public CosmosDbService(
         IHttpContextAccessor contextAccessor,
-        IDatabaseContainerResolver databaseContainerResolver
+        IDatabaseContainerResolver databaseContainerResolver,
+        IConfiguration configuration
     )
     {
         _contextAccessor = contextAccessor;
         _databaseContainerResolver = databaseContainerResolver;
 
         var tenantId = _contextAccessor.HttpContext.Items["TenantId"].ToString();
+        var applicationContainerName = configuration.GetSection("CosmosDb").GetSection("ContainerName").Value;
+        var refundRequestContainerName = configuration.GetSection("CosmosDb").GetSection("RefundRequestContainerName").Value;
 
-        _container = _databaseContainerResolver.GetContainer(tenantId, "applications");
-        _refundRequestContainer = _databaseContainerResolver.GetContainer(tenantId, "refund-requests");
+        _container = _databaseContainerResolver.GetContainer(tenantId, applicationContainerName);
+        _refundRequestContainer = _databaseContainerResolver.GetContainer(tenantId, refundRequestContainerName);
     }
 
     public async Task<PermitApplication> GetAdminApplication(string applicationId)
