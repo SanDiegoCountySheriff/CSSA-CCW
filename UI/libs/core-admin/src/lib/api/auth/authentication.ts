@@ -47,7 +47,7 @@ export class MsalBrowser {
   }
 
   private static async fetchAuthConfig(): Promise<Configuration> {
-    const response = await axios.get(Endpoints.GET_CONFIG_ENDPOINT)
+    const response = await axios.get(`${Endpoints.GET_CONFIG_ENDPOINT}.json`)
 
     const msalConfig: Configuration = {
       auth: {

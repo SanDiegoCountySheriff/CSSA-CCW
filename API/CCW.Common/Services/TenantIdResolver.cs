@@ -13,6 +13,6 @@ public class TenantIdResolver : ITenantIdResolver
 
     public string GetTenantId(string referrer)
     {
-        return _tenantIds[referrer];
+        return _tenantIds[referrer]?.Replace("-", "_");
     }
 }

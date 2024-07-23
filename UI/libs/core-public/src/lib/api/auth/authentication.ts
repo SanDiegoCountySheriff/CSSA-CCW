@@ -45,7 +45,15 @@ export class MsalBrowser {
   }
 
   private static async fetchAuthConfig(): Promise<Configuration> {
-    const response = await axios.get(Endpoints.GET_CONFIG_ENDPOINT)
+    let referrer = window.location.origin.split('/')[2].split('.')[0]
+
+    if (referrer.includes(':')) {
+      referrer = referrer.split(':')[1]
+    }
+
+    const response = await axios.get(
+      `${Endpoints.GET_CONFIG_ENDPOINT}-${referrer}.json`
+    )
 
     const msalConfig: Configuration = {
       auth: {
