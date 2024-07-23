@@ -67,7 +67,7 @@
         }"
         :class="getCalendarType === 'month' ? 'ml-5' : ''"
       >
-        {{ getCalendarTitle }}
+        <strong>{{ getCalendarTitle }}</strong>
       </v-toolbar-title>
 
       <v-spacer />
@@ -127,9 +127,56 @@
           }}
         </v-card-title>
 
-        <v-card-title v-else>
-          {{ $t('Would you like to select this appointment?') }}
+        <v-card-title v-if="!props.rescheduling">
+          <strong>{{
+            new Date(state.selectedEvent.start).toLocaleDateString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true,
+            })
+          }}</strong>
         </v-card-title>
+
+        <v-card-title v-else>
+          {{ 'Would you like to reschedule your appointment to ' }}
+        </v-card-title>
+
+        <v-card-title v-if="props.rescheduling">
+          <strong
+            >{{
+              new Date(state.selectedEvent.start).toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+              })
+            }}?</strong
+          >
+        </v-card-title>
+
+        <v-col v-if="props.rescheduling">
+          <v-alert
+            v-if="isMovingUp"
+            outlined
+            type="info"
+          >
+            Rescheduling to this date will move your appointment up by
+            {{ appointmentDifference }} days.
+          </v-alert>
+          <v-alert
+            v-else-if="!isMovingUp"
+            outlined
+            type="error"
+          >
+            Rescheduling to this date will delay your current appointment by
+            {{ appointmentDifference }} days.
+          </v-alert>
+        </v-col>
 
         <v-card-actions>
           <v-btn
@@ -217,6 +264,39 @@ const getCalendarType = computed(() => {
   }
 
   return 'day'
+})
+
+const isMovingUp = computed(() => {
+  const newAppointment = state.selectedEvent.start
+  const currentAppointment = applicationStore.completeApplication.application
+    .appointmentDateTime
+    ? applicationStore.completeApplication.application.appointmentDateTime
+    : ''
+
+  return (
+    new Date(newAppointment).toLocaleDateString() <=
+    new Date(currentAppointment).toLocaleDateString()
+  )
+})
+
+const appointmentDifference = computed(() => {
+  const newAppointment = new Date(state.selectedEvent.start)
+  const currentAppointment = new Date(
+    applicationStore.completeApplication.application.appointmentDateTime
+      ? applicationStore.completeApplication.application.appointmentDateTime
+      : ''
+  )
+
+  newAppointment.setHours(0, 0, 0, 0)
+  currentAppointment.setHours(0, 0, 0, 0)
+
+  const timeDifference = Math.abs(
+    newAppointment.getTime() - currentAppointment.getTime()
+  )
+
+  const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24))
+
+  return daysDifference
 })
 
 const appointmentMutation = useMutation({
