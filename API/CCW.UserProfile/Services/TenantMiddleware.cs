@@ -13,6 +13,11 @@ public class TenantMiddleware
     {
         var tenantId = context.User.Claims.Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/identityprovider").Select(c => c.Value.Split("/")[3]).FirstOrDefault();
 
+        if (tenantId == null)
+        {
+            tenantId = context.User.Claims.Where(c => c.Type == "iss").Select(c => c.Value.Split("/")[3]).FirstOrDefault();
+        }
+
         context.Items["TenantId"] = tenantId;
 
         await _requestDelegate(context);

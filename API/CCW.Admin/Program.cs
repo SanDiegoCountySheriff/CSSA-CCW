@@ -47,20 +47,32 @@ builder.Services
         {
             OnAuthenticationFailed = AuthenticationFailed,
         };
-    })
-    .AddJwtBearer("b2c", o =>
-    {
-        o.Authority = builder.Configuration.GetSection("JwtBearerB2C:Authority").Value;
-        o.SaveToken = true;
-        o.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidAudiences = new List<string> { builder.Configuration.GetSection("JwtBearerB2C:ValidAudiences").Value }
-        };
-        o.Events = new JwtBearerEvents
-        {
-            OnAuthenticationFailed = AuthenticationFailed,
-        };
     });
+
+var b2cAuthoritiesSection = builder.Configuration.GetSection("JwtBearerB2C").GetChildren();
+var authenticationSchemes = new List<string>();
+
+foreach (var configurationSection in b2cAuthoritiesSection)
+{
+    var authorities = configurationSection.GetChildren().ToDictionary(x => x.Key, x => x.Value);
+
+    builder.Services.AddAuthentication()
+            .AddJwtBearer(configurationSection.Key, o =>
+            {
+                o.Authority = authorities["Authority"];
+                o.SaveToken = true;
+                o.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidAudiences = new List<string> { authorities["ValidAudiences"] }
+                };
+                o.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = AuthenticationFailed,
+                };
+            });
+
+    authenticationSchemes.Add(configurationSection.Key);
+}
 
 builder.Services
     .AddAuthorization(options =>
@@ -79,7 +91,7 @@ builder.Services
 
         options.AddPolicy("B2CUsers", new AuthorizationPolicyBuilder()
             .RequireAuthenticatedUser()
-            .AddAuthenticationSchemes("b2c")
+            .AddAuthenticationSchemes(authenticationSchemes.ToArray())
             .Build());
 
         options.AddPolicy("RequireAdminOnly",
