@@ -375,6 +375,11 @@ public class PaymentController : ControllerBase
                 application.PaymentHistory.Add(livescanPaymentHistory);
             }
 
+            application.Application.ReadyForIssuancePayment = false;
+            application.Application.ReadyForInitialPayment = false;
+            application.Application.ReadyForModificationPayment = false;
+            application.Application.ReadyForRenewalPayment = false;
+
             await _cosmosDbService.UpdateApplication(application);
 
             var response = _billPayService.LoadHostedPayment(hostedPaymentData);
