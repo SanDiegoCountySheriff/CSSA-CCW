@@ -1078,8 +1078,20 @@
       v-model="state.snackbar"
       color="primary"
     >
-      {{ $t(`Appointment is confirmed for: `) }}
-      {{ appointmentTime }}
+      {{ $t('Appointment has been set for: ') }}
+      {{
+        applicationStore.completeApplication.application.appointmentDateTime
+          ? new Date(
+              applicationStore.completeApplication.application.appointmentDateTime
+            ).toLocaleString([], {
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            })
+          : appointmentTime
+      }}
 
       <template #action="{ attrs }">
         <v-btn
@@ -2310,6 +2322,20 @@ function handleShowRenewDialog() {
 
 function toggleAppointmentComplete(time: string) {
   appointmentTime.value = time
+
+  const [hours, minutes] = appointmentTime.value.split(':').map(Number)
+
+  const date = new Date()
+
+  date.setHours(hours)
+  date.setMinutes(minutes)
+
+  appointmentTime.value = date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  })
+
   state.snackbar = true
   state.appointmentDialog = false
   state.rescheduling = false

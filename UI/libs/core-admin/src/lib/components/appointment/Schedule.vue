@@ -67,13 +67,13 @@
               <v-icon> mdi-chevron-right </v-icon>
             </v-btn>
             <v-toolbar-title
-              v-if="$refs.calendar"
+              v-if="state.calendarLoading"
               :style="{
                 color: 'white',
               }"
               class="ml-5"
             >
-              {{ getCalendarTitle }}
+              <strong>{{ getCalendarTitle }}</strong>
             </v-toolbar-title>
           </v-toolbar>
 
@@ -105,33 +105,81 @@
             <v-menu
               v-model="state.selectedOpen"
               :activator="state.selectedElement"
+              :position-x="x"
+              :position-y="y"
               min-width="250px"
               min-height="150px"
-              max-height="250px"
-              max-width="450px"
+              max-height="350px"
+              max-width="500px"
             >
-              <v-card flat>
+              <v-card
+                flat
+                outlined
+              >
                 <v-card-title>
-                  {{ $t('Confirm Appointment Selection') }}
+                  {{ $t('Reschedule Appointment Confirmation:') }}
                 </v-card-title>
-                <v-card-text class="button-card">
+
+                <v-card-title>
+                  <strong>{{
+                    new Date(state.selectedEvent.start).toLocaleDateString(
+                      'en-US',
+                      {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        hour12: true,
+                      }
+                    )
+                  }}</strong>
+                </v-card-title>
+
+                <v-col
+                  v-if="
+                    permitStore.getPermitDetail.application.appointmentDateTime
+                  "
+                >
+                  <v-alert
+                    v-if="isMovingUp"
+                    outlined
+                    type="info"
+                  >
+                    Rescheduling to this date will move the applicant's
+                    appointment up by
+                    {{ appointmentDifference }} days.
+                  </v-alert>
+                  <v-alert
+                    v-else-if="!isMovingUp"
+                    outlined
+                    type="error"
+                  >
+                    Rescheduling to this date will delay the applicant's current
+                    appointment by
+                    {{ appointmentDifference }} days.
+                  </v-alert>
+                </v-col>
+
+                <v-card-actions>
                   <v-btn
                     text
-                    class="m-3"
                     color="error"
                     @click="state.selectedOpen = false"
                   >
                     {{ $t('Cancel') }}
                   </v-btn>
+
+                  <v-spacer />
+
                   <v-btn
                     text
-                    color="primary"
+                    color="success"
                     @click="handleConfirm"
-                    class="m-3"
                   >
                     {{ $t('Confirm') }}
                   </v-btn>
-                </v-card-text>
+                </v-card-actions>
               </v-card>
             </v-menu>
           </template>
@@ -183,7 +231,7 @@ import {
   AppointmentStatus,
   AppointmentType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, inject, nextTick, reactive, ref } from 'vue'
+import { computed, inject, nextTick, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const readonly = inject('readonly')
@@ -192,6 +240,8 @@ const permitStore = usePermitsStore()
 const appointmentsStore = useAppointmentsStore()
 const paymentType = 'cash'
 const calendar = ref<any>(null)
+const x = ref(0)
+const y = ref(0)
 let changed: string
 
 const state = reactive({
@@ -209,6 +259,7 @@ const state = reactive({
   snackbarOk: false,
   appointments: [] as Array<AppointmentType>,
   appointmentsLoaded: false,
+  calendarLoading: false,
 })
 
 const { refetch } = useQuery(
@@ -287,6 +338,38 @@ const { mutate: updatePermitDetails } = useMutation({
   mutationFn: () => permitStore.updatePermitDetailApi(`Updated ${changed}`),
 })
 
+const isMovingUp = computed(() => {
+  const newAppointment = state.selectedEvent.start
+  const currentAppointment = permitStore.getPermitDetail.application
+    .appointmentDateTime
+    ? permitStore.getPermitDetail.application.appointmentDateTime
+    : ''
+
+  return (
+    new Date(newAppointment).getTime() <= new Date(currentAppointment).getTime()
+  )
+})
+
+const appointmentDifference = computed(() => {
+  const newAppointment = new Date(state.selectedEvent.start)
+  const currentAppointment = new Date(
+    permitStore.getPermitDetail.application.appointmentDateTime
+      ? permitStore.getPermitDetail.application.appointmentDateTime
+      : ''
+  )
+
+  newAppointment.setHours(0, 0, 0, 0)
+  currentAppointment.setHours(0, 0, 0, 0)
+
+  const timeDifference = Math.abs(
+    newAppointment.getTime() - currentAppointment.getTime()
+  )
+
+  const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24))
+
+  return daysDifference
+})
+
 const appointmentMutation = useMutation({
   mutationFn: () => {
     const body: AppointmentType = {
@@ -329,6 +412,11 @@ const appointmentMutation = useMutation({
   },
 })
 
+onMounted(() => {
+  state.calendarLoading = true
+  state.focus = new Date(state.appointments[0].start).toLocaleDateString()
+})
+
 function viewDay({ date }) {
   state.focus = date
   state.type = 'day'
@@ -342,6 +430,8 @@ function setToday() {
 function selectEvent(event) {
   state.selectedEvent = event.event
   state.selectedElement = event.nativeEvent.target
+  x.value = event.nativeEvent.clientX
+  y.value = event.nativeEvent.ClientY
   state.selectedOpen = true
 }
 
@@ -369,6 +459,6 @@ function handleCalendarPrevious() {
 }
 
 const getCalendarTitle = computed(() => {
-  return calendar.value.title
+  return calendar.value?.title
 })
 </script>
