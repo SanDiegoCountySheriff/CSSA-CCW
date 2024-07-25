@@ -49,6 +49,10 @@ export class MsalBrowser {
 
     if (referrer.includes(':')) {
       referrer = referrer.split(':')[1]
+    } else if (referrer.includes('-')) {
+      const referrerList = referrer.split('-')
+
+      referrer = referrerList[referrerList.length - 1]
     }
 
     const response = await axios.get(
