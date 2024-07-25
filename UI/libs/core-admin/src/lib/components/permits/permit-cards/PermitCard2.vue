@@ -990,7 +990,7 @@
                   </template>
                   <v-list>
                     <v-list-item
-                      v-for="(adminUser, index) in adminUserStore.allAdminUsers"
+                      v-for="(adminUser, index) in sortAdminUsers"
                       :key="index"
                       @click="handleAssignApplication(adminUser.name)"
                     >
@@ -1062,7 +1062,7 @@ import FinishModificationDialog from '@core-admin/components/dialogs/FinishModif
 import FinishRenewalDialog from '@core-admin/components/dialogs/FinishRenewalDialog.vue'
 import ReadyForPaymentDialog from '@core-admin/components/dialogs/ReadyForPaymentDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
-import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
+import { sortAdminUsers } from '@core-admin/components/composables/sortAdminUsers'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useMutation } from '@tanstack/vue-query'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -1119,7 +1119,6 @@ const ninetyDayStartDateSelection = ref(null)
 const ninetyDayDialog = ref(false)
 const permitStore = usePermitsStore()
 const appointmentStore = useAppointmentsStore()
-const adminUserStore = useAdminUserStore()
 const themeStore = useThemeStore()
 const changed = ref('')
 

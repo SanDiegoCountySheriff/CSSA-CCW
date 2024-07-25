@@ -99,7 +99,7 @@
 
             <v-list>
               <v-list-item
-                v-for="(adminUser, index) in adminUserStore.allAdminUsers"
+                v-for="(adminUser, index) in sortAdminUsers"
                 :key="index"
                 @click="handleAdminUserSelect(adminUser.name)"
               >
@@ -307,8 +307,9 @@
 import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import AppointmentActionConfirmationDialog from '@core-admin/components/dialogs/AppointmentActionConfirmationDialog.vue'
 import { PermitsType } from '@core-admin/types'
-import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
+import { sortAdminUsers } from '@core-admin/components/composables/sortAdminUsers'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
   ApplicationType,
@@ -316,7 +317,6 @@ import {
 } from '@shared-utils/types/defaultTypes'
 import { computed, reactive, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
-import { useBrandStore } from '@shared-ui/stores/brandStore'
 
 const { getAllPermitsSummary, options } = usePermitsStore()
 const brandStore = useBrandStore()
@@ -429,7 +429,6 @@ function setApplicationType(item: Array<string>) {
 }
 
 const permitStore = usePermitsStore()
-const adminUserStore = useAdminUserStore()
 const appointmentsStore = useAppointmentsStore()
 const menu = ref(false)
 const date = ref('')
