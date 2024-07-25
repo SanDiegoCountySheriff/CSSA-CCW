@@ -162,7 +162,6 @@ app.UseHealthChecks("/health");
 
 app.UseCors();
 
-app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseTenantMiddleware();
 app.MapControllers();
