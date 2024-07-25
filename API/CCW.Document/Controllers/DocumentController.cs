@@ -750,6 +750,10 @@ public class DocumentController : ControllerBase
         {
             referrer = referrer.Split(":")[1];
         }
+        else if (referrer.Contains('-'))
+        {
+            referrer = referrer.Split('-').Last();
+        }
 
         var tenantId = _tenantIdResolver.GetTenantId(referrer);
 
