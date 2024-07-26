@@ -67,8 +67,8 @@
       <v-card-title> Delete Transaction {{ item.transactionId }} </v-card-title>
 
       <v-card-text>
-        Are you sure you wish to delete transaction
-        {{ item.transactionId }} for ${{ item.amount }}? This cannot be undone.
+        Are you sure you wish to delete this unverified Heartland transaction
+        for ${{ item.amount }}? This cannot be undone.
       </v-card-text>
 
       <v-col>
