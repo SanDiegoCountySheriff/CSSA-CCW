@@ -75,7 +75,7 @@
         <v-checkbox
           class="ml-3"
           v-model="acknowledgeLookup"
-          label="I have looked this payment up on Heartland and it doesn't exist"
+          label="I have looked this payment up on Heartland and confirmed it doesn't exist"
         ></v-checkbox>
 
         <v-checkbox
