@@ -145,8 +145,34 @@ const fileMutation = useMutation({
     )
   },
   onSuccess: () => {
-    applicationStore.completeApplication.application.applicationType =
-      ApplicationType['Modify Standard']
+    switch (applicationStore.completeApplication.application.applicationType) {
+      case ApplicationType.Standard: {
+        applicationStore.completeApplication.application.applicationType =
+          ApplicationType['Modify Standard']
+        break
+      }
+      case ApplicationType.Judicial: {
+        applicationStore.completeApplication.application.applicationType =
+          ApplicationType['Modify Judicial']
+        break
+      }
+      case ApplicationType.Reserve: {
+        applicationStore.completeApplication.application.applicationType =
+          ApplicationType['Modify Reserve']
+        break
+      }
+      case ApplicationType.Employment: {
+        applicationStore.completeApplication.application.applicationType =
+          ApplicationType['Modify Employment']
+        break
+      }
+      default: {
+        applicationStore.completeApplication.application.applicationType =
+          ApplicationType['Modify Standard']
+        break
+      }
+    }
+
     applicationStore.completeApplication.application.status =
       ApplicationStatus.Submitted
     applicationStore.completeApplication.application.modificationSubmittedToLicensingDateTime =
