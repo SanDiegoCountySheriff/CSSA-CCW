@@ -105,7 +105,7 @@
           :disabled="
             !acknowledgeLookup || !acknowledgeTimeline || !acknowledgeDeletion
           "
-          @click="handleDeleteTransaction()"
+          @click="handleDeleteHeartlandTransaction()"
           color="primary"
         >
           Yes
@@ -127,7 +127,7 @@ interface DeleteDialogProps {
 
 const props = defineProps<DeleteDialogProps>()
 
-const emit = defineEmits(['confirm'])
+const emit = defineEmits(['confirm', 'confirm-heartland'])
 
 const dialog = ref(false)
 const acknowledgeLookup = ref(false)
@@ -137,5 +137,14 @@ const acknowledgeDeletion = ref(false)
 function handleDeleteTransaction() {
   emit('confirm', props.index)
   dialog.value = false
+}
+
+function handleDeleteHeartlandTransaction() {
+  emit('confirm-heartland', props.index)
+  dialog.value = false
+
+  acknowledgeLookup.value = false
+  acknowledgeTimeline.value = false
+  acknowledgeDeletion.value = false
 }
 </script>
