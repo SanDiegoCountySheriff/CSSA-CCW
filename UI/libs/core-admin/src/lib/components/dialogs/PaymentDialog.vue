@@ -58,6 +58,7 @@
               "
               @refund="handleRefund"
               @delete-transaction="handleDeleteTransaction"
+              @delete-heartland-transaction="handleDeleteHeartlandTransaction"
               @verify-transaction="handleVerifyTransaction"
             />
           </v-col>
@@ -144,6 +145,12 @@ function handleDeleteTransaction(index: number) {
   permitStore.permitDetail.paymentHistory.splice(index, 1)
 
   updateApplication('Delete Transaction')
+}
+
+function handleDeleteHeartlandTransaction(index: number) {
+  permitStore.permitDetail.paymentHistory.splice(index, 1)
+
+  updateApplication('Delete Unverified Heartland Transaction')
 }
 
 function handleVerifyTransaction() {
