@@ -62,6 +62,7 @@
               :index="index"
               :loading="loading"
               @confirm="handleDeleteTransaction"
+              @confirm-heartland="handleDeleteHeartlandTransaction"
             />
 
             <v-btn
@@ -145,7 +146,11 @@ interface PaymentHistoryProps {
 }
 
 defineProps<PaymentHistoryProps>()
-const emit = defineEmits(['delete-transaction', 'verify-transaction'])
+const emit = defineEmits([
+  'delete-transaction',
+  'verify-transaction',
+  'delete-heartland-transaction',
+])
 
 const permitStore = usePermitsStore()
 const html2Pdf = ref(null)
@@ -179,6 +184,46 @@ function reprintReceipt(item) {
 
 function handleDeleteTransaction(index: number) {
   emit('delete-transaction', index)
+}
+
+function handleDeleteHeartlandTransaction(index: number) {
+  const paymentType = permitStore.permitDetail.paymentHistory[index].paymentType
+
+  if (
+    paymentType === PaymentType['CCW Application Initial Payment'] ||
+    paymentType === PaymentType['CCW Application Initial Judicial Payment'] ||
+    paymentType === PaymentType['CCW Application Initial Reserve Payment'] ||
+    paymentType === PaymentType['CCW Application Initial Employent Payment']
+  ) {
+    permitStore.permitDetail.application.readyForInitialPayment = true
+  }
+
+  if (
+    paymentType === PaymentType['CCW Application Modification Payment'] ||
+    paymentType ===
+      PaymentType['CCW Application Modification Judicial Payment'] ||
+    paymentType ===
+      PaymentType['CCW Application Modification Reserve Payment'] ||
+    paymentType ===
+      PaymentType['CCW Application Modification Employment Payment']
+  ) {
+    permitStore.permitDetail.application.readyForModificationPayment = true
+  }
+
+  if (
+    paymentType === PaymentType['CCW Application Renewal Payment'] ||
+    paymentType === PaymentType['CCW Application Renewal Reserve Payment'] ||
+    paymentType === PaymentType['CCW Application Renewal Judicial Payment'] ||
+    paymentType === PaymentType['CCW Application Renewal Employment Payment']
+  ) {
+    permitStore.permitDetail.application.readyForRenewalPayment = true
+  }
+
+  if (paymentType === PaymentType['CCW Application Issuance Payment']) {
+    permitStore.permitDetail.application.readyForIssuancePayment = true
+  }
+
+  emit('delete-heartland-transaction', index)
 }
 
 function handleConfirm(
