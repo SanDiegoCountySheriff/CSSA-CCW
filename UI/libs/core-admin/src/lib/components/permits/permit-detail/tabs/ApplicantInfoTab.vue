@@ -125,7 +125,10 @@
                 v-if="
                   permitStore.getPermitDetail.application.modifiedNameComplete
                 "
-                :disabled="readonly"
+                :disabled="
+                  readonly ||
+                  permitStore.getPermitDetail.application.status === 19
+                "
                 @click="onUndoApproveNameChange"
                 color="primary"
                 style="float: right"
@@ -473,14 +476,6 @@ function onApproveNameChange() {
 
 function onUndoApproveNameChange() {
   permitStore.getPermitDetail.application.modifiedNameComplete = false
-
-  if (
-    permitStore.getPermitDetail.application.originalStatus !== 0 &&
-    permitStore.getPermitDetail.application.originalStatus !== null
-  ) {
-    permitStore.getPermitDetail.application.status =
-      permitStore.getPermitDetail.application.originalStatus
-  }
 
   emit('on-save', 'Undo approved name change')
 }

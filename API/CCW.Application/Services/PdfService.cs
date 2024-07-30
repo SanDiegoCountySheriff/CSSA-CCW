@@ -1857,7 +1857,16 @@ public class PdfService : IPdfService
             form.GetField("HAIR_COLOR").SetValue(!string.IsNullOrEmpty(userApplication.Application.PhysicalAppearance.HairColor) ? userApplication.Application.PhysicalAppearance.HairColor.ToUpper() : "", true);
         }
         form.GetField("AGENCY_BILLING_NUMBER").SetValue(!string.IsNullOrEmpty(adminResponse.AgencyBillingNumber) ? adminResponse.AgencyBillingNumber.ToUpper() : "", true);
-        form.GetField("BIRTH_STATE").SetValue(GetStateByName(userApplication.Application.DOB.BirthState) ?? "", true);
+        if (userApplication.Application.DOB.BirthCountry == "United States")
+        {
+            form.GetField("BIRTH_STATE").SetValue(GetStateByName(userApplication.Application.DOB.BirthState) ?? "", true);
+        } else
+        {
+            string nonUsBirthCountry = !string.IsNullOrEmpty(userApplication.Application.DOB.BirthCountry) ? userApplication.Application.DOB.BirthCountry.ToUpper() : "";
+            string nonUsBirthCity = !string.IsNullOrEmpty(userApplication.Application.DOB.BirthState) ? userApplication.Application.DOB.BirthState.ToUpper() : "";
+            string birthRegion = nonUsBirthCity + " " + nonUsBirthCountry;
+            form.GetField("BIRTH_STATE").SetValue(birthRegion);
+        }
         form.GetField("SSN").SetValue(userApplication.Application.PersonalInfo.Ssn ?? "", true);
         form.GetField("ADDRESS_1").SetValue(!string.IsNullOrEmpty(userApplication.Application.CurrentAddress?.StreetAddress) ? userApplication.Application.CurrentAddress?.StreetAddress.ToUpper() : "", true);
         form.GetField("CITY").SetValue(!string.IsNullOrEmpty(userApplication.Application.CurrentAddress?.City) ? userApplication.Application.CurrentAddress?.City.ToUpper() : "", true);

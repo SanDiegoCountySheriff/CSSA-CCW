@@ -127,7 +127,10 @@
               v-if="
                 permitStore.getPermitDetail.application.modifiedAddressComplete
               "
-              :disabled="readonly"
+              :disabled="
+                readonly ||
+                permitStore.getPermitDetail.application.status === 19
+              "
               @click="onUndoApproveAddressChange"
               color="primary"
               style="float: right"
@@ -631,14 +634,6 @@ function onApproveAddressChange() {
 
 function onUndoApproveAddressChange() {
   permitStore.getPermitDetail.application.modifiedAddressComplete = false
-
-  if (
-    permitStore.getPermitDetail.application.originalStatus !== 0 &&
-    permitStore.getPermitDetail.application.originalStatus !== null
-  ) {
-    permitStore.getPermitDetail.application.status =
-      permitStore.getPermitDetail.application.originalStatus
-  }
 
   emit('on-save', 'Undo approved address change')
 }
