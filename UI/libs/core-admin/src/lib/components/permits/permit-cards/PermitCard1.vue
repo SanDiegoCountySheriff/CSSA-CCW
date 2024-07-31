@@ -96,13 +96,14 @@ import DenialDialog from '@core-admin/components/dialogs/DenialDialog.vue'
 import RevocationDialog from '@core-admin/components/dialogs/RevocationDialog.vue'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { useQuery } from '@tanstack/vue-query'
 import {
   ApplicationStatus,
   ApplicationType,
   AppointmentStatus,
+  CompleteApplication,
 } from '@shared-utils/types/defaultTypes'
 import { computed, inject, reactive, ref } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const permitStore = usePermitsStore()
 const appointmentStore = useAppointmentsStore()
@@ -218,6 +219,11 @@ const { refetch: updatePermitDetails } = useQuery(
   }
 )
 
+const { mutateAsync: addHistoricalApplication } = useMutation({
+  mutationFn: (application: CompleteApplication) =>
+    permitStore.addHistoricalApplication(application),
+})
+
 const isApplicationModifyType = computed(() => {
   return (
     permitStore.getPermitDetail.application.applicationType ===
@@ -282,6 +288,68 @@ function updateApplicationStatus(update: string) {
     state.showRevocationDialog = true
   } else if (ApplicationStatus[update] === 'Denied') {
     state.showDenialDialog = true
+  } else if (ApplicationStatus[update] === 'Modification Approved') {
+    const historicalApplication: CompleteApplication = {
+      ...permitStore.getPermitDetail,
+    }
+
+    const app = permitStore.getPermitDetail.application
+
+    addHistoricalApplication(historicalApplication)
+
+    app.originalStatus = app.status
+
+    app.status = ApplicationStatus['Modification Approved']
+
+    if (app.personalInfo.modifiedFirstName) {
+      app.personalInfo.firstName = app.personalInfo.modifiedFirstName
+    }
+
+    if (app.personalInfo.modifiedMiddleName) {
+      app.personalInfo.middleName = app.personalInfo.modifiedMiddleName
+    }
+
+    if (app.personalInfo.modifiedLastName) {
+      app.personalInfo.lastName = app.personalInfo.modifiedLastName
+    }
+
+    if (app.modifiedAddress.streetAddress) {
+      app.currentAddress.streetAddress = app.modifiedAddress.streetAddress
+    }
+
+    if (app.modifiedAddress.city) {
+      app.currentAddress.city = app.modifiedAddress.city
+    }
+
+    if (app.modifiedAddress.state) {
+      app.currentAddress.state = app.modifiedAddress.state
+    }
+
+    if (app.modifiedAddress.zip) {
+      app.currentAddress.zip = app.modifiedAddress.zip
+    }
+
+    if (app.modifiedAddress.county) {
+      app.currentAddress.county = app.modifiedAddress.county
+    }
+
+    if (app.modifiedAddress.country) {
+      app.currentAddress.country = app.modifiedAddress.country
+    }
+
+    for (const weapon of app.modifyAddWeapons) {
+      weapon.added = undefined
+      weapon.deleted = undefined
+      app.weapons.push(weapon)
+    }
+
+    for (const weapon of app.modifyDeleteWeapons) {
+      app.weapons = app.weapons.filter(w => {
+        return w.serialNumber !== weapon.serialNumber
+      })
+    }
+
+    app.currentStep = 1
   }
 
   updatePermitDetails()
