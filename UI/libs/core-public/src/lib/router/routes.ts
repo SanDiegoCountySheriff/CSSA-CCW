@@ -55,6 +55,11 @@ export default class Routes {
   static get MODIFY_FINALIZE_PATH() {
     return `/modifyfinalize`
   }
+
+  static get DUPLICATE_FINALIZE_PATH() {
+    return `/duplicatefinalize`
+  }
+
   static get EXISTING_APPLICATION_PATH() {
     return `/existingapplication`
   }

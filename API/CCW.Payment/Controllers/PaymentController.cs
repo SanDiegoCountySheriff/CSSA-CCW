@@ -274,6 +274,22 @@ public class PaymentController : ControllerBase
                 application.PaymentHistory.Add(existingPaymentHistory);
                 application.Application.ReadyForIssuancePayment = !successful;
             }
+            else if (paymentType is Common.Enums.PaymentType.Duplicate)
+            {
+                var existingPaymentHistory = application.PaymentHistory.Where(ph =>
+                {
+                    return ph.PaymentType == paymentType && ph.DuplicateNumber == application.Application.DuplicateNumber;
+                }).FirstOrDefault();
+
+                application.PaymentHistory.Remove(existingPaymentHistory);
+
+                existingPaymentHistory.Verified = true;
+                existingPaymentHistory.TransactionId = transactionId;
+                existingPaymentHistory.Successful = successful;
+                existingPaymentHistory.PaymentDateTimeUtc = DateTimeOffset.Parse(transactionDateTime).ToUniversalTime();
+
+                application.PaymentHistory.Add(existingPaymentHistory);
+            }
 
             application.Application.PaymentStatus = PaymentStatus.OnlineSubmitted;
             await _cosmosDbService.UpdateApplication(application);
@@ -496,6 +512,10 @@ public class PaymentController : ControllerBase
         if (paymentType is "RenewalEmployment" or "RenewalJudicial" or "RenewalReserve" or "RenewalStandard")
         {
             return "application-details";
+        }
+        if (paymentType is "DuplicateStandard" or "DuplicateJudicial" or "DuplicateReserver" or "DuplicateEmployment")
+        {
+            return "duplicatefinalize";
         }
         else
         {

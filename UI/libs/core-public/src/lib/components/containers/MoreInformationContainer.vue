@@ -735,6 +735,7 @@ function handleFinalAcceptAndCreate() {
     modify: brandStore.brand.cost.modify,
     creditFee: brandStore.brand.cost.creditFee,
     convenienceFee: brandStore.brand.cost.convenienceFee,
+    duplicateFee: brandStore.brand.cost.duplicateFee,
   }
   completeApplicationStore.completeApplication.application.userEmail =
     authStore.auth.userEmail

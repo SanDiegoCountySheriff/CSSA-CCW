@@ -496,6 +496,7 @@ export const defaultPermitState: CompleteApplication = {
     modifiedNameComplete: null,
     modifiedWeaponComplete: null,
     modificationNumber: 1,
+    duplicateNumber: 1,
     renewalNumber: 0,
     readyForModificationPayment: false,
     isRenewingWithLegacyQuestions: false,
@@ -506,6 +507,7 @@ export const defaultPermitState: CompleteApplication = {
   id: '',
   userId: '',
   isMatchUpdated: null,
+  historicalDate: null,
 }
 
 export const defaultAllPermitsState = {

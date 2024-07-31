@@ -22,4 +22,5 @@ public class Cost
     public float? ReserveLivescanFee { get; set; }
     [JsonProperty("employmentLivescanFee")]
     public float? EmploymentLivescanFee { get; set; }
+    public float DuplicateFee { get; set; }
 }

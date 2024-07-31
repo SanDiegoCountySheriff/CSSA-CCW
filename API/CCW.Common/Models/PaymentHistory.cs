@@ -25,6 +25,8 @@ public class PaymentHistory
     public PaymentStatus PaymentStatus { get; set; }
     [JsonProperty("modificationNumber")]
     public int? ModificationNumber { get; set; }
+    [JsonProperty("duplicateNumber")]
+    public int? DuplicateNumber { get; set; }
     [JsonProperty("verified")]
     public bool? Verified { get; set; }
 }

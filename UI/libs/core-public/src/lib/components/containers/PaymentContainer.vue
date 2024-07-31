@@ -94,16 +94,16 @@ onMounted(() => {
       state.payment.applicationCost = brandStore.brand.cost.renew.employment
       break
     case ApplicationType['Duplicate Standard']:
-      state.payment.applicationCost = brandStore.brand.cost.modify
+      state.payment.applicationCost = brandStore.brand.cost.duplicateFee
       break
     case ApplicationType['Duplicate Judicial']:
-      state.payment.applicationCost = brandStore.brand.cost.modify
+      state.payment.applicationCost = brandStore.brand.cost.duplicateFee
       break
     case ApplicationType['Duplicate Reserve']:
-      state.payment.applicationCost = brandStore.brand.cost.modify
+      state.payment.applicationCost = brandStore.brand.cost.duplicateFee
       break
     case ApplicationType['Duplicate Employment']:
-      state.payment.applicationCost = brandStore.brand.cost.modify
+      state.payment.applicationCost = brandStore.brand.cost.duplicateFee
       break
     default:
       return

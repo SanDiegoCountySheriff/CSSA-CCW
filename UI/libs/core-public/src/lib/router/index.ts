@@ -1,5 +1,6 @@
 import ApplicationDetailView from '@core-public/views/ApplicationDetailView.vue'
 import ApplicationView from '@core-public/views/ApplicationView.vue'
+import DuplicateFinalizeView from '@core-public/views/DuplicateFinalizeView.vue'
 import ExistingApplicationView from '@core-public/views/ExistingApplicationView.vue'
 import FinalizeView from '@core-public/views/FinalizeView.vue'
 import FormView from '@core-public/views/FormView.vue'
@@ -66,6 +67,11 @@ const routes: Array<RouteConfig> = [
     path: Routes.MODIFY_FINALIZE_PATH,
     name: 'ModifyFinalize',
     component: ModifyFinalizeView,
+  },
+  {
+    path: Routes.DUPLICATE_FINALIZE_PATH,
+    name: 'DuplicateFinalize',
+    component: DuplicateFinalizeView,
   },
   {
     path: Routes.EXISTING_APPLICATION_PATH,

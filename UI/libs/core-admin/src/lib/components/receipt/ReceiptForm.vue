@@ -158,6 +158,7 @@ function submitAndPrint() {
     refundAmount: '0',
     verified: true,
     modificationNumber: getModificationNumber(),
+    duplicateNumber: getDuplicateNumber(),
   }
 
   permitStore.permitDetail.paymentHistory.push(body)
@@ -191,6 +192,23 @@ function getModificationNumber() {
       ApplicationType['Modify Employment']
   ) {
     return permitStore.permitDetail.application.modificationNumber
+  }
+
+  return null
+}
+
+function getDuplicateNumber() {
+  if (
+    permitStore.permitDetail.application.applicationType ===
+      ApplicationType['Duplicate Standard'] ||
+    permitStore.permitDetail.application.applicationType ===
+      ApplicationType['Duplicate Judicial'] ||
+    permitStore.permitDetail.application.applicationType ===
+      ApplicationType['Duplicate Reserve'] ||
+    permitStore.permitDetail.application.applicationType ===
+      ApplicationType['Duplicate Employment']
+  ) {
+    return permitStore.permitDetail.application.duplicateNumber
   }
 
   return null

@@ -309,7 +309,10 @@
 
             <v-row>
               <v-col
-                v-if="canApplicationBeUpdated || canApplicationBeModified"
+                v-if="
+                  canApplicationBeUpdated ||
+                  canApplicationBeModifiedOrDuplicated
+                "
                 cols="12"
               >
                 <v-btn
@@ -334,14 +337,35 @@
                   Update Application Information
                 </v-btn>
 
-                <ConfirmDialog
-                  v-else-if="canApplicationBeModified"
-                  :icon="'mdi-swap-horizontal'"
-                  title="Are you sure you want to modify your permit?"
-                  text="Modifying allows you to change your address, name, and weapons listed on your permit for a small fee.  If you are able to renew you can make any necessary changes during the renewal process instead."
-                  button-text="Click here to modify"
-                  @confirm="handleModifyApplication"
-                />
+                <template
+                  v-else-if="
+                    canApplicationBeModifiedOrDuplicated && !isRenewalActive
+                  "
+                >
+                  <v-row no-gutters>
+                    <ConfirmDialog
+                      :icon="'mdi-swap-horizontal'"
+                      title="Are you sure you want to modify your permit?"
+                      text="Modifying allows you to change your address, name, and weapons listed on your permit for a small fee.  If you are able to renew you can make any necessary changes during the renewal process instead."
+                      button-text="Click here to modify"
+                      @confirm="handleModifyApplication"
+                    />
+                  </v-row>
+
+                  <v-row
+                    no-gutters
+                    class="mt-3"
+                  >
+                    <ConfirmDialog
+                      :icon="'mdi-emoticon-sad'"
+                      class="mt-3"
+                      title="Request a duplicate permit?"
+                      text="Use this to request a duplicate permit if your has been lost or damaged.  If you are requesting an information change please modify your application or renew if you are able."
+                      button-text="I lost my permit"
+                      @confirm="handleDuplicatePermit"
+                    />
+                  </v-row>
+                </template>
               </v-col>
             </v-row>
           </v-card-text>
@@ -1412,7 +1436,7 @@ const enableEightHourSafetyCourseButton = computed(() => {
   )
 })
 
-const canApplicationBeModified = computed(() => {
+const canApplicationBeModifiedOrDuplicated = computed(() => {
   return (
     applicationStore.completeApplication.application.status ===
     ApplicationStatus['Permit Delivered']
@@ -2164,6 +2188,16 @@ function handleModifyApplication() {
   })
 }
 
+function handleDuplicatePermit() {
+  router.push({
+    path: Routes.DUPLICATE_FINALIZE_PATH,
+    query: {
+      applicationId: state.application[0].id,
+      isComplete: state.application[0].application.isComplete.toString(),
+    },
+  })
+}
+
 async function handleRenewApplication() {
   const application = applicationStore.completeApplication.application
 
@@ -2221,6 +2255,7 @@ async function handleRenewApplication() {
     judicialLivescanFee: brandStore.brand.cost.judicialLivescanFee,
     reserveLivescanFee: brandStore.brand.cost.reserveLivescanFee,
     employmentLivescanFee: brandStore.brand.cost.employmentLivescanFee,
+    duplicateFee: brandStore.brand.cost.duplicateFee,
   }
 
   applicationStore.completeApplication.application.isUpdatingApplication = false

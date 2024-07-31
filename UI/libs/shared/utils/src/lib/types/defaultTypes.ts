@@ -152,6 +152,7 @@ export type CostType = {
   reserveLivescanFee?: number | null
   judicialLivescanFee?: number | null
   employmentLivescanFee?: number | null
+  duplicateFee: number
 }
 
 export type DenialInfoType = {
@@ -352,6 +353,7 @@ export type PaymentHistoryType = {
   successful: boolean
   paymentStatus: PaymentStatus
   modificationNumber: number | null
+  duplicateNumber: number | null
   verified: boolean | null
 }
 
@@ -569,6 +571,7 @@ export enum PaymentType {
   'CCW Application Judicial Livescan Payment',
   'CCW Application Reserve Livescan Payment',
   'CCW Application Employment Livescan Payment',
+  'CCW Application Duplicate Payment',
 }
 
 export enum ApplicationType {
@@ -726,6 +729,7 @@ export type CompleteApplication = {
     readyForModificationPayment: boolean
     readyForIssuancePayment: boolean
     modificationNumber: number
+    duplicateNumber: number
     renewalNumber: number
     isRenewingWithLegacyQuestions: boolean
   }
