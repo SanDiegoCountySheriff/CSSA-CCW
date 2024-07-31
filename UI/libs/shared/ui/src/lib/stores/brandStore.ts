@@ -119,6 +119,8 @@ export const useBrandStore = defineStore('BrandStore', () => {
 
   function setAgencyLogo(payload) {
     documents.value.agencyLogo = payload
+    localStorage.setItem('agency-logo', payload)
+    localStorage.setItem('agency-logo-cache-date', new Date())
   }
 
   function setAgencySheriffSignatureImage(payload) {
@@ -154,13 +156,28 @@ export const useBrandStore = defineStore('BrandStore', () => {
   }
 
   async function getAgencyLogoDocumentsApi() {
-    const res = await axios
-      .get(`${Endpoints.GET_DOCUMENT_AGENCY_ENDPOINT}`)
-      .catch(err => window.console.log(err))
+    const agencyLogoCacheDate = localStorage.getItem('agency-logo-cache-date')
+    const agencyLogo = localStorage.getItem('agency-logo')
 
-    if (res?.data) setAgencyLogo(res.data)
+    if (
+      agencyLogo === null ||
+      agencyLogoCacheDate === null ||
+      new Date(agencyLogoCacheDate) < Date.now() - 1000 * 60 * 60 * 24 * 7
+    ) {
+      const res = await axios
+        .get(`${Endpoints.GET_DOCUMENT_AGENCY_ENDPOINT}`)
+        .catch(err => window.console.log(err))
 
-    return res?.data
+      if (res?.data) {
+        setAgencyLogo(res.data)
+
+        return res.data
+      }
+    } else {
+      setAgencyLogo(agencyLogo)
+
+      return agencyLogo
+    }
   }
 
   async function setAgencyDocument(document: FormData, documentName: string) {
