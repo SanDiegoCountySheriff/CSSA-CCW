@@ -20,6 +20,7 @@
         <v-btn
           @click="handleSaveAppointments"
           :disabled="
+            !valid ||
             invalidTime ||
             isLoading ||
             isGetAppointmentManagementTemplateLoading
@@ -33,12 +34,16 @@
       </v-card-title>
 
       <v-card-text>
-        <v-form ref="form">
+        <v-form
+          v-model="valid"
+          ref="form"
+        >
           <v-row>
             <v-col cols="3">
               <v-select
                 v-model="appointmentManagement.daysOfTheWeek"
                 :items="daysOfTheWeek"
+                :rules="daysOfTheWeekRules"
                 @change="handleChangeAppointmentParameters"
                 label="Days of the week"
                 color="primary"
@@ -46,31 +51,37 @@
                 outlined
               ></v-select>
             </v-col>
+
             <v-col cols="3">
               <v-text-field
                 v-model="appointmentManagement.firstAppointmentStartTime"
-                @change="handleChangeAppointmentParameters"
                 :error-messages="startTimeError"
+                :rules="firstAppointmentStartTimeRules"
+                @change="handleChangeAppointmentParameters"
                 append-icon="mdi-clock-time-four-outline"
                 label="First appointment start time"
                 type="time"
                 outlined
               />
             </v-col>
+
             <v-col cols="3">
               <v-text-field
                 v-model="appointmentManagement.lastAppointmentStartTime"
-                @change="handleChangeAppointmentParameters"
                 :error-messages="startTimeError"
+                :rules="lastAppointmentStartTimeRules"
+                @change="handleChangeAppointmentParameters"
                 append-icon="mdi-clock-time-four-outline"
                 label="Last appointment start time"
                 type="time"
                 outlined
               />
             </v-col>
+
             <v-col cols="3">
               <v-text-field
                 v-model="appointmentManagement.numberOfSlotsPerAppointment"
+                :rules="numberOfSlotsRules"
                 @change="handleChangeAppointmentParameters"
                 label="Number of slots per appointment"
                 type="number"
@@ -78,44 +89,55 @@
               />
             </v-col>
           </v-row>
+
           <v-row>
             <v-col cols="3">
               <v-text-field
                 v-model="appointmentManagement.appointmentLength"
+                :rules="appointmentLengthRules"
                 @change="handleChangeAppointmentParameters"
                 label="Appointment length"
                 type="number"
                 outlined
               />
             </v-col>
+
             <v-col cols="3">
               <v-text-field
                 v-model="appointmentManagement.numberOfWeeksToCreate"
+                :rules="numberOfWeeksRules"
                 label="Number of weeks to create"
                 type="number"
                 outlined
               />
             </v-col>
+
             <v-col cols="3">
               <v-text-field
                 v-model="appointmentManagement.breakLength"
+                :rules="breakLengthRules"
                 @change="handleChangeAppointmentParameters"
                 label="Break length"
                 type="number"
                 outlined
+                clearable
               ></v-text-field>
             </v-col>
+
             <v-col cols="3">
               <v-text-field
                 v-model="appointmentManagement.breakStartTime"
+                :rules="breakStartTimeRules"
                 @change="handleChangeAppointmentParameters"
                 append-icon="mdi-clock-time-four-outline"
                 label="Break start time"
                 type="time"
                 outlined
+                clearable
               ></v-text-field>
             </v-col>
           </v-row>
+
           <v-row>
             <v-col cols="3">
               <v-text-field
@@ -128,6 +150,7 @@
               ></v-text-field>
             </v-col>
           </v-row>
+
           <v-row>
             <v-col>
               <v-calendar
@@ -157,6 +180,7 @@ import { useMutation, useQuery } from '@tanstack/vue-query'
 const emit = defineEmits(['on-upload-appointments'])
 const appointmentsStore = useAppointmentsStore()
 const form = ref()
+const valid = ref(false)
 const events = ref<Array<unknown>>([])
 const daysOfTheWeek = ref([
   'Sunday',
@@ -175,7 +199,7 @@ const appointmentManagement = ref<AppointmentManagement>({
   numberOfSlotsPerAppointment: 1,
   appointmentLength: 30,
   numberOfWeeksToCreate: 1,
-  breakLength: 0,
+  breakLength: null,
   startDate: formatDate(new Date(), 0, 0).split(' ')[0],
   breakStartTime: null,
 })
@@ -219,6 +243,107 @@ const { isLoading, mutate: uploadAppointments } = useMutation({
 
 onMounted(() => {
   handleChangeAppointmentParameters()
+})
+
+const daysOfTheWeekRules = computed(() => {
+  return [
+    appointmentManagement.value.daysOfTheWeek.length > 0 ||
+      'At least one day of the week is required',
+  ]
+})
+
+const firstAppointmentStartTimeRules = computed(() => {
+  return [
+    Boolean(appointmentManagement.value.firstAppointmentStartTime) ||
+      'First appointment start time is required',
+  ]
+})
+
+const lastAppointmentStartTimeRules = computed(() => {
+  return [
+    Boolean(appointmentManagement.value.lastAppointmentStartTime) ||
+      'Last appointment start time is required',
+  ]
+})
+
+const numberOfSlotsRules = computed(() => {
+  return [
+    appointmentManagement.value.numberOfSlotsPerAppointment > 0 ||
+      'Number of slots must be greater than zero',
+  ]
+})
+
+const appointmentLengthRules = computed(() => {
+  return [
+    appointmentManagement.value.appointmentLength > 0 ||
+      'Appointment length must be greater than zero',
+  ]
+})
+
+const numberOfWeeksRules = computed(() => {
+  return [
+    appointmentManagement.value.numberOfWeeksToCreate > 0 ||
+      'Number of weeks must be greater than zero',
+  ]
+})
+
+const breakLengthRules = computed(() => {
+  if (
+    appointmentManagement.value.breakLength !== null &&
+    appointmentManagement.value.breakLength !== undefined &&
+    appointmentManagement.value.breakLength > 0 &&
+    appointmentManagement.value.breakStartTime === null
+  ) {
+    return ['Break start time must be entered with a break length']
+  }
+
+  if (
+    (appointmentManagement.value.breakLength === null ||
+      appointmentManagement.value.breakLength === undefined ||
+      Boolean(appointmentManagement.value.breakLength) === false) &&
+    appointmentManagement.value.breakStartTime !== null
+  ) {
+    return ['Break length must be entered with a break start time']
+  }
+
+  if (
+    appointmentManagement.value.breakLength !== null &&
+    appointmentManagement.value.breakLength !== undefined &&
+    Boolean(appointmentManagement.value.breakLength) === false
+  ) {
+    return [true]
+  }
+
+  if (
+    appointmentManagement.value.breakLength !== null &&
+    appointmentManagement.value.breakLength !== undefined &&
+    appointmentManagement.value.breakLength > 0
+  ) {
+    return [true]
+  }
+
+  if (
+    appointmentManagement.value.breakLength !== null &&
+    appointmentManagement.value.breakLength !== undefined &&
+    appointmentManagement.value.breakLength <= 0
+  ) {
+    return ['Break length must be greater than zero or nothing']
+  }
+
+  return [true]
+})
+
+const breakStartTimeRules = computed(() => {
+  if (
+    (appointmentManagement.value.breakLength === null ||
+      appointmentManagement.value.breakLength === undefined ||
+      Boolean(appointmentManagement.value.breakLength) === false) &&
+    appointmentManagement.value.breakStartTime !== null
+  ) {
+    return ['Break length must be entered with a break start time']
+  }
+
+  return [true]
 })
 
 const invalidTime = computed(() => {

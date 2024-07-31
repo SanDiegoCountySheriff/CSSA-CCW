@@ -602,7 +602,7 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 
                         concurrentTasks.Add(_container.CreateItemAsync(appointment, new PartitionKey(appointment.Id.ToString()), cancellationToken: cancellationToken));
 
-                        if (concurrentTasks.Count >= 100)
+                        if (concurrentTasks.Count >= 500)
                         {
                             await Task.WhenAll(concurrentTasks);
 
