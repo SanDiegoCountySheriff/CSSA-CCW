@@ -568,12 +568,23 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 
                         var endHours = startTime.Minutes == 30 ? startTime.Hours + 1 : startTime.Hours;
 
+                        var endMinutes = startTime.Minutes + appointmentManagement.AppointmentLength;
+
+                        if (endMinutes == 60)
+                        {
+                            endMinutes = 0;
+                        }
+                        else if (endMinutes > 60)
+                        {
+                            endMinutes -= 60;
+                        }
+
                         var correctedAppointmentEnd = new DateTimeOffset(
                             nextDay.Year,
                             nextDay.Month,
                             nextDay.Day,
                             endHours,
-                            startTime.Minutes + appointmentManagement.AppointmentLength,
+                            endMinutes,
                             startTime.Seconds,
                             offset
                         );
