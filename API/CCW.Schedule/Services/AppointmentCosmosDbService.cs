@@ -537,8 +537,8 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
                 {
                     if (appointmentManagement.BreakStartTime != null && WillAppointmentFallInBreakTime(appointmentManagement, startTime))
                     {
-                        startTime = startTime.Add(new TimeSpan(0, appointmentManagement.AppointmentLength, 0));
-                        endTime = endTime.Add(new TimeSpan(0, appointmentManagement.AppointmentLength, 0));
+                        startTime = startTime.Add(new TimeSpan(0, (int)appointmentManagement.BreakLength, 0));
+                        endTime = endTime.Add(new TimeSpan(0, (int)appointmentManagement.BreakLength, 0));
                         continue;
                     }
 
@@ -566,14 +566,26 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
                             offset
                         );
 
-                        var endHours = startTime.Minutes == 30 ? startTime.Hours + 1 : startTime.Hours;
+                        var endHours = startTime.Hours;
+                        var endMinutes = startTime.Minutes + appointmentManagement.AppointmentLength;
+
+                        if (endMinutes == 60)
+                        {
+                            endMinutes = 0;
+                            endHours += 1;
+                        }
+                        else if (endMinutes > 60)
+                        {
+                            endMinutes -= 60;
+                            endHours += 1;
+                        }
 
                         var correctedAppointmentEnd = new DateTimeOffset(
                             nextDay.Year,
                             nextDay.Month,
                             nextDay.Day,
                             endHours,
-                            startTime.Minutes + appointmentManagement.AppointmentLength,
+                            endMinutes,
                             startTime.Seconds,
                             offset
                         );
@@ -590,7 +602,7 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 
                         concurrentTasks.Add(_container.CreateItemAsync(appointment, new PartitionKey(appointment.Id.ToString()), cancellationToken: cancellationToken));
 
-                        if (concurrentTasks.Count >= 100)
+                        if (concurrentTasks.Count >= 500)
                         {
                             await Task.WhenAll(concurrentTasks);
 
