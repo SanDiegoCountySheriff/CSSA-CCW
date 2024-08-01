@@ -41,7 +41,7 @@ public class AppointmentController : ControllerBase
         try
         {
             AppointmentManagement appointmentManagement = _mapper.Map<AppointmentManagement>(appointmentManagementRequest);
-            var (numberOfAppointmentsCreated, holidayAppointmentsSkipped) = await _appointmentCosmosDbService.CreateAppointmentsFromAppointmentManagementTemplate(appointmentManagement, _logger, cancellationToken: default);
+            var (numberOfAppointmentsCreated, holidayAppointmentsSkipped) = await _appointmentCosmosDbService.CreateAppointmentsFromAppointmentManagementTemplate(appointmentManagement, cancellationToken: default);
 
             return Ok(JsonConvert.SerializeObject((numberOfAppointmentsCreated, holidayAppointmentsSkipped)));
         }
