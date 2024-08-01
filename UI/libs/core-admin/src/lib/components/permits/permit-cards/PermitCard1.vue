@@ -43,6 +43,12 @@
             lg="4"
           >
             <v-select
+              v-if="
+                (isModify &&
+                  (authStore.auth.roles.includes('CCW-ADMIN-ROLE') ||
+                    'CCW-SYSTEM-ADMINS-ROLE')) ||
+                !isModify
+              "
               ref="select"
               :items="appStatus"
               :readonly="readonly"
@@ -57,6 +63,17 @@
                 offsetY: true,
               }"
             ></v-select>
+            <div
+              v-else
+              class="font-weight-bold"
+            >
+              Application Status:
+              {{
+                ApplicationStatus[
+                  permitStore.getPermitDetail.application.status
+                ]
+              }}
+            </div>
           </v-col>
         </v-row>
       </v-container>
@@ -95,19 +112,22 @@ import ApprovedEmailApplicantDialog from '@core-admin/components/dialogs/Approve
 import DenialDialog from '@core-admin/components/dialogs/DenialDialog.vue'
 import RevocationDialog from '@core-admin/components/dialogs/RevocationDialog.vue'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { useQuery } from '@tanstack/vue-query'
 import {
   ApplicationStatus,
   ApplicationType,
   AppointmentStatus,
+  CompleteApplication,
 } from '@shared-utils/types/defaultTypes'
 import { computed, inject, reactive, ref } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const permitStore = usePermitsStore()
 const appointmentStore = useAppointmentsStore()
 const readonly = inject('readonly')
 const dialog = ref(false)
+const authStore = useAuthStore()
 
 const state = reactive({
   update: '',
@@ -218,6 +238,11 @@ const { refetch: updatePermitDetails } = useQuery(
   }
 )
 
+const { mutateAsync: addHistoricalApplication } = useMutation({
+  mutationFn: (application: CompleteApplication) =>
+    permitStore.addHistoricalApplication(application),
+})
+
 const isApplicationModifyType = computed(() => {
   return (
     permitStore.getPermitDetail.application.applicationType ===
@@ -264,6 +289,18 @@ const modificationSubmittedDate = computed(() => {
   return 'n/a'
 })
 
+const isModify = computed(() => {
+  const applicationType =
+    permitStore.getPermitDetail.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Modify Standard'] ||
+    applicationType === ApplicationType['Modify Reserve'] ||
+    applicationType === ApplicationType['Modify Judicial'] ||
+    applicationType === ApplicationType['Modify Employment']
+  )
+})
+
 function updateApplicationStatus(update: string) {
   state.update = `Changed application status to ${ApplicationStatus[update]}`
 
@@ -282,6 +319,73 @@ function updateApplicationStatus(update: string) {
     state.showRevocationDialog = true
   } else if (ApplicationStatus[update] === 'Denied') {
     state.showDenialDialog = true
+  } else if (
+    ApplicationStatus[update] === 'Modification Approved' &&
+    isModify
+  ) {
+    const historicalApplication: CompleteApplication = {
+      ...permitStore.getPermitDetail,
+    }
+
+    const app = permitStore.getPermitDetail.application
+
+    addHistoricalApplication(historicalApplication)
+
+    if (app.modifiedNameComplete === true) {
+      if (app.personalInfo.modifiedFirstName) {
+        app.personalInfo.firstName = app.personalInfo.modifiedFirstName
+      }
+
+      if (app.personalInfo.modifiedMiddleName) {
+        app.personalInfo.middleName = app.personalInfo.modifiedMiddleName
+      }
+
+      if (app.personalInfo.modifiedLastName) {
+        app.personalInfo.lastName = app.personalInfo.modifiedLastName
+      }
+    }
+
+    if (app.modifiedAddressComplete === true) {
+      if (app.modifiedAddress.streetAddress) {
+        app.currentAddress.streetAddress = app.modifiedAddress.streetAddress
+      }
+
+      if (app.modifiedAddress.city) {
+        app.currentAddress.city = app.modifiedAddress.city
+      }
+
+      if (app.modifiedAddress.state) {
+        app.currentAddress.state = app.modifiedAddress.state
+      }
+
+      if (app.modifiedAddress.zip) {
+        app.currentAddress.zip = app.modifiedAddress.zip
+      }
+
+      if (app.modifiedAddress.county) {
+        app.currentAddress.county = app.modifiedAddress.county
+      }
+
+      if (app.modifiedAddress.country) {
+        app.currentAddress.country = app.modifiedAddress.country
+      }
+    }
+
+    if (app.modifiedWeaponComplete === true) {
+      for (const weapon of app.modifyAddWeapons) {
+        weapon.added = undefined
+        weapon.deleted = undefined
+        app.weapons.push(weapon)
+      }
+
+      for (const weapon of app.modifyDeleteWeapons) {
+        app.weapons = app.weapons.filter(w => {
+          return w.serialNumber !== weapon.serialNumber
+        })
+      }
+    }
+
+    app.currentStep = 1
   }
 
   updatePermitDetails()
