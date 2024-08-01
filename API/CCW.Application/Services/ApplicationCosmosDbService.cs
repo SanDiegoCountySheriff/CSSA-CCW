@@ -552,6 +552,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         application.Application.Comments = existingApplication.Application.Comments;
         application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck;
         application.History = existingApplication.History;
+        application.Application.AssignedTo = existingApplication.Application.AssignedTo;
 
         if (existingApplication.Application.ApplicationType != application.Application.ApplicationType &&
             application.Application.ApplicationType is
