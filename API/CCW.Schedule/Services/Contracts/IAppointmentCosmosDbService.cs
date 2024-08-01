@@ -18,7 +18,7 @@ public interface IAppointmentCosmosDbService
     Task AddDeleteTimeSlotsAsync(List<AppointmentWindow> appointments, bool isCreateAction,
         CancellationToken cancellationToken);
     Task DeleteAsync(string appointmentId, CancellationToken cancellationToken);
-    Task<(int, int)> CreateAppointmentsFromAppointmentManagementTemplate(AppointmentManagement appointmentManagement, ILogger logger, CancellationToken cancellationToken);
+    Task<(int, int)> CreateAppointmentsFromAppointmentManagementTemplate(AppointmentManagement appointmentManagement, CancellationToken cancellationToken);
     Task<int> DeleteAllAppointmentsByDate(DateTimeOffset date, CancellationToken cancellationToken);
     Task<int> DeleteAppointmentsByTimeSlot(DateTimeOffset date, CancellationToken cancellationToken);
     Task<int> GetNumberOfNewAppointments(int numberOfDays, CancellationToken cancellationToken);
