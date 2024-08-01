@@ -479,7 +479,7 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         return deletedCount;
     }
 
-    public async Task<(int, int)> CreateAppointmentsFromAppointmentManagementTemplate(AppointmentManagement appointmentManagement, CancellationToken cancellationToken)
+    public async Task<(int, int)> CreateAppointmentsFromAppointmentManagementTemplate(AppointmentManagement appointmentManagement, ILogger logger, CancellationToken cancellationToken)
     {
         appointmentManagement.Id = "1";
 
@@ -488,7 +488,7 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         var count = 0;
         var holidayCount = 0;
         var query = _container.GetItemQueryIterator<AppointmentWindow>("SELECT TOP 1 c.start FROM c ORDER BY c.start DESC");
-        var nextDay = new DateTimeOffset();
+        var nextDay = new DateTimeOffset(2020, 1, 1, 0, 0, 0, new TimeSpan(0));
         TimeZoneInfo pstTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
 
         while (query.HasMoreResults)
@@ -554,7 +554,11 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
                             nextDay.Offset
                         );
 
+                        logger.LogInformation($"nextAppointmentDay {nextAppointmentDay}");
+
                         var offset = TimeZoneInfo.ConvertTime(nextAppointmentDay, pstTimeZone).Offset;
+
+                        logger.LogInformation($"offset {offset}");
 
                         var correctedAppointmentStart = new DateTimeOffset(
                             nextDay.Year,
@@ -566,18 +570,26 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
                             offset
                         );
 
+                        logger.LogInformation($"correctedAppointmentStart {correctedAppointmentStart}");
+
                         var endHours = startTime.Hours;
+                        logger.LogInformation($"initial endHours {endHours}");
                         var endMinutes = startTime.Minutes + appointmentManagement.AppointmentLength;
+                        logger.LogInformation($"initial endMinutes {endMinutes}");
 
                         if (endMinutes == 60)
                         {
                             endMinutes = 0;
                             endHours += 1;
+                            logger.LogInformation($"endMinutes == 60 endMinutes {endMinutes}");
+                            logger.LogInformation($"endMinutes == 60 endHours {endHours}");
                         }
                         else if (endMinutes > 60)
                         {
                             endMinutes -= 60;
                             endHours += 1;
+                            logger.LogInformation($"endMinutes > 60 endMinutes {endMinutes}");
+                            logger.LogInformation($"endMinutes > 60 endHours {endHours}");
                         }
 
                         var correctedAppointmentEnd = new DateTimeOffset(
@@ -590,8 +602,13 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
                             offset
                         );
 
+                        logger.LogInformation($"correctedAppointmentEnd {correctedAppointmentEnd}");
+
                         var appointmentStartTime = correctedAppointmentStart.ToUniversalTime();
                         var appointmentEndTime = correctedAppointmentEnd.ToUniversalTime();
+
+                        logger.LogInformation($"appointmentStartTime {appointmentStartTime}");
+                        logger.LogInformation($"appointmentEndTime {appointmentEndTime}");
 
                         var appointment = new AppointmentWindow()
                         {
