@@ -276,7 +276,7 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 
         string query = @"SELECT a.start, a[""end""]
                 FROM a
-                WHERE a.applicationId = null AND a.isManuallyCreated = false";
+                WHERE a.applicationId = null AND a.isManuallyCreated = false ORDER BY a.start";
 
         if (!includePastAppointments)
         {
