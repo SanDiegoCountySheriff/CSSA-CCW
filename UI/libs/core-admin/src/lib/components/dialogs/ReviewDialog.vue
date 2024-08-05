@@ -545,7 +545,7 @@ function handleAcceptChanges() {
   if (permitStore.getPermitDetail.application.legacyQualifyingQuestions) {
     acceptLegacyChanges()
   } else {
-    acceptChanges
+    acceptChanges()
   }
 }
 
