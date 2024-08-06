@@ -171,10 +171,10 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         bool isComplete, bool isLegacy, CancellationToken cancellationToken)
     {
         var queryString = isOrderId
-            ? "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated, a._etag as ETag FROM applications a " +
+            ? "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated, a._etag FROM applications a " +
               "WHERE a.Application.OrderId = @userEmailOrOrderId " +
               "Order by a.Application.OrderId DESC"
-            : "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated, a._etag as ETag FROM applications a " +
+            : "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated, a._etag FROM applications a " +
               "WHERE a.Application.UserEmail = @userEmailOrOrderId " +
               "Order by a.Application.OrderId DESC";
 
@@ -654,9 +654,18 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         await _container.UpsertItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
     }
 
-    public async Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken)
+    public async Task<PermitApplication> UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken)
     {
-        await _container.UpsertItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
+        var result = await _container.UpsertItemAsync(application, new PartitionKey(application.UserId), new ItemRequestOptions { IfMatchEtag = application.ETag }, cancellationToken);
+
+        if (!string.IsNullOrEmpty(result.Resource.Application.PersonalInfo.Ssn))
+        {
+            string ssn = result.Resource.Application.PersonalInfo.Ssn;
+            string maskedSsn = string.Concat(new string('X', ssn.Length - 4), ssn.AsSpan(ssn.Length - 4));
+            result.Resource.Application.PersonalInfo.Ssn = maskedSsn;
+        }
+
+        return result;
     }
 
     public async Task DeleteUserApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken)

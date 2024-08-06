@@ -13,5 +13,6 @@ public class PermitApplication
     public History[] History { get; set; }
     public DateTimeOffset? HistoricalDate { get; set; }
     public bool? IsMatchUpdated { get; set; }
+    [JsonProperty("_etag")]
     public string ETag { get; set; }
 }

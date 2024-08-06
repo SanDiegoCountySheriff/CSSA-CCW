@@ -135,6 +135,8 @@
         </v-card-text>
       </v-card>
     </v-sheet>
+
+    <UpdateFailedDailog />
   </v-container>
 </template>
 
@@ -153,6 +155,7 @@ import PermitCard1 from '../permit-cards/PermitCard1.vue'
 import PermitCard2 from '../permit-cards/PermitCard2.vue'
 import PermitStatus from '../permit-status/PermitStatus.vue'
 import SurveyInfoTab from './tabs/SurveyInfoTab.vue'
+import UpdateFailedDailog from '@core-admin/components/dialogs/UpdateFailedDialog.vue'
 import WeaponsTab from './tabs/WeaponsTab.vue'
 import WorkInfoTab from './tabs/WorkInfoTab.vue'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'

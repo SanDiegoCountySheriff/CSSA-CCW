@@ -22,7 +22,7 @@ public interface IApplicationCosmosDbService
     Task<(IEnumerable<SummarizedPermitApplication>, int)> GetAllInProgressApplicationsSummarizedAsync(PermitsOptions options, CancellationToken cancellationToken);
     Task<IEnumerable<SummarizedPermitApplication>> SearchApplicationsAsync(string searchValue, CancellationToken cancellationToken);
     Task UpdateApplicationAsync(PermitApplication application, PermitApplication existingApplication, CancellationToken cancellationToken);
-    Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken);
+    Task<PermitApplication> UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken);
     Task DeleteUserApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken);
     Task<int> GetApplicationCountAsync(PermitsOptions options, CancellationToken cancellationToken);
     Task<ApplicationSummaryCountResponseModel> GetApplicationSummaryCount(CancellationToken cancellationToken);

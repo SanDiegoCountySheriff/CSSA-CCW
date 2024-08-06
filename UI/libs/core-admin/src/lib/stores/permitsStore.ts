@@ -1,5 +1,4 @@
 import Endpoints from '@shared-ui/api/endpoints'
-import axios from 'axios'
 import { defaultPermitState } from '@shared-utils/lists/defaultConstants'
 import { defineStore } from 'pinia'
 import { useAdminUserStore } from './adminUserStore'
@@ -19,6 +18,7 @@ import {
   HistoryType,
 } from '@shared-utils/types/defaultTypes'
 import { LegacyPermitsType, PermitsType } from '@core-admin/types'
+import axios, { AxiosError } from 'axios'
 import { computed, ref } from 'vue'
 import {
   formatDate,
@@ -41,6 +41,9 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   const brandStore = useBrandStore()
   const historicalApplicationCount = ref(0)
   const viewingHistorical = ref(false)
+  const updateFailed = ref(false)
+  const updateFailedItem = ref('')
+  const updateWasComment = ref(false)
 
   const getPermits = computed(() => permits.value)
   const getSearchResults = computed(() => searchResults.value)
@@ -757,19 +760,37 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
     permitDetail.value.history.push(newHistory)
 
-    const res = await axios.put(
-      Endpoints.PUT_UPDATE_AGENCY_PERMIT_ENDPOINT,
-      permitDetail.value,
-      {
+    await axios
+      .put(Endpoints.PUT_UPDATE_AGENCY_PERMIT_ENDPOINT, permitDetail.value, {
         params: {
           updatedSection: item,
         },
-      }
-    )
+      })
+      .then(res => {
+        if (res?.data) setPermitDetail(res.data)
 
-    if (res?.data) setPermitDetail(res.data)
+        return res?.data || {}
+      })
+      .catch((error: AxiosError) => {
+        if (error.response?.status === 412) {
+          updateFailed.value = true
+          updateFailedItem.value = item
 
-    return res?.data || {}
+          if (item === 'Added Comment') {
+            updateWasComment.value = true
+
+            const mostRecentComment =
+              permitDetail.value.application.comments.sort((a, b) => {
+                return (
+                  new Date(b.commentDateTimeUtc).getTime() -
+                  new Date(a.commentDateTimeUtc).getTime()
+                )
+              })[0].text
+
+            navigator.clipboard.writeText(mostRecentComment)
+          }
+        }
+      })
   }
 
   async function getPermitSearchApi(query) {
@@ -839,6 +860,9 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     viewingPermitDetail,
     historicalApplicationCount,
     viewingHistorical,
+    updateFailed,
+    updateFailedItem,
+    updateWasComment,
     setPermits,
     setOpenPermits,
     setSearchResults,

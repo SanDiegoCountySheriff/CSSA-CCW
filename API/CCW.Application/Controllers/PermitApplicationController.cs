@@ -7,6 +7,7 @@ using CCW.Common.Models;
 using CCW.Common.ResponseModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos;
 
 namespace CCW.Application.Controllers;
 
@@ -793,9 +794,20 @@ public class PermitApplicationController : ControllerBase
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
             }
 
-            await _applicationCosmosDbService.UpdateUserApplicationAsync(_mapper.Map<PermitApplication>(application), cancellationToken: default);
+            var result = await _applicationCosmosDbService.UpdateUserApplicationAsync(_mapper.Map<PermitApplication>(application), cancellationToken: default);
 
-            return Ok();
+            return Ok(_mapper.Map<PermitApplicationResponseModel>(result));
+        }
+        catch (CosmosException ce)
+        {
+            if (ce.StatusCode == System.Net.HttpStatusCode.PreconditionFailed)
+            {
+                var originalException = ce.GetBaseException();
+                _logger.LogError(originalException, originalException.Message);
+                return StatusCode(412);
+            }
+
+            return NotFound("An error occur while trying to update permit application.");
         }
         catch (Exception e)
         {

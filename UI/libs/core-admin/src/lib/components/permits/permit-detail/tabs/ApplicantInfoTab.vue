@@ -466,7 +466,7 @@ function hideSsn() {
 }
 
 function handleSave() {
-  emit('on-save', 'Application Info')
+  emit('on-save', 'Personal Information')
 }
 
 function onApproveNameChange() {
