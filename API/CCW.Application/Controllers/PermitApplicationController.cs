@@ -803,7 +803,7 @@ public class PermitApplicationController : ControllerBase
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
             }
 
-            // await _emailService.SendEmailAsync(application.Application.UserEmail, "CCW Pro Test", "This is a test message!!!");
+            //  _emailService.SendEmailAsync(application.Application.UserEmail, "CCW Pro Test", adminResponse.AgencySheriffName);
 
             await _applicationCosmosDbService.UpdateUserApplicationAsync(_mapper.Map<PermitApplication>(application), cancellationToken: default);
 
