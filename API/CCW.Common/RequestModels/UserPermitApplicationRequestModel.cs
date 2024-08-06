@@ -13,4 +13,5 @@ public class UserPermitApplicationRequestModel
     [JsonProperty("paymentHistory")]
     public PaymentHistory[] PaymentHistory { get; set; }
     public bool? IsMatchUpdated { get; set; }
+    public string ETag { get; set; }
 }

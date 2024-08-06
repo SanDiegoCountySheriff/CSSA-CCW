@@ -171,10 +171,10 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         bool isComplete, bool isLegacy, CancellationToken cancellationToken)
     {
         var queryString = isOrderId
-            ? "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated FROM applications a " +
+            ? "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated, a._etag as ETag FROM applications a " +
               "WHERE a.Application.OrderId = @userEmailOrOrderId " +
               "Order by a.Application.OrderId DESC"
-            : "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated FROM applications a " +
+            : "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a.IsMatchUpdated, a._etag as ETag FROM applications a " +
               "WHERE a.Application.UserEmail = @userEmailOrOrderId " +
               "Order by a.Application.OrderId DESC";
 

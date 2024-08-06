@@ -735,6 +735,7 @@ export type CompleteApplication = {
   userId: string
   id: string
   isMatchUpdated: boolean | null
+  eTag: string
 }
 
 export type ThemeConfigType = {

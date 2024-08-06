@@ -13,4 +13,5 @@ public class PermitApplication
     public History[] History { get; set; }
     public DateTimeOffset? HistoricalDate { get; set; }
     public bool? IsMatchUpdated { get; set; }
+    public string ETag { get; set; }
 }

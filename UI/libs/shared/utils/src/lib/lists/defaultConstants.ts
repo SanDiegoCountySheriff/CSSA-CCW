@@ -506,6 +506,8 @@ export const defaultPermitState: CompleteApplication = {
   id: '',
   userId: '',
   isMatchUpdated: null,
+  eTag: '',
+  historicalDate: null,
 }
 
 export const defaultAllPermitsState = {
