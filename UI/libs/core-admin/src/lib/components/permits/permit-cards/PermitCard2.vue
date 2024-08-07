@@ -207,7 +207,7 @@
               <v-col v-if="modificationReadyForApproval">
                 <v-btn
                   :disabled="readonly"
-                  @click="handleApproveModification"
+                  @click="approveModificationDialog = true"
                   color="primary"
                   block
                   small
@@ -1052,6 +1052,48 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog
+      v-model="approveModificationDialog"
+      persistent
+      max-width="600"
+    >
+      <v-card>
+        <v-card-title>Approve Modification</v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col>
+              <v-alert
+                type="warning"
+                dense
+                outlined
+              >
+                Are you sure you want to approve the modification? You will not
+                be able to make any changes to the weapons once the modification
+                has been approved.
+              </v-alert>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn
+            color="error"
+            text
+            @click="approveModificationDialog = false"
+          >
+            Cancel
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            text
+            @click="handleApproveModification"
+          >
+            Approve Modification
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -1121,6 +1163,7 @@ const permitStore = usePermitsStore()
 const appointmentStore = useAppointmentsStore()
 const themeStore = useThemeStore()
 const changed = ref('')
+const approveModificationDialog = ref(false)
 
 const isInitialPaymentComplete = computed(() => {
   if (permitStore.permitDetail.paymentHistory) {
@@ -1351,6 +1394,8 @@ async function handleApproveModification() {
   const historicalApplication: CompleteApplication = {
     ...permitStore.getPermitDetail,
   }
+
+  approveModificationDialog.value = false
 
   const app = permitStore.getPermitDetail.application
 
