@@ -1273,14 +1273,8 @@ const {
     )
   },
   onSuccess: () =>
-    applicationStore
-      .getCompleteApplicationFromApi(
-        applicationStore.completeApplication.id,
-        Boolean(route.query.isComplete)
-      )
-      .then(res => {
-        applicationStore.setCompleteApplication(res)
-      }),
+    // TODO: check if this works without this method
+    applicationStore.getUserApplication(),
 })
 
 onMounted(() => {
@@ -1323,12 +1317,9 @@ onMounted(() => {
 const { isLoading: isGetApplicationsLoading, refetch: getApplications } =
   useQuery(
     ['getApplicationsByUser'],
-    () => applicationStore.getAllUserApplicationsApi(),
+    () => applicationStore.getUserApplication(),
     {
       enabled: !state.isApplicationValid,
-      onSuccess: data => {
-        applicationStore.setCompleteApplication(data[0] as CompleteApplication)
-      },
     }
   )
 
@@ -2191,7 +2182,7 @@ async function handleRenewApplication() {
   }
 
   const historicalApplication: CompleteApplication = {
-    ...applicationStore.getCompleteApplication,
+    ...applicationStore.completeApplication,
   }
 
   await addHistoricalApplicationPublic(historicalApplication)

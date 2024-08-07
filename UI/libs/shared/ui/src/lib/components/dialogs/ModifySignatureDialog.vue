@@ -96,7 +96,6 @@ import axios from 'axios'
 import { useCompleteApplicationStore } from '../../stores/completeApplication'
 import {
   ApplicationStatus,
-  CompleteApplication,
   UploadedDocType,
 } from '@shared-utils/types/defaultTypes'
 import { computed, nextTick, reactive, ref } from 'vue'
@@ -127,12 +126,9 @@ const state = reactive({
 
 const { isLoading: isGetApplicationsLoading } = useQuery(
   ['getApplicationsByUser'],
-  () => applicationStore.getAllUserApplicationsApi(),
+  () => applicationStore.getUserApplication(),
   {
     enabled: !state.isApplicationValid,
-    onSuccess: data => {
-      applicationStore.setCompleteApplication(data[0] as CompleteApplication)
-    },
   }
 )
 

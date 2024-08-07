@@ -108,16 +108,9 @@ const { isFetching: isUserFetching } = useQuery(
 
 const { isFetching } = useQuery(
   ['getApplicationsByUser'],
-  completeApplicationStore.getAllUserApplicationsApi,
+  completeApplicationStore.getUserApplication,
   {
     refetchOnMount: 'always',
-    onSuccess: response => {
-      if (response.status !== 204 && response.data) {
-        completeApplicationStore.setCompleteApplication(
-          response.data[0] as CompleteApplication
-        )
-      }
-    },
     enabled: canFetch,
   }
 )

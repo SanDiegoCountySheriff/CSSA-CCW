@@ -1,57 +1,14 @@
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import Endpoints from '@shared-ui/api/endpoints'
-import axios from 'axios'
 import { defaultPermitState } from '@shared-utils/lists/defaultConstants'
 import { defineStore } from 'pinia'
-import { useAuthStore } from '@shared-ui/stores/auth'
-import { computed, reactive, ref } from 'vue'
+import { ref } from 'vue'
+import axios, { AxiosError } from 'axios'
 
 export const useCompleteApplicationStore = defineStore('permitStore', () => {
-  const blankApplication = JSON.parse(JSON.stringify(defaultPermitState))
-  const authStore = useAuthStore()
-  const completeApplication = reactive<CompleteApplication>(blankApplication)
-  const allUserApplications = ref<Array<CompleteApplication>>()
-
-  const getCompleteApplication = computed(() => completeApplication)
-  const getAllUserApplications = computed(() => allUserApplications)
-
-  /**
-   * Used to set the stored value from either the api call or the form
-   * @param {CompleteApplication} payload
-   */
-  function setCompleteApplication(payload: CompleteApplication) {
-    completeApplication.application = payload.application
-    completeApplication.history = payload.history
-    completeApplication.id = payload.id
-    completeApplication.paymentHistory = payload.paymentHistory
-    completeApplication.isMatchUpdated = payload.isMatchUpdated
-  }
-
-  function setAllUserApplications(payload: Array<CompleteApplication>) {
-    allUserApplications.value = payload
-  }
-
-  /**
-   * Get the complete application from the backend
-   */
-  async function getCompleteApplicationFromApi(
-    applicationId: string | null,
-    isComplete: boolean
-  ) {
-    const res = await axios
-      .get(Endpoints.GET_PERMIT_ENDPOINT, {
-        params: {
-          applicationId,
-          isComplete,
-        },
-      })
-      .catch(err => {
-        console.warn(err)
-        Promise.reject()
-      })
-
-    return res?.data || {}
-  }
+  const completeApplication = ref<CompleteApplication>(defaultPermitState)
+  const publicUpdateFailed = ref(false)
+  const publicUpdateFailedItem = ref('')
 
   async function addHistoricalApplicationPublic(
     application: CompleteApplication
@@ -64,90 +21,65 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
       .then(res => {
         return res.data
       })
-      .catch(err => {
-        window.console.log(err)
-
-        return Promise.reject()
-      })
   }
 
-  /**
-   * Get all applications by the user
-   * @param userEmail
-   * @returns {Promise<void>}
-   */
-  async function getAllUserApplicationsApi() {
-    const res = await axios.get(Endpoints.GET_ALL_BY_USER_ENDPOINT, {
-      params: {
-        userEmail: authStore.auth.userEmail,
-      },
-    })
+  async function getUserApplication() {
+    const res = await axios.get(Endpoints.GET_ALL_BY_USER_ENDPOINT)
 
-    if (res?.data) setAllUserApplications(res.data)
+    if (res?.data) {
+      completeApplication.value = res?.data
+    }
 
     return res
   }
 
   async function createApplication() {
     await axios
-      .put(Endpoints.PUT_CREATE_PERMIT_ENDPOINT, completeApplication)
+      .put(Endpoints.PUT_CREATE_PERMIT_ENDPOINT, completeApplication.value)
       .then(res => {
-        setCompleteApplication(res.data)
-      })
-      .catch(err => {
-        window.console.log(err)
-
-        return Promise.reject()
+        completeApplication.value = res.data
       })
   }
 
   async function getAgreementPdf(fileName: string) {
-    try {
-      const response = await axios.get(
-        `${Endpoints.GET_AGREEMENT_PDF_ENDPOINT}?fileName=${fileName}`,
-        {
-          responseType: 'arraybuffer',
-        }
-      )
-      const blob = new Blob([response.data], { type: 'application/pdf' })
+    const response = await axios.get(
+      `${Endpoints.GET_AGREEMENT_PDF_ENDPOINT}?fileName=${fileName}`,
+      {
+        responseType: 'arraybuffer',
+      }
+    )
+    const blob = new Blob([response.data], { type: 'application/pdf' })
 
-      // eslint-disable-next-line node/no-unsupported-features/node-builtins
-      const pdfUrl = URL.createObjectURL(blob)
+    // eslint-disable-next-line node/no-unsupported-features/node-builtins
+    const pdfUrl = URL.createObjectURL(blob)
 
-      window.open(pdfUrl, '_blank')
-    } catch (error) {
-      console.error('Error getting PDF:', error)
-    }
+    window.open(pdfUrl, '_blank')
   }
 
   async function updateApplication(updateReason: string) {
-    const res = await axios
+    await axios
       .put(
         `${Endpoints.PUT_UPDATE_PERMIT_ENDPOINT}?updateReason=${updateReason}`,
-        completeApplication
+        completeApplication.value
       )
-      .catch(err => {
-        console.warn(err)
-
-        return Promise.reject()
+      .then(response => {
+        completeApplication.value = response.data
       })
-
-    return res?.data
+      .catch((error: AxiosError) => {
+        if (error.response?.status === 412) {
+          publicUpdateFailed.value = true
+          publicUpdateFailedItem.value = updateReason
+        }
+      })
   }
 
   async function matchUserInformation(
     idNumber: string,
     dateOfBirth: string
   ): Promise<boolean> {
-    const res = await axios
-      .get(
-        `${Endpoints.MATCH_USER_INFORMATION_ENDPOINT}?idNumber=${idNumber}&dateOfBirth=${dateOfBirth}`
-      )
-      .catch(err => {
-        console.warn(err)
-
-        return Promise.reject()
-      })
+    const res = await axios.get(
+      `${Endpoints.MATCH_USER_INFORMATION_ENDPOINT}?idNumber=${idNumber}&dateOfBirth=${dateOfBirth}`
+    )
 
     if (res.data) {
       return res.data
@@ -163,16 +95,10 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
   }
 
   return {
-    addHistoricalApplicationPublic,
-    allUserApplications,
     completeApplication,
+    addHistoricalApplicationPublic,
     createApplication,
-    getCompleteApplication,
-    getAllUserApplications,
-    setCompleteApplication,
-    setAllUserApplications,
-    getCompleteApplicationFromApi,
-    getAllUserApplicationsApi,
+    getUserApplication,
     updateApplication,
     getAgreementPdf,
     matchUserInformation,

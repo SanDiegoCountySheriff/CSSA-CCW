@@ -86,7 +86,7 @@ export default class Endpoints {
   static get GET_ALL_BY_USER_ENDPOINT() {
     return `${
       useAppConfigStore().appConfig.applicationApiBaseUrl
-    }/application/v1/permitapplication/getApplications`
+    }/application/v1/permitapplication/getApplication`
   }
 
   static get GET_ALL_PERMITS_ENDPOINT() {

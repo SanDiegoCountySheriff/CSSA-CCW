@@ -717,7 +717,7 @@ const { isLoading, mutate: createMutation } = useMutation({
 })
 
 function handleFinalAcceptAndCreate() {
-  completeApplicationStore.setCompleteApplication(defaultPermitState)
+  completeApplicationStore.completeApplication = defaultPermitState
   completeApplicationStore.completeApplication.application.cost = {
     new: {
       standard: brandStore.brand.cost.new.standard,

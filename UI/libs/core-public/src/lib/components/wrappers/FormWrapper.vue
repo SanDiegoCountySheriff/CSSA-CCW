@@ -27,108 +27,176 @@
           :class="$vuetify.theme.dark ? 'sticky-dark' : 'sticky-light'"
         >
           <v-stepper-step
-            editable
-            :complete="stepOneValid"
-            :edit-icon="stepOneValid ? 'mdi-check' : '$edit'"
-            :color="stepOneValid ? 'success' : 'primary'"
             :step="1"
+            :complete="stepOneValid"
+            :rules="[() => stepOneValid]"
+            error-icon="mdi-alert-circle"
+            edit-icon="mdi-check"
+            color="success"
+            editable
           >
-            <div class="text-center">{{ $t('Personal') }}</div>
+            <div class="text-center">
+              <span
+                :class="
+                  themeStore.themeConfig.isDark ? 'white--text' : 'black--text'
+                "
+              >
+                {{ $t('Personal') }}
+              </span>
+            </div>
           </v-stepper-step>
 
           <v-divider></v-divider>
 
           <v-stepper-step
-            editable
-            :complete="stepTwoValid"
-            :edit-icon="stepTwoValid ? 'mdi-check' : '$edit'"
-            :color="stepTwoValid ? 'success' : 'primary'"
             :step="2"
+            :complete="stepTwoValid"
+            :rules="[() => stepTwoValid]"
+            error-icon="mdi-alert-circle"
+            edit-icon="mdi-check"
+            color="success"
+            editable
           >
             <div class="text-center">
-              {{ $t('ID Information') }}
+              <span
+                :class="
+                  themeStore.themeConfig.isDark ? 'white--text' : 'black--text'
+                "
+              >
+                {{ $t('ID Information') }}
+              </span>
             </div>
           </v-stepper-step>
 
           <v-divider></v-divider>
 
           <v-stepper-step
-            editable
-            :complete="stepThreeValid"
-            :edit-icon="stepThreeValid ? 'mdi-check' : '$edit'"
-            :color="stepThreeValid ? 'success' : 'primary'"
             :step="3"
+            :complete="stepThreeValid"
+            :rules="[() => stepThreeValid]"
+            error-icon="mdi-alert-circle"
+            edit-icon="mdi-check"
+            color="success"
+            editable
           >
             <div class="text-center">
-              {{ $t('Address') }}
+              <span
+                :class="
+                  themeStore.themeConfig.isDark ? 'white--text' : 'black--text'
+                "
+              >
+                {{ $t('Address') }}
+              </span>
             </div>
           </v-stepper-step>
 
           <v-divider></v-divider>
 
           <v-stepper-step
-            editable
-            :complete="stepFourValid"
-            :edit-icon="stepFourValid ? 'mdi-check' : '$edit'"
-            :color="stepFourValid ? 'success' : 'primary'"
             :step="4"
+            :complete="stepFourValid"
+            :rules="[() => stepFourValid]"
+            error-icon="mdi-alert-circle"
+            edit-icon="mdi-check"
+            color="success"
+            editable
           >
             <div class="text-center">
-              {{ $t('Employment & Weapons') }}
+              <span
+                :class="
+                  themeStore.themeConfig.isDark ? 'white--text' : 'black--text'
+                "
+              >
+                {{ $t('Employment & Weapons') }}
+              </span>
             </div>
           </v-stepper-step>
 
           <v-divider></v-divider>
 
           <v-stepper-step
-            editable
-            :complete="stepFiveValid"
-            :edit-icon="stepFiveValid ? 'mdi-check' : '$edit'"
-            :color="stepFiveValid ? 'success' : 'primary'"
             :step="5"
+            :complete="stepFiveValid"
+            :rules="[() => stepFiveValid]"
+            error-icon="mdi-alert-circle"
+            edit-icon="mdi-check"
+            color="success"
+            editable
           >
             <div class="text-center">
-              {{ $t('Application Type') }}
+              <span
+                :class="
+                  themeStore.themeConfig.isDark ? 'white--text' : 'black--text'
+                "
+              >
+                {{ $t('Application Type') }}
+              </span>
             </div>
           </v-stepper-step>
 
           <v-divider></v-divider>
 
           <v-stepper-step
-            editable
-            :complete="stepSixValid"
-            :edit-icon="stepSixValid ? 'mdi-check' : '$edit'"
-            :color="stepSixValid ? 'success' : 'primary'"
             :step="6"
+            :complete="stepSixValid"
+            :rules="[() => stepSixValid]"
+            error-icon="mdi-alert-circle"
+            edit-icon="mdi-check"
+            color="success"
+            editable
           >
             <div class="text-center">
-              {{ $t(' Upload Files') }}
+              <span
+                :class="
+                  themeStore.themeConfig.isDark ? 'white--text' : 'black--text'
+                "
+              >
+                {{ $t(' Upload Files') }}
+              </span>
             </div>
           </v-stepper-step>
 
           <v-divider></v-divider>
 
           <v-stepper-step
-            editable
-            :complete="stepSevenValid"
-            :edit-icon="stepSevenValid ? 'mdi-check' : '$edit'"
-            :color="stepSevenValid ? 'success' : 'primary'"
             :step="7"
+            :complete="stepSevenValid"
+            :rules="[() => stepSevenValid]"
+            error-icon="mdi-alert-circle"
+            edit-icon="mdi-check"
+            color="success"
+            editable
           >
-            <div class="text-center">{{ $t('Qualifying Questions') }}</div>
+            <div class="text-center">
+              <span
+                :class="
+                  themeStore.themeConfig.isDark ? 'white--text' : 'black--text'
+                "
+              >
+                {{ $t('Qualifying Questions') }}
+              </span>
+            </div>
           </v-stepper-step>
 
           <v-divider></v-divider>
 
           <v-stepper-step
-            editable
-            :complete="stepEightValid"
-            :edit-icon="stepEightValid ? 'mdi-check' : '$edit'"
-            :color="stepEightValid ? 'success' : 'primary'"
             :step="8"
+            :complete="stepEightValid"
+            :rules="[() => stepEightValid]"
+            error-icon="mdi-alert-circle"
+            edit-icon="mdi-check"
+            color="success"
+            editable
           >
             <div class="text-center">
-              {{ $t('Signature') }}
+              <span
+                :class="
+                  themeStore.themeConfig.isDark ? 'white--text' : 'black--text'
+                "
+              >
+                {{ $t('Signature') }}
+              </span>
             </div>
           </v-stepper-step>
 
@@ -486,7 +554,6 @@
 <script setup lang="ts">
 import AddressInfoStep from '@core-public/components/form-stepper/form-steps/AddressInfoStep.vue'
 import ApplicationTypeStep from '@core-public/components/form-stepper/form-steps/ApplicationTypeStep.vue'
-import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FileUploadStep from '@core-public/components/form-stepper/form-steps/FileUploadStep.vue'
 import IdBirthInfoStep from '@core-public/components/form-stepper/form-steps/IdBirthInfoStep.vue'
 import LegacyQualifyingQuestionsStep from '../form-stepper/form-steps/LegacyQualifyingQuestionsStep.vue'
@@ -496,10 +563,12 @@ import SignatureStep from '@core-public/components/form-stepper/form-steps/Signa
 import WorkInfoStep from '@core-public/components/form-stepper/form-steps/WorkInfoStep.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 import { computed, onMounted, provide, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const applicationStore = useCompleteApplicationStore()
+const themeStore = useThemeStore()
 const stepOneValid = ref(false)
 const stepTwoValid = ref(false)
 const stepThreeValid = ref(false)
@@ -537,9 +606,11 @@ const { isLoading, mutate: updateMutation } = useMutation({
   },
 })
 
+provide('isLoading', isLoading)
+
 const { refetch } = useQuery(
   ['getApplicationsByUser'],
-  applicationStore.getAllUserApplicationsApi,
+  applicationStore.getUserApplication,
   {
     enabled: false,
   }
@@ -576,12 +647,9 @@ onMounted(() => {
 
 const { isLoading: isGetApplicationsLoading } = useQuery(
   ['getApplicationsByUser'],
-  () => applicationStore.getAllUserApplicationsApi(),
+  () => applicationStore.getUserApplication(),
   {
     enabled: !state.isApplicationValid,
-    onSuccess: data => {
-      applicationStore.setCompleteApplication(data[0] as CompleteApplication)
-    },
   }
 )
 

@@ -73,7 +73,12 @@
         <!-- Next Step -->
         <v-btn
           v-else-if="!props.isFinalStep"
-          :disabled="!props.valid || props.loading || !props.allStepsComplete"
+          :disabled="
+            !props.valid ||
+            props.loading ||
+            !props.allStepsComplete ||
+            isLoading
+          "
           :loading="props.loading"
           @click="handleContinue"
           color="primary"
@@ -127,6 +132,7 @@ import { computed, inject } from 'vue'
 const isUpdatingAllStepsComplete = inject('allStepsComplete')
 const applicationStore = useCompleteApplicationStore()
 const themeStore = useThemeStore()
+const isLoading = inject('isLoading')
 
 interface FormButtonContainerProps {
   valid?: boolean

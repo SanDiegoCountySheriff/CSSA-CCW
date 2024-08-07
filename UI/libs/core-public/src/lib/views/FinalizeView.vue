@@ -371,15 +371,8 @@ const {
       applicationId
     )
   },
-  onSuccess: () =>
-    completeApplicationStore
-      .getCompleteApplicationFromApi(
-        completeApplicationStore.completeApplication.id,
-        Boolean(route.query.isComplete)
-      )
-      .then(res => {
-        completeApplicationStore.setCompleteApplication(res)
-      }),
+  // TODO: check if this works
+  onSuccess: () => completeApplicationStore.getUserApplication(),
 })
 
 provide('isInitialPaymentComplete', isInitialPaymentComplete)
@@ -493,13 +486,10 @@ onMounted(() => {
 
   if (!completeApplicationStore.completeApplication.application.orderId) {
     state.isLoading = true
+    // TODO: check if this works
     completeApplicationStore
-      .getCompleteApplicationFromApi(
-        route.query.applicationId as string,
-        Boolean(route.query.isComplete)
-      )
-      .then(res => {
-        completeApplicationStore.setCompleteApplication(res)
+      .getUserApplication()
+      .then(() => {
         state.isLoading = false
 
         if (

@@ -309,11 +309,10 @@ const expansionStep = computed({
 
 const { isLoading: isGetApplicationLoading, isRefetching } = useQuery(
   ['getApplicationsByUser'],
-  async () => await applicationStore.getAllUserApplicationsApi(),
+  async () => await applicationStore.getUserApplication(),
   {
     enabled: !isApplicationValid.value,
-    onSuccess: data => {
-      applicationStore.setCompleteApplication(data[0] as CompleteApplication)
+    onSuccess: () => {
       stepIndex.step =
         applicationStore.completeApplication.application.currentStep
     },

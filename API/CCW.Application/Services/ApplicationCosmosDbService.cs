@@ -230,17 +230,14 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return applications;
     }
 
-    public async Task<IEnumerable<PermitApplication>> GetAllApplicationsAsync(string userId, string userEmail,
-        CancellationToken cancellationToken)
+    public async Task<PermitApplication> GetApplicationAsync(string userId, CancellationToken cancellationToken)
     {
-        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.IsMatchUpdated FROM applications a " +
+        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.IsMatchUpdated, a._etag FROM applications a " +
                           "WHERE a.userId = @userId " +
                           "Order by a.Application.OrderId DESC";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
-                .WithParameter("@userId", userId)
-                .WithParameter("@userEmail", userEmail);
-
+                .WithParameter("@userId", userId);
 
         using FeedIterator<PermitApplication> filteredFeed = _container.GetItemQueryIterator<PermitApplication>(
             queryDefinition: parameterizedQuery,
@@ -251,16 +248,16 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         {
             FeedResponse<PermitApplication> response = await filteredFeed.ReadNextAsync(cancellationToken);
 
-            return response.Resource;
+            return response.Resource.FirstOrDefault();
         }
 
-        return new List<PermitApplication>();
+        return null!;
     }
 
     public async Task<IEnumerable<PermitApplication>> GetAllUserApplicationsAsync(string userEmail,
         CancellationToken cancellationToken)
     {
-        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
+        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History, a._etag FROM applications a " +
                           "WHERE a.Application.UserEmail = @userEmail " +
                           "Order by a.Application.OrderId DESC";
 
@@ -547,7 +544,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return results;
     }
 
-    public async Task UpdateApplicationAsync(PermitApplication application, PermitApplication existingApplication, CancellationToken cancellationToken)
+    public async Task<PermitApplication> UpdateApplicationAsync(PermitApplication application, PermitApplication existingApplication, CancellationToken cancellationToken)
     {
         application.Application.Comments = existingApplication.Application.Comments;
         application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck;
@@ -651,7 +648,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             }
         }
 
-        await _container.UpsertItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
+        return await _container.UpsertItemAsync(application, new PartitionKey(application.UserId), new ItemRequestOptions { IfMatchEtag = application.ETag }, cancellationToken);
     }
 
     public async Task<PermitApplication> UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken)

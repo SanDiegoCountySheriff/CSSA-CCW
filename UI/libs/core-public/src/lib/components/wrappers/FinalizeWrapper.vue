@@ -14,6 +14,7 @@
       >
       </v-skeleton-loader>
     </v-container>
+
     <template v-if="!state.isLoading && !state.isError">
       <v-card>
         <v-card-title
@@ -37,64 +38,84 @@
           <div class="info-section">
             <PersonalInfoSection
               :color="'info'"
-              :personal-info="state.completeApplication.personalInfo"
-            />
-          </div>
-
-          <div
-            class="info-section"
-            v-if="
-              state.completeApplication.personalInfo.maritalStatus == 'Married'
-            "
-          >
-            <SpouseInfoSection
-              :color="'info'"
-              :spouse-info="state.completeApplication.spouseInformation"
-            />
-          </div>
-
-          <div
-            class="info-section"
-            v-if="state.completeApplication.differentSpouseAddress"
-          >
-            <SpouseAddressInfoSection
-              :title="$t('Different Spouse Address').toString()"
-              :color="'info'"
-              :spouse-address="
-                state.completeApplication.spouseAddressInformation
+              :personal-info="
+                applicationStore.completeApplication.application.personalInfo
               "
             />
           </div>
 
           <div
             class="info-section"
-            v-if="state.completeApplication.aliases.length > 0"
+            v-if="
+              applicationStore.completeApplication.application.personalInfo
+                .maritalStatus == 'Married'
+            "
+          >
+            <SpouseInfoSection
+              :color="'info'"
+              :spouse-info="
+                applicationStore.completeApplication.application
+                  .spouseInformation
+              "
+            />
+          </div>
+
+          <div
+            class="info-section"
+            v-if="
+              applicationStore.completeApplication.application
+                .differentSpouseAddress
+            "
+          >
+            <SpouseAddressInfoSection
+              :title="$t('Different Spouse Address').toString()"
+              :color="'info'"
+              :spouse-address="
+                applicationStore.completeApplication.application
+                  .spouseAddressInformation
+              "
+            />
+          </div>
+
+          <div
+            class="info-section"
+            v-if="
+              applicationStore.completeApplication.application.aliases.length >
+              0
+            "
           >
             <AliasInfoSection
               :color="'transparent'"
-              :alias-info="state.completeApplication.aliases"
+              :alias-info="
+                applicationStore.completeApplication.application.aliases
+              "
             />
           </div>
 
           <div class="info-section">
             <IdInfoSection
               :color="'info'"
-              :id-info="state.completeApplication.idInfo"
+              :id-info="applicationStore.completeApplication.application.idInfo"
             />
           </div>
 
           <div class="info-section">
             <DOBinfoSection
               :color="'info'"
-              :birth-info="state.completeApplication.dob"
+              :birth-info="applicationStore.completeApplication.application.dob"
             />
           </div>
 
           <div class="info-section">
             <CitizenInfoSection
               :color="'info'"
-              :citizenship-info="state.completeApplication.citizenship"
-              :immigrant-info="state.completeApplication.immigrantInformation"
+              :citizenship-info="
+                applicationStore.completeApplication.application.citizenship
+              "
+              :immigrant-info="
+                applicationStore.completeApplication.application
+                  .immigrantInformation
+              "
             />
           </div>
 
@@ -102,27 +123,39 @@
             <AddressInfoSection
               :color="'info'"
               :title="'Current Address'"
-              :address-info="state.completeApplication.currentAddress"
+              :address-info="
+                applicationStore.completeApplication.application.currentAddress
+              "
             />
           </div>
 
           <div
             class="info-section"
-            v-if="state.completeApplication.previousAddresses.length > 0"
+            v-if="
+              applicationStore.completeApplication.application.previousAddresses
+                .length > 0
+            "
           >
             <PreviousAddressInfoSection
-              :previous-address="state.completeApplication.previousAddresses"
+              :previous-address="
+                applicationStore.completeApplication.application
+                  .previousAddresses
+              "
               :color="'info'"
             />
           </div>
 
           <div
             class="info-section"
-            v-if="state.completeApplication.differentMailing"
+            v-if="
+              applicationStore.completeApplication.application.differentMailing
+            "
           >
             <AddressInfoSection
               :title="'Mailing Address'"
-              :address-info="state.completeApplication.mailingAddress"
+              :address-info="
+                applicationStore.completeApplication.application.mailingAddress
+              "
               color="info"
             />
           </div>
@@ -130,14 +163,18 @@
           <div class="info-section">
             <AppearanceInfoSection
               color="info"
-              :appearance-info="state.completeApplication.physicalAppearance"
+              :appearance-info="
+                applicationStore.completeApplication.application
+                  .physicalAppearance
+              "
             />
           </div>
 
           <div class="info-section">
             <CharacterReferenceInfoSection
               :character-references="
-                state.completeApplication.characterReferences
+                applicationStore.completeApplication.application
+                  .characterReferences
               "
               color="info"
             />
@@ -145,24 +182,37 @@
 
           <div class="info-section">
             <ContactInfoSection
-              :contact-info="state.completeApplication.contact"
+              :contact-info="
+                applicationStore.completeApplication.application.contact
+              "
               color="info"
             />
           </div>
 
           <div class="info-section">
             <EmploymentInfoSection
-              :employment-info="state.completeApplication.employment"
+              :employment-info="
+                applicationStore.completeApplication.application.employment
+              "
               color="info"
-              :work-information="state.completeApplication.workInformation"
+              :work-information="
+                applicationStore.completeApplication.application.workInformation
+              "
             />
           </div>
 
           <div
             class="info-section"
-            v-if="state.completeApplication.weapons.length > 0"
+            v-if="
+              applicationStore.completeApplication.application.weapons.length >
+              0
+            "
           >
-            <WeaponInfoSection :weapons="state.completeApplication.weapons" />
+            <WeaponInfoSection
+              :weapons="
+                applicationStore.completeApplication.application.weapons
+              "
+            />
           </div>
 
           <div class="info-section">
@@ -172,7 +222,10 @@
           <div class="info-section">
             <FileUploadInfoSection
               :color="'primary'"
-              :uploaded-documents="state.completeApplication.uploadedDocuments"
+              :uploaded-documents="
+                applicationStore.completeApplication.application
+                  .uploadedDocuments
+              "
               :enable-button="false"
               :enable-eight-hour-safety-course-button="false"
             />
@@ -182,7 +235,8 @@
             <QualifyingQuestionsInfoSection
               :color="'primary'"
               :qualifying-questions-info="
-                state.completeApplication.qualifyingQuestions
+                applicationStore.completeApplication.application
+                  .qualifyingQuestions
               "
             />
           </div>
@@ -217,22 +271,19 @@ import SpouseAddressInfoSection from '@shared-ui/components/info-sections/Spouse
 import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue'
 import WeaponInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRoute } from 'vue-router/composables'
 import { computed, onMounted, reactive } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()
 
-const route = useRoute()
-
 const state = reactive({
   isLoading: true,
   isError: false,
-  completeApplication: applicationStore.getCompleteApplication.application,
   open: false,
 })
 
 const isRenew = computed(() => {
-  const applicationType = state.completeApplication.applicationType
+  const applicationType =
+    applicationStore.completeApplication.application.applicationType
 
   return (
     applicationType === ApplicationType['Renew Standard'] ||
@@ -243,14 +294,12 @@ const isRenew = computed(() => {
 })
 
 onMounted(() => {
+  // TODO: this should be a query
   if (!applicationStore.completeApplication.application.orderId) {
     applicationStore
-      .getCompleteApplicationFromApi(
-        route.query.applicationId as string,
-        Boolean(route.query.isComplete)
-      )
-      .then(res => {
-        state.completeApplication = res.application
+      // TODO: check if this works
+      .getUserApplication()
+      .then(() => {
         state.isLoading = false
       })
       .catch(() => {

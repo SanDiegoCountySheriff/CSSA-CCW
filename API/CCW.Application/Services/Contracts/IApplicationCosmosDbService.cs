@@ -14,14 +14,14 @@ public interface IApplicationCosmosDbService
     Task<string> GetSSNAsync(string userId, CancellationToken cancellationToken);
     Task<PermitApplication> GetLastApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken);
     Task<PermitApplication> GetUserLastApplicationAsync(string userEmailOrOrderId, bool isOrderId, bool isComplete, bool isLegacy, CancellationToken cancellationToken);
-    Task<IEnumerable<PermitApplication>> GetAllApplicationsAsync(string userId, string userEmail, CancellationToken cancellationToken);
+    Task<PermitApplication> GetApplicationAsync(string userId, CancellationToken cancellationToken);
     Task<IEnumerable<PermitApplication>> GetAllUserApplicationsAsync(string userEmail, CancellationToken cancellationToken);
     Task<PermitApplication> GetUserApplicationAsync(string applicationId, CancellationToken cancellationToken);
     Task<IEnumerable<PermitApplication>> GetMultipleApplicationsAsync(string[] applicationIds, CancellationToken cancellationToken);
     Task<IEnumerable<History>> GetApplicationHistoryAsync(string applicationIdOrOrderId, CancellationToken cancellationToken, bool isOrderId = false);
     Task<(IEnumerable<SummarizedPermitApplication>, int)> GetAllInProgressApplicationsSummarizedAsync(PermitsOptions options, CancellationToken cancellationToken);
     Task<IEnumerable<SummarizedPermitApplication>> SearchApplicationsAsync(string searchValue, CancellationToken cancellationToken);
-    Task UpdateApplicationAsync(PermitApplication application, PermitApplication existingApplication, CancellationToken cancellationToken);
+    Task<PermitApplication> UpdateApplicationAsync(PermitApplication application, PermitApplication existingApplication, CancellationToken cancellationToken);
     Task<PermitApplication> UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken);
     Task DeleteUserApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken);
     Task<int> GetApplicationCountAsync(PermitsOptions options, CancellationToken cancellationToken);

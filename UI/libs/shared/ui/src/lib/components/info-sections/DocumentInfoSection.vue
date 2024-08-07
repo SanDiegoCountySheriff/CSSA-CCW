@@ -1,5 +1,5 @@
 <template>
-  <v-card flat>
+  <div>
     <v-card-title> Upload Documents </v-card-title>
     <strong
       ><p class="ml-4">{{ $t('Documentation-Subheader') }}</p>
@@ -71,7 +71,7 @@
         </p>
       </div>
     </v-card-text>
-  </v-card>
+  </div>
 </template>
 
 <script setup lang="ts"></script>

@@ -2,7 +2,7 @@
   <div>
     <FormButtonContainer
       v-if="$vuetify.breakpoint.lgAndUp"
-      :valid="valid"
+      :valid="valid && !isLoading"
       @continue="handleContinue"
       @save="handleSave"
       v-on="$listeners"
@@ -13,245 +13,280 @@
       ref="form"
       v-model="valid"
     >
-      <v-divider />
-
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t('File Upload') }}
-      </v-subheader>
-
-      <v-alert
-        v-if="isRenew"
-        class="mt-2"
-        outlined
-        type="warning"
+      <v-card
+        :loading="isLoading"
+        style="background-color: transparent"
+        flat
       >
-        The renewal process requires you to upload your firearm safety
-        proficiency certificate. Please upload the front
-        <strong>AND</strong> back of the certificate in the respective box
-        below.
-      </v-alert>
+        <v-divider />
+        <v-subheader class="sub-header font-weight-bold">
+          {{ $t('File Upload') }}
+        </v-subheader>
 
-      <v-row>
-        <v-col
-          cols="12"
-          lg="3"
-          class="mb-4"
+        <v-alert
+          v-if="isRenew"
+          class="mt-2"
+          outlined
+          type="warning"
         >
-          <FileUploadContainer
-            :accepted-formats="'image/png, image/jpeg, application/pdf'"
-            :document-label="'Drivers License'"
-            :is-loading="loadingStates.DriverLicense"
-            @file-opening="loadingStates.DriverLicense = true"
-            @file-opened="loadingStates.DriverLicense = false"
-            :rules="driverLicenseRules"
-            :uploaded-documents="completeApplication.uploadedDocuments"
-            :filter-document-type="'DriverLicense'"
-            @upload-files="files => handleMultiInput(files, 'DriverLicense')"
-            @delete-file="name => deleteFile(name)"
-          />
-        </v-col>
+          The renewal process requires you to upload your firearm safety
+          proficiency certificate. Please upload the front
+          <strong>AND</strong> back of the certificate in the respective box
+          below.
+        </v-alert>
 
-        <v-col
-          cols="12"
-          lg="3"
-          class="mb-4"
-        >
-          <FileUploadContainer
-            :accepted-formats="'image/png, image/jpeg, application/pdf'"
-            :document-label="'Proof of Residency'"
-            :is-loading="loadingStates.ProofResidency"
-            @file-opening="loadingStates.ProofResidency = true"
-            @file-opened="loadingStates.ProofResidency = false"
-            :rules="proofOfResidenceRules"
-            :uploaded-documents="completeApplication.uploadedDocuments"
-            :filter-document-type="'ProofResidency'"
-            @upload-files="files => handleMultiInput(files, 'ProofResidency')"
-            @delete-file="name => deleteFile(name)"
-          />
-        </v-col>
+        <v-row>
+          <v-col
+            cols="12"
+            lg="3"
+            class="mb-4"
+          >
+            <FileUploadContainer
+              :accepted-formats="'image/png, image/jpeg, application/pdf'"
+              :document-label="'Drivers License'"
+              :is-loading="loadingStates.DriverLicense"
+              @file-opening="loadingStates.DriverLicense = true"
+              @file-opened="loadingStates.DriverLicense = false"
+              :rules="driverLicenseRules"
+              :uploaded-documents="
+                applicationStore.completeApplication.application
+                  .uploadedDocuments
+              "
+              :filter-document-type="'DriverLicense'"
+              @upload-files="files => handleMultiInput(files, 'DriverLicense')"
+              @delete-file="name => deleteFile(name)"
+            />
+          </v-col>
 
-        <v-col
-          cols="12"
-          lg="3"
-          class="mb-4"
-        >
-          <FileUploadContainer
-            :accepted-formats="'image/png, image/jpeg, application/pdf'"
-            :document-label="'2nd Proof of Residency'"
-            :is-loading="loadingStates.ProofResidency2"
-            @file-opening="loadingStates.ProofResidency2 = true"
-            @file-opened="loadingStates.ProofResidency2 = false"
-            :rules="proofOfResidence2Rules"
-            :uploaded-documents="completeApplication.uploadedDocuments"
-            :filter-document-type="'ProofResidency2'"
-            @upload-files="files => handleMultiInput(files, 'ProofResidency2')"
-            @delete-file="name => deleteFile(name)"
-          />
-        </v-col>
-        <v-col
-          cols="12"
-          lg="3"
-          class="mb-4"
-        >
-          <FileUploadContainer
-            :accepted-formats="'image/png, image/jpeg, application/pdf'"
-            :document-label="'Military Documents'"
-            :is-loading="loadingStates.MilitaryDoc"
-            @file-opening="loadingStates.MilitaryDoc = true"
-            @file-opened="loadingStates.MilitaryDoc = false"
-            :rules="militaryDocRules"
-            :uploaded-documents="completeApplication.uploadedDocuments"
-            :filter-document-type="'MilitaryDoc'"
-            @upload-files="files => handleMultiInput(files, 'MilitaryDoc')"
-            @delete-file="name => deleteFile(name)"
-          />
-        </v-col>
-      </v-row>
+          <v-col
+            cols="12"
+            lg="3"
+            class="mb-4"
+          >
+            <FileUploadContainer
+              :accepted-formats="'image/png, image/jpeg, application/pdf'"
+              :document-label="'Proof of Residency'"
+              :is-loading="loadingStates.ProofResidency"
+              @file-opening="loadingStates.ProofResidency = true"
+              @file-opened="loadingStates.ProofResidency = false"
+              :rules="proofOfResidenceRules"
+              :uploaded-documents="
+                applicationStore.completeApplication.application
+                  .uploadedDocuments
+              "
+              :filter-document-type="'ProofResidency'"
+              @upload-files="files => handleMultiInput(files, 'ProofResidency')"
+              @delete-file="name => deleteFile(name)"
+            />
+          </v-col>
 
-      <v-divider />
+          <v-col
+            cols="12"
+            lg="3"
+            class="mb-4"
+          >
+            <FileUploadContainer
+              :accepted-formats="'image/png, image/jpeg, application/pdf'"
+              :document-label="'2nd Proof of Residency'"
+              :is-loading="loadingStates.ProofResidency2"
+              @file-opening="loadingStates.ProofResidency2 = true"
+              @file-opened="loadingStates.ProofResidency2 = false"
+              :rules="proofOfResidence2Rules"
+              :uploaded-documents="
+                applicationStore.completeApplication.application
+                  .uploadedDocuments
+              "
+              :filter-document-type="'ProofResidency2'"
+              @upload-files="
+                files => handleMultiInput(files, 'ProofResidency2')
+              "
+              @delete-file="name => deleteFile(name)"
+            />
+          </v-col>
+          <v-col
+            cols="12"
+            lg="3"
+            class="mb-4"
+          >
+            <FileUploadContainer
+              :accepted-formats="'image/png, image/jpeg, application/pdf'"
+              :document-label="'Military Documents'"
+              :is-loading="loadingStates.MilitaryDoc"
+              @file-opening="loadingStates.MilitaryDoc = true"
+              @file-opened="loadingStates.MilitaryDoc = false"
+              :rules="militaryDocRules"
+              :uploaded-documents="
+                applicationStore.completeApplication.application
+                  .uploadedDocuments
+              "
+              :filter-document-type="'MilitaryDoc'"
+              @upload-files="files => handleMultiInput(files, 'MilitaryDoc')"
+              @delete-file="name => deleteFile(name)"
+            />
+          </v-col>
+        </v-row>
 
-      <v-row>
-        <v-col
-          cols="12"
-          lg="3"
-          class="mb-4 mt-4"
-        >
-          <FileUploadContainer
-            :accepted-formats="'image/png, image/jpeg, application/pdf'"
-            :document-label="'Citizenship Documents'"
-            :is-loading="loadingStates.Citizenship"
-            @file-opening="loadingStates.Citizenship = true"
-            @file-opened="loadingStates.Citizenship = false"
-            :uploaded-documents="completeApplication.uploadedDocuments"
-            :filter-document-type="'Citizenship'"
-            @upload-files="files => handleMultiInput(files, 'Citizenship')"
-            @delete-file="name => deleteFile(name)"
-          />
-        </v-col>
-        <v-col
-          cols="12"
-          lg="3"
-          class="mb-4 mt-4"
-        >
-          <FileUploadContainer
-            :accepted-formats="'image/png, image/jpeg, application/pdf'"
-            :document-label="'Supporting Documents'"
-            :is-loading="loadingStates.Supporting"
-            @file-opening="loadingStates.Supporting = true"
-            @file-opened="loadingStates.Supporting = false"
-            :uploaded-documents="completeApplication.uploadedDocuments"
-            :filter-document-type="'Supporting'"
-            @upload-files="files => handleMultiInput(files, 'Supporting')"
-            @delete-file="name => deleteFile(name)"
-          />
-        </v-col>
-        <v-col
-          cols="12"
-          lg="3"
-          class="mb-4 mt-4"
-        >
-          <FileUploadContainer
-            :accepted-formats="'image/png, image/jpeg, application/pdf'"
-            :document-label="'Legal Name Change Documents'"
-            :is-loading="loadingStates.NameChange"
-            @file-opening="loadingStates.NameChange = true"
-            @file-opened="loadingStates.NameChange = false"
-            :uploaded-documents="completeApplication.uploadedDocuments"
-            :filter-document-type="'NameChange'"
-            @upload-files="files => handleMultiInput(files, 'NameChange')"
-            @delete-file="name => deleteFile(name)"
-          />
-        </v-col>
-        <v-col
-          cols="12"
-          lg="3"
-          class="mb-4 mt-4"
-        >
-          <FileUploadContainer
-            :accepted-formats="'image/png, image/jpeg, application/pdf'"
-            :document-label="'Judicial Documents'"
-            :is-loading="loadingStates.Judicial"
-            @file-opening="loadingStates.Judicial = true"
-            @file-opened="loadingStates.Judicial = false"
-            :rules="judicialValidationRule"
-            :uploaded-documents="completeApplication.uploadedDocuments"
-            :filter-document-type="'Judicial'"
-            @upload-files="files => handleMultiInput(files, 'Judicial')"
-            @delete-file="name => deleteFile(name)"
-          />
-        </v-col>
-      </v-row>
+        <v-divider />
 
-      <v-divider />
+        <v-row>
+          <v-col
+            cols="12"
+            lg="3"
+            class="mb-4 mt-4"
+          >
+            <FileUploadContainer
+              :accepted-formats="'image/png, image/jpeg, application/pdf'"
+              :document-label="'Citizenship Documents'"
+              :is-loading="loadingStates.Citizenship"
+              @file-opening="loadingStates.Citizenship = true"
+              @file-opened="loadingStates.Citizenship = false"
+              :uploaded-documents="
+                applicationStore.completeApplication.application
+                  .uploadedDocuments
+              "
+              :filter-document-type="'Citizenship'"
+              @upload-files="files => handleMultiInput(files, 'Citizenship')"
+              @delete-file="name => deleteFile(name)"
+            />
+          </v-col>
+          <v-col
+            cols="12"
+            lg="3"
+            class="mb-4 mt-4"
+          >
+            <FileUploadContainer
+              :accepted-formats="'image/png, image/jpeg, application/pdf'"
+              :document-label="'Supporting Documents'"
+              :is-loading="loadingStates.Supporting"
+              @file-opening="loadingStates.Supporting = true"
+              @file-opened="loadingStates.Supporting = false"
+              :uploaded-documents="
+                applicationStore.completeApplication.application
+                  .uploadedDocuments
+              "
+              :filter-document-type="'Supporting'"
+              @upload-files="files => handleMultiInput(files, 'Supporting')"
+              @delete-file="name => deleteFile(name)"
+            />
+          </v-col>
+          <v-col
+            cols="12"
+            lg="3"
+            class="mb-4 mt-4"
+          >
+            <FileUploadContainer
+              :accepted-formats="'image/png, image/jpeg, application/pdf'"
+              :document-label="'Legal Name Change Documents'"
+              :is-loading="loadingStates.NameChange"
+              @file-opening="loadingStates.NameChange = true"
+              @file-opened="loadingStates.NameChange = false"
+              :uploaded-documents="
+                applicationStore.completeApplication.application
+                  .uploadedDocuments
+              "
+              :filter-document-type="'NameChange'"
+              @upload-files="files => handleMultiInput(files, 'NameChange')"
+              @delete-file="name => deleteFile(name)"
+            />
+          </v-col>
+          <v-col
+            cols="12"
+            lg="3"
+            class="mb-4 mt-4"
+          >
+            <FileUploadContainer
+              :accepted-formats="'image/png, image/jpeg, application/pdf'"
+              :document-label="'Judicial Documents'"
+              :is-loading="loadingStates.Judicial"
+              @file-opening="loadingStates.Judicial = true"
+              @file-opened="loadingStates.Judicial = false"
+              :rules="judicialValidationRule"
+              :uploaded-documents="
+                applicationStore.completeApplication.application
+                  .uploadedDocuments
+              "
+              :filter-document-type="'Judicial'"
+              @upload-files="files => handleMultiInput(files, 'Judicial')"
+              @delete-file="name => deleteFile(name)"
+            />
+          </v-col>
+        </v-row>
 
-      <v-row>
-        <v-col
-          cols="12"
-          lg="3"
-          class="mb-4 mt-4"
-        >
-          <FileUploadContainer
-            :accepted-formats="'image/png, image/jpeg, application/pdf'"
-            :document-label="'Reserve Documents'"
-            :is-loading="loadingStates.Reserve"
-            @file-opening="loadingStates.Reserve = true"
-            @file-opened="loadingStates.Reserve = false"
-            :rules="reserveValidationRule"
-            :uploaded-documents="completeApplication.uploadedDocuments"
-            :filter-document-type="'Reserve'"
-            @upload-files="files => handleMultiInput(files, 'Reserve')"
-            @delete-file="name => deleteFile(name)"
-          />
-        </v-col>
-        <v-col
-          cols="12"
-          lg="3"
-          class="mb-4 mt-4"
-        >
-          <FileUploadContainer
-            :accepted-formats="'image/png, image/jpeg, application/pdf'"
-            :document-label="'Firearm Safety Certificate'"
-            :is-loading="loadingStates.EightHourSafetyCourse"
-            @file-opening="loadingStates.EightHourSafetyCourse = true"
-            @file-opened="loadingStates.EightHourSafetyCourse = false"
-            :rules="safetyCertificateRules"
-            :uploaded-documents="completeApplication.uploadedDocuments"
-            :filter-document-type="'EightHourSafetyCourse'"
-            @upload-files="
-              files => handleMultiInput(files, 'EightHourSafetyCourse')
-            "
-            @delete-file="name => deleteFile(name)"
-          />
-        </v-col>
-        <v-col
-          cols="12"
-          lg="3"
-          class="mb-4 mt-4"
-        >
-          <FileUploadContainer
-            v-if="brandStore.brand.employmentLicense"
-            :accepted-formats="'image/png, image/jpeg, application/pdf'"
-            :document-label="'Employment Documents'"
-            :is-loading="loadingStates.Employment"
-            @file-opening="loadingStates.Employment = true"
-            @file-opened="loadingStates.Employment = false"
-            :rules="employmentValidationRule"
-            :uploaded-documents="completeApplication.uploadedDocuments"
-            :filter-document-type="'Employment'"
-            @upload-files="files => handleMultiInput(files, 'Employment')"
-            @delete-file="name => deleteFile(name)"
-          />
-        </v-col>
-      </v-row>
+        <v-divider />
 
-      <v-divider />
+        <v-row>
+          <v-col
+            cols="12"
+            lg="3"
+            class="mb-4 mt-4"
+          >
+            <FileUploadContainer
+              :accepted-formats="'image/png, image/jpeg, application/pdf'"
+              :document-label="'Reserve Documents'"
+              :is-loading="loadingStates.Reserve"
+              @file-opening="loadingStates.Reserve = true"
+              @file-opened="loadingStates.Reserve = false"
+              :rules="reserveValidationRule"
+              :uploaded-documents="
+                applicationStore.completeApplication.application
+                  .uploadedDocuments
+              "
+              :filter-document-type="'Reserve'"
+              @upload-files="files => handleMultiInput(files, 'Reserve')"
+              @delete-file="name => deleteFile(name)"
+            />
+          </v-col>
+          <v-col
+            cols="12"
+            lg="3"
+            class="mb-4 mt-4"
+          >
+            <FileUploadContainer
+              :accepted-formats="'image/png, image/jpeg, application/pdf'"
+              :document-label="'Firearm Safety Certificate'"
+              :is-loading="loadingStates.EightHourSafetyCourse"
+              @file-opening="loadingStates.EightHourSafetyCourse = true"
+              @file-opened="loadingStates.EightHourSafetyCourse = false"
+              :rules="safetyCertificateRules"
+              :uploaded-documents="
+                applicationStore.completeApplication.application
+                  .uploadedDocuments
+              "
+              :filter-document-type="'EightHourSafetyCourse'"
+              @upload-files="
+                files => handleMultiInput(files, 'EightHourSafetyCourse')
+              "
+              @delete-file="name => deleteFile(name)"
+            />
+          </v-col>
+          <v-col
+            cols="12"
+            lg="3"
+            class="mb-4 mt-4"
+          >
+            <FileUploadContainer
+              v-if="brandStore.brand.employmentLicense"
+              :accepted-formats="'image/png, image/jpeg, application/pdf'"
+              :document-label="'Employment Documents'"
+              :is-loading="loadingStates.Employment"
+              @file-opening="loadingStates.Employment = true"
+              @file-opened="loadingStates.Employment = false"
+              :rules="employmentValidationRule"
+              :uploaded-documents="
+                applicationStore.completeApplication.application
+                  .uploadedDocuments
+              "
+              :filter-document-type="'Employment'"
+              @upload-files="files => handleMultiInput(files, 'Employment')"
+              @delete-file="name => deleteFile(name)"
+            />
+          </v-col>
+        </v-row>
+
+        <v-divider />
+      </v-card>
     </v-form>
 
-    <v-progress-circular
-      v-if="!state.uploadSuccessful"
-      color="primary"
-      indeterminate
-    />
     <FormButtonContainer
       :valid="valid"
       @continue="handleContinue"
@@ -279,7 +314,6 @@ import {
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()
-const completeApplication = applicationStore.completeApplication.application
 
 interface ISecondFormStepTwoProps {
   value: CompleteApplication
@@ -300,7 +334,7 @@ const model = computed({
 })
 
 const applicationType = computed(() => model.value.application.applicationType)
-
+const uploadingFiles = ref(false)
 const state = reactive({
   files: [] as Array<{ formData; target }>,
   driverLicense: '',
@@ -314,7 +348,6 @@ const state = reactive({
   reserve: '',
   employment: '',
   eightHourSafetyCourse: '',
-  uploadSuccessful: true,
 })
 
 const judicialValidationRule = computed(() => {
@@ -322,9 +355,10 @@ const judicialValidationRule = computed(() => {
     applicationType.value === ApplicationType.Judicial ||
     applicationType.value === ApplicationType['Renew Judicial']
   ) {
-    const documentJudicial = completeApplication.uploadedDocuments.some(
-      obj => obj.documentType === 'Judicial'
-    )
+    const documentJudicial =
+      applicationStore.completeApplication.application.uploadedDocuments.some(
+        obj => obj.documentType === 'Judicial'
+      )
 
     return [() => documentJudicial || 'Judicial Document is required']
   }
@@ -337,9 +371,10 @@ const reserveValidationRule = computed(() => {
     applicationType.value === ApplicationType.Reserve ||
     applicationType.value === ApplicationType['Renew Reserve']
   ) {
-    const documentReserve = completeApplication.uploadedDocuments.some(
-      obj => obj.documentType === 'Reserve'
-    )
+    const documentReserve =
+      applicationStore.completeApplication.application.uploadedDocuments.some(
+        obj => obj.documentType === 'Reserve'
+      )
 
     return [() => documentReserve || 'Reserve Document is required']
   }
@@ -352,9 +387,10 @@ const employmentValidationRule = computed(() => {
     applicationType.value === ApplicationType.Employment ||
     applicationType.value === ApplicationType['Renew Employment']
   ) {
-    const documentEmployment = completeApplication.uploadedDocuments.some(
-      obj => obj.documentType === 'Employment'
-    )
+    const documentEmployment =
+      applicationStore.completeApplication.application.uploadedDocuments.some(
+        obj => obj.documentType === 'Employment'
+      )
 
     return [() => documentEmployment || 'Employment Document is required']
   }
@@ -366,56 +402,70 @@ const form = ref()
 const valid = ref(false)
 
 const driverLicenseRules = computed(() => {
-  const documentDriverLicense = completeApplication.uploadedDocuments.some(
-    obj => obj.documentType === 'DriverLicense'
-  )
+  const documentDriverLicense =
+    applicationStore.completeApplication.application.uploadedDocuments.some(
+      obj => obj.documentType === 'DriverLicense'
+    )
 
   return [
     () =>
       documentDriverLicense ||
-      completeApplication.status === ApplicationStatus['Permit Delivered'] ||
+      applicationStore.completeApplication.application.status ===
+        ApplicationStatus['Permit Delivered'] ||
       "Driver's License is Required",
   ]
 })
 
 const proofOfResidenceRules = computed(() => {
-  const proofOfResidence = completeApplication.uploadedDocuments.some(obj => {
-    return obj.documentType === 'ProofResidency'
-  })
+  const proofOfResidence =
+    applicationStore.completeApplication.application.uploadedDocuments.some(
+      obj => {
+        return obj.documentType === 'ProofResidency'
+      }
+    )
 
   return [
     () =>
       proofOfResidence ||
-      completeApplication.status === ApplicationStatus['Permit Delivered'] ||
+      applicationStore.completeApplication.application.status ===
+        ApplicationStatus['Permit Delivered'] ||
       'Proof of Residency is Required',
   ]
 })
 
 const proofOfResidence2Rules = computed(() => {
-  const proofOfResidence2 = completeApplication.uploadedDocuments.some(obj => {
-    return obj.documentType === 'ProofResidency2'
-  })
+  const proofOfResidence2 =
+    applicationStore.completeApplication.application.uploadedDocuments.some(
+      obj => {
+        return obj.documentType === 'ProofResidency2'
+      }
+    )
 
   return [
     () =>
       proofOfResidence2 ||
-      completeApplication.status === ApplicationStatus['Permit Delivered'] ||
+      applicationStore.completeApplication.application.status ===
+        ApplicationStatus['Permit Delivered'] ||
       '2nd Proof of Residency is Required',
   ]
 })
 
 const militaryDocRules = computed(() => {
-  const militaryStatus = completeApplication.citizenship.militaryStatus
-  const addressState = completeApplication.currentAddress.state
-  const issuingState = completeApplication.idInfo.issuingState
+  const militaryStatus =
+    applicationStore.completeApplication.application.citizenship.militaryStatus
+  const addressState =
+    applicationStore.completeApplication.application.currentAddress.state
+  const issuingState =
+    applicationStore.completeApplication.application.idInfo.issuingState
 
   if (
     militaryStatus === 'Active' &&
     (addressState !== 'California' || issuingState !== 'California')
   ) {
-    const documentMilitaryDocument = completeApplication.uploadedDocuments.some(
-      obj => obj.documentType === 'MilitaryDoc'
-    )
+    const documentMilitaryDocument =
+      applicationStore.completeApplication.application.uploadedDocuments.some(
+        obj => obj.documentType === 'MilitaryDoc'
+      )
 
     return [() => documentMilitaryDocument || 'Military Documents are Required']
   }
@@ -437,7 +487,7 @@ const isRenew = computed(() => {
 const safetyCertificateRules = computed(() => {
   if (isRenew.value) {
     const documentSafetyCertificate =
-      completeApplication.uploadedDocuments.some(
+      applicationStore.completeApplication.application.uploadedDocuments.some(
         obj => obj.documentType === 'EightHourSafetyCourse'
       )
 
@@ -469,55 +519,59 @@ const { mutate: fileMutation } = useMutation({
   mutationFn: handleFileUpload,
 })
 
-const { mutate: updateMutation } = useMutation({
+const { isLoading, mutate: updateMutation } = useMutation({
   mutationFn: (updateReason: string) => {
-    return applicationStore.updateApplication(updateReason)
-  },
-  onSuccess: () => {
-    for (let item of completeApplication.uploadedDocuments) {
-      switch (item.documentType.toLowerCase()) {
-        case 'driverlicense':
-          state.driverLicense = item.name
-          break
-        case 'proofresidency':
-          state.proofResidence = item.name
-          break
-        case 'proofresidency2':
-          state.proofResidence2 = item.name
-          break
-        case 'militarydoc':
-          state.military = item.name
-          break
-        case 'citizenship':
-          state.citizenship = item.name
-          break
-        case 'supporting':
-          state.supporting.push(item.name)
-          break
-        case 'namechange':
-          state.nameChange = item.name
-          break
-        case 'judicial':
-          state.judicial = item.name
-          break
-        case 'reserve':
-          state.reserve = item.name
-          break
-        case 'employment':
-          state.employment = item.name
-          break
-        case 'eighthoursafetycourse':
-          state.eightHourSafetyCourse = item.name
-          break
-        case 'signature':
-          break
-        default:
-          break
-      }
-    }
+    return applicationStore
+      .updateApplication(updateReason)
+      .then(() => {
+        for (let item of applicationStore.completeApplication.application
+          .uploadedDocuments) {
+          switch (item.documentType.toLowerCase()) {
+            case 'driverlicense':
+              state.driverLicense = item.name
+              break
+            case 'proofresidency':
+              state.proofResidence = item.name
+              break
+            case 'proofresidency2':
+              state.proofResidence2 = item.name
+              break
+            case 'militarydoc':
+              state.military = item.name
+              break
+            case 'citizenship':
+              state.citizenship = item.name
+              break
+            case 'supporting':
+              state.supporting.push(item.name)
+              break
+            case 'namechange':
+              state.nameChange = item.name
+              break
+            case 'judicial':
+              state.judicial = item.name
+              break
+            case 'reserve':
+              state.reserve = item.name
+              break
+            case 'employment':
+              state.employment = item.name
+              break
+            case 'eighthoursafetycourse':
+              state.eightHourSafetyCourse = item.name
+              break
+            case 'signature':
+              break
+            default:
+              break
+          }
+        }
 
-    state.files = []
-    validateForm()
+        validateForm()
+      })
+      .finally(() => {
+        uploadingFiles.value = false
+      })
   },
 })
 
@@ -533,8 +587,6 @@ function handleMultiInput(event, target: string) {
   if (!event || event.length === 0) {
     return
   }
-
-  state.files = []
 
   let startIndex = getNextFileIndex(target)
 
@@ -557,6 +609,7 @@ function handleMultiInput(event, target: string) {
     state.files.push(fileObject)
     startIndex++
   })
+
   fileMutation()
   validateForm()
 }
@@ -564,15 +617,18 @@ function handleMultiInput(event, target: string) {
 function getNextFileIndex(target: string): number {
   const targetPrefix = `${target}_`
 
-  const indexes = completeApplication.uploadedDocuments
-    .filter(doc => doc.name.startsWith(targetPrefix))
-    .map(doc => {
-      const parts = doc.name.split('_')
+  const indexes =
+    applicationStore.completeApplication.application.uploadedDocuments
+      .filter(doc => doc.name.startsWith(targetPrefix))
+      .map(doc => {
+        const parts = doc.name.split('_')
 
-      return parseInt(parts[parts.length - 1], 10)
-    })
+        return parseInt(parts[parts.length - 1], 10)
+      })
 
-  if (!indexes.length) return 1
+  if (!indexes.length) {
+    return 1
+  }
 
   const maxIndex = Math.max(...indexes)
 
@@ -586,6 +642,12 @@ async function handleFileUpload() {
 
   documentTypes.forEach(type => (loadingStates[type] = true))
 
+  while (uploadingFiles.value) {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+  }
+
+  uploadingFiles.value = true
+
   for (let file of state.files) {
     try {
       await axios.post(
@@ -596,11 +658,17 @@ async function handleFileUpload() {
       const uploadDoc: UploadedDocType = {
         documentType: file.target.split('_').shift(),
         name: file.target,
-        uploadedBy: completeApplication.userEmail,
+        uploadedBy: applicationStore.completeApplication.application.userEmail,
         uploadedDateTimeUtc: new Date().toISOString(),
       }
 
-      completeApplication.uploadedDocuments.push(uploadDoc)
+      applicationStore.completeApplication.application.uploadedDocuments.push(
+        uploadDoc
+      )
+
+      state.files = state.files.filter(f => {
+        return f.target !== file.target
+      })
     } catch (e) {
       window.console.warn(e)
     }
@@ -624,9 +692,16 @@ function handleSave() {
 }
 
 async function deleteFile(name) {
-  const documentToDelete = completeApplication.uploadedDocuments.find(
-    doc => doc.name === name
-  )
+  while (uploadingFiles.value) {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+  }
+
+  uploadingFiles.value = true
+
+  const documentToDelete =
+    applicationStore.completeApplication.application.uploadedDocuments.find(
+      doc => doc.name === name
+    )
 
   if (!documentToDelete) {
     return
@@ -643,11 +718,13 @@ async function deleteFile(name) {
       `${Endpoints.DELETE_DOCUMENT_FILE_PUBLIC_ENDPOINT}?applicantFileName=${name}`
     )
 
-    const updatedDocuments = completeApplication.uploadedDocuments.filter(
-      doc => doc.name !== name
-    )
+    const updatedDocuments =
+      applicationStore.completeApplication.application.uploadedDocuments.filter(
+        doc => doc.name !== name
+      )
 
-    completeApplication.uploadedDocuments = updatedDocuments
+    applicationStore.completeApplication.application.uploadedDocuments =
+      updatedDocuments
 
     updateMutation(`Delete file ${name} before upload`)
 
@@ -671,7 +748,8 @@ onMounted(() => {
   state.reserve = ''
   state.eightHourSafetyCourse = ''
 
-  for (let item of completeApplication.uploadedDocuments) {
+  for (let item of applicationStore.completeApplication.application
+    .uploadedDocuments) {
     switch (item.documentType.toLowerCase()) {
       case 'driverlicense':
         state.driverLicense = item.name

@@ -37,7 +37,7 @@
                       >
                         mdi-information
                       </v-icon>
-                      <v-span
+                      <span
                         class="mt-1"
                         text="info"
                         :class="
@@ -45,7 +45,7 @@
                         "
                       >
                         Please read the following:
-                      </v-span>
+                      </span>
                     </v-card-title>
                     <v-card-text>
                       <ol
@@ -131,7 +131,7 @@ import { useThemeStore } from '@shared-ui/stores/themeStore'
 
 const router = useRouter()
 const themeStore = useThemeStore()
-const completeApplication = useCompleteApplicationStore()
+const applicationStore = useCompleteApplicationStore()
 
 const goToDashBoard = () => {
   router.push('/')
@@ -139,7 +139,7 @@ const goToDashBoard = () => {
 
 const isRenewOrModify = computed(() => {
   const applicationType =
-    completeApplication.getCompleteApplication.application.applicationType
+    applicationStore.completeApplication.application.applicationType
 
   return (
     applicationType === ApplicationType['Renew Standard'] ||
