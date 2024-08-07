@@ -299,7 +299,7 @@ async function onNameEdit() {
         name
     }
 
-    permitStore.updatePermitDetailApi(
+    permitStore.updateUserApplication(
       `Updated name of document ${oldName} to ${name}`
     )
   }
@@ -318,7 +318,7 @@ async function deletePdf() {
 
     if (index > -1) {
       permitStore.getPermitDetail.application.uploadedDocuments.splice(index, 1)
-      permitStore.updatePermitDetailApi(
+      permitStore.updateUserApplication(
         `Deleted document: ${itemToDelete.value.name}`
       )
     }

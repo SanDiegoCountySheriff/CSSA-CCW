@@ -232,7 +232,7 @@ async function onNameEdit() {
       ].name = name
     }
 
-    permitStore.updatePermitDetailApi(
+    permitStore.updateUserApplication(
       `Updated name of document ${oldName} to ${name}`
     )
   }
@@ -297,7 +297,7 @@ async function deletePdf() {
         index,
         1
       )
-      permitStore.updatePermitDetailApi(
+      permitStore.updateUserApplication(
         `Deleted document: ${itemToDelete.value.name}`
       )
     }

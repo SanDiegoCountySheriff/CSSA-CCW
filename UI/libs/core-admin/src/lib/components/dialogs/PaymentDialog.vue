@@ -122,7 +122,7 @@ const { isLoading, refetch } = useQuery(
 const { mutate: updateApplication, isLoading: isUpdateApplicationLoading } =
   useMutation({
     mutationFn: (update: string) =>
-      permitStore.updatePermitDetailApi(update).then(() => {
+      permitStore.updateUserApplication(update).then(() => {
         refetch()
       }),
   })

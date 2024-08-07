@@ -229,7 +229,7 @@ const appStatus = [
 
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
-  () => permitStore.updatePermitDetailApi(state.update),
+  () => permitStore.updateUserApplication(state.update),
   {
     onSuccess: () => {
       dialog.value = false

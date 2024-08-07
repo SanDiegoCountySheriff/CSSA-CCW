@@ -137,7 +137,7 @@ const temporaryNumber = ref('')
 const temporaryIssuingState = ref('')
 
 const { mutate: updatePermitDetails } = useMutation({
-  mutationFn: () => permitStore.updatePermitDetailApi(historyMessage.value),
+  mutationFn: () => permitStore.updateUserApplication(historyMessage.value),
 })
 
 function handleSaveQuestionOneFlag() {

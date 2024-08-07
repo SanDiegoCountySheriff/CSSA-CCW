@@ -53,7 +53,7 @@ const historyMessage = ref('')
 
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
-  () => permitStore.updatePermitDetailApi(historyMessage.value),
+  () => permitStore.updateUserApplication(historyMessage.value),
   {
     enabled: false,
   }

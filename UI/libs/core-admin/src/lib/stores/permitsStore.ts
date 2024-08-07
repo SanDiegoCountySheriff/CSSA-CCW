@@ -499,7 +499,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     }
 
     permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
-    updatePermitDetailApi(`Uploaded new ${uploadAdminDoc.documentType}`)
+    updateUserApplication(`Uploaded new ${uploadAdminDoc.documentType}`)
 
     return res || {}
   }
@@ -523,7 +523,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     }
 
     permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
-    updatePermitDetailApi(`Uploaded new ${uploadAdminDoc.documentType}`)
+    updateUserApplication(`Uploaded new ${uploadAdminDoc.documentType}`)
 
     return res || {}
   }
@@ -547,7 +547,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     }
 
     permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
-    updatePermitDetailApi(`Uploaded new ${uploadAdminDoc.documentType}`)
+    updateUserApplication(`Uploaded new ${uploadAdminDoc.documentType}`)
 
     return res || {}
   }
@@ -639,7 +639,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
       const historyMessage = `Uploaded new ${uploadAdminDoc.documentType}`
 
-      await updatePermitDetailApi(historyMessage)
+      await updateUserApplication(historyMessage)
 
       return res || {}
     } catch (error) {
@@ -669,7 +669,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     }
 
     permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
-    updatePermitDetailApi(`Uploaded new ${uploadAdminDoc.documentType}`)
+    updateUserApplication(`Uploaded new ${uploadAdminDoc.documentType}`)
 
     return res || {}
   }
@@ -694,7 +694,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     }
 
     permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
-    updatePermitDetailApi(`Uploaded new ${uploadAdminDoc.documentType}`)
+    updateUserApplication(`Uploaded new ${uploadAdminDoc.documentType}`)
 
     return res || {}
   }
@@ -722,7 +722,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     )
   }
 
-  async function updatePermitDetailApi(item: string) {
+  async function updateUserApplication(item: string) {
     if (permitDetail.value.application.cost === null) {
       permitDetail.value.application.cost = brandStore.brand.cost
     }
@@ -879,7 +879,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     printUnofficialLicenseApi,
     printLiveScanApi,
     printRevocationLetterApi,
-    updatePermitDetailApi,
+    updateUserApplication,
     updateMultiplePermitDetailsApi,
     getAllPermitsSummary,
     getApplicationSummaryCount,

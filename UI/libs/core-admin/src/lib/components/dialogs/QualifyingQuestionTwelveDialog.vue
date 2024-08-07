@@ -225,7 +225,7 @@ const showErrorFlag = computed(() => {
 })
 
 const { mutate: updatePermitDetails } = useMutation({
-  mutationFn: () => permitStore.updatePermitDetailApi(historyMessage.value),
+  mutationFn: () => permitStore.updateUserApplication(historyMessage.value),
 })
 
 function saveViolation() {

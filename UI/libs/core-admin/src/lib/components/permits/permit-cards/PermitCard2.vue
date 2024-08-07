@@ -1271,7 +1271,7 @@ const isAppointmentComplete = computed(() => {
 
 const { mutate: updatePermitDetails, isLoading } = useMutation({
   mutationFn: () =>
-    permitStore.updatePermitDetailApi(`Updated ${changed.value}`),
+    permitStore.updateUserApplication(`Updated ${changed.value}`),
 })
 
 const { mutate: deleteSlotByApplicationId } = useMutation({

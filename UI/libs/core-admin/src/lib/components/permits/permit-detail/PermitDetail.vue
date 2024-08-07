@@ -242,7 +242,7 @@ const reveal = ref(false)
 
 const { isLoading: isUpdatePermitLoading, mutate: setPermitDetails } =
   useMutation(['setPermitsDetails'], () =>
-    permitStore.updatePermitDetailApi(state.updatedSection)
+    permitStore.updateUserApplication(state.updatedSection)
   )
 
 function handleSave(item: string) {

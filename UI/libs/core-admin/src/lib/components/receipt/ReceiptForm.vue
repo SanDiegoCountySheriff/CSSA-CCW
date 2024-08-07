@@ -174,7 +174,7 @@ function submitAndPrint() {
     permitStore.permitDetail.application.readyForModificationPayment = false
   }
 
-  permitStore.updatePermitDetailApi('Payment History added').catch(() => {
+  permitStore.updateUserApplication('Payment History added').catch(() => {
     snackbar.value = true
   })
 }

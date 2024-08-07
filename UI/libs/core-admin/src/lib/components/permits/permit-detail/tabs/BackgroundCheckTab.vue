@@ -416,7 +416,7 @@ const checklistItems = [
 
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
-  () => permitStore.updatePermitDetailApi(`Updated ${changed.value}`),
+  () => permitStore.updateUserApplication(`Updated ${changed.value}`),
   {
     enabled: false,
   }

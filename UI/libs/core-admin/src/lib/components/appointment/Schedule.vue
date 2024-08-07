@@ -336,7 +336,7 @@ function formatDate(date: Date, hour: number, minute: number): string {
 }
 
 const { mutate: updatePermitDetails } = useMutation({
-  mutationFn: () => permitStore.updatePermitDetailApi(`Updated ${changed}`),
+  mutationFn: () => permitStore.updateUserApplication(`Updated ${changed}`),
 })
 
 const isMovingUp = computed(() => {
