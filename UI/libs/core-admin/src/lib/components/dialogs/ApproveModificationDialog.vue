@@ -1,71 +1,71 @@
 <template>
-  <div>
-    <v-dialog
-      v-model="state.dialog"
-      persistent
-      max-width="600"
-    >
-      <v-card>
-        <v-card-title>Approve Modification</v-card-title>
-        <v-card-text>
-          <v-row>
-            <v-col>
-              <v-alert
-                type="warning"
-                dense
-                outlined
-              >
-                Are you sure you want to approve the modification? You will not
-                be able to make any changes to the weapons once the modification
-                has been approved.
-              </v-alert>
-            </v-col>
-          </v-row>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn
-            color="error"
-            text
-            @click="cancelDialog"
-          >
-            Cancel
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="primary"
-            text
-            @click="handleApprove"
-          >
-            Approve Modification
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
+  <v-dialog
+    v-model="dialog"
+    max-width="650"
+  >
+    <template #activator="{ on, attrs }">
+      <v-btn
+        v-on="on"
+        v-bind="attrs"
+        color="primary"
+        small
+        block
+      >
+        <v-icon
+          v-if="icon"
+          left
+        >
+          {{ icon }}
+        </v-icon>
+        {{ buttonText }}
+      </v-btn>
+    </template>
+
+    <v-card>
+      <v-card-title>{{ title }}</v-card-title>
+
+      <v-alert type="warning">{{ text }}</v-alert>
+
+      <v-card-actions>
+        <v-btn
+          text
+          color="error"
+          @click="dialog = false"
+        >
+          Cancel
+        </v-btn>
+
+        <v-spacer />
+
+        <v-btn
+          text
+          color="primary"
+          @click="handleConfirm"
+        >
+          Approve Modification
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
-<script lang="ts" setup>
-import { reactive } from 'vue'
+<script setup lang="ts">
+import { ref } from 'vue'
 
-interface ApproveModificationDialog {
-  showDialog: boolean
+interface ApproveModificationDialogProps {
+  buttonText: string
+  title: string
+  text: string
+  icon?: string
 }
 
-const emits = defineEmits(['cancel', 'approved'])
+defineProps<ApproveModificationDialogProps>()
+const emit = defineEmits(['confirm'])
 
-const props = defineProps<ApproveModificationDialog>()
+const dialog = ref(false)
 
-const state = reactive({
-  dialog: props.showDialog,
-})
-
-function cancelDialog() {
-  state.dialog = false
-  emits('cancel')
-}
-
-function handleApprove() {
-  state.dialog = false
-  emits('approved')
+function handleConfirm() {
+  emit('confirm')
+  dialog.value = false
 }
 </script>

@@ -205,16 +205,14 @@
           <v-card-text class="text-center">
             <v-row>
               <v-col v-if="modificationReadyForApproval">
-                <v-btn
-                  :disabled="readonly"
-                  @click="state.modificationApproved = true"
-                  color="primary"
-                  block
-                  small
+                <ApproveModificationDialog
+                  @confirm="handleApproveModification"
+                  button-text="Approve Modification"
+                  title="Approve Modification"
+                  text=" Are you sure you want to approve the modification? You will not be able to make any changes to the weapons once the modification has been approved."
+                  icon="mdi-check-bold"
                 >
-                  <v-icon left>mdi-check-bold</v-icon>
-                  Approve Modification
-                </v-btn>
+                </ApproveModificationDialog>
               </v-col>
 
               <v-col v-if="modificationReadyForApproval">
@@ -1052,15 +1050,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-    <template v-if="state.modificationApproved">
-      <ApproveModificationDialog
-        :show-dialog="state.modificationApproved"
-        @approved="handleApproveModification"
-        @cancel="state.modificationApproved = false"
-      >
-      </ApproveModificationDialog>
-    </template>
   </v-container>
 </template>
 
@@ -1123,7 +1112,6 @@ const state = reactive({
   snackText: '',
   multiLine: false,
   text: `Invalid file type provided.`,
-  modificationApproved: false,
 })
 
 const ninetyDayStartDateSelection = ref(null)
@@ -1362,8 +1350,6 @@ async function handleApproveModification() {
   const historicalApplication: CompleteApplication = {
     ...permitStore.getPermitDetail,
   }
-
-  state.modificationApproved = false
 
   const app = permitStore.getPermitDetail.application
 
