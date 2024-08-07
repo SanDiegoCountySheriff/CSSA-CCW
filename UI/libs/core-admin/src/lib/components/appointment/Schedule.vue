@@ -313,6 +313,7 @@ const { refetch } = useQuery(
       })
 
       state.appointments = uniqueData
+      state.focus = new Date(state.appointments[0].start).toLocaleDateString()
     },
   }
 )
@@ -414,7 +415,6 @@ const appointmentMutation = useMutation({
 
 onMounted(() => {
   state.calendarLoading = true
-  state.focus = new Date(state.appointments[0].start).toLocaleDateString()
 })
 
 function viewDay({ date }) {
