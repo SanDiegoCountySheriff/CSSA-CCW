@@ -44,10 +44,10 @@
           >
             <v-select
               v-if="
+                !isModify ||
                 (isModify &&
                   (authStore.auth.roles.includes('CCW-ADMIN-ROLE') ||
-                    'CCW-SYSTEM-ADMINS-ROLE')) ||
-                !isModify
+                    authStore.auth.roles.includes('CCW-SYSTEM-ADMINS-ROLE')))
               "
               ref="select"
               :items="appStatus"
