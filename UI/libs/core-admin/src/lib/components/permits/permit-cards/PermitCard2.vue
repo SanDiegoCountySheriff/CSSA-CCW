@@ -205,13 +205,7 @@
           <v-card-text class="text-center">
             <v-row>
               <v-col v-if="modificationReadyForApproval">
-                <ApproveModificationDialog
-                  @confirm="handleApproveModification"
-                  button-text="Approve Modification"
-                  title="Approve Modification"
-                  text=" Are you sure you want to approve the modification? You will not be able to make any changes to the weapons once the modification has been approved."
-                  icon="mdi-check-bold"
-                >
+                <ApproveModificationDialog @confirm="handleApproveModification">
                 </ApproveModificationDialog>
               </v-col>
 

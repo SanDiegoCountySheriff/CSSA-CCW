@@ -11,20 +11,19 @@
         small
         block
       >
-        <v-icon
-          v-if="icon"
-          left
-        >
-          {{ icon }}
-        </v-icon>
-        {{ buttonText }}
+        <v-icon left> mdi-check-bold </v-icon>
+        Approve Modification
       </v-btn>
     </template>
 
     <v-card>
-      <v-card-title>{{ title }}</v-card-title>
+      <v-card-title>Approve Modification</v-card-title>
 
-      <v-alert type="warning">{{ text }}</v-alert>
+      <v-alert type="warning">
+        Are you sure you want to approve the modification? You will not be able
+        to make any changes to the weapons once the modification has been
+        approved.
+      </v-alert>
 
       <v-card-actions>
         <v-btn
@@ -52,14 +51,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-interface ApproveModificationDialogProps {
-  buttonText: string
-  title: string
-  text: string
-  icon?: string
-}
-
-defineProps<ApproveModificationDialogProps>()
 const emit = defineEmits(['confirm'])
 
 const dialog = ref(false)
