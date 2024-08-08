@@ -19,10 +19,22 @@
     <v-card>
       <v-card-title>Approve Modification</v-card-title>
 
-      <v-alert type="warning">
-        Are you sure you want to approve the modification? You will not be able
-        to make any changes to the weapons once the modification has been
-        approved.
+      <v-alert
+        type="warning"
+        class="mx-5"
+        outlined
+        text
+        dense
+      >
+        <span
+          :class="
+            themeStore.getThemeConfig.isDark ? 'white--text' : 'black--text'
+          "
+        >
+          Are you sure you want to approve the modification? You will not be
+          able to make any changes to the weapons once the modification has been
+          approved.
+        </span>
       </v-alert>
 
       <v-card-actions>
@@ -38,7 +50,7 @@
 
         <v-btn
           text
-          color="primary"
+          color="success"
           @click="handleConfirm"
         >
           Approve Modification
@@ -50,8 +62,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 
 const emit = defineEmits(['confirm'])
+const themeStore = useThemeStore()
 
 const dialog = ref(false)
 
