@@ -326,7 +326,9 @@
         <v-expansion-panel>
           <v-expansion-panel-header
             @click.native="stepIndex.step = 1"
-            :color="stepIndex.step === 1 ? 'primary' : ''"
+            :color="
+              stepIndex.step === 1 ? 'primary' : stepOneValid ? '' : 'warning'
+            "
             :class="stepIndex.step === 1 ? 'white--text' : ''"
           >
             {{ $t('Personal') }}
@@ -350,7 +352,9 @@
         <v-expansion-panel>
           <v-expansion-panel-header
             @click.native="stepIndex.step = 2"
-            :color="stepIndex.step === 2 ? 'primary' : ''"
+            :color="
+              stepIndex.step === 2 ? 'primary' : stepTwoValid ? '' : 'warning'
+            "
             :class="stepIndex.step === 2 ? 'white--text' : ''"
           >
             {{ $t('ID Information') }}
@@ -375,7 +379,9 @@
         <v-expansion-panel>
           <v-expansion-panel-header
             @click.native="stepIndex.step = 3"
-            :color="stepIndex.step === 3 ? 'primary' : ''"
+            :color="
+              stepIndex.step === 3 ? 'primary' : stepThreeValid ? '' : 'warning'
+            "
             :class="stepIndex.step === 3 ? 'white--text' : ''"
           >
             {{ $t('Address') }}
@@ -400,7 +406,9 @@
         <v-expansion-panel>
           <v-expansion-panel-header
             @click.native="stepIndex.step = 4"
-            :color="stepIndex.step === 4 ? 'primary' : ''"
+            :color="
+              stepIndex.step === 4 ? 'primary' : stepFourValid ? '' : 'warning'
+            "
             :class="stepIndex.step === 4 ? 'white--text' : ''"
           >
             {{ $t(' Employment & Weapons') }}
@@ -425,7 +433,9 @@
         <v-expansion-panel>
           <v-expansion-panel-header
             @click.native="stepIndex.step = 5"
-            :color="stepIndex.step === 5 ? 'primary' : ''"
+            :color="
+              stepIndex.step === 5 ? 'primary' : stepFiveValid ? '' : 'warning'
+            "
             :class="stepIndex.step === 5 ? 'white--text' : ''"
           >
             {{ $t('Application Type') }}
@@ -450,7 +460,9 @@
         <v-expansion-panel>
           <v-expansion-panel-header
             @click.native="stepIndex.step = 6"
-            :color="stepIndex.step === 6 ? 'primary' : ''"
+            :color="
+              stepIndex.step === 6 ? 'primary' : stepSixValid ? '' : 'warning'
+            "
             :class="stepIndex.step === 6 ? 'white--text' : ''"
           >
             {{ $t(' Upload Files') }}
@@ -475,7 +487,9 @@
         <v-expansion-panel>
           <v-expansion-panel-header
             @click.native="stepIndex.step = 7"
-            :color="stepIndex.step === 7 ? 'primary' : ''"
+            :color="
+              stepIndex.step === 7 ? 'primary' : stepSevenValid ? '' : 'warning'
+            "
             :class="stepIndex.step === 7 ? 'white--text' : ''"
           >
             {{ $t('Qualifying Questions') }}
@@ -512,7 +526,9 @@
         <v-expansion-panel>
           <v-expansion-panel-header
             @click.native="stepIndex.step = 8"
-            :color="stepIndex.step === 8 ? 'primary' : ''"
+            :color="
+              stepIndex.step === 8 ? 'primary' : stepEightValid ? '' : 'warning'
+            "
             :class="stepIndex.step === 8 ? 'white--text' : ''"
           >
             {{ $t('Signature') }}

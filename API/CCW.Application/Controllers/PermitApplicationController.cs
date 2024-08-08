@@ -472,6 +472,17 @@ public class PermitApplicationController : ControllerBase
 
             return Ok(_mapper.Map<UserPermitApplicationResponseModel>(response));
         }
+        catch (CosmosException ce)
+        {
+            if (ce.StatusCode == System.Net.HttpStatusCode.PreconditionFailed)
+            {
+                var originalException = ce.GetBaseException();
+                _logger.LogError(originalException, originalException.Message);
+                return StatusCode(412);
+            }
+
+            return NotFound("An error occur while trying to update permit application.");
+        }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
