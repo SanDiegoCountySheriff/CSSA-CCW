@@ -205,16 +205,9 @@
           <v-card-text class="text-center">
             <v-row>
               <v-col v-if="modificationReadyForApproval">
-                <v-btn
-                  :disabled="readonly"
-                  @click="handleApproveModification"
-                  color="primary"
-                  block
-                  small
-                >
-                  <v-icon left>mdi-check-bold</v-icon>
-                  Approve Modification
-                </v-btn>
+                <ApproveModificationDialog
+                  @confirm="handleApproveModification"
+                />
               </v-col>
 
               <v-col v-if="modificationReadyForApproval">
@@ -1056,6 +1049,7 @@
 </template>
 
 <script setup lang="ts">
+import ApproveModificationDialog from '@core-admin/components/dialogs/ApproveModificationDialog.vue'
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue'
 import ExpirationDateDialog from '@core-admin/components/dialogs/ExpirationDateDialog.vue'
 import FinishModificationDialog from '@core-admin/components/dialogs/FinishModificationDialog.vue'
