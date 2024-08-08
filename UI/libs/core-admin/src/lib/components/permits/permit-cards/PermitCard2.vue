@@ -205,8 +205,9 @@
           <v-card-text class="text-center">
             <v-row>
               <v-col v-if="modificationReadyForApproval">
-                <ApproveModificationDialog @confirm="handleApproveModification">
-                </ApproveModificationDialog>
+                <ApproveModificationDialog
+                  @confirm="handleApproveModification"
+                />
               </v-col>
 
               <v-col v-if="modificationReadyForApproval">
