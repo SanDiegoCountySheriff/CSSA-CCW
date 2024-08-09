@@ -68,6 +68,7 @@
               :label="$t('Street Address')"
               :dense="isMobile"
               :readonly="model.isMatchUpdated === false"
+              @input="handleFormChange"
               maxlength="150"
               outlined
             >
@@ -85,6 +86,7 @@
               :label="$t('City')"
               :dense="isMobile"
               :readonly="model.isMatchUpdated === false"
+              @input="handleFormChange"
               maxlength="100"
               outlined
             >
@@ -104,10 +106,11 @@
               :value="
                 (model.application.currentAddress.country = 'United States')
               "
-              readonly
               :hint="$t('Applicant must reside in the United States')"
+              @input="handleFormChange"
               persistent-hint
               outlined
+              readonly
             >
             </v-text-field>
           </v-col>
@@ -127,6 +130,7 @@
               :items="states"
               :hint="militaryOutOfStateHint"
               :readonly="model.isMatchUpdated === false"
+              @input="handleFormChange"
               persistent-hint
               auto-select-first
               maxlength="100"
@@ -143,6 +147,7 @@
               :label="$t('Region')"
               :dense="isMobile"
               :readonly="model.isMatchUpdated === false"
+              @input="handleFormChange"
               maxlength="100"
               outlined
             >
@@ -163,6 +168,7 @@
               :label="$t('County')"
               :dense="isMobile"
               :readonly="model.isMatchUpdated === false"
+              @input="handleFormChange"
               persistent-hint
               maxlength="100"
               outlined
@@ -180,6 +186,7 @@
               :dense="isMobile"
               :label="$t('Zip')"
               :readonly="model.isMatchUpdated === false"
+              @input="handleFormChange"
               persistent-hint
               maxlength="10"
               outlined
@@ -191,7 +198,10 @@
         <v-checkbox
           v-model="model.application.differentMailing"
           :label="$t('Different Mailing address')"
-          @change="handleValidateForm"
+          @change="
+            handleValidateForm
+            handleFormChange
+          "
         />
       </v-card-text>
 
@@ -216,6 +226,7 @@
                 :rules="[v => !!v || $t('Street address cannot be blank')]"
                 :label="$t('Street Address')"
                 :dense="isMobile"
+                @input="handleFormChange"
                 maxlength="150"
                 outlined
               >
@@ -232,6 +243,7 @@
                 :rules="[v => !!v || $t('City cannot be blank')]"
                 :label="$t('City')"
                 :dense="isMobile"
+                @input="handleFormChange"
                 maxlength="100"
                 outlined
               >
@@ -251,6 +263,7 @@
                 :label="$t('Country')"
                 :items="countries"
                 :dense="isMobile"
+                @input="handleFormChange"
                 auto-select-first
                 outlined
               >
@@ -270,6 +283,7 @@
                 :label="$t('State')"
                 :dense="isMobile"
                 :items="states"
+                @input="handleFormChange"
                 auto-select-first
                 maxlength="100"
                 outlined
@@ -284,6 +298,7 @@
                 :rules="[v => !!v || $t('Region cannot be blank')]"
                 :label="$t('Region')"
                 :dense="isMobile"
+                @input="handleFormChange"
                 maxlength="100"
                 outlined
               >
@@ -303,6 +318,7 @@
                 :hint="$t('If not applicable enter N/A ')"
                 :label="$t('County')"
                 :dense="isMobile"
+                @input="handleFormChange"
                 persistent-hint
                 maxlength="100"
                 outlined
@@ -319,6 +335,7 @@
                 :rules="zipRuleSet"
                 :label="$t('Zip')"
                 :dense="isMobile"
+                @input="handleFormChange"
                 persistent-hint
                 maxlength="10"
                 outlined
@@ -333,7 +350,10 @@
         <v-checkbox
           v-model="model.application.differentSpouseAddress"
           :label="$t('Different Spouse address')"
-          @change="handleValidateForm"
+          @change="
+            handleValidateForm
+            handleFormChange
+          "
         />
       </v-card-text>
 
@@ -362,6 +382,7 @@
                 ]"
                 :label="$t('Spouse street address')"
                 :dense="isMobile"
+                @input="handleFormChange"
                 maxlength="150"
                 outlined
               ></v-text-field>
@@ -377,6 +398,7 @@
                 :rules="[v => !!v || $t('Spouse\'s City cannot be blank')]"
                 :label="$t('Spouse\'s City')"
                 :dense="isMobile"
+                @input="handleFormChange"
                 maxlength="100"
                 outlined
               >
@@ -396,6 +418,7 @@
                 :label="$t('Spouse\'s Country')"
                 :items="countries"
                 :dense="isMobile"
+                @input="handleFormChange"
                 auto-select-first
                 outlined
               >
@@ -416,6 +439,7 @@
                 :label="$t('State')"
                 :dense="isMobile"
                 :items="states"
+                @input="handleFormChange"
                 auto-select-first
                 maxlength="100"
                 outlined
@@ -431,6 +455,7 @@
                 :rules="[v => !!v || $t('Region cannot be blank')]"
                 :label="$t('Region')"
                 :dense="isMobile"
+                @input="handleFormChange"
                 maxlength="100"
                 outlined
               >
@@ -450,6 +475,7 @@
                 :hint="$t('If not applicable enter N/A')"
                 :label="$t('Spouse\'s County')"
                 :dense="isMobile"
+                @input="handleFormChange"
                 persistent-hint
                 maxlength="100"
                 outlined
@@ -466,6 +492,7 @@
                 :label="$t('Spouse\'s Zip')"
                 :rules="zipRuleSet"
                 :dense="isMobile"
+                @input="handleFormChange"
                 persistent-hint
                 maxlength="10"
                 outlined
@@ -484,6 +511,7 @@
                 :label="$t('Reason for different spouse address')"
                 :rules="requireReasonRuleSet"
                 :dense="isMobile"
+                @input="handleFormChange"
                 persistent-hint
                 maxlength="50"
                 outlined
@@ -503,6 +531,7 @@
           :label="'Have you lived anywhere else besides your current residence in the last 5 years?'"
           :row="!isMobile"
           :rules="previousAddressRules"
+          @change="handleFormChange"
         >
           <v-radio
             color="primary"
@@ -568,6 +597,7 @@ const emit = defineEmits([
   'handle-continue',
   'handle-save',
   'update-step-three-valid',
+  'form-change',
 ])
 
 const form = ref()
@@ -631,7 +661,12 @@ onMounted(() => {
   }
 })
 
+function handleFormChange() {
+  emit('form-change')
+}
+
 function getPreviousAddressFromDialog(address: AddressInfoType) {
+  emit('form-change')
   model.value.application.previousAddresses.push(address)
 }
 

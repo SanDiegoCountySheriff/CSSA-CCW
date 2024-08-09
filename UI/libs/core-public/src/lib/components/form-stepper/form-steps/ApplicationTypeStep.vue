@@ -36,6 +36,7 @@
           v-model="model.application.applicationType"
           :rules="applicationTypeRules"
           :readonly="model.isMatchUpdated === false"
+          @change="handleFormChange"
         >
           <v-radio
             color="primary"
@@ -105,6 +106,7 @@
           v-model="model.application.applicationType"
           :rules="applicationTypeRules"
           :readonly="model.isMatchUpdated === false"
+          @change="handleFormChange"
         >
           <v-radio
             color="primary"
@@ -209,6 +211,7 @@ const emit = defineEmits([
   'handle-continue',
   'input',
   'update-step-five-valid',
+  'form-change',
 ])
 
 const model = computed({
@@ -237,6 +240,10 @@ watch(valid, (newValue, oldValue) => {
     emit('update-step-five-valid', newValue)
   }
 })
+
+function handleFormChange() {
+  emit('form-change')
+}
 
 function handleContinue() {
   emit('handle-continue')

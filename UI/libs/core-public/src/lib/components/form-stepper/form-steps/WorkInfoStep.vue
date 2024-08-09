@@ -52,6 +52,7 @@
               :rules="employmentRules"
               :dense="isMobile"
               @change="handleValidateForm"
+              @input="handleFormChange"
               outlined
             />
           </v-col>
@@ -75,6 +76,7 @@
                 :label="$t('Employer Name')"
                 :rules="employerNameRules"
                 :dense="isMobile"
+                @input="handleFormChange"
                 maxlength="50"
                 outlined
               />
@@ -90,6 +92,7 @@
                 :label="$t('Occupation')"
                 :rules="occupationRules"
                 :dense="isMobile"
+                @input="handleFormChange"
                 maxlength="50"
                 outlined
               />
@@ -107,6 +110,7 @@
                 :label="$t('Employer Street Address')"
                 :rules="employerAddressRules"
                 :dense="isMobile"
+                @input="handleFormChange"
                 maxlength="50"
                 outlined
               />
@@ -125,6 +129,7 @@
                 :rules="employerCountryRules"
                 :items="countries"
                 :dense="isMobile"
+                @input="handleFormChange"
                 maxlength="50"
                 outlined
               />
@@ -141,6 +146,7 @@
                 :label="$t('Employer Region')"
                 :rules="employerRegionRules"
                 :dense="isMobile"
+                @input="handleFormChange"
                 maxlength="50"
                 outlined
               />
@@ -152,6 +158,7 @@
                 :rules="employerStateRules"
                 :dense="isMobile"
                 :items="states"
+                @input="handleFormChange"
                 outlined
               />
             </v-col>
@@ -168,6 +175,7 @@
                 :label="$t('Employer City')"
                 :rules="employerCityRules"
                 :dense="isMobile"
+                @input="handleFormChange"
                 maxlength="50"
                 outlined
               />
@@ -183,6 +191,7 @@
                 :label="$t('Employer Zip Code')"
                 :rules="zipRuleSet"
                 :dense="isMobile"
+                @input="handleFormChange"
                 maxlength="10"
                 outlined
               />
@@ -195,7 +204,10 @@
             >
               <v-text-field
                 v-model="model.application.workInformation.employerPhone"
-                @input="formatPhone('employerPhone')"
+                @input="
+                  formatPhone('employerPhone')
+                  handleFormChange
+                "
                 :label="$t('Employer Phone number')"
                 :rules="phoneRuleSet"
                 :dense="isMobile"
@@ -296,6 +308,7 @@ const emit = defineEmits([
   'handle-edit',
   'handle-continue',
   'update-step-four-valid',
+  'form-change',
 ])
 
 const model = computed({
@@ -341,6 +354,10 @@ onMounted(() => {
   }
 })
 
+function handleFormChange() {
+  emit('form-change')
+}
+
 function formatPhone(modelName1) {
   const phoneNumber = model.value.application.workInformation[modelName1]
 
@@ -378,14 +395,17 @@ function handleValidateForm() {
 }
 
 function handleSaveWeapon(weapon: WeaponInfoType) {
+  emit('form-change')
   model.value.application.weapons.push(weapon)
 }
 
 function handleDeleteWeapon(index: number) {
+  emit('form-change')
   model.value.application.weapons.splice(index, 1)
 }
 
 function handleEditWeapon(data) {
+  emit('form-change')
   set(model.value.application.weapons, data.index, { ...data.value })
 }
 

@@ -54,6 +54,7 @@
               :label="$t('Driver\'s License Number')"
               :rules="[v => !!v || $t('Driver\'s License Number is required')]"
               :dense="isMobile"
+              @input="handleFormChange"
               outlined
               maxlength="25"
             >
@@ -73,6 +74,7 @@
               :hint="militaryOutOfStateHint"
               persistent-hint
               :dense="isMobile"
+              @input="handleFormChange"
               auto-select-first
             >
             </v-autocomplete>
@@ -86,6 +88,7 @@
               v-model="model.application.idInfo.restrictions"
               :label="$t('Driver\'s License Restrictions')"
               :dense="isMobile"
+              @input="handleFormChange"
               outlined
               maxlength="25"
             >
@@ -105,6 +108,7 @@
       <v-card-text>
         <v-radio-group
           v-model="model.application.citizenship.citizen"
+          @change="handleFormChange"
           label="Citizen"
           row
         >
@@ -134,6 +138,7 @@
                 :items="countries"
                 :label="$t('Country of Citizenship')"
                 :rules="[v => !!v || $t('You must enter a country')]"
+                @input="handleFormChange"
                 auto-select-first
                 outlined
                 :dense="isMobile"
@@ -150,6 +155,7 @@
                 :items="countries"
                 :label="$t('Country of Birth')"
                 :rules="[v => !!v || $t('You must enter a country')]"
+                @input="handleFormChange"
                 auto-select-first
                 outlined
                 :dense="isMobile"
@@ -166,6 +172,7 @@
             >
               <v-radio-group
                 v-model="model.application.immigrantInformation.immigrantAlien"
+                @change="handleFormChange"
                 label="Immigrant Alien"
                 row
               >
@@ -201,6 +208,7 @@
                 v-model="
                   model.application.immigrantInformation.nonImmigrantAlien
                 "
+                @change="handleFormChange"
                 label="Non-Immigrant Alien"
                 row
               >
@@ -250,6 +258,7 @@ const emit = defineEmits([
   'update-step-two-valid',
   'handle-save',
   'handle-continue',
+  'form-change',
 ])
 
 const vuetify = useVuetify()
@@ -275,12 +284,11 @@ const isRenew = computed(() => {
 })
 
 const militaryOutOfStateHint = computed(() => {
-  const militaryStatus = model.value.application.citizenship.militaryStatus;
-  const driverLicenseState = model.value.application.idInfo.issuingState;
-
+  const militaryStatus = model.value.application.citizenship.militaryStatus
+  const driverLicenseState = model.value.application.idInfo.issuingState
 
   if (militaryStatus === 'Active' && driverLicenseState !== 'California') {
-    return 'You will need to upload your military orders in the required documents section.';
+    return 'You will need to upload your military orders in the required documents section.'
   }
 
   return ''
@@ -297,6 +305,10 @@ watch(valid, (newValue, oldValue) => {
     emit('update-step-two-valid', newValue)
   }
 })
+
+function handleFormChange() {
+  emit('form-change')
+}
 
 function handleSave() {
   emit('handle-save')

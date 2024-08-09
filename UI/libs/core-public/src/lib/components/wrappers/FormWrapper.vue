@@ -222,6 +222,7 @@
               @handle-save="handleSave"
               @handle-continue="handleContinue"
               @previous-step="handlePrevious"
+              @form-change="handleFormChange"
             />
           </v-stepper-content>
           <v-stepper-content :step="3">
@@ -231,6 +232,7 @@
               @handle-save="handleSave"
               @handle-continue="handleContinue"
               @previous-step="handlePrevious"
+              @form-change="handleFormChange"
             />
           </v-stepper-content>
           <v-stepper-content :step="4">
@@ -240,6 +242,7 @@
               @handle-save="handleSave"
               @handle-continue="handleContinue"
               @previous-step="handlePrevious"
+              @form-change="handleFormChange"
             />
           </v-stepper-content>
           <v-stepper-content :step="5">
@@ -249,6 +252,7 @@
               @handle-save="handleSave"
               @handle-continue="handleContinue"
               @previous-step="handlePrevious"
+              @form-change="handleFormChange"
             />
           </v-stepper-content>
           <v-stepper-content :step="6">
@@ -258,6 +262,7 @@
               @handle-save="handleSave"
               @handle-continue="handleContinue"
               @previous-step="handlePrevious"
+              @form-change="handleFormChange"
             />
           </v-stepper-content>
           <v-stepper-content :step="7">
@@ -271,6 +276,7 @@
               @handle-save="handleSave"
               @handle-continue="handleContinue"
               @previous-step="handlePrevious"
+              @form-change="handleFormChange"
             />
             <LegacyQualifyingQuestionsStep
               v-else
@@ -279,6 +285,7 @@
               @handle-save="handleSave"
               @handle-continue="handleContinue"
               @previous-step="handlePrevious"
+              @form-change="handleFormChange"
             />
           </v-stepper-content>
           <v-stepper-content :step="8">
@@ -301,6 +308,7 @@
               @handle-condition-agreement-enter="
                 handleEnterKeyPress('False_Info')
               "
+              @form-change="handleFormChange"
             />
           </v-stepper-content>
         </v-stepper-items>
@@ -344,6 +352,7 @@
               @update-step-one-valid="handleUpdateStepOneValid"
               @handle-save="handleSave"
               @handle-continue="handleContinue"
+              @form-change="handleFormChange"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -371,6 +380,7 @@
               @handle-save="handleSave"
               @handle-continue="handleContinue"
               @previous-step="handlePrevious"
+              @form-change="handleFormChange"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -398,6 +408,7 @@
               @handle-save="handleSave"
               @handle-continue="handleContinue"
               @previous-step="handlePrevious"
+              @form-change="handleFormChange"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -425,6 +436,7 @@
               @handle-save="handleSave"
               @handle-continue="handleContinue"
               @previous-step="handlePrevious"
+              @form-change="handleFormChange"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -452,6 +464,7 @@
               @handle-save="handleSave"
               @handle-continue="handleContinue"
               @previous-step="handlePrevious"
+              @form-change="handleFormChange"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -479,6 +492,7 @@
               @handle-save="handleSave"
               @handle-continue="handleContinue"
               @previous-step="handlePrevious"
+              @form-change="handleFormChange"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -510,6 +524,7 @@
               @handle-save="handleSave"
               @handle-continue="handleContinue"
               @previous-step="handlePrevious"
+              @form-change="handleFormChange"
             />
             <LegacyQualifyingQuestionsStep
               v-else
@@ -518,6 +533,7 @@
               @handle-save="handleSave"
               @handle-continue="handleContinue"
               @previous-step="handlePrevious"
+              @form-change="handleFormChange"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -558,6 +574,7 @@
               @handle-condition-agreement-enter="
                 handleEnterKeyPress('False_Info')
               "
+              @form-change="handleFormChange"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
