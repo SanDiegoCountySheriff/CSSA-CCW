@@ -20,7 +20,6 @@
         v-model="stepIndex.step"
         non-linear
         class="stepper"
-        @change="updateMutation('Next Step')"
         :alt-labels="$vuetify.breakpoint.lgAndDown"
       >
         <v-stepper-header
@@ -213,6 +212,7 @@
               @update-step-one-valid="handleUpdateStepOneValid"
               @handle-save="handleSave"
               @handle-continue="handleContinue"
+              @form-change="handleFormChange"
             />
           </v-stepper-content>
           <v-stepper-content :step="2">
@@ -321,7 +321,6 @@
       <v-expansion-panels
         v-model="expansionStep"
         accordion
-        @change="updateMutation('Next Step')"
       >
         <v-expansion-panel>
           <v-expansion-panel-header
@@ -564,6 +563,12 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </v-container>
+
+    <UnsavedChangesDialog
+      v-model="unsavedChangesDialog"
+      @continue-without-saving="handleContinueWithoutSaving"
+      @save-and-continue="handleSaveAndContinue"
+    />
   </div>
 </template>
 
@@ -576,11 +581,19 @@ import LegacyQualifyingQuestionsStep from '../form-stepper/form-steps/LegacyQual
 import PersonalInfoStep from '@core-public/components/form-stepper/form-steps/PersonalInfoStep.vue'
 import QualifyingQuestionsStep from '@core-public/components/form-stepper/form-steps/QualifyingQuestionsStep.vue'
 import SignatureStep from '@core-public/components/form-stepper/form-steps/SignatureStep.vue'
+import UnsavedChangesDialog from '@core-public/components/dialogs/UnsavedChangesDialog.vue'
 import WorkInfoStep from '@core-public/components/form-stepper/form-steps/WorkInfoStep.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
-import { computed, onMounted, provide, reactive, ref } from 'vue'
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  provide,
+  reactive,
+  ref,
+} from 'vue'
+import { onBeforeRouteLeave, useRouter } from 'vue-router/composables'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const applicationStore = useCompleteApplicationStore()
@@ -595,6 +608,8 @@ const stepSevenValid = ref(false)
 const stepEightValid = ref(false)
 const router = useRouter()
 const isAgreementLoading = ref(false)
+const formChanged = ref(false)
+const unsavedChangesDialog = ref(false)
 
 const stepIndex = reactive({
   step: 0,
@@ -618,6 +633,8 @@ const expansionStep = computed({
 
 const { isLoading, mutate: updateMutation } = useMutation({
   mutationFn: (updateReason: string) => {
+    formChanged.value = false
+
     return applicationStore.updateApplication(updateReason)
   },
 })
@@ -642,6 +659,8 @@ const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
         false
     }
 
+    formChanged.value = false
+
     return applicationStore.updateApplication(updateReason)
   },
   onSuccess: () => {
@@ -650,7 +669,42 @@ const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
   },
 })
 
+function handleContinueWithoutSaving() {
+  refetch()
+  formChanged.value = false
+  router.push('/')
+}
+
+function handleSaveAndContinue() {
+  formChanged.value = false
+  saveMutation('Save and Continue')
+}
+
+function handleFormChange() {
+  formChanged.value = true
+}
+
+function handleBeforeUnload(event: BeforeUnloadEvent) {
+  if (formChanged.value) {
+    event.preventDefault()
+  }
+}
+
+onBeforeRouteLeave((to, from, next) => {
+  if (formChanged.value) {
+    unsavedChangesDialog.value = true
+  } else {
+    next()
+  }
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('beforeunload', handleBeforeUnload)
+})
+
 onMounted(() => {
+  window.addEventListener('beforeunload', handleBeforeUnload)
+
   window.scrollTo(0, 0)
   state.isApplicationValid = Boolean(applicationStore.completeApplication.id)
 

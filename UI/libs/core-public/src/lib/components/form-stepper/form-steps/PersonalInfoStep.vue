@@ -69,6 +69,7 @@
               :rules="requireNameRuleSet"
               :dense="isMobile"
               :readonly="model.isMatchUpdated === false"
+              @input="handleFormChange"
               maxlength="50"
               outlined
             >
@@ -85,6 +86,7 @@
               :rules="notRequiredNameRuleSet"
               :dense="isMobile"
               :readonly="model.isMatchUpdated === false"
+              @input="handleFormChange"
               maxlength="50"
               outlined
             />
@@ -100,6 +102,7 @@
               :rules="requireNameRuleSet"
               :dense="isMobile"
               :readonly="model.isMatchUpdated === false"
+              @input="handleFormChange"
               maxlength="50"
               outlined
             >
@@ -118,6 +121,7 @@
               :label="$t('Suffix')"
               :dense="isMobile"
               :readonly="model.isMatchUpdated === false"
+              @input="handleFormChange"
               maxlength="10"
               outlined
             />
@@ -133,6 +137,7 @@
               :rules="notRequiredNameRuleSet"
               :dense="isMobile"
               :readonly="model.isMatchUpdated === false"
+              @input="handleFormChange"
               maxlength="50"
               outlined
             />
@@ -172,10 +177,11 @@
                     checkFor21,
                     v => !!v || $t('Date of birth is required'),
                   ]"
+                  :dense="isMobile"
+                  @input="handleFormChange"
                   outlined
                   hint="Click the month and year at the top of the calendar to change the year"
                   persistent-hint
-                  :dense="isMobile"
                   prepend-inner-icon="mdi-calendar"
                   v-bind="attrs"
                   v-on="on"
@@ -201,8 +207,9 @@
               v-model="model.application.dob.birthCity"
               :label="$t('Birth city')"
               :rules="[v => !!v || $t('Birth city cannot be blank')]"
-              outlined
               :dense="isMobile"
+              @input="handleFormChange"
+              outlined
               maxlength="150"
             >
             </v-text-field>
@@ -219,11 +226,13 @@
               :items="countries"
               :label="$t('Birth country')"
               :rules="[v => !!v || $t('Birth country cannot be blank')]"
+              @input="handleFormChange"
               outlined
               :dense="isMobile"
             >
             </v-combobox>
           </v-col>
+
           <v-col
             md="6"
             cols="12"
@@ -235,17 +244,20 @@
               :items="states"
               :label="$t('Birth state')"
               :rules="[v => !!v || $t('Birth state cannot be blank')]"
+              @input="handleFormChange"
               outlined
               :dense="isMobile"
               maxlength="150"
               auto-select-first
             >
             </v-autocomplete>
+
             <v-text-field
               v-if="model.application.dob.birthCountry !== 'United States'"
               v-model="model.application.dob.birthState"
               :label="$t('Birth region')"
               :rules="[v => !!v || $t('Birth region cannot be blank')]"
+              @input="handleFormChange"
               outlined
               :dense="isMobile"
               maxlength="150"
@@ -275,6 +287,7 @@
               :label="$t('Height feet')"
               :rules="heightFeetRules"
               :dense="isMobile"
+              @input="handleFormChange"
               type="number"
               outlined
             >
@@ -290,11 +303,13 @@
               :label="$t('Height inches')"
               :rules="heightInchesRules"
               :dense="isMobile"
+              @input="handleFormChange"
               type="number"
               outlined
             >
             </v-text-field>
           </v-col>
+
           <v-col
             md="4"
             cols="12"
@@ -306,6 +321,7 @@
               :label="$t('Weight')"
               :rules="weightRules"
               :dense="isMobile"
+              @input="handleFormChange"
               persistent-hint
               type="number"
               outlined
@@ -325,6 +341,7 @@
               :rules="hairColorRules"
               :items="hairColors"
               :dense="isMobile"
+              @input="handleFormChange"
               outlined
             >
             </v-select>
@@ -340,6 +357,7 @@
               :rules="eyeColorRules"
               :items="eyeColors"
               :dense="isMobile"
+              @input="handleFormChange"
               outlined
             >
             </v-select>
@@ -352,6 +370,7 @@
             <v-radio-group
               v-model="model.application.physicalAppearance.gender"
               :rules="genderRules"
+              @change="handleFormChange"
               label="Gender"
               row
             >
@@ -386,7 +405,10 @@
           >
             <v-text-field
               v-model="model.application.contact.primaryPhoneNumber"
-              @input="formatPhone('contact', 'primaryPhoneNumber')"
+              @input="
+                formatPhone('contact', 'primaryPhoneNumber')
+                handleFormChange()
+              "
               :label="$t('Primary phone number')"
               :rules="phoneRuleSet"
               :dense="isMobile"
@@ -400,7 +422,10 @@
           >
             <v-text-field
               v-model="model.application.contact.cellPhoneNumber"
-              @input="formatPhone('contact', 'cellPhoneNumber')"
+              @input="
+                formatPhone('contact', 'cellPhoneNumber')
+                handleFormChange()
+              "
               :label="$t('Cell phone number')"
               :dense="isMobile"
               maxlength="14"
@@ -416,7 +441,10 @@
           >
             <v-text-field
               v-model="model.application.contact.workPhoneNumber"
-              @input="formatPhone('contact', 'workPhoneNumber')"
+              @input="
+                formatPhone('contact', 'workPhoneNumber')
+                handleFormChange()
+              "
               :label="$t('Work phone number')"
               :dense="isMobile"
               maxlength="14"
@@ -447,6 +475,7 @@
               :rules="ssnRules"
               :dense="isMobile"
               @change="handleValidateForm"
+              @input="handleFormChange"
               outlined
             >
             </v-text-field>
@@ -462,6 +491,7 @@
               :rules="ssnRules"
               :dense="isMobile"
               @change="handleValidateForm"
+              @input="handleFormChange"
               outlined
             >
             </v-text-field>
@@ -492,6 +522,7 @@
               :items="['Married', 'Single', 'Widowed', 'Divorced']"
               :dense="isMobile"
               @change="handleValidateForm"
+              @input="handleFormChange"
               outlined
             >
             </v-select>
@@ -519,6 +550,7 @@
               :label="$t('Last Name')"
               :rules="isMarried ? requireNameRuleSet : []"
               :dense="isMobile"
+              @input="handleFormChange"
               maxlength="50"
               outlined
             >
@@ -534,6 +566,7 @@
               :label="$t('First Name')"
               :rules="isMarried ? requireNameRuleSet : []"
               :dense="isMobile"
+              @input="handleFormChange"
               maxlength="50"
               outlined
             >
@@ -549,6 +582,7 @@
               :label="$t('Middle Name')"
               :rules="notRequiredNameRuleSet"
               :dense="isMobile"
+              @input="handleFormChange"
               maxlength="50"
               outlined
             />
@@ -565,6 +599,7 @@
               :label="$t('Maiden Name')"
               :rules="notRequiredNameRuleSet"
               :dense="isMobile"
+              @input="handleFormChange"
               maxlength="50"
               outlined
             />
@@ -576,7 +611,10 @@
           >
             <v-text-field
               v-model="model.application.spouseInformation.phoneNumber"
-              @input="formatPhone('spouseInformation', 'phoneNumber')"
+              @input="
+                formatPhone('spouseInformation', 'phoneNumber')
+                handleFormChange()
+              "
               :label="$t('Phone number')"
               :rules="isMarried ? phoneRuleSet : []"
               :dense="isMobile"
@@ -611,6 +649,7 @@
               outlined
               :dense="isMobile"
               @change="handleValidateForm"
+              @input="handleFormChange"
             />
             <v-alert
               v-if="
@@ -640,6 +679,7 @@
           v-model="showAlias"
           :label="$t('In the past have you ever gone by a different name?')"
           :row="!isMobile"
+          @change="handleFormChange"
         >
           <v-radio
             color="primary"
@@ -697,6 +737,7 @@
               :dense="isMobile"
               :rules="[v => !!v || $t('Name cannot be blank')]"
               :label="$t('Reference') + ' ' + (index + 1) + ' - ' + $t('Name')"
+              @input="handleFormChange"
               outlined
             >
             </v-text-field>
@@ -713,6 +754,7 @@
               :label="
                 $t('Reference') + ' ' + (index + 1) + ' - ' + $t('Relationship')
               "
+              @input="handleFormChange"
               outlined
             >
             </v-text-field>
@@ -724,7 +766,10 @@
           >
             <v-text-field
               v-model="reference.phoneNumber"
-              @input="formatReferencePhone(reference)"
+              @input="
+                formatReferencePhone(reference)
+                handleFormChange()
+              "
               :dense="isMobile"
               :rules="phoneRuleSet"
               :label="
@@ -753,6 +798,7 @@
                 ' - ' +
                 $t('Email Address')
               "
+              @input="handleFormChange"
               outlined
             >
             </v-text-field>
@@ -817,6 +863,7 @@ const emit = defineEmits([
   'update-step-one-valid',
   'handle-save',
   'handle-continue',
+  'form-change',
 ])
 
 const model = computed({
@@ -915,6 +962,10 @@ onMounted(() => {
   }
 })
 
+function handleFormChange() {
+  emit('form-change')
+}
+
 function handleSave() {
   emit('handle-save')
 }
@@ -950,7 +1001,7 @@ function handleValidateForm() {
   }
 }
 
-function formatPhone(modelName1, modelName2) {
+function formatPhone(modelName1: string, modelName2: string) {
   const phoneNumber = model.value.application[modelName1][modelName2]
 
   if (phoneNumber) {
